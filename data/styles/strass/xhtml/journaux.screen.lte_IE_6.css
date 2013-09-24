@@ -1,0 +1,20 @@
+ .document.journaux #rubrique.progression
+{
+  background-image: url("pélerin/parrainant.gif");
+  }
+
+
+.document.journaux #rubrique.foi
+{
+  background-image: url("pélerin/priant-gauche.gif");
+  }
+
+#boulet.progression
+{
+  background-image: url("pélerin/parrainant.gif");
+  }
+
+#boulet.foi
+{
+  background-image: url("pélerin/priant-droite.gif");
+  }

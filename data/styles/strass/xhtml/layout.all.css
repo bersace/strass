@@ -1,0 +1,24 @@
+h1
+{
+  padding: 1ex 0;
+  margin: 0;
+  }
+
+#footer
+{
+  width: 100%;
+  clear: both;
+  display: block;
+  }
+
+#footer .copyright
+{
+  font-size: .9em;
+  text-align: center;
+  padding: 2em 0;
+  }
+
+.logo
+{
+  display: none;
+  }

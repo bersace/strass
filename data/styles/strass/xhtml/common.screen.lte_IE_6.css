@@ -1,0 +1,30 @@
+#document
+{
+  background-image: url("img/coquille.gif");
+  }
+
+#content
+{
+  background-image: url("img/titre.gif");
+  }
+
+h1
+{
+  background-image: url("img/baussant.gif");
+  height: 192px;
+  }
+
+.document.effectifs #webaddons
+{
+  background-image: url("pélerin/décidant-droite.gif");
+  }
+
+.document.photos #albums
+{
+  background-image: url("pélerin/décidant-gauche.gif");
+  }
+
+.document.journaux.lire #webaddons
+{
+  background-image: url("pélerin/lisant-droite.gif");
+  }

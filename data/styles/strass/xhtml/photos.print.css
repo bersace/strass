@@ -1,0 +1,14 @@
+.photos.voir h2
+{
+  display: none;
+  }
+
+.photos.voir #photo
+{
+  text-align: center;
+  }
+
+#historique
+{
+  display: none;
+  }

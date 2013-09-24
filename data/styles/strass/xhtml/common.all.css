@@ -1,0 +1,92 @@
+body
+{
+  font-family: "Deja Vu Sans",sans-serif;
+  font-size: 9pt;
+  color: black;
+  margin: 0;
+  }
+
+.h, th, legend,
+h1, h2, h3, h4, h5, h6,
+#footer .organization,
+#footer .author
+{
+  color: #542A00;
+  }
+
+#content .h
+{
+  padding-top: 1em;
+  }
+
+a
+{
+  color: #986400;
+  }
+
+
+h1
+{
+  text-align: center;
+  font-size: 1.35em;
+  }
+
+h2
+{
+  font-size: 1.20em;
+  }
+
+h3
+{
+  font-size: 1.15em;
+  }
+
+h4
+{
+  font-size: 1.10em;
+  }
+
+h5
+{
+  font-size: 1.75em;
+  }
+
+h6
+{
+  font-size: 1.05em;
+  }
+
+p
+{
+  text-align: left;
+  }
+
+ul
+{
+  list-style-type: square;
+  text-align: left;
+  padding-left: 2em;
+  }
+
+li
+{
+  margin-bottom: .5ex;
+  }
+
+#content div.section
+{
+  margin-left: 1em;
+  text-align: justify;
+  }
+
+#footer
+{
+  color: #AAA;
+  }
+
+
+.suite
+{
+  text-align: right;
+  font-style: italic;
+  }

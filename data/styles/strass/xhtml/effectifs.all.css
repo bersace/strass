@@ -1,0 +1,89 @@
+.effectifs .section table
+{
+  margin-left: -1em;
+  width: 100%;
+  }
+
+.effectifs td
+{
+  text-align: left;
+  height: 20px;
+  vertical-align: middle;
+  }
+
+/* commun */
+td.accr
+{
+  text-align: right;
+  }
+
+td.prenom-nom
+{
+  min-width: 14em !important;
+  }
+
+/* contact */
+td.fixe,
+td.portable
+{
+  width: 8em;
+  text-align: center;
+  }
+
+td.adelec,
+td.adresse
+{
+  min-width: 14em;
+  }
+
+/* infos */
+td.age
+{
+  width: 4em;
+  }
+
+td.naissance
+{
+  width: 6em;
+  text-align: center;
+  }
+
+td.origine
+{
+  width: 14em;
+  }
+
+td.numero
+{
+  width: 4em;
+  }
+
+/* progression */
+td.perespi,
+td.parrain
+{
+  width: 14em;
+  }
+
+
+td.age
+{
+  text-align: center;
+  }
+
+td.totem
+{
+  width: 10em;
+  }
+
+/* le lien vers l'individu expose déjà l'étape. avec une superbe icône */
+tr > .etape
+{
+  display: none;
+  }
+
+/* masquer les en-tête redondant des sous unités */
+.effectifs > div.section + div.section thead tr
+{
+  display: none;
+  }

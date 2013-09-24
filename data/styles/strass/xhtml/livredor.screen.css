@@ -1,0 +1,39 @@
+.livredor #content li
+{
+  display: block;
+  padding: 1ex;
+  width: 100%;
+  -webkit-transition-duration: 1s;
+  }
+
+.livredor #content li.odd
+{
+  background: url("img/transparent-blanc.png");
+  }
+
+.livredor #content li p
+{
+  margin: 0.5ex;
+  -webkit-transition-duration: 1s;
+  }
+
+.livredor #content p.signature
+{
+  font-weight: bold;
+  }
+
+.livredor #content li p.validation
+{
+  background: url("img/transparent-noir.png");
+  text-align: right;
+  border: 1px dotted white;
+  margin: .5ex;
+  padding: .5ex;
+  display: none;
+  float: right;
+  }
+
+.livredor #content li:hover p.validation
+{
+  display: block;
+  }

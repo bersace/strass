@@ -1,0 +1,27 @@
+table
+{
+  border-spacing: 0px;
+  }
+
+thead th
+{
+    border-bottom: 2px solid #845D18;
+}
+
+th
+{
+  text-align: center;
+  }
+
+td
+{
+  vertical-align: top;
+  text-align: left;
+  padding: .25ex .25ex;
+  }
+
+tr.odd
+{
+  background-image: url("img/transparent-blanc.png");
+  background-repeat: repeat;
+  }

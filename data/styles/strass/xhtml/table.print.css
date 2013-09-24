@@ -1,0 +1,9 @@
+td
+{
+  padding: .25ex .75ex;
+  }
+
+tr.odd
+{
+  background-image: url("img/transparent-gris.png");
+  }

@@ -1,0 +1,69 @@
+#rubrique
+{
+  background-image: url("pélerin/lisant-gauche.png");
+  background-position: bottom right;
+  background-repeat: no-repeat;
+  padding-bottom: 128px;
+  }
+
+
+.document.journaux #rubrique.progression
+{
+  padding-bottom: 192px;
+  background-image: url("pélerin/parrainant.png");
+  background-position: bottom center;
+  }
+
+
+.document.journaux #rubrique.foi
+{
+  background-image: url("pélerin/priant-gauche.png");
+  }
+
+#boulet
+{
+  background-repeat: no-repeat;
+  padding: 0;
+  font-weight: bold;
+  }
+
+#boulet.progression
+{
+  background-position: top right;
+  background-image: url("pélerin/parrainant.png");
+  padding-right: 192px;
+  }
+
+#boulet.foi
+{
+  background-position: top left;
+  background-image: url("pélerin/priant-droite.png");
+  padding-left: 108px;
+  }
+
+/* rubriques */
+#content li.xl a
+{
+  font-size: 2.5em;
+  }
+
+#content li.l a
+{
+  font-size: 2em;
+  }
+
+#content li.m a
+{
+  font-size: 1.75em;
+  }
+
+#content li.s a
+{
+  font-size: 1.5em;
+  }
+
+#content li.xs a
+{
+  font-size: 1.25em;
+  }
+

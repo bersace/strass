@@ -1,0 +1,237 @@
+html, body
+{
+  background-image: url("img/foulard.jpeg");
+  background-position: top center;
+  background-repeat: repeat-all;
+  background-color: #573114;
+  color: white; /*#B89643;*/
+  }
+
+#document
+{
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  height: 256px;
+  background-image: url("img/coquille.png");
+  background-position: 1em 2em;
+  background-repeat: no-repeat;
+  }
+
+#content
+{
+  background-image: url("img/titre.png");
+  background-repeat: no-repeat;
+  background-position: top center;
+  margin-top: -140px;
+  padding-top: 172px;
+  }
+
+h1
+{
+  font-size: 3em;
+  background-image: url("img/baussant.png");
+  background-repeat: no-repeat;
+  background-position: right 50px;
+  height: 160px;
+  }
+
+h1 span
+{
+  display: none;
+  }
+
+
+.h, th, a, legend,
+h1, h2, h3, h4, h5, h6
+{
+  color: #E1C571;
+  }
+
+strong
+{
+  color: #F1D591;
+  font-size: 1.05em;
+  }
+
+a
+{
+  text-decoration: none;
+  border-bottom: 1px dotted #986400;
+  }
+
+a:hover, a:visited
+{
+  }
+
+a:hover
+{
+  color: #E1C571;
+  border-bottom-style: solid;
+  }
+
+img
+{
+  padding: .75ex;
+  background: white;
+  border: 1px solid black;
+  color: black;
+  }
+
+/* BARRE LATÉRALE */
+#webaddons
+{
+  background-position: bottom left;
+  background-repeat: no-repeat;
+  }
+
+#webaddons > .section > .h
+{
+  font-size: 1.1em;
+  border-bottom: 1px solid white;
+  }
+
+#webaddons > .section > .h span
+{
+  display: block;
+  padding: 10px 1em 0 0;
+  }
+
+#webaddons .section li a
+{
+  padding: 0;
+  margin-right: 2px;	/* pour éviter la barre de défilement lorsque le lien est cliqué */
+  }
+
+#webaddons .section ul
+{
+  padding: 0 0 0 1.4em;
+  }
+
+#menu li.current a
+{
+  color: white;
+  text-decoration: none;
+  font-weight: bold;
+  }
+
+
+
+#footer
+{
+  color: #AB7C2B;
+  padding-bottom: 1em;
+  }
+
+/* CONSOLE */
+#console > .h
+{
+  margin-bottom: 0;
+  }
+
+#console div.section
+{
+  margin: .5em 0 0 1em;
+  padding: 0;
+  }
+
+#console .section .h
+{
+  font-size: 1.05em;
+  margin: 0;
+  padding: 0;
+  }
+
+
+/* BRANCHE */
+#branche
+{
+  background-image: url("img/transparent-noir.png");
+  padding: .75ex;
+  }
+
+#webaddons #branche span
+{
+  padding: 0;
+  }
+
+#webaddons #branche *
+{
+  color: #F1D591;
+  }
+
+#webaddons #branche li,
+#webaddons #branche .h,
+#webaddons #branche ul
+{
+  display: block;
+  float: left;
+  list-style: none;
+  margin: 0;
+  padding: 0:
+  font-size: inherit;
+  font-size: 8pt;
+  border: none;
+  }
+
+#webaddons #branche ul
+{
+  float: right;
+  }
+
+#webaddons #branche li + li:before
+{
+  content: " → ";
+  }
+
+
+
+
+/* MASCOTTE */
+
+.document.effectifs #webaddons
+{
+  padding-bottom: 192px;
+  background-position: bottom right;
+  background-repeat: no-repeat;
+  background-image: url("pélerin/décidant-droite.png");
+  }
+
+.document.photos #albums
+{
+  min-height: 192px;
+  background-position: bottom right;
+  background-repeat: no-repeat;
+  background-image: url("pélerin/décidant-gauche.png");
+  }
+
+.document.journaux #rubrique
+{
+  background-position: bottom right;
+  min-height: 192px;
+  background-repeat: no-repeat;
+  }
+
+.document.journaux.lire #webaddons
+{
+  background-image: url("pélerin/lisant-droite.png");
+  background-position: bottom right;
+  padding-bottom: 384px;
+  }
+
+
+/* Glisser-déposer */
+.dojoDndItem
+{
+  cursor: pointer;
+  }
+
+.dojoDndMove *
+{
+  cursor: move;
+  }
+
+.dojoDndMove .dojoDndItemAnchor td
+{
+  background: url("img/transparent-noir.png");
+  }

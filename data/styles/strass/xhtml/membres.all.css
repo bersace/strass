@@ -1,0 +1,11 @@
+#valider-verdict
+{
+  display: block;
+  width: 100%;
+  text-align: center;
+  }
+
+#valider-verdict *
+{
+  display: inline;
+  }

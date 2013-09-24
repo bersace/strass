@@ -1,0 +1,51 @@
+#accueil
+{
+  min-height: 150px;
+  clear: both;
+  padding-right: 150px;
+  background-position: center right;
+  background-repeat: no-repeat;
+  background-image: url("pélerin/marchant-gauche.png");
+  }
+
+#photos
+{
+  /* width: 40%; */
+  /* float: left; */
+  /* margin-right: -20em; */
+  }
+
+#photos .vignette
+{
+  display: inline-block;
+  float: none;
+  }
+
+#photos > *
+{
+  padding-left: 0em;
+  }
+
+#rapports
+{
+  float: right;
+  width: 40%;
+  margin: 0;
+  padding: 0;
+  }
+
+#rapports > *
+{
+  }
+
+/* correction, les .h ont des cadratins plus grand */
+#rapports > .h
+{
+  padding-left: 13em;
+  }
+
+#rapports li p span.unite a
+{
+  font-size: .8em;
+  white-space: nowrap;
+  }

@@ -1,0 +1,16 @@
+#accueil
+{
+  background-image: url("pélerin/marchant-gauche.gif");
+  height: 160px;
+  }
+
+#articles,
+#prochact,
+#photos
+{
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  clear: both;
+  float: none;
+  }

@@ -1,0 +1,47 @@
+#historique li
+{
+  float: left;
+  list-style: none;
+  margin: .5ex;
+  }
+
+#calendrier table
+{
+  width: 80%;
+  margin: 1em 10%;
+  }
+
+#calendrier > p,
+.activites #content p.remarque
+{
+  background-image: url("icones/attention.png");
+  background-position: 1ex 1ex;
+  background-repeat: no-repeat;
+  margin: 2em 25%;
+  width: 50%;
+  padding: 1ex 1ex 1ex 48px;
+  min-height: 32px;
+  clear: both;
+  border: 1px solid white;
+  -moz-border-radius: 1ex;
+  }
+
+#message
+{
+  clear: both;
+  }
+
+#apporter,
+#participants,
+#piecesjointes
+{
+  float: left;
+  width: 30%;
+  margin: 1em;
+  padding: 0;
+  }
+
+#calendrier td.date
+{
+  width: 10em;
+  }

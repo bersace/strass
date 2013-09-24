@@ -1,0 +1,22 @@
+#footer
+{
+  display: none;
+  }
+
+#content
+{
+  margin: 0;
+  width: 80%;
+  float: right;
+  }
+
+#content > *
+{
+  padding: 0;
+  }
+
+#webaddons
+{
+  float: left;
+  width: 18%;
+  }

@@ -1,0 +1,29 @@
+#trombi p.inconnu
+{
+  background-image: url("img/inconnu.png");
+  background-position: center center;
+  background-repeat: no-repeat;
+  height: 196px;
+  }
+
+#trombi p.avatar
+{
+  width: 196px;
+  }
+
+#trombi li.individu
+{
+  padding: 1ex;
+  }
+
+#trombi li.individu.odd,
+#trombi li.individu.odd > *
+{
+  float: left;
+  }
+
+#trombi li.individu.even,
+#trombi li.individu.even > *
+{
+  float: right;
+  }

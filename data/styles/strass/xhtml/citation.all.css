@@ -1,0 +1,16 @@
+p.citation
+{
+  font-style: italic;
+  }
+
+li.citation .signature,
+#citation .signature
+{
+  font-weight: bold;
+  }
+
+.citation #content li.citation
+{
+  display: block;
+  padding: 1ex;
+  }

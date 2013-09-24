@@ -1,0 +1,303 @@
+.dojoxCalendarContainer
+{
+  cursor: default;
+  font-family: "DeJaVu Sans",tahoma, verdana, helvetica;
+  padding: 4px;
+  text-align: center;
+  width: 18em !important;
+  }
+
+.dojoxCalendarBody
+{
+  height: 11em;
+  overflow: hidden;
+  position: relative;
+  margin: auto;
+  background: url("img/transparent-noir.png");
+  }
+
+.dojoxCalendar .dijitCalendarDayLabels,
+.dojoxCalendarMonthLabels,
+.dojoxCalendarYearLabels
+{
+  width: 100%;
+  height: inherit;
+  top: 0px;
+  position: absolute;
+  left: 0px;
+  margin: auto;
+  text-align: center;
+  }
+
+.dojoxCalendarYearLabels table,
+.dojoxCalendarMonthLabels table,
+.dojoxCalendar .dijitCalendarDayLabels table
+{
+  width: 100%;
+  height: inherit;
+  }
+
+.dojoxCalendarMonthLabels td
+{
+  height: 33.3%;
+  vertical-align: 50%;
+  }
+
+.dojoxCalendar .dijitCalendarDateTemplate
+{ 
+  padding: 0px; 
+  }
+
+.dojoxCalendar .noPointer,
+.dojoxCalendar .noPointer *
+{
+  cursor: auto;
+  }
+
+.dojoxCalendarHeader
+{
+  width: 100%;
+  border-bottom: 1px dotted #DDD;
+  }
+
+.dojoxCalendarDecrease,
+.dojoxCalendarIncrease
+{
+  min-height: 12px;
+  width: 15px;
+  cursor: pointer;
+  }
+
+.dojoxCalendarDecrease
+{
+  background-image: url("icones/fleche-gauche.png");
+  background-repeat: no-repeat;
+  background-position: left center;
+  float: left;
+  }
+
+.dojoxCalendarIncrease
+{
+  background: url("icones/fleche-droite.png");
+  background-repeat: no-repeat;
+  background-position: right center;
+  float: right;
+  }
+
+
+.dojoxCalendarMonthLabel
+{
+  cursor: pointer;
+  height: 100%;
+  width: 100%;
+  text-align: center;
+  padding-top: 25%;
+  }
+
+.dojoxCalendarYearLabel
+{
+  cursor: pointer;
+  text-align: center;
+  padding-top: 10px;
+  }
+
+.dojoxCalendarTitle
+{
+  cursor: pointer;
+  font-weight: bold;
+  }
+
+.dojoxCalendar .dijitCalendarDateLabel
+{
+  cursor: pointer;
+  padding: 1px 2px;
+  text-align: center;
+  }
+
+.dojoxCalendar .dijitCalendarDayLabel
+{
+  cursor: pointer;
+  padding: 0pt 2px;
+  text-align: center;
+  }
+
+.dojoxCalendar thead .dijitCalendarDayLabel
+{
+  cursor: auto;
+  font-weight: bold;
+  color: #EEE;
+  }
+
+.dojoxCalendar .dojoxCalendarContainer
+{
+  background: black;
+  border: 1px solid white ;
+  }
+
+.dojoxCalendar .dijitCalendarDisabledDate
+{
+  text-decoration:line-through !important;
+  cursor:default !important;
+  }
+
+.dojoxCalendarBody + div
+{
+  width: auto;
+  }
+
+.dojoxCalendar .dojoxCalendarFooter
+{
+  border-top: 1px dotted #EEE; 
+  padding-top: 4px;
+  cursor: pointer;
+  width: 18em;
+  }
+
+.dojoxCalendar .dijitCalendarCurrentMonth
+{
+  color: white;
+  }
+
+.dojoxCalendar .dijitCalendarNextMonth .dijitCalendarDateLabel,
+.dojoxCalendar .dijitCalendarPreviousMonth .dijitCalendarDateLabel 
+{
+  border: 0px;
+  color: #DDD;
+  padding-left: 0px;
+  padding-right: 0px;
+  }
+
+.dojoxCalendar .dijitCalendarNextMonth,
+.dojoxCalendar .dijitCalendarPreviousMonth
+{
+  background: url("img/transparent-blanc.png");
+  }
+
+.dojoxCalendar .dijitCalendarNextMonth .dojoxCalendarYearLabel,
+.dojoxCalendar .dijitCalendarPreviousMonth .dojoxCalendarYearLabel
+{
+  background-color: white;
+  border-color: white;
+  color: #646464;
+  }
+.dojoxCalendar .dijitCalendarSelectedDate
+{
+  /* cell for the selected date */
+  background: url("img/transparent-noir.png");
+  color:white !important;
+  border: white solid 1px !important;
+  }
+
+.dojoxCalendar .dijitCalendarSelectedDate .dijitCalendarDateLabel
+{
+  padding: 0px 1px;
+  }
+
+.dojoxCalendar .monthOnly .dijitCalendarDayLabels,
+.dojoxCalendar .yearOnly .dijitCalendarDayLabels,
+.dojoxCalendar .monthOnly .dojoxCalendarComma,
+.dojoxCalendar .yearOnly .dojoxCalendarComma,
+.dojoxCalendar .monthOnly .dojoxCalendarFooter,
+.dojoxCalendar .yearOnly .dojoxCalendarFooter,
+.dojoxCalendar .monthOnly .dojoxCalendarYearHeader,
+.dojoxCalendar .monthOnly .dojoxCalendarIncrease,
+.dojoxCalendar .monthOnly .dojoxCalendarDecrease,
+.dojoxCalendar .yearOnly .dojoxCalendarMonthLabelNode
+{
+  display: none;
+  }
+
+
+/* Heure */
+.dijitTimePicker
+{
+  background: black;
+  border: 1px solid white;
+  }
+
+.dijitArrowButtonInner
+{
+  display: none; 
+  }
+
+.dijitArrowButtonChar
+{
+  width: 100%;
+  text-align: center;
+  padding: .25ex 0;
+  background: black;
+  }
+
+.dijitTimePickerTick,
+.dijitTimePickerMarker
+{
+  }
+
+.dijitTimePickerTick
+{
+  color:white;
+  }
+
+.dijitTimePickerMarker
+{
+  background: #444;
+  color: #DDD;
+  font-weight: bold;
+  }
+
+.dijitTimePickerItemSelected
+{
+  color: black;
+  background: #ffe284 none;
+  }
+
+.dijitTimePickerItemHover
+{
+  background: lightgrey;
+  color:black;
+  cursor: pointer; 
+  }
+
+.dijitTimePickerItemHover,
+.dijitTimePickerItemSelected
+{
+  position: relative;
+  z-index: 10;
+  }
+
+.dijitTimePickerTick .dijitTimePickerItemInner
+{
+  font-size:0.4em;
+  color: black;
+  }
+
+.dijitTimePickerItemInner
+{
+  text-align: center;
+  }
+
+.dijitTimePickerItemHover .dijitTimePickerItemInner,
+.dijitTimePickerItemSelected .dijitTimePickerItemInner
+{
+  font-size:1em;
+  }
+
+.dijitTimePickerTickHover,
+.dijitTimePickerTickSelected
+{
+  margin-top:-0.3em;
+  margin-bottom:-0.3em;
+  border-bottom: none;
+  }
+
+.dijit_a11y .dijitTimePickerTickHover
+{
+  background-color: #CCC !important;
+  border-top: 1px solid #333 !important;
+  border-bottom: 1px solid #333 !important;
+  }
+
+.dijit_a11y .dijitTimePickerMarkerHover
+{
+  border-bottom-width: 2px;
+  }

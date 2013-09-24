@@ -1,0 +1,26 @@
+/* SOUSUNITES */
+li.sousunite > ul li:first-child
+{
+  font-size: 1.2em;
+  }
+
+li.sousunite
+{
+  list-style: none;
+  width: 100%;
+  margin: 1ex;
+  padding: .5ex;
+  display: block;
+  clear: both;
+  float: left;
+  }
+
+li.sousunite > *
+{
+  float: left;
+  }
+
+li.sousunite.odd
+{
+  background: url("img/transparent-blanc.png");
+  }

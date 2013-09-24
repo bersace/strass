@@ -1,0 +1,40 @@
+/* TROMBINOSCOPE */
+.trombi li p.avatar,
+.trombi li.individu ul
+{
+  display: inline-block;
+  vertical-align: top;
+  margin-top: 1em;
+  }
+
+.trombi li p.avatar
+{
+  margin-left: 1em;
+  }
+
+.trombi #content > ul
+{
+  display: block;
+  }
+
+.trombi li.individu
+{
+  display: block;
+  width: 100%;
+  }
+
+.trombi li.individu li
+{
+  margin: .25ex;
+  }
+
+.trombi li.individu.odd
+{
+  background: url("img/transparent-blanc.png");
+  }
+
+.trombi li.individu li.prenom-nom,
+.trombi li.individu li.telephone
+{
+  font-weight: bold;
+  }

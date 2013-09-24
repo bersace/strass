@@ -1,0 +1,22 @@
+
+
+.pages.links
+{
+  margin: 1ex;
+  text-align: center;
+  clear: both;
+  }
+
+.pages.links li
+{
+  list-style: none;
+  margin: 1ex;
+  display: inline;
+  }
+
+.pages.links .current a
+{
+  text-decoration: none;
+  font-weight: bold;
+  }
+

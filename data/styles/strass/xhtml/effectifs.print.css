@@ -1,0 +1,105 @@
+
+.effectifs > div.section
+{
+  margin-right: 0;
+  padding-right: 0;
+  }
+
+.effectifs .section .h
+{
+  margin-left: 2em;
+  }
+
+.effectifs table
+{
+  width: 100%;
+  }
+
+.effectifs table td a
+{
+  text-decoration: none;
+  color: black;
+  padding-top: 2pt;
+  padding-bottom: 2pt;
+  }
+
+tr.odd
+{
+  background: none !important;
+  }
+
+tr.odd td + td
+{
+  background-image: url("img/transparent-gris.png");
+  }
+
+td.accr
+{
+  color: #444;
+  padding: 0;
+  width: 2em;
+  }
+
+table.eqclan tr.assistant td.accr
+{
+  color: white;
+  }
+
+.contacts td.prenom-nom,
+.contacts td.nom-abbr,
+.liste td.prenom-nom,
+.liste td.nom-abbr
+{
+  width: 30%;
+  padding: 2pt;
+  }
+
+td.prenom-nom
+{
+  padding: 1pt;
+  }
+
+td.fixe,
+td.portable
+{
+  width: 7em;
+  padding: 0;
+  text-align: center;
+  }
+
+td.adresse
+{
+  width: 35%;
+  font-size: .9em;
+  }
+
+/* masquer le nom-prénom des cheftaines de meutes. */
+#maitrise table.meute td.prenom-nom a
+{
+  position: absolute;
+  display: block;
+  top: -512px;
+  left: -1024px;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  }
+
+#historique,
+
+/* on masque l'adélec à l'impression car on l'utilise quant a un
+logiciel de messagerie et donc qu'on accès à la version en ligne du
+document. Pas de transmission d'adélec par papier. Ça prend trop de
+place pour une utilité limitée. */
+
+tr .adelec
+{
+  display: none;
+  }
+
+.effectifs td.perespi,
+.effectifs td.parrain,
+.complet td.adelec
+{
+  display: table-cell;
+  }

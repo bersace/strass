@@ -1,0 +1,12 @@
+#webaddons ul
+{
+  padding: 0;
+  margin: 0;
+  }
+
+#document #branche li
+{
+  margin-left: .5ex;
+  padding-right: .5ex;
+  border-right: 1px solid white;
+  }

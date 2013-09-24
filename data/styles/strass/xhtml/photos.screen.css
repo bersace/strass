@@ -1,0 +1,55 @@
+#photo img
+{
+  width: 100%;
+  height: auto;
+  }
+
+#photo p.photo
+{
+  text-align: center;
+  }
+
+#photos ul
+{
+  margin: 1em;
+  padding: 0;
+  }
+
+#albums .vignette p,
+#photos .vignette p
+{
+  height: 3em;
+  }
+
+#vignette
+{
+  width: 100%;
+  height: 192px;
+  float: none;
+  }
+  
+#historique
+{
+  clear: both;
+  }
+
+#historique li
+{
+    float: left;
+    list-style: none;
+    margin: 0.5ex;
+}
+
+/* COMMENTAIRES */
+.commentaire
+{
+  padding: 1ex 2em;
+  margin: 0;
+  }
+
+.commentaire.even
+{
+  background-image: url("img/transparent-noir.png");
+  background-repeat: repeat;
+  }
+

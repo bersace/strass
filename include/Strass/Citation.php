@@ -1,0 +1,21 @@
+<?php
+
+class Citation extends Knema_Db_Table_Abstract implements Zend_Acl_Resource_Interface
+{
+	protected $_name = 'citations';
+
+	function __construct()
+	{
+		parent::__construct();
+		$acl = Zend_Registry::get('acl');
+		if (!$acl->has($this)) {
+			$acl->add(new Zend_Acl_Resource($this->getResourceId()));
+			$acl->allow('individus', $this, 'enregistrer');
+		}
+	}
+
+	function getResourceId()
+	{
+		return 'citations';
+	}
+}

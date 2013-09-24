@@ -1,0 +1,35 @@
+#content h2
+{
+  font-size: 2em;
+  padding: 0 0 .5ex;
+  margin: 0;
+  }
+
+form p.warn,
+form p.info
+{
+  display: none;
+  }
+
+form#inscription #control-inscription-fiche-etat-civil-sexe
+{
+  display: none;
+  }
+
+h3
+{
+  margin: 0;
+  }
+
+#inscription table
+{
+  border-collapse: collapse;
+  width: 60%;
+  margin: 0 20%;
+  }
+
+#inscription td
+{
+  border: 1px solid black;
+  padding: .5ex;
+  }

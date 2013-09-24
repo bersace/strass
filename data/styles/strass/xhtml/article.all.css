@@ -1,0 +1,13 @@
+div.boulet
+{
+  font-size: 1.1em;
+  padding-bottom: 1em;
+  }
+
+div.article img
+{
+  float: right;
+  clear: right;
+  margin: 1ex;
+  }
+

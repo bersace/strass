@@ -1,0 +1,42 @@
+#document #content #trombi > ul
+{
+  margin: 1em 25% 0;
+  width: 50%;
+  padding: 0;
+  }
+
+#trombi img
+{
+  max-height: 7em;
+  width: auto;
+  }
+
+#trombi li p.avatar
+{
+  width: 64px;
+  min-height: 7em;
+  clear: left;
+  }
+
+#trombi li.individu
+{
+  padding: 1ex;
+  clear: both;
+  }
+
+#trombi li.individu,
+#trombi li.individu > *
+{
+  float: left;
+  }
+
+#trombi li.individu.odd
+{
+  background: url("img/transparent-gris.png");
+  }
+
+#trombi .perespi,
+#trombi .parrain
+{
+  display: none;
+  }

@@ -1,0 +1,17 @@
+#article .signature
+{
+  clear: both;
+  }
+
+#rubriques li,
+#rubriques li p
+{
+  display: inline;
+  margin-right: .5ex;
+  font-size: .8em;
+  }
+
+form .check
+{
+  text-align: center;
+  }

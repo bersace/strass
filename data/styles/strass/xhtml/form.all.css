@@ -1,0 +1,289 @@
+
+form
+{
+  clear: both;
+  width: 100%;
+  text-align: center;
+  }
+
+.buttonbox
+{
+  clear: both;
+  text-align: center;
+  padding: .5ex;
+  }
+
+
+button
+{
+  font-size: 1.05em;
+  padding: .25ex 1em;
+  margin: .5ex;
+  border: 1px outset #A97;
+  color: white;
+  font-weight: normal;
+  -moz-border-radius: 3px;
+  }
+
+td button
+{
+  padding: .25ex;
+  }
+
+
+button:active
+{
+  border-style: inset;
+  }
+
+
+fieldset, form p
+{
+  clear: both;
+  }
+
+div.required > label:before
+{
+  content: "*";
+  color: red;
+  }
+
+fieldset
+{
+  margin-top: 1em;
+  border: 1px solid white;
+  background-image: url("img/transparent-noir.png");
+  }
+
+legend
+{
+  font-weight: bold;
+  font-size: 1.1em;
+  }
+
+/*  MESSAGES  */
+form .errors .h
+{
+  display: none;
+  }
+
+form .errors p
+{
+  padding: 1ex 1ex 1ex 48px;
+  background-image: url("icones/erreur.png");
+  background-repeat: no-repeat;
+  background-position: 1ex .72ex;
+  border: 2px solid red;
+  -moz-border-radius: .75ex;
+  margin: .5ex 5%;
+  }
+
+
+form p.warn
+{
+  padding: 1ex 1ex 1ex 48px;
+  background-image: url("icones/attention.png");
+  background-repeat: no-repeat;
+  background-position: 1ex center;
+  color: #F1E5C1;
+  font-size: 1.1em;
+  }
+
+form p.info
+{
+  padding: 1ex 1ex 1ex 42px;
+  margin: 1em 2em;
+  background-image: url("icones/information.png");
+  background-repeat: no-repeat;
+  background-position: .5ex center;
+  color: #F1E5C1;
+  font-size: 1.2em;
+  font-weight: bold;
+  }
+
+form > p
+{
+  padding: 1em;
+  }
+
+.entry .entry.nocaption,
+.nocaption textarea
+{
+  width: 99%;
+  }
+
+
+/* CONTROLES */
+div.control
+{
+  text-align: left;
+  clear: both;
+  padding: .5ex;
+  }
+
+div.control > *
+{
+  margin: 0;
+  }
+
+div.control > label
+{
+  float: left;
+  width: 16em;
+  display: block;
+  padding: .5ex 0;
+  }
+
+div.control label:after
+{
+  content: " :";
+  }
+
+.control.select span label:after,
+.control.check label:after
+{
+  content: "";
+  }
+
+div.control input
+{
+  margin: 0;
+  float: left;
+  display: block;
+  clear: right;
+  }
+
+div.control.compound div.control
+{
+  float: left;
+  clear: none;
+  }
+
+input.spin
+{
+  text-align: right;
+  }
+
+input[type=text],
+input[type=password],
+textarea
+{
+  padding: 2px;
+  }
+
+div.control.date input
+{
+  margin: 1px;
+  font-family: monospace;
+  text-align: right;
+  }
+
+div.control.check
+{
+  padding-left: 2em;
+  }
+
+
+div .check input
+{
+  margin-left: -1.5em;
+  float: left;
+  position: relative;
+  top: -1.25em;
+  }
+
+.control.check > label
+{
+  float: right;
+  text-align: left;
+  width: 100%;
+  margin-left: -2em;
+  }
+
+table.control
+{
+  clear: both;
+  margin: 1ex;
+  }
+
+tr .check input,
+tr .check label
+{
+  top: auto;
+  float: none;
+  position: inline;
+  margin: 0;
+  padding: 0;
+  width: auto;
+  text-align: inherit;
+  }
+
+textarea,
+select,
+option,
+button,
+input[type=text],
+input[type=password]
+{
+  border: 1px dotted #BA8;
+  background-color: transparent;
+  background-image: url("img/transparent-noir.png");
+  background-repeat: repeat;
+  background-position: top left;
+  color: #FEFEFE;
+  }
+
+option
+{
+  border: none;
+  background: black;
+  }
+
+*[disabled=disabled]
+{
+  background-image: url("img/transparent-gris.png");
+  color: grey;
+  }
+
+.compound textarea,
+.compound input.entry
+{
+  width: auto;
+  }
+
+.control.select span label
+{
+  float: left;
+  padding: .5ex;
+  }
+
+.control.select span input
+{
+  margin: .25ex;
+  }
+
+.control.date span input
+{
+  float: none;
+  display: inline;
+  }
+
+/* FORMULAIRE LATÉRAUX */
+#webaddons div.control label
+{
+  float: left;
+  width: 8em;
+  }
+
+#webaddons div.control .input
+{
+  margin: 0;
+  float: right;
+  display: block;
+  }
+
+#webaddons div.control input
+{
+  max-width: 11em;
+  }
+

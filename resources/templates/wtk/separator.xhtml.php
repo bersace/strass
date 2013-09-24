@@ -1,0 +1,1 @@
+<hr<?php wtk_id_classes ($id, $classes); ?>/>

@@ -1,0 +1,35 @@
+td.accr
+{
+    width: 2.5em;
+    padding-left: 22px;
+}
+
+.effectifs > table.meute td.accr
+{
+  width: auto;
+  }
+
+.effectifs td
+{
+  height: 26px;
+  }
+
+/* lisibilité de champs adjacent */
+td.fixe,
+td.situation
+{
+  padding-right: .5ex;
+  }
+
+td.portable,
+td.origine
+{
+  padding-left: .5ex;
+  }
+
+td.adelec,
+td.adresse
+{
+  font-size: .9em;
+  vertical-align: middle;
+  }

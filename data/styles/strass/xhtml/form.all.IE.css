@@ -1,0 +1,15 @@
+form textarea,
+form select,
+form option,
+form button,
+form input
+{
+  border: 1px dotted #BA8;
+  background-color: #442200;
+  color: #FEFEFE;
+  }
+
+fieldset
+{
+  background: none;
+  }

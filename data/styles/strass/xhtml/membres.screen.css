@@ -1,0 +1,24 @@
+#cotisation, #envoi
+{
+  display: none;
+  }
+
+#control-valider-message *
+{
+  clear: both;
+  width: 100%;
+  }
+
+*[for=valider-verdict-accepter]
+{
+  font-weight: bold;
+  font-size: 150%;
+  color: #7D1;
+  }
+
+*[for=valider-verdict-refuser]
+{
+  font-weight: bold;
+  font-size: 150%;
+  color: #E51;
+  }

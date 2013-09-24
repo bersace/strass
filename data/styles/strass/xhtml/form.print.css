@@ -1,0 +1,85 @@
+legend
+{
+  margin-left: 5%;
+  font-size: 1.2em;
+  background: white;
+  /* background: #E4E4E4; */
+  /* border: inherit; */
+  }
+
+fieldset
+{
+  background: none;
+  border: 1px solid black;
+  }
+
+form p.warn,
+form p.info,
+#document form .control
+{
+  color: black;
+  }
+
+form textarea,
+form select,
+form option,
+form button,
+form input[type=text]
+{
+  border: none;
+  border-bottom: 1px dotted black;
+  background: url("img/transparent-gris.png");
+  font-size: 1.1em;
+  }
+
+form textarea
+{
+  border: none;
+  background-image: url("img/pointille.png");
+  background-position: top left;
+  background-repeat: repeat-all;
+  }
+
+form .select input
+{
+  border: none;
+  background: none;
+  }
+
+button,
+input[type=button]
+{
+  display: none;
+  }
+
+div.required > label:before
+{
+  content: "";
+  display: none;
+  }
+
+div.control > label
+{
+  font-weight: bold;
+  width: 13em;
+  }
+
+input[type=checkbox],
+input[type=radio]
+{
+  display: none !important;
+  }
+
+.select span label
+{
+  background-image: url("img/radio.png");
+  background-position: left center;
+  background-repeat: no-repeat;
+  padding: 0 1ex 0 16px;
+  }
+
+.select.multiple span label
+{
+  background-image: url("img/checkbox.png");
+  }
+

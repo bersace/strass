@@ -1,0 +1,41 @@
+li.vignette
+{
+  list-style: none;
+  }
+
+.vignette
+{
+  text-align: center;
+  display: inline-block;
+  margin: 1ex;
+  }
+
+.vignette p
+{
+  margin: 0;
+  font-size: .9em;
+  text-align: center;
+  clear: both;
+  width: 100%;
+  height: 2em;
+  }
+
+.vignette a
+{
+  display: block;
+  text-align: center;
+  }
+
+.vignette a,
+.vignette a:hover
+{
+  text-decoration: none;
+  border: none;
+  }
+.vignette img
+{
+  margin: 0;
+  padding: .5ex;
+  clear: both;
+  }
+

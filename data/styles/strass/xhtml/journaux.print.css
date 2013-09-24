@@ -1,0 +1,5 @@
+.journaux.consulter h2,
+.journaux.consulter h2 + p
+{
+  display: none;
+  }

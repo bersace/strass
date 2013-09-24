@@ -1,0 +1,59 @@
+body, #document,
+#content, #content > .section
+{
+  margin: 0;
+  padding: 0;
+  width: 100%:
+  }
+
+/* en-tête */
+#footer .author,
+#footer .organization,
+h1
+{
+  display: block;
+  position: absolute;
+  left: 10%;
+  width: 80%;
+  }
+
+#footer .author
+{
+  top: 0em;
+  }
+
+#footer .organization
+{
+  top: 1.60em;
+  }
+
+h1
+{
+  top: 4em;
+  }
+
+
+#document #content
+{
+  margin: 10em 0 0;
+  }
+
+/* LOGO */
+#footer .logo
+{
+  display: block !important;
+  height: 96px;
+  width: auto;
+  position: absolute;
+  top: 0;
+  left: 0;
+  }
+
+/* à masquer */
+#webaddons,
+#footer .copyright,
+#footer .metas .date,
+#branche
+{
+  display: none;
+  }
