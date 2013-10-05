@@ -1,0 +1,63 @@
+
+body
+{
+  padding: 0 5%;
+  margin: 0;
+  width: 90%;
+  }
+
+#content
+{
+  float: right;
+  margin-left: -20em;
+  min-height: 512px;
+  width: inherit;
+  }
+
+#content > *
+{
+  padding-left: 20em;
+  width: auto;
+  }
+
+#webaddons
+{
+  float: left;
+  width: 16em;
+  margin: 0 0 1em;
+  padding: 0 0 4em 1ex;
+  }
+
+#webaddons label
+{
+  font-size: .9em;
+  }
+
+#webaddons input.entry,
+#webaddons input.password
+{
+  width: 6em;
+  }
+
+#branche
+{
+  position: absolute !important;
+  right: 7%;
+  top: 192px;
+  min-width: 60% !important;
+  }
+
+#footer
+{
+  float: left;
+  clear: both;
+  }
+
+#footer .metas
+{
+  display: none;
+  }
+
+body > .firebug {
+    display: none !important;
+}
