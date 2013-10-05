@@ -447,7 +447,7 @@ class ActivitesController extends Strass_Controller_Action
 			$us = $a->findUnitesViaParticipations();
 			$is = array();
 			foreach($us as $u) {
-				$as = $u->getApps($annee == $this->_helper->Annee() ? null : $annee);
+				$as = $u->getApps($annee);
 				foreach($as as $app) {
 					$i = $app->findParentIndividus();
 					if ($i->adelec)
@@ -757,12 +757,12 @@ class ActivitesController extends Strass_Controller_Action
 							$doc->delete();
 					}
 					// destruction de l'activité.
-					$unites = $a->getUnitesParticipantesExplicites();
+					$unite = $a->getUnitesParticipantesExplicites()->current();
 					$intitule = (string) $a;
 					$a->delete();
 					$this->_helper->Log("Activité annulé", array(),
 							    $this->_helper->url->Url(array('action' => 'calendrier',
-											   'unite' => $unites[0]->id)),
+											   'unite' => $unite->id)),
 							    $intitule);
 							    
 					$db->commit();

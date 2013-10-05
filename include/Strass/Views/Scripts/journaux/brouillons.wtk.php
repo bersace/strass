@@ -5,4 +5,4 @@ $s = $this->content->addSection('brouillons',
 $s->addFlags($this->journal->id);
 $s->addChild(new Wtk_Pages(null,
 			   new Wtk_Pages_Model_Iterator($this->brouillons, 15, $this->current),
-			   new Scout_Page_RendererArticle($this, $s)));
+			   new Strass_Page_RendererArticle($this, $s)));

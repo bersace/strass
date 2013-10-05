@@ -49,7 +49,8 @@ class Unites extends Knema_Db_Table_Abstract
 	 */
 	function find($ids)
 	{
-		$select = $this->select()
+		$db = $this->getAdapter();
+		$select = $db->select()
 			->from('unites')
 			->where('unites.id = "'.
 				implode('" OR unites.id = "', (array) $ids).'"');
@@ -136,7 +137,7 @@ class Unite extends Strass_Db_Table_Row_Abstract implements Zend_Acl_Resource_In
 		switch($this->type) {
 		case 'hp':
 		case 'aines':
-			// TODO : gérer ça comme les autres unités ?
+			// TODO : gérer ça proprement ?
 			$acl->addRole(new Zend_Acl_Role($this->getRoleRoleId('chef')));
 			$acl->addRole(new Zend_Acl_Role($this->getRoleRoleId('assistant')));
 			break;

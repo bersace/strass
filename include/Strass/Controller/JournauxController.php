@@ -338,8 +338,8 @@ class JournauxController extends Strass_Controller_Action
 					$s->addText($data['boulet']);
 					$s->addText($data['article']);
 					$l = $d->addList();
-					$l->addItem()->addLink($this->_helper->Url(array('action' => 'editer',
-											 'article' => $data['id'])),
+					$l->addItem()->addLink($this->_helper->Url('editer', 'journaux',
+										   array('article' => $data['id'])),
 							       "Éditer ou publier cet article");
 					$mail->send();
 				}
@@ -418,13 +418,14 @@ class JournauxController extends Strass_Controller_Action
 		$m->addConstraintRequired($i);
 
 		if ($super) {
-			// auteur
+			// membres de l'unité
 			$u = $j->findParentUnites();
 			$apps = $u->getApps(null, true);
 			$enum = array();
 			foreach($apps as $app)
-				$enum[$app->individu] = $app->findParentIndividus()->getFullname();
+				$enum[$app->individu] = $app->findParentIndividus()->getFullname(true, false);
 
+			// admins
 			$select = Zend_Registry::get('db')->select();
 			$select->distinct()
 				->from('individus')
@@ -436,7 +437,7 @@ class JournauxController extends Strass_Controller_Action
 			$ti = new Individus();
 			$is = $ti->fetchSelect($select);
 			foreach($is as $i)
-				$enum[$i->id] = $i->getFullname();
+				$enum[$i->id] = $i->getFullname(true, false);
 			ksort($enum);
 			$m->addEnum('auteur', 'Auteur', $a->auteur, $enum);
 		}

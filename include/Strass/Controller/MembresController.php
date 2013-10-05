@@ -121,7 +121,7 @@ class MembresController extends Strass_Controller_Action implements Zend_Acl_Res
 
 		$i = $gg->addString('adelec', "Adresse électronique");
 		$m->addConstraintMatch($i,
-				       '/^[[:alnum:]\.-_]{3,}@[[:alnum:]\._-]{3,}\.[[:alnum:]]{2,6}$/');
+				       '/^[[:alnum:]\._+-]{3,}@[[:alnum:]\._-]{3,}\.[[:alnum:]]{2,6}$/');
 		$m->addConstraintRequired($i);
 
 		// PROGRESSION

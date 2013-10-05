@@ -51,7 +51,7 @@ class PhotosController extends Strass_Controller_Action
 
 		$this->actions->append("Envoyer une photo",
 				       array('action' => 'envoyer',
-					     'annee' => $annee));
+					     'annee' => null));
 
 		$this->formats('atom','rss');
 	}
@@ -153,6 +153,9 @@ class PhotosController extends Strass_Controller_Action
 				$activite = $ta->find($data['activite'])->current();
 				// id
 				$data['id'] = wtk_strtoid($data['titre']);
+				if (!$data['id']) {
+					throw new Exception("Le titre n'est pas suffisant");
+				}
 
 				$action = $data['envoyer'] ? 'envoyer' : 'consulter';
 				unset($data['envoyer']);

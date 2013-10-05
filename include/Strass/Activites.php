@@ -185,7 +185,7 @@ class Activite extends Strass_Db_Table_Row_Abstract implements Zend_Acl_Resource
 		// on commence toujours par le type d'activité.
 		// les camp des routier s'appellent des "routes" (uniquement FSE ?)
 		$first = $explicites instanceof Countable ? $explicites->current() : $explicites;
-		if ($type == 'camp' && $first->type == 'clan') {
+		if ($type == 'camp' && ($first->type == 'clan' || $first->type == 'eqcclan')) {
 			$i = 'Route';
 			// été/noël/hiver ?
 			switch(strftime('%m', $dt)) {
