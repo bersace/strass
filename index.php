@@ -65,8 +65,9 @@ catch (Exception $e) {
 	Orror::kill(strip_tags($msg));
 }
 
-$site = new Knema_Config_Php('knema/site');
-if ($site->sauvegarder) {
+
+$conf = new Knema_Config_Php('knema');
+if ($conf->site->sauvegarder) {
 
 	// sauvegarde des modifications récente de la BD.
 	clearstatcache();

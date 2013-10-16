@@ -7,9 +7,9 @@ class Knema_Controller_Action_Helper_Db extends Zend_Controller_Action_Helper_Ab
   public function init()
   {
     $options = array();
-    $config = new Knema_Config_Php('knema/site');
+    $config = new Knema_Config_Php('strass');
     $this->db = Zend_Db::factory('Pdo_SQLite',
-				 array ('dbname'	=> 'data/db/'.$config->id.'.sqlite',
+				 array ('dbname'	=> 'data/db/'.$config->db->id.'.sqlite',
 					'options'	=> $options));
 
     Zend_Db_Table_Abstract::setDefaultAdapter($this->db);

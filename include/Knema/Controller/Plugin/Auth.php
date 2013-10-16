@@ -16,9 +16,9 @@ class Knema_Controller_Plugin_Auth extends Zend_Controller_Plugin_Abstract
 		$acl = new Zend_Acl;
 		Zend_Registry::set('acl', $acl);
 
-		$config = new Knema_Config_Php('knema/site');
+		$config = new Knema_Config_Php('strass');
 		try {
-			$lifetime = $config->duree_connexion;
+			$lifetime = $config->site->duree_connexion;
 			Zend_Session::rememberMe($lifetime);
 			Zend_Session::setOptions(array('cookie_path'	=> '/',
 						       'cookie_lifetime'=> $lifetime,
@@ -50,12 +50,12 @@ class Knema_Controller_Plugin_Auth extends Zend_Controller_Plugin_Abstract
 		$this->db = new Zend_Auth_Adapter_DbTable($db, 'users', 'username', 'password');
 
 		// HTTP_AUTH
-		$config = new Knema_Config_Php('knema/site');
+		$config = new Knema_Config_Php('strass');
 		// Gestion du safe_mode avec realm modifié.
 		$config = array('accept_schemes' => 'digest',
-				'realm'	     => $config->realm,
+				'realm'	     => $config->site->realm,
 				'digest_domains' => '/',
-				'nonce_timeout'  => $config->duree_connexion);
+				'nonce_timeout'  => $config->site->duree_connexion);
 
 		$this->http = new Zend_Auth_Adapter_Http($config);
     

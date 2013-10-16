@@ -143,14 +143,14 @@ class JournauxController extends Strass_Controller_Action
 							 'date DESC');
 		$this->view->current = $p;
 
-		$config = new Knema_Config_Php('strass/index');
+		$config = new Knema_Config_Php('strass');
 
 		// ÉDITORIAL
 		$articles = new Articles();
 		$db = $articles->getAdapter();
 		$where = array('public IS NOT NULL');
 
-		$where['rubrique = ?'] = $config->rubrique;
+		$where['rubrique = ?'] = $config->site->rubrique;
 		$where['id = ?'] = $j->id;
 
 		$s = $articles->select()->order('date DESC');

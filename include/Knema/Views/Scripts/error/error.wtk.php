@@ -13,9 +13,9 @@ foreach ($this->errors as $i => $error) {
 
 	if ($error instanceof Knema_Controller_Action_Exception_Forbidden) {
 		if (Zend_Registry::get('individu')) {
-			$config = new Knema_Config_Php('knema/site');
+			$config = new Knema_Config_Php('strass');
 			$section->addText("Si vous devriez avoir accès au site, ".
-					  "[mailto:".$config->admin." contactez le webmestre].");
+					  "[mailto:".$config->site->admin." contactez le webmestre].");
 		}
 		else {
 			$section->addParagraph("Si vous êtes inscrit, identifiez-vous. Sinon, ",

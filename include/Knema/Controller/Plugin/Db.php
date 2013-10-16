@@ -5,9 +5,9 @@ class Knema_Controller_Plugin_Db extends Zend_Controller_Plugin_Abstract
 	public function routeStartup()
 	{
 		$options = array();
-		$config = new Knema_Config_Php('knema/db');
-		$db = Zend_Db::factory($config->adapter,
-				       $config->config);
+		$config = new Knema_Config_Php('strass');
+		$db = Zend_Db::factory($config->db->adapter,
+				       $config->db->config);
 
 		Zend_Db_Table_Abstract::setDefaultAdapter($db);
 		$cache = Zend_Cache::factory('Core', 'File',

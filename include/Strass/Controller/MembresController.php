@@ -37,14 +37,14 @@ class MembresController extends Strass_Controller_Action implements Zend_Acl_Res
 		$this->view->model = $m = new Wtk_Form_Model('fiche');
 		$c = 'data/statiques/strass/inscription/cotisation.wiki';
 		$m->addString('cotisation', "Cotisation", is_readable($c) ? file_get_contents($c) : '');
-		$conf = $this->_helper->Config('strass/inscription');
-		$m->addBool('scoutisme', "Demander l'historique du scoutisme de la personne dans le groupe ?", $conf->scoutisme);
+		$conf = $this->_helper->Config('strass');
+		$m->addBool('scoutisme', "Demander l'historique du scoutisme de la personne dans le groupe ?", $conf->inscription->scoutisme);
 		$m->addNewSubmission('valider', 'Valider');
 
 		if ($m->validate()) {
 			file_put_contents($c, $m->cotisation);
 			file_put_contents($e, $m->envoi);
-			$conf->scoutisme = $m->scoutisme;
+			$conf->inscription->scoutisme = $m->scoutisme;
 			$conf->write();
 
 			$this->_helper->Log("Formulaire d'inscription édité", array(),
@@ -59,7 +59,7 @@ class MembresController extends Strass_Controller_Action implements Zend_Acl_Res
 	{
 		$this->metas(array('DC.Title' => "Fiche d'inscription",
 				   'DC.Subject' => 'livre,or'));
-		$conf = $this->_helper->Config('strass/inscription');
+		$conf = $this->_helper->Config('strass')->inscription;
 
 		$m = new Wtk_Form_Model('inscription');
 		$m->addNewSubmission('inscrire', 'Inscrire');
@@ -195,7 +195,7 @@ class MembresController extends Strass_Controller_Action implements Zend_Acl_Res
 			$db->beginTransaction();
 			try {
 				$data = $m->get();
-				$config = $this->_helper->Config('knema/site');
+				$config = $this->_helper->Config('strass')->site;
 				$realm = (string) $config->realm;
 				$data = array('username' => trim($data['compte']['identifiant']),
 					      'password' => md5($data['compte']['code']),
@@ -498,7 +498,7 @@ class MembresController extends Strass_Controller_Action implements Zend_Acl_Res
 						("Le mot de passe de confirmation n'est pas identique au nouveau proposé");
 				}
 
-				$config = $this->_helper->Config('knema/site');
+				$config = $this->_helper->Config('strass')->site;
 				$realm = (string) $config->realm;
 				$u->setPassword($mdp['nouveau'], $realm);
 				$u->save();

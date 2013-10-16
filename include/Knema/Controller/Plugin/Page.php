@@ -4,8 +4,8 @@ class Knema_Controller_Plugin_Page extends Zend_Controller_Plugin_Abstract
 {
 	function preDispatch()
 	{
-		$site = new Knema_Config_Php('knema/site');
-		Zend_Registry::set('site', $site);
+		$config = new Knema_Config_Php('strass');
+		Zend_Registry::set('site', $config->site);
 		$metas = $site->metas;
 		$this->page = new Knema_Page(new Wtk_Metas(array('DC.Title'		=> $metas->title,
 								 'DC.Title.alternative'	=> $metas->title,

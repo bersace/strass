@@ -14,8 +14,8 @@ class Knema_Page implements Iterator, Countable
 	{
 		$this->metas = $metas;
 
-		$config = new Knema_Config_Php('knema/menu');
-		$this->menu = $config->toArray();
+		$config = new Knema_Config_Php('strass');
+		$this->menu = $config->menu->toArray();
 		$this->addons = array();
 	}
 
