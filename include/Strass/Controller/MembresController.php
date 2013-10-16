@@ -35,7 +35,7 @@ class MembresController extends Strass_Controller_Action implements Zend_Acl_Res
 				   'DC.Subject' => 'livre,or'));
 
 		$this->view->model = $m = new Wtk_Form_Model('fiche');
-		$c = 'data/statiques/strass/inscription/cotisation.wiki';
+		$c = 'private/statiques/strass/inscription/cotisation.wiki';
 		$m->addString('cotisation', "Cotisation", is_readable($c) ? file_get_contents($c) : '');
 		$conf = $this->_helper->Config('strass');
 		$m->addBool('scoutisme', "Demander l'historique du scoutisme de la personne dans le groupe ?", $conf->inscription->scoutisme);
@@ -180,7 +180,7 @@ class MembresController extends Strass_Controller_Action implements Zend_Acl_Res
 
 		$this->view->model = new Wtk_Pages_Model_Form($m);
 
-		$this->view->cotisation = file_get_contents('data/statiques/strass/inscription/cotisation.wiki');
+		$this->view->cotisation = file_get_contents('private/statiques/strass/inscription/cotisation.wiki');
 		$racine = $this->_helper->UniteRacine();
 		$app = $racine->findAppartenances("role = 'chef' AND fin IS NULL")->current();
 		$chef = $app->findParentIndividus();
@@ -194,38 +194,38 @@ class MembresController extends Strass_Controller_Action implements Zend_Acl_Res
 			$db = $t->getAdapter();
 			$db->beginTransaction();
 			try {
-				$data = $m->get();
+				$private = $m->get();
 				$config = $this->_helper->Config('strass')->site;
 				$realm = (string) $config->realm;
-				$data = array('username' => trim($data['compte']['identifiant']),
-					      'password' => md5($data['compte']['code']),
-					      'ha1' => Users::ha1(trim($data['compte']['identifiant']),
+				$private = array('username' => trim($private['compte']['identifiant']),
+					      'password' => md5($private['compte']['code']),
+					      'ha1' => Users::ha1(trim($private['compte']['identifiant']),
 								  $realm,
-								  $data['compte']['code']),
-					      'message' => $data['moderation']['message']."\n");
+								  $private['compte']['code']),
+					      'message' => $private['moderation']['message']."\n");
 
-				$data['scoutisme'] = '';
-				$data+= $m->get('fiche/etat-civil');
-				$data+= $m->get('fiche/contact');
-				$data+= $m->get('fiche/progression');
-				$data['progression'] = var_export($data['progression'], true);
-				$data['formation'] = var_export($data['formation'], true);
+				$private['scoutisme'] = '';
+				$private+= $m->get('fiche/etat-civil');
+				$private+= $m->get('fiche/contact');
+				$private+= $m->get('fiche/progression');
+				$private['progression'] = var_export($private['progression'], true);
+				$private['formation'] = var_export($private['formation'], true);
 				if ($conf->scoutisme) {
 					foreach($m->get('moderation/participations') as $row) {
 						if ($row['poste'] && $row['unite']) {
-							$data['scoutisme'].=
+							$private['scoutisme'].=
 								"|| ".$row['unite']." || ".$row['poste']." || ".
 								$row['debut']." || ".$row['fin']."||\n";
 						}
 					}
 				}
-				$t->insert($data);
-				$this->sendInscriptionMail($data, $conf->scoutisme ? $m->get('moderation/participations') : null);
+				$t->insert($private);
+				$this->sendInscriptionMail($private, $conf->scoutisme ? $m->get('moderation/participations') : null);
 				$this->_helper->Log("Nouvelle inscription",
-						    array('identifiant' => trim($data['username']),
-							  'prenom' => $data['prenom'],
-							  'nom' => $data['nom'],
-							  'adelec' => $data['adelec']),
+						    array('identifiant' => trim($private['username']),
+							  'prenom' => $private['prenom'],
+							  'nom' => $private['nom'],
+							  'adelec' => $private['adelec']),
 						    $this->_helper->Url('inscriptions', 'membres'), "Inscriptions");
 				$db->commit();
 				//$this->redirectSimple('index', 'index');
@@ -328,22 +328,22 @@ class MembresController extends Strass_Controller_Action implements Zend_Acl_Res
 						$ind->portable = $this->_helper->Telephone($ind->portable);
 
 						$ind->save();
-						$data = $ind->toArray();
+						$private = $ind->toArray();
 					}
 					else {
 						// créer une nouvelle fiche.
-						$data = array('username' => $k,
+						$private = array('username' => $k,
 							      'id' => $id,
 							      'nom' => $m->nom,
 							      'prenom' => $m->prenom,
 							      'sexe' => $ins->sexe);
 
 						foreach($keys as $k)
-							$data[$k] = $ins->$k;
-						$data['fixe'] = $this->_helper->Telephone($ins->fixe);
-						$data['portable'] = $this->_helper->Telephone($ins->portable);
+							$private[$k] = $ins->$k;
+						$private['fixe'] = $this->_helper->Telephone($ins->fixe);
+						$private['portable'] = $this->_helper->Telephone($ins->portable);
 
-						$key = $tind->insert($data);
+						$key = $tind->insert($private);
 						$ind = $tind->find($key)->current();
 					}
 
@@ -353,8 +353,8 @@ class MembresController extends Strass_Controller_Action implements Zend_Acl_Res
 					foreach($progression as $etape) {
 						try {
 							// il arrive qu'une étape ai déjà été enregistrée !
-							$tp->insert(array('individu' => $data['id'],
-									  'sexe' => $data['sexe'], // à l'arrache !
+							$tp->insert(array('individu' => $private['id'],
+									  'sexe' => $private['sexe'], // à l'arrache !
 									  'etape' => $etape));
 						}catch(Exception $e) {}
 					}
@@ -369,7 +369,7 @@ class MembresController extends Strass_Controller_Action implements Zend_Acl_Res
 						$d = $td->fetchSelect($s);
 						try {
 							// Il arrive que la formation ai déjà été enregistrée.
-							$tf->insert(array('individu' => $data['id'],
+							$tf->insert(array('individu' => $private['id'],
 									  'diplome' => $diplome,
 									  'branche' => (string)$d->branche)); // branche ???
 						} catch(Exception $e) {}
@@ -384,7 +384,7 @@ class MembresController extends Strass_Controller_Action implements Zend_Acl_Res
 					// ne parler de la cotisation
 					// qu'au nouveau membre sans
 					// préinscription
-					$this->sendValidationMail($data, $m->message, !$ind);
+					$this->sendValidationMail($private, $m->message, !$ind);
 				}
 				catch(Exception $e) {
 					$db->rollBack();
@@ -406,14 +406,14 @@ class MembresController extends Strass_Controller_Action implements Zend_Acl_Res
 			if ($m->verdict == 'refuser' || !$m->get('unite'))
 				// pour valider les autres
 				$this->redirectSimple('valider', 'membres', null,
-						      array('precedent' => $data['id'],
+						      array('precedent' => $private['id'],
 							    'verdict' => $m->verdict),
 						      true);
 			else
 				// Pour inscrire le nouvel inscrit dans une unité
 				$this->redirectSimple('nouveau', 'inscription', null,
 						      array('unite' => $m->get('unite'),
-							    'individu' => $data['id']),
+							    'individu' => $private['id']),
 						      true);
 		}
 
@@ -695,7 +695,7 @@ class MembresController extends Strass_Controller_Action implements Zend_Acl_Res
 
 		if ($cotisation) {
 			$cotisation = "Votre inscription sera validé à la réception de votre côtisation.\n\n".
-				file_get_contents('data/statiques/strass/inscription/cotisation.wiki');
+				file_get_contents('private/statiques/strass/inscription/cotisation.wiki');
 			$racine = $this->_helper->UniteRacine();
 			$app = $racine->findAppartenances("role = 'chef' AND fin IS NULL")->current();
 			$chef = $app->findParentIndividus();
