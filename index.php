@@ -1,7 +1,4 @@
 <?php /*-*- php -*-*/
-// function mc() {}
-// function sql() {}
-
 umask(0022);
 date_default_timezone_set('Europe/Paris'); // config/knema/site ?
 
