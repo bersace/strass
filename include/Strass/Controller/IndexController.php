@@ -24,35 +24,13 @@ class IndexController extends Strass_Controller_Action implements Zend_Acl_Resou
 
 	public function indexAction()
 	{
-		$config = new Knema_Config_Php('strass/index');
-		$this->view->bienvenue = file_get_contents('data/intro.wiki');
-		$this->metas(array('DC.Title' => 'Accueil'));
-
-		$articles = new Articles();
-		$db = $articles->getAdapter();
-
 		$unites = new Unites();
-		// on chope les unités parentes.
-		$this->view->unites = $unites->getOuvertes("unites.parent IS NULL");
-		// connexes
-		$this->connexes->append("Unités fermées",
-					array('controller' => 'unites',
-					      'action' => 'fermees'));
-		$this->connexes->append("Toutes les citations",
-					array('controller' => 'citation'));
-		$this->connexes->append("Nouveaux",
-					array('controller' => 'unites',
-					      'action' => 'nouveaux'));
-		$this->connexes->append("Anciens",
-					array('controller' => 'unites',
-					      'action' => 'anciens'));
-		// actions
-		$this->actions->append("Éditer l'introduction",
-				       array('action' => 'editer'),
-				       array(null, $this));
-		$this->actions->append("Fonder une unité",
-				       array('controller' => 'unites',
-					     'action' => 'fonder'));
+		$unite = $unites->getOuvertes("unites.parent IS NULL")->current();
+		if ($unite) {
+		  $this->redirectSimple('accueil', 'unites', null, array('unite' => $unite->id));
+		} else {
+		  Orror::kill("Pas d'unités");
+		}
 	}
 
 	function editerAction()
