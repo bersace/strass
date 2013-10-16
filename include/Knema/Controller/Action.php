@@ -32,7 +32,7 @@ abstract class Knema_Controller_Action extends Zend_Controller_Action
 		$config = Zend_Registry::get('site');
 
 		// lister les formats disponibles
-		$formats = $this->_helper->Config('knema/formats');
+		$formats = require('include/Knema/formats.php');
 		foreach($formats as $format)
 			if ($f = Knema_Format::factory($format))
 				$this->_availableFormats[$f->suffix] = $f;
