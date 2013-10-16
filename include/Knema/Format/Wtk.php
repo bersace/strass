@@ -17,7 +17,7 @@ abstract class Knema_Format_Wtk extends Knema_Format
 		$document = new Wtk_Document($view->page->metas);
 		$document->addFlags($mn, $cn, $an);
 		$site = Zend_Registry::get('site');
-		$document->setStyle(new Wtk_Document_Style($site->style));
+		$document->setStyle(new Wtk_Document_Style($site->style, 'data/styles/'));
 		$document->addStyleComponents('layout', $cn, $an, $mn);
 		$content = $document->addSection('content');
 

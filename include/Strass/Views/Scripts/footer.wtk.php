@@ -14,5 +14,5 @@ $p->addSpan($this->page->metas->get('DC.Creator'))->addFlags('author');
 $p->addSpan($this->page->metas->organization)->addFlags('organization');
 $p->addSpan(strftime('%d-%m-%Y', strtotime($this->page->metas->get('DC.Date.available'))))->addFlags('date');
 
-if (is_readable($logo = "resources/styles/".$this->document->default_style->id."/logo.png"))
+if (is_readable($logo = "data/styles/".$this->document->default_style->id."/logo.png"))
 	$f->addImage($logo, "logo", "Logo")->addFlags('logo');
