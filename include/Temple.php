@@ -54,7 +54,7 @@ class Temple implements Iterator, Countable
 		// Configuration par défaut.
 		$default = array();
 		$default['format']		= 'xhtml';
-		$default['template_dir']	= 'resources/templates';
+		$default['template_dir']	= 'include/templates';
 
 		$this->conf = array_merge($default, $conf);
 
