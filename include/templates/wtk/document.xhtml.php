@@ -78,7 +78,7 @@ else {
 <script language="javascript" type="text/javascript">
 	 var djConfig = {isDebug:<?php echo $dojodbg; ?>,allowFirebugLite:false,parseOnLoad:true,locale:"fr"};
 </script>
-<script language="javascript" type="text/javascript" src="resources/scripts/dojo/dojo.js"></script>
+<script language="javascript" type="text/javascript" src="data/scripts/dojo/dojo.js"></script>
 <script language="javascript" type="text/javascript">
 <?php foreach($dojoTypes as $type): ?>
 	 dojo.require("<?php echo $type;?>");

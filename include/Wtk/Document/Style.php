@@ -6,7 +6,7 @@ class Wtk_Document_Style {
 	protected $basedir;
 	protected $mail;
 
-	function __construct($id = 'default', $basedir = 'resources/styles') {
+	function __construct($id = 'default', $basedir = 'data/styles') {
 		$this->id = $id;
 		$this->basedir = $basedir;
 		$this->metas = include $basedir.'/'.$id.'/metas.php';

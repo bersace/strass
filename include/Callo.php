@@ -62,7 +62,7 @@ class Callo
    * Défini un domain de traduction gettext sans perdre le
    * précédent.
    */
-  static function start($domain, $locale = null, $dir = 'resources/locale')
+  static function start($domain, $locale = null, $dir = 'data/locale')
   {
     // définition de la locale
     $locale = $locale === null || !Zend_Locale::isLocale($locale) ? new Zend_Locale() : $locale;

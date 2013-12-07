@@ -32,7 +32,7 @@ abstract class Wtk_Render_ODF extends Wtk_Render
 		$style = $this->document->getStyle();
 
 		foreach($comps as $comp) {
-			$file = 'resources/styles/'.$style->id.'/'.$this->template.'/'.$comp.'.php';
+			$file = 'data/styles/'.$style->id.'/'.$this->template.'/'.$comp.'.php';
 			$this->style($file, $this->doc);
 		}
 
