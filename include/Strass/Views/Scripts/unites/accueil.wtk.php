@@ -18,13 +18,13 @@ class Strass_Views_PagesRenderer_Unites_Accueil extends Strass_Views_PagesRender
 	  $photo = $photos->findPhotoAleatoireUnite($unite->findParentUnites());
 	if ($photo)
 	  $image = new Wtk_Image($photo->getCheminVignette(),
-				 $photo->titre.' '.$this->_view->page->metas->get('DC.Subject'),
+				 $photo->titre.' '.$this->view->page->metas->get('DC.Subject'),
 				 $photo->titre);
 	else
 	  $image = new Wtk_Paragraph("Pas d'image !");
       }
 
-      $url = $this->_view->url(array('unite' => $unite->id));
+      $url = $this->view->url(array('unite' => $unite->id));
       $link = new Wtk_Link($url, $label,
 			   new Wtk_Container($image, new Wtk_Paragraph($label)));
       $link->addFlags($unite->type);
@@ -48,7 +48,7 @@ class Strass_Views_PagesRenderer_Unites_Accueil extends Strass_Views_PagesRender
 
     // Section les unités
     if ($sousunites) {
-      $this->_view->document->addStyleComponents('vignette');
+      $this->view->document->addStyleComponents('vignette');
       $ss = $s->addSection('unites', 'Les '.$unite->getSousTypeName(true));
       $l = $ss->addList();
       $this->renderUnites($l, $sousunites, $annee);
@@ -60,5 +60,4 @@ class Strass_Views_PagesRenderer_Unites_Accueil extends Strass_Views_PagesRender
 $this->document->addStyleComponents('accueil', 'effectifs');
 $s = $this->content->addSection("accueil", wtk_ucfirst($this->unite->getName())." ".$this->unite->extra);
 $s->addPages(null, $this->model,
-	     new Strass_Views_PagesRenderer_Unites_Accueil($this,
-							   $this->unite->getAnneesOuverte(), $this->annee));
+	     new Strass_Views_PagesRenderer_Unites_Accueil($this));

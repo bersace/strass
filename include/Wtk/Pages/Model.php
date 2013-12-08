@@ -2,10 +2,10 @@
 
 abstract class Wtk_Pages_Model implements Iterator
 {
-	protected	$data;
+  public $data;
 	protected	$pages_id;
 	protected	$item_per_page = 15;
-	protected	$current;
+  public $current;
 
 	function __construct($data, $item_per_page, $current)
 	{

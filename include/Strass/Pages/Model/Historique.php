@@ -2,7 +2,7 @@
 
 abstract class Strass_Pages_Model_Historique extends Wtk_Pages_Model_Assoc
 {
-  protected $unite;
+  public $unite;
 
   function __construct(Unite $unite, $annee)
   {

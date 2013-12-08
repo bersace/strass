@@ -1,7 +1,5 @@
 <?php
 
-$s = $this->content->addFlags($this->unite->type);
-
 class Strass_Views_PagesRenderer_Unites_Contacts extends Strass_Views_PagesRenderer_Historique {
   function render($annee, $data, $s) {
     extract($data);
@@ -19,8 +17,8 @@ class Strass_Views_PagesRenderer_Unites_Contacts extends Strass_Views_PagesRende
     }
   
     if ($apps->count()) {
-      $t = $sss->addChild($this->_view->tableEffectifs($this->_view->appsTableModel($apps),
-						       $this->_view->profils, 'contacts'));
+      $t = $sss->addChild($this->view->tableEffectifs($this->view->appsTableModel($apps),
+						       $this->view->profils, 'contacts'));
       $t->addFlags($unite->type);
     }
 
@@ -28,9 +26,9 @@ class Strass_Views_PagesRenderer_Unites_Contacts extends Strass_Views_PagesRende
       $apps = $sousapps[$unite->id];
       if ($apps instanceof Iterator) {
 	$sss = $ss->addSection($unite->id,
-			       $this->_view->lienUnite($unite, null, null, false));
-	$t = $sss->addChild($this->_view->tableEffectifs($this->_view->appsTableModel($apps),
-							 $this->_view->profils, 'contacts'));
+			       $this->view->lienUnite($unite, null, null, false));
+	$t = $sss->addChild($this->view->tableEffectifs($this->view->appsTableModel($apps),
+							 $this->view->profils, 'contacts'));
 	$t->addFlags($unite->type);
 	$t->show_header = false;
       }
@@ -38,6 +36,6 @@ class Strass_Views_PagesRenderer_Unites_Contacts extends Strass_Views_PagesRende
   }
 }
 
+$s = $this->content->addFlags($this->unite->type);
 $s->addPages(null, $this->model,
-	     new Strass_Views_PagesRenderer_Unites_Contacts($this, $this->unite->getAnneesOuverte(),
-							    $this->annee));
+	     new Strass_Views_PagesRenderer_Unites_Contacts($this));

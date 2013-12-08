@@ -1,14 +1,10 @@
 <?php
 
-abstract class Strass_Views_PagesRenderer_Historique extends Wtk_Pages_Renderer {
-
-  protected $_view;
-
-  function __construct($view, $annees, $annee)
+abstract class Strass_Views_PagesRenderer_Historique extends Wtk_Pages_Renderer
+{
+  function __construct($view)
   {
-    $this->_view = $view;
-    $this->_annees = $annees;
-    $this->_annee = $annee;
+    $this->view = $view;
     parent::__construct($view->url(array('unite' => $view->unite->id,
 					 'annee' => '%i')),
 			true, null);
@@ -21,11 +17,10 @@ abstract class Strass_Views_PagesRenderer_Historique extends Wtk_Pages_Renderer 
     if ($count == 1)
       return;
 
-    $this->model = $model;
     $ss = $pages->addSection('historique', "Historique");
     $pre = -1;
-    foreach($this->_annees as $annee => $chef) {
-      switch($this->_view->unite->type) {
+    foreach($model->data as $annee => $chef) {
+      switch($model->unite->type) {
       case 'groupe':
 	$intitule = $chef ? $chef->nom : null;
 	break;
@@ -51,9 +46,9 @@ abstract class Strass_Views_PagesRenderer_Historique extends Wtk_Pages_Renderer 
 	$sss->setTitle($intitule ? "Les années ".$intitule : null);
       }
       $etiq = $annee."-".($annee+1);
-      $i = $l->addItem($this->_view->lien(array('annee' => $annee),
+      $i = $l->addItem($this->view->lien(array('annee' => $annee),
 				   $etiq));
-      if ($annee == $this->_annee) {
+      if ($annee == $model->current) {
 	$i->addFlags('selectionnee');
       }
     }
