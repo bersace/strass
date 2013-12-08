@@ -1,5 +1,5 @@
 /* MISE EN PAGE FLEXIBLE de la page d'accueil d'unité : #prochacts et
-#sousunites peuvent ne pas exister. */
+#unites peuvent ne pas exister. */
 
 #presentation {
     float: left;
@@ -9,39 +9,33 @@
     padding: 0;
 }
 
-#accueil #effectifs,
-#accueil #sousunites,
-#accueil #prochacts,
-#accueil #rapports,
-#accueil #photos
+.suite
 {
-  width: 48%;
-  padding: 0 1%;
+  text-align: right;
+  }
+
+.vignette
+{
+  float: none;
+  display: inline-block;
+  }
+
+#unites ul
+{
+  display: block;
+  padding: 0;
   margin: 0;
-  float: left;
   }
 
-#accueil #sousunites + *
+#unites li
 {
-  clear: left;
+  display: inline-block;
   }
 
-#accueil #effectifs + #prochacts + #rapports
+#unites li > a
 {
-  clear: left;
-  }
-
-#accueil #photos
-{
-  width: 98%;
-  }
-
-#accueil #rapports
-{
-  width: 38%;
-  }
-#accueil #sousunites + #rapports + #photos,
-#accueil #effectifs + #prochacts + #rapports + #photos
-{
-  width: 58%;
+  display: inline-block;
+  margin: 0 1em;
+  text-align: center;
+  height: 18em; /* gruik pour aligner des vignettes, plus petites que les photos d'unités… */
   }

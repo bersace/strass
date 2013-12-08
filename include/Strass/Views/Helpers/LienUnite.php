@@ -18,7 +18,7 @@ class Strass_View_Helper_LienUnite {
 		$acl = Zend_Registry::get('acl');
 		if ($acl->isAllowed(Zend_Registry::get('individu'),
 				    $unite, $urlOptions['action']))
-			return $this->view->lien($urlOptions, $label, $reset)->addFlags('unite');
+		  return $this->view->lien($urlOptions, $label, $reset)->addFlags('unite', $unite->type);
 		else
 			return new Wtk_RawText($label);
 	}

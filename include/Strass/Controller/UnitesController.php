@@ -17,7 +17,8 @@ class UnitesController extends Strass_Controller_Action
 	{
 		$this->view->unite = $u = $this->_helper->Unite();
 		$this->view->annee = $a = $this->_helper->Annee();
-		$this->view->model = new Strass_Pages_Model_AccueilUnite($u, $a, $this->_helper->Annee->cetteAnnee(),
+		$this->view->model = new Strass_Pages_Model_AccueilUnite($u, $a,
+									 $this->_helper->Annee->cetteAnnee(),
 									 $this->assert(null, $u, 'calendrier'));
 
 		$this->metas(array('DC.Title' => wtk_ucfirst($u->getName()).' '.$a));

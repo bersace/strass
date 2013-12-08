@@ -20,14 +20,8 @@ class Strass_Pages_Model_AccueilUnite extends Wtk_Pages_Model_Assoc
 		$w = $u->getWiki();
 		return array('unite'	=> $u,
 			     'apps' 	=> $u->getApps($annee),
-			     'image'	=> $u->getImage(),
 			     'texte'	=> $w ? file_get_contents($w) : '',
 			     'apps'	=> $u->getApps($annee),
-			     'sousunites'=>$u->getSousUnites(false, $annee),
-			     'soustype'	=> $u->getSousTypeName(true),
-			     'activites'=> $this->fetchProchainesActivites($annee),
-			     'rapports'	=> $this->fetchRapports($annee),
-			     'photos'	=> $this->fetchPhotos($annee),
 			     );
 	}
 
