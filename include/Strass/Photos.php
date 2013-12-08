@@ -37,7 +37,6 @@ class Photos extends Knema_Db_Table_Abstract
 			->where('parent_participe.unite IS NULL')
 			->order('RANDOM()')
 			->limit(1);
-		print (string) $s."\n";
 		return $this->fetchSelect($s)->current();
 	}
 }
