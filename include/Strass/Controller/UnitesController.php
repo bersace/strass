@@ -164,45 +164,21 @@ class UnitesController extends Strass_Controller_Action
 	function contactsAction()
 	{
 		$this->view->unite = $unite = $this->_helper->Unite();
+		$this->view->annee = $annee = $this->_helper->Annee();
 		$this->assert(null, $unite, null,
 			      "Vous n'avez pas le droit de voir les contacts de l'unité");
+		$this->view->model = new Strass_Pages_Model_Contacts($unite, $annee);
 
-		$acl = Zend_Registry::get('acl');
 		$i = Zend_Registry::get('individu');
-		$this->view->terminale = $unite->isTerminale();
+		// si l'individu est connecté, on propose le lien.
+		$this->view->profils = (bool) $i;
 
 		// critère de sélection par année
-		$this->view->annees = $unite->getAnneesOuverte();
-		$this->view->annee = $annee = $this->_helper->Annee();
-
 		$this->metas(array('DC.Title' => 'Effectifs '.$annee,
 				   'DC.Title.alternate' => 'Effectifs '.$annee.' – '.
 				   wtk_ucfirst($unite->getFullname())));
 
 		$this->formats('vcf', 'ods', 'csv');
-
-		// si l'individu est connecté, on propose le lien.
-		$this->view->profils = (bool) $i;
-		$this->view->apps = $apps = $unite->getApps($annee);
-
-		// de même pour les sous-unités
-		$this->view->sousunites = $unite->getSousUnites(false, $annee);
-		$ssapps = array();
-		foreach($this->view->sousunites as $su) {
-			switch($su->type) {
-			case 'aines':
-			case 'hp':
-				// par défaut, on masques les effectifs de la HP car c'est
-				// redondant par définition.
-				$ssapps[$su->id] = array();
-				break;
-			default:
-				$ssapps[$su->id] = $su->getApps($annee);
-				break;
-			}
-		}
-		$this->view->sousapps = $ssapps;
-
 		$this->liensEffectifs($unite, $annee);
 	}
 

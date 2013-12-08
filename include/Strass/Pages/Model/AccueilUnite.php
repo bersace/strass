@@ -21,7 +21,6 @@ class Strass_Pages_Model_AccueilUnite extends Wtk_Pages_Model_Assoc
 		return array('unite'	=> $u,
 			     'apps' 	=> $u->getApps($annee),
 			     'texte'	=> $w ? file_get_contents($w) : '',
-			     'apps'	=> $u->getApps($annee),
 			     );
 	}
 
