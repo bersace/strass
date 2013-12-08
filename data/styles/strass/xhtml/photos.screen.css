@@ -2,6 +2,7 @@
 {
   width: 100%;
   height: auto;
+  padding: 0;
   }
 
 #photo p.photo
@@ -26,8 +27,9 @@
   width: 100%;
   height: 192px;
   float: none;
+  padding-left: 40%;
   }
-  
+
 #historique
 {
   clear: both;
@@ -35,21 +37,7 @@
 
 #historique li
 {
-    float: left;
-    list-style: none;
-    margin: 0.5ex;
-}
-
-/* COMMENTAIRES */
-.commentaire
-{
-  padding: 1ex 2em;
-  margin: 0;
+  float: left;
+  list-style: none;
+  margin: 0.5ex;
   }
-
-.commentaire.even
-{
-  background-image: url("img/transparent-noir.png");
-  background-repeat: repeat;
-  }
-

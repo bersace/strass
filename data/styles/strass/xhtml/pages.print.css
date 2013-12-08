@@ -1,5 +1,0 @@
-/* inutile d'imprimer "précédents", "suivants" */
-ul.pages.links
-{
-  display: none;
-  }

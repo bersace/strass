@@ -1,12 +1,28 @@
-#webaddons ul
-{
-  padding: 0;
-  margin: 0;
-  }
 
-#document #branche li
+#webaddons li
 {
-  margin-left: .5ex;
-  padding-right: .5ex;
-  border-right: 1px solid white;
-  }
+    list-style: square;
+    list-style-image: none;
+}
+
+#content
+{
+    background-image: none;
+}
+
+#branche li
+{
+    margin: 1ex !important;
+}
+
+#navigateurs
+{
+    background-image: url("icones/surprise.png");
+    background-position: center 2.5em;
+    background-repeat: no-repeat;
+}
+
+#navigateurs .h
+{
+    margin-bottom: 2em;
+}

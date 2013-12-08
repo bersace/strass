@@ -7,11 +7,39 @@
 #rubriques li p
 {
   display: inline;
-  margin-right: .5ex;
-  font-size: .8em;
+  }
+
+li.xl a
+{
+  font-size: 2em;
+  }
+
+li.l a
+{
+  font-size: 1.75em;
+  }
+
+li.m a
+{
+  font-size: 1.5em;
+  }
+
+li.s a
+{
+  font-size: 1.25em;
+  }
+
+li.xs a
+{
+  font-size: 1em;
   }
 
 form .check
 {
   text-align: center;
+  }
+
+#actions li.ecrire
+{
+  list-style-image: url("icones/ecrire.png");
   }

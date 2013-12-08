@@ -1,59 +1,80 @@
-body, #document,
-#content, #content > .section
+body, #document, #content
 {
   margin: 0;
   padding: 0;
-  width: 100%:
   }
 
-/* en-tête */
-#footer .author,
-#footer .organization,
-h1
-{
-  display: block;
-  position: absolute;
-  left: 10%;
-  width: 80%;
-  }
-
-#footer .author
-{
-  top: 0em;
-  }
-
-#footer .organization
-{
-  top: 1.60em;
-  }
-
-h1
-{
-  top: 4em;
-  }
-
-
-#document #content
-{
-  margin: 10em 0 0;
-  }
-
-/* LOGO */
 #footer .logo
 {
   display: block !important;
-  height: 96px;
-  width: auto;
   position: absolute;
   top: 0;
   left: 0;
+  width: 83pt;
+  height: auto;
   }
 
-/* à masquer */
+
+#footer .metas .author
+{
+  display: block;
+  position: absolute;
+  top: 16pt;
+  left: 82pt;
+  font-size: 1em;
+  font-weight: normal;
+  margin: 0 60px 2em 0;
+  padding: 0;
+  background: none;
+  }
+
+h1
+{
+  position: absolute;
+  left: 82pt;
+  margin: 0 !important;
+  width: 74%;
+  top: 27pt;
+  padding: 0 0 2pt 0;
+  border-bottom: 1pt solid black;
+  }
+
+
+#document
+{
+  background-image: url("img/SUF.png");
+  background-repeat: no-repeat;
+  background-position: top right;
+  margin: 0;
+  padding: 0;
+  }
+
+
+#content
+{
+  padding-top: 64pt;
+  }
+
+div.section .h
+{
+  margin-left: -4pt;
+  }
+
+div.section
+{
+  margin-left: 4pt;
+  }
+
+#content h1
+{
+  margin: 0;
+  }
+
 #webaddons,
 #footer .copyright,
-#footer .metas .date,
+#footer .metas *,
 #branche
 {
   display: none;
   }
+

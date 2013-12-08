@@ -1,4 +1,3 @@
-
 form
 {
   clear: both;
@@ -13,107 +12,6 @@ form
   padding: .5ex;
   }
 
-
-button
-{
-  font-size: 1.05em;
-  padding: .25ex 1em;
-  margin: .5ex;
-  border: 1px outset #A97;
-  color: white;
-  font-weight: normal;
-  -moz-border-radius: 3px;
-  }
-
-td button
-{
-  padding: .25ex;
-  }
-
-
-button:active
-{
-  border-style: inset;
-  }
-
-
-fieldset, form p
-{
-  clear: both;
-  }
-
-div.required > label:before
-{
-  content: "*";
-  color: red;
-  }
-
-fieldset
-{
-  margin-top: 1em;
-  border: 1px solid white;
-  background-image: url("img/transparent-noir.png");
-  }
-
-legend
-{
-  font-weight: bold;
-  font-size: 1.1em;
-  }
-
-/*  MESSAGES  */
-form .errors .h
-{
-  display: none;
-  }
-
-form .errors p
-{
-  padding: 1ex 1ex 1ex 48px;
-  background-image: url("icones/erreur.png");
-  background-repeat: no-repeat;
-  background-position: 1ex .72ex;
-  border: 2px solid red;
-  -moz-border-radius: .75ex;
-  margin: .5ex 5%;
-  }
-
-
-form p.warn
-{
-  padding: 1ex 1ex 1ex 48px;
-  background-image: url("icones/attention.png");
-  background-repeat: no-repeat;
-  background-position: 1ex center;
-  color: #F1E5C1;
-  font-size: 1.1em;
-  }
-
-form p.info
-{
-  padding: 1ex 1ex 1ex 42px;
-  margin: 1em 2em;
-  background-image: url("icones/information.png");
-  background-repeat: no-repeat;
-  background-position: .5ex center;
-  color: #F1E5C1;
-  font-size: 1.2em;
-  font-weight: bold;
-  }
-
-form > p
-{
-  padding: 1em;
-  }
-
-.entry .entry.nocaption,
-.nocaption textarea
-{
-  width: 99%;
-  }
-
-
-/* CONTROLES */
 div.control
 {
   text-align: left;
@@ -132,6 +30,7 @@ div.control > label
   width: 16em;
   display: block;
   padding: .5ex 0;
+  white-space: nowrap;
   }
 
 div.control label:after
@@ -145,12 +44,20 @@ div.control label:after
   content: "";
   }
 
-div.control input
+div.control .input
 {
   margin: 0;
   float: left;
   display: block;
   clear: right;
+  }
+
+input[type=text],
+input[type=password],
+textarea
+{
+  border: 1px solid black;
+  padding: 1px;
   }
 
 div.control.compound div.control
@@ -164,40 +71,33 @@ input.spin
   text-align: right;
   }
 
-input[type=text],
-input[type=password],
-textarea
-{
-  padding: 2px;
-  }
-
 div.control.date input
 {
   margin: 1px;
   font-family: monospace;
-  text-align: right;
+  text-align: center;
   }
 
-div.control.check
+div.control.check > .input
 {
-  padding-left: 2em;
-  }
-
-
-div .check input
-{
-  margin-left: -1.5em;
-  float: left;
+  clear: left;
   position: relative;
-  top: -1.25em;
+  top: -1.5em;
+  margin-bottom: -1.65em;
+  }
+
+table.control div.control.check > .input
+{
+  position: static;
   }
 
 .control.check > label
 {
-  float: right;
   text-align: left;
   width: 100%;
-  margin-left: -2em;
+  float: right;
+  position: relative;
+  left: 2em;
   }
 
 table.control
@@ -206,66 +106,99 @@ table.control
   margin: 1ex;
   }
 
-tr .check input,
-tr .check label
+tr td .check input,
+tr td .check label
 {
-  top: auto;
+  top: auto !important;
   float: none;
-  position: inline;
+  position: static;
   margin: 0;
   padding: 0;
   width: auto;
   text-align: inherit;
   }
 
+.form.errors .h
+{
+  display: none;
+  }
+
+.form.errors p
+{
+  background-color: #FB7;
+  background-image: url("icones/erreur.png");
+  background-repeat: no-repeat;
+  background-position: 1ex .72ex;
+  border: 2px solid red;
+  -moz-border-radius: .75ex;
+  color: #400;
+  margin: .5ex 5%;
+  padding: 1ex 1ex 1ex 48px;
+  }
+
+.form .warn
+{
+  background-color: #FC7;
+  background-image: url("icones/attention.png");
+  background-repeat: no-repeat;
+  background-position: 1ex .72ex;
+  border: 2px solid #DA4;
+  -moz-border-radius: .75ex;
+  color: #400;
+  margin: .5ex 5%;
+  text-align: justify;
+  padding: 1ex 1ex 1ex 48px;
+  min-height: 32px;
+  }
+
+
+.form .info
+{
+  background-color: #BF5;
+  background-image: url("icones/information.png");
+  background-repeat: no-repeat;
+  background-position: 1ex .72ex;
+  border: 2px solid #8B2;
+  -moz-border-radius: .75ex;
+  color: #400;
+  margin: .5ex 5%;
+  text-align: justify;
+  padding: 1ex 1ex 1ex 48px;
+  min-height: 32px;
+  }
+
+fieldset, form p
+{
+  clear: both;
+  }
+
+input,
 textarea,
-select,
-option,
-button,
-input[type=text],
-input[type=password]
+select
 {
-  border: 1px dotted #BA8;
-  background-color: transparent;
-  background-image: url("img/transparent-noir.png");
-  background-repeat: repeat;
-  background-position: top left;
-  color: #FEFEFE;
   }
 
-option
+input:focus,
+textarea:focus,
+select:focus
 {
-  border: none;
-  background: black;
+  color: black;
+  background: #F8F8F8;
   }
 
-*[disabled=disabled]
+
+fieldset
 {
-  background-image: url("img/transparent-gris.png");
-  color: grey;
+  margin-top: 1em;
+  border-width: 1px;
+  border-style: solid;
   }
 
-.compound textarea,
-.compound input.entry
+legend
 {
-  width: auto;
-  }
-
-.control.select span label
-{
-  float: left;
-  padding: .5ex;
-  }
-
-.control.select span input
-{
-  margin: .25ex;
-  }
-
-.control.date span input
-{
-  float: none;
-  display: inline;
+  font-weight: bold;
+  font-size: 1.1em;
+  color: #004400;
   }
 
 /* FORMULAIRE LATÉRAUX */

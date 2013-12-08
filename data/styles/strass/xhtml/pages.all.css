@@ -16,6 +16,7 @@
 
 .pages.links .current a
 {
+  color: black;
   text-decoration: none;
   font-weight: bold;
   }

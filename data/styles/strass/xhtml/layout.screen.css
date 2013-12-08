@@ -1,31 +1,43 @@
-
-body
+#footer .metas .organization
 {
-  padding: 0 5%;
-  margin: 0;
-  width: 90%;
+  display: block;
+  width: 100%;
+  position: absolute;
+  top: -1em;
+  height: 128px;
+  }
+
+h1 span
+{
+  display: none;
   }
 
 #content
 {
-  float: right;
-  margin-left: -20em;
+  float: left;
+  margin-right: -16em;
   min-height: 512px;
   width: inherit;
+  padding-top: 7em;
   }
 
 #content > *
 {
-  padding-left: 20em;
+  padding-right: 16em;
   width: auto;
   }
 
 #webaddons
 {
-  float: left;
-  width: 16em;
+  float: right;
+  width: 15em;
   margin: 0 0 1em;
-  padding: 0 0 4em 1ex;
+  padding: 2em 0 4em 1ex;
+  }
+
+#content, #webaddons
+{
+  margin-top: 100px;
   }
 
 #webaddons label
@@ -38,26 +50,22 @@ body
 {
   width: 6em;
   }
-
+  
 #branche
 {
-  position: absolute !important;
-  right: 7%;
-  top: 192px;
-  min-width: 60% !important;
-  }
+    position: absolute !important;
+    left: 1ex;
+    top: 148px;
+    padding-top: 4.5em;
+    width: 80% !important;
+}
 
 #footer
 {
-  float: left;
-  clear: both;
-  }
+    clear: both;
+}
 
-#footer .metas
+#footer .logo
 {
   display: none;
   }
-
-body > .firebug {
-    display: none !important;
-}

@@ -15,10 +15,10 @@
    sodipodi:version="0.32"
    inkscape:version="0.45.1"
    version="1.0"
-   sodipodi:docbase="/home/bersace/WWW/morel/www/.test/resources/styles/santiago/css/postes"
+   sodipodi:docbase="/home/bersace/WWW/morel/www/.test/resources/styles/morel/css/postes"
    sodipodi:docname="acc.svg"
    inkscape:output_extension="org.inkscape.output.svg.inkscape"
-   inkscape:export-filename="/home/bersace/WWW/morel/www/.test/resources/styles/santiago/css/postes/acc.png"
+   inkscape:export-filename="/home/bersace/WWW/suf1520/resources/styles/suf1520/css/postes/acc.png"
    inkscape:export-xdpi="90"
    inkscape:export-ydpi="90">
   <defs
@@ -28,7 +28,7 @@
        xlink:href="#linearGradient6255"
        id="radialGradient6517"
        gradientUnits="userSpaceOnUse"
-       gradientTransform="matrix(5.4344043e-8,1.9098146,-2.7270776,0,28.58322,-5.7937348)"
+       gradientTransform="matrix(5.788781e-8,1.8974843,-2.90491,0,29.894941,-5.6788532)"
        cx="7.6866302"
        cy="7.6398883"
        fx="7.6866302"
@@ -39,7 +39,7 @@
        xlink:href="#linearGradient6275"
        id="radialGradient6515"
        gradientUnits="userSpaceOnUse"
-       gradientTransform="matrix(-2.6265871e-2,-1.4131385,1.3981621,-2.9871773e-2,-5.3523559,34.022053)"
+       gradientTransform="matrix(-2.7978665e-2,-1.4040149,1.489336,-2.9678912e-2,-6.2535683,33.879873)"
        cx="14.252622"
        cy="14.046583"
        fx="14.252622"
@@ -167,9 +167,9 @@
      borderopacity="1.0"
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
-     inkscape:zoom="44.8"
-     inkscape:cx="11.353635"
-     inkscape:cy="11.972663"
+     inkscape:zoom="11.2"
+     inkscape:cx="15.310091"
+     inkscape:cy="10.79635"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
      width="24px"
@@ -217,13 +217,13 @@
          style="fill:url(#radialGradient3284);fill-opacity:1;fill-rule:evenodd;stroke:url(#radialGradient3286);stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1" />
     </g>
     <rect
-       style="fill:url(#radialGradient6515);fill-opacity:1;stroke:url(#radialGradient6517);stroke-width:0.97205079;stroke-opacity:1"
+       style="fill:url(#radialGradient6515);fill-opacity:1;stroke:url(#radialGradient6517);stroke-opacity:1"
        id="rect5284"
-       width="6.0751324"
-       height="4.3289895"
-       x="8.682147"
-       y="9.8355055"
-       rx="0.77050447"
-       ry="0.82608235" />
+       width="6.4712906"
+       height="4.3010402"
+       x="8.6961212"
+       y="9.8494797"
+       rx="0.82074893"
+       ry="0.82074893" />
   </g>
 </svg>

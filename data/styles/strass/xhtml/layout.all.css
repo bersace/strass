@@ -4,6 +4,7 @@ h1
   margin: 0;
   }
 
+
 #footer
 {
   width: 100%;
@@ -11,14 +12,14 @@ h1
   display: block;
   }
 
-#footer .copyright
+#footer p.copyright
 {
   font-size: .9em;
   text-align: center;
   padding: 2em 0;
   }
 
-.logo
+#footer .metas *
 {
   display: none;
   }

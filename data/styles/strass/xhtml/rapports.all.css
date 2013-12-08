@@ -1,7 +1,13 @@
-.resume;
-.vignette
+#rapports li
+{
+  list-style: none;
+  }
+
+.resume,
+.lien
 {
   float: left;
+  width: 75%;
   }
 
 .activite
@@ -9,3 +15,7 @@
   clear: both;
   }
 
+div.vignette
+{
+  float: right;
+  }

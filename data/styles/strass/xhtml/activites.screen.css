@@ -12,36 +12,14 @@
   }
 
 #calendrier > p,
-.activites #content p.remarque
+#participants + p
 {
   background-image: url("icones/attention.png");
-  background-position: 1ex 1ex;
+  background-position: top left;
   background-repeat: no-repeat;
   margin: 2em 25%;
   width: 50%;
-  padding: 1ex 1ex 1ex 48px;
+  padding: 0 0 0 36px;
   min-height: 32px;
-  clear: both;
-  border: 1px solid white;
-  -moz-border-radius: 1ex;
-  }
-
-#message
-{
-  clear: both;
-  }
-
-#apporter,
-#participants,
-#piecesjointes
-{
-  float: left;
-  width: 30%;
-  margin: 1em;
-  padding: 0;
-  }
-
-#calendrier td.date
-{
-  width: 10em;
+  font-size: 1.1em;
   }

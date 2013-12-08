@@ -1,51 +1,48 @@
+/*** Disposition:
+   *
+   *  __________ __________ ______
+   * |  Accueil |          |      |
+   * }----------+          |      |
+   * |          |  Photos  | Menu |
+   * | Rapports |          |      |
+   * |__________|__________|______|
+   */
+
 #accueil
 {
-  min-height: 150px;
-  clear: both;
-  padding-right: 150px;
-  background-position: center right;
-  background-repeat: no-repeat;
-  background-image: url("pélerin/marchant-gauche.png");
-  }
-
-#photos
-{
-  /* width: 40%; */
-  /* float: left; */
-  /* margin-right: -20em; */
-  }
-
-#photos .vignette
-{
-  display: inline-block;
-  float: none;
-  }
-
-#photos > *
-{
-  padding-left: 0em;
-  }
-
-#rapports
-{
-  float: right;
-  width: 40%;
-  margin: 0;
+  float: left;
+  clear: left;
+  width: 30%;
+  margin: 0 2em 0 0;
   padding: 0;
   }
 
-#rapports > *
+.suite
 {
+  text-align: right;
   }
 
-/* correction, les .h ont des cadratins plus grand */
-#rapports > .h
+.vignette
 {
-  padding-left: 13em;
+  float: none;
+  display: inline-block;
   }
 
-#rapports li p span.unite a
+#unites ul
 {
-  font-size: .8em;
-  white-space: nowrap;
+  display: block;
+  padding: 0;
+  margin: 0;
+  }
+
+#unites li
+{
+  display: inline-block;
+  }
+
+#unites li > a
+{
+  display: inline-block;
+  margin: 0 1em;
+  text-align: center;
   }

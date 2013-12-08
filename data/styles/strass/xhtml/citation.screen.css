@@ -1,9 +1,0 @@
-#content li.citation
-{
-  padding: 1ex;
-  }
-
-#content li.citation.odd
-{
-  background: url("img/transparent-blanc.png") repeat;
-  }

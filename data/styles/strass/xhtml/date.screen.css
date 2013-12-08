@@ -5,6 +5,43 @@
   padding: 4px;
   text-align: center;
   width: 18em !important;
+  background: white;
+  border: 1px solid black ;
+  -moz-border-radius: 0 0 1ex 1ex;
+  }
+
+
+.dojoxCalendar .dijitCalendarNextMonth .dijitCalendarDateLabel,
+.dojoxCalendar .dijitCalendarPreviousMonth .dijitCalendarDateLabel 
+{
+  border: 0px;
+  color: #444;
+  background: #EEE;
+  padding-left: 0px;
+  padding-right: 0px;
+  }
+
+.dojoxCalendar .dijitCalendarNextMonth .dojoxCalendarYearLabel,
+.dojoxCalendar .dijitCalendarPreviousMonth .dojoxCalendarYearLabel
+{
+  background-color: white;
+  border-color: white;
+  color: #646464;
+  }
+
+.dojoxCalendar .dijitCalendarSelectedDate
+{
+  /* cell for the selected date */
+  background: #EAD382;
+  color: black !important;
+  border: 1px dotted #444 !important;
+  }
+
+.dojoxCalendar thead .dijitCalendarDayLabel
+{
+  cursor: auto;
+  font-weight: bold;
+  color: #222;
   }
 
 .dojoxCalendarBody
@@ -13,7 +50,6 @@
   overflow: hidden;
   position: relative;
   margin: auto;
-  background: url("img/transparent-noir.png");
   }
 
 .dojoxCalendar .dijitCalendarDayLabels,
@@ -57,7 +93,7 @@
 .dojoxCalendarHeader
 {
   width: 100%;
-  border-bottom: 1px dotted #DDD;
+  border-bottom: 1px solid black;
   }
 
 .dojoxCalendarDecrease,
@@ -121,19 +157,6 @@
   text-align: center;
   }
 
-.dojoxCalendar thead .dijitCalendarDayLabel
-{
-  cursor: auto;
-  font-weight: bold;
-  color: #EEE;
-  }
-
-.dojoxCalendar .dojoxCalendarContainer
-{
-  background: black;
-  border: 1px solid white ;
-  }
-
 .dojoxCalendar .dijitCalendarDisabledDate
 {
   text-decoration:line-through !important;
@@ -150,42 +173,12 @@
   border-top: 1px dotted #EEE; 
   padding-top: 4px;
   cursor: pointer;
-  width: 18em;
+  width: 100%;
   }
 
 .dojoxCalendar .dijitCalendarCurrentMonth
 {
-  color: white;
-  }
-
-.dojoxCalendar .dijitCalendarNextMonth .dijitCalendarDateLabel,
-.dojoxCalendar .dijitCalendarPreviousMonth .dijitCalendarDateLabel 
-{
-  border: 0px;
-  color: #DDD;
-  padding-left: 0px;
-  padding-right: 0px;
-  }
-
-.dojoxCalendar .dijitCalendarNextMonth,
-.dojoxCalendar .dijitCalendarPreviousMonth
-{
-  background: url("img/transparent-blanc.png");
-  }
-
-.dojoxCalendar .dijitCalendarNextMonth .dojoxCalendarYearLabel,
-.dojoxCalendar .dijitCalendarPreviousMonth .dojoxCalendarYearLabel
-{
-  background-color: white;
-  border-color: white;
-  color: #646464;
-  }
-.dojoxCalendar .dijitCalendarSelectedDate
-{
-  /* cell for the selected date */
-  background: url("img/transparent-noir.png");
-  color:white !important;
-  border: white solid 1px !important;
+  color: black;
   }
 
 .dojoxCalendar .dijitCalendarSelectedDate .dijitCalendarDateLabel
@@ -211,8 +204,9 @@
 /* Heure */
 .dijitTimePicker
 {
-  background: black;
-  border: 1px solid white;
+  background: white;
+  border: 1px solid black;
+  -moz-border-radius: 0 0 1ex 1ex;
   }
 
 .dijitArrowButtonInner
@@ -225,7 +219,6 @@
   width: 100%;
   text-align: center;
   padding: .25ex 0;
-  background: black;
   }
 
 .dijitTimePickerTick,
@@ -235,13 +228,14 @@
 
 .dijitTimePickerTick
 {
-  color:white;
+  color: #888;
+  background: #EEE;
   }
 
 .dijitTimePickerMarker
 {
-  background: #444;
-  color: #DDD;
+  background: white;
+  color: black;
   font-weight: bold;
   }
 
@@ -279,15 +273,19 @@
 .dijitTimePickerItemHover .dijitTimePickerItemInner,
 .dijitTimePickerItemSelected .dijitTimePickerItemInner
 {
-  font-size:1em;
+  font-size: 1em;
   }
 
 .dijitTimePickerTickHover,
-.dijitTimePickerTickSelected
+.dijitTimePickerTickSelected,
+.dijitTimePickerMarkerHover,
+.dijitTimePickerMarkerSelected
 {
   margin-top:-0.3em;
   margin-bottom:-0.3em;
-  border-bottom: none;
+  border: none;
+  font-size: 1.2em;
+  font-weight: bold;
   }
 
 .dijit_a11y .dijitTimePickerTickHover

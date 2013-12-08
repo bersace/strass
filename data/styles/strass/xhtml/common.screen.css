@@ -1,10 +1,15 @@
-html, body
+html
 {
-  background-image: url("img/foulard.jpeg");
-  background-position: top center;
-  background-repeat: repeat-all;
-  background-color: #573114;
-  color: white; /*#B89643;*/
+  background: #EAD382;
+  }
+
+body
+{
+  background-image: url("img/tissu-beige.png");
+  background-position: top left;
+  background-repeat: repeat-x;
+  height: 500px;
+  padding: 1ex 0;
   }
 
 #document
@@ -12,83 +17,62 @@ html, body
   width: 100%;
   margin: 0;
   padding: 0;
-  height: 256px;
-  background-image: url("img/coquille.png");
-  background-position: 1em 2em;
+  padding-top: 1em;
+  height: 128px;
+  background-image: url("img/promesse.png");
+  background-position: 1em center;
   background-repeat: no-repeat;
   }
 
 #content
 {
-  background-image: url("img/titre.png");
+  background-image: url("img/foulard.png");
+  background-position: right 0;
   background-repeat: no-repeat;
-  background-position: top center;
-  margin-top: -140px;
-  padding-top: 172px;
   }
 
-h1
+#footer .metas .organization
 {
-  font-size: 3em;
-  background-image: url("img/baussant.png");
+  background-image: url("img/bande-groupe.png");
+  background-position: bottom center;
   background-repeat: no-repeat;
-  background-position: right 50px;
-  height: 160px;
   }
 
-h1 span
-{
-  display: none;
-  }
-
-
-.h, th, a, legend,
-h1, h2, h3, h4, h5, h6
-{
-  color: #E1C571;
-  }
-
-strong
-{
-  color: #F1D591;
-  font-size: 1.05em;
-  }
-
-a
-{
-  text-decoration: none;
-  border-bottom: 1px dotted #986400;
-  }
 
 a:hover, a:visited
 {
+  color: #223300;
   }
 
 a:hover
 {
-  color: #E1C571;
-  border-bottom-style: solid;
+  text-decoration: none;
   }
 
-img
-{
-  padding: .75ex;
-  background: white;
-  border: 1px solid black;
-  color: black;
-  }
 
-/* BARRE LATÉRALE */
+
 #webaddons
 {
+  padding-top: 2em;
   background-position: bottom left;
   background-repeat: no-repeat;
   }
 
+#webaddons > div.section > *
+{
+  margin-right: 1ex;
+  }
+
 #webaddons > .section > .h
 {
+  text-align: right;
   font-size: 1.1em;
-  border-bottom: 1px solid white;
+  color: white;
+  height: 48px;
+  background-repeat: no-repeat;
+  background-position: left top;
+  margin-bottom: -.5em;
+  margin-right: 0;
   }
 
 #webaddons > .section > .h span
@@ -99,18 +83,92 @@ img
 
 #webaddons .section li a
 {
+  display: block;
   padding: 0;
-  margin-right: 2px;	/* pour éviter la barre de défilement lorsque le lien est cliqué */
+  /* pour éviter la barre de défilement lorsque le lien est cliqué */
+  margin-right: 2px;
   }
 
 #webaddons .section ul
 {
-  padding: 0 0 0 1.4em;
+  padding-left: 1em;
+  }
+
+#webaddons .section li
+{
+  list-style-type: none;
+  background-repeat: no-repeat;
+  background-position: left center;
+  padding: .5ex 0 .5ex 2.5em;
+  }
+
+/* BRANCHE */
+#branche
+{
+  font-size: 9pt !important;
+  }
+
+/* branche a un traitement *très* spéciale, on réinitialise tout */
+#branche *
+{
+  position: static !important;
+  top: 0 !important;
+  margin: 0 !important;
+  display: inline !important;
+  padding: 0 !important;
+  background: none !important;
+  }
+
+#branche .h
+{
+  text-align: left;
+  font-size: inherit;
+  color: #483005 !important;
+  }
+
+#branche li + li:before
+{
+  content: "/";
+  margin: 0 1ex;
+  color: #483005;
+  }
+
+
+/* FLOTS */
+#menu .h
+{
+  background-image: url("img/flot-rouge.png");
+  }
+
+#connexes .h
+{
+  background-image: url("img/flot-vert.png");
+  }
+
+#console > .h,
+#login > .h
+{
+  background-image: url("img/flot-jaune.png");
+  }
+
+#navigateurs .h
+{
+  background-image: url("img/flot-orange.png");
+  }
+
+#citation .h
+{
+  background-image: url("img/flot-bleu.png");
+  }
+
+#formats .h
+{
+  background-image: url("img/flot-gris.png");
   }
 
 #menu li.current a
 {
-  color: white;
+  color: black;
   text-decoration: none;
   font-weight: bold;
   }
@@ -121,6 +179,9 @@ img
 {
   color: #AB7C2B;
   padding-bottom: 1em;
+  background-image: url("img/sifflet.png");
+  background-repeat: no-repeat;
+  background-position: bottom right;
   }
 
 /* CONSOLE */
@@ -131,7 +192,7 @@ img
 
 #console div.section
 {
-  margin: .5em 0 0 1em;
+  margin: 0 0 0 1em;
   padding: 0;
   }
 
@@ -142,82 +203,166 @@ img
   padding: 0;
   }
 
-
-/* BRANCHE */
-#branche
+#console li a
 {
-  background-image: url("img/transparent-noir.png");
-  padding: .75ex;
   }
 
-#webaddons #branche span
+/* ICÔNES */
+
+#menu li.index
 {
-  padding: 0;
+  background-image: url("icones/accueil.png");
   }
 
-#webaddons #branche *
+#webaddons li.unites,
+#webaddons li.membres
 {
-  color: #F1D591;
+  background-image: url("icones/effectifs.png");
   }
 
-#webaddons #branche li,
-#webaddons #branche .h,
-#webaddons #branche ul
+#connexes li.contacts
 {
-  display: block;
-  float: left;
-  list-style: none;
-  margin: 0;
-  padding: 0:
-  font-size: inherit;
-  font-size: 8pt;
-  border: none;
+  background-image: url("icones/carnet.png");
   }
 
-#webaddons #branche ul
+#connexes li.progression
 {
-  float: right;
+  background-image: url("icones/individus.png");
   }
 
-#webaddons #branche li + li:before
+#webaddons li.activites,
+#formats li.ics
 {
-  content: " → ";
+  background-image: url("icones/activites.png");
+  }
+
+#formats li.ods,
+#formats li.csv
+{
+  background-image: url("icones/tableur.png");
+  }
+
+#webaddons li.photos
+{
+  background-image: url("icones/photos.png");
+  }
+
+#webaddons li.journaux
+{
+  background-image: url("icones/journaux.png");
+  }
+
+#menu li.documents
+{
+  background-image: url("icones/documents.png");
+  }
+
+#menu li.liens
+{
+  background-image: url("icones/liens.png");
+  }
+
+#connexes li.rapports,
+#menu li.livredor
+{
+  background-image: url("icones/livredor.png");
+  }
+
+#login li.inscription,
+#actions li.inscrire,
+#console li.inscriptions
+{
+  background-image: url("icones/inscription.png");
+  }
+
+#console li.voir,
+#actions li.voir
+{
+  background-image: url("icones/individu.png");
+  }
+
+#actions li.fermer
+{
+  background-image: url("icones/fermer.png");
+  }
+
+#webaddons li.progression
+{
+  background-image: url("icones/progression.png");
+  }
+
+#webaddons li.formation
+{
+  background-image: url("icones/diplome.png");
+  }
+
+#console li.profil
+{
+  background-image: url("icones/editer.png");
+  }
+
+#login li + li
+{
+  background-image: url("icones/verrou.png");
+  }
+
+/* ACTIONS */
+#actions li.editer,
+#actions li.modifier,
+#actions li.reporter
+{
+  background-image: url("icones/editer.png");
+  }
+
+#actions li.configurer,
+#actions li.administrer
+{
+  background-image: url("icones/config.png");
+  }
+
+#actions li.annuler,
+#actions li.supprimer,
+#actions li.detruire,
+#actions li.desinscrire
+{
+  background-image: url("icones/supprimer.png");
+  }
+
+#connexes li.anciens,
+#connexes li.anciennes,
+#actions li.historique
+{
+  background-image: url("icones/historique.png");
+  }
+
+#menu li.statiques
+{
+  background-image: url("icones/contacts.png");
+  }
+
+#webaddons li.citation
+{
+  background-image: url("icones/citation.png");
+  }
+
+#webaddons li.prevoir
+{
+  background-image: url("icones/prevoir.png");
   }
 
 
-
-
-/* MASCOTTE */
-
-.document.effectifs #webaddons
+/* FORMATS */
+#formats li.rss,
+#formats li.atom
 {
-  padding-bottom: 192px;
-  background-position: bottom right;
-  background-repeat: no-repeat;
-  background-image: url("pélerin/décidant-droite.png");
+  background-image: url("icones/flux.png");
   }
 
-.document.photos #albums
+#formats li.vcf
 {
-  min-height: 192px;
-  background-position: bottom right;
-  background-repeat: no-repeat;
-  background-image: url("pélerin/décidant-gauche.png");
+  background-image: url("icones/carnet.png");
   }
 
-.document.journaux #rubrique
-{
-  background-position: bottom right;
-  min-height: 192px;
-  background-repeat: no-repeat;
-  }
-
-.document.journaux.lire #webaddons
-{
-  background-image: url("pélerin/lisant-droite.png");
-  background-position: bottom right;
-  padding-bottom: 384px;
-  }
 
 
 /* Glisser-déposer */
@@ -226,12 +371,29 @@ img
   cursor: pointer;
   }
 
-.dojoDndMove *
+.dojoDndItemBefore,
+.dojoDndItemBefore td
 {
-  cursor: move;
+  border-top: 2px solid red;
   }
 
-.dojoDndMove .dojoDndItemAnchor td
+.dojoDndItemAfter,
+.dojoDndItemAfter td
 {
-  background: url("img/transparent-noir.png");
+  border-bottom: 2px solid red;
+  }
+
+.dojoDndAvatar
+{
+  moz-opacity: .75;
+  }
+
+/* citation */
+
+#citation .signature
+{
+  font-size: 0.8em;
+  font-weight: bold;
+  font-style: italic;
+  text-align: right;
   }

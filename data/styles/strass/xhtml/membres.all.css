@@ -1,3 +1,9 @@
+#valider .form .select
+{
+  display: block;
+  width: 100%;
+  }
+
 #valider-verdict
 {
   display: block;
@@ -8,4 +14,9 @@
 #valider-verdict *
 {
   display: inline;
+  }
+
+#progression
+{
+  display: none;
   }

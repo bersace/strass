@@ -1,8 +1,7 @@
-/* historique */
-#historique .section .h
+
+#historique .h
 {
   font-size: 1.75ex;
-  padding-top: 0;
   }
 
 #historique div.section
@@ -10,78 +9,79 @@
   float: left;
   }
 
-#historique div.section ul
-{
-  min-height: 3em;
-  }
-
 #historique .selectionnee a
 {
   font-weight: bold;
   text-decoration: none;
-  color: white;
+  color: black;
   }
+  
+#effectifs > table.meute td.accr
+{
+    width: auto;
+}
+
 
 /* barrettes */
 td.accr
 {
-  background-position: left center;
-  background-repeat: no-repeat;
+    background-position: left center;
+    background-repeat: no-repeat;
   }
-
+  
 table.groupe tr.chef td.accr
 {
-  background-image: url("postes/cg.png");
-  }
+    background-image: url("postes/cg.png");
+}
 
-tr.aumonier td.accr
+table.groupe tr.aumonier td.accr
 {
-  background-image: url("postes/aumonier.png");
-  }
-
+    background-image: url("postes/aumonier.png");
+}
+  
 table.groupe tr.assistant td.accr,
-table.groupe tr.tresorier td.accr
+table.groupe tr.tresorier td.accr,
+table.groupe tr.secretaire td.accr
 {
-  background-image: url("postes/acg.png");
-  }
-
+    background-image: url("postes/acg.png");
+}
+  
 table.clan tr.chef td.accr
 {
-  background-image: url("postes/cc.png");
-  }
-
-table.clan tr.assistant td.accr,
-table.eqclan tr.chef td.accr
+    background-image: url("postes/cc.png");
+}
+   
+table.troupe tr.chef td.accr,
+table.compagnie tr.chef td.accr
 {
-  background-image: url("postes/acc.png");
-  }
-
-table.troupe tr.chef td.accr
+    background-image: url("postes/ct.png");
+}
+  
+table.troupe tr.assistant td.accr,
+table.compagnie tr.assistant td.accr
 {
-  background-image: url("postes/ct.png");
-  }
-
-table.troupe tr.assistant td.accr
+    background-image: url("postes/act.png");
+}
+  
+  
+table.patrouille tr.chef td.accr,
+table.equipe tr.chef td.accr
 {
-  background-image: url("postes/act.png");
-  }
-
-
-table.patrouille tr.chef td.accr
+    background-image: url("postes/cp.png");
+}
+  
+table.patrouille tr.assistant td.accr,
+table.equipe tr.assistant td.accr
 {
-  background-image: url("postes/cp.png");
-  }
+    background-image: url("postes/sp.png");
+}
 
-table.patrouille tr.assistant td.accr
+  
+table.meute tr.chef td.accr,
+table.ronde tr.chef td.accr,
 {
-  background-image: url("postes/sp.png");
-  }
-
-
-table.meute tr.chef td.accr
-{
-  background-image: url("postes/akela.png");
-  }
+    background-image: url("postes/akela.png");
+}
 
 table.meute tr.bagheera td.accr,
 table.meute tr.baloo td.accr,
@@ -93,9 +93,21 @@ table.meute tr.wontolla td.accr,
 table.meute tr.rama td.accr,
 table.meute tr.rikkitikitavi td.accr,
 table.meute tr.chuchundra td.accr,
-table.meute tr.gris td.accr
+table.meute tr.gris td.accr,
+table.meute tr.sahi td.accr,
+table.meute tr.fauvette td.accr
 {
-  background-image: url("postes/bagheera.png");
+    background-image: url("postes/bagheera.png");
+}
+
+
+.effectifs tr.siz td.accr
+{
+  background-image: url("postes/siz.png");
   }
 
-
+.effectifs tr.sec td.accr
+{
+  background-image: url("postes/sec.png");
+  }
+  

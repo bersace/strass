@@ -6,7 +6,7 @@ li.vignette
 .vignette
 {
   text-align: center;
-  display: inline-block;
+  float: left;
   margin: 1ex;
   }
 
@@ -22,20 +22,15 @@ li.vignette
 
 .vignette a
 {
+  color: black;
   display: block;
-  text-align: center;
+  text-decoration: none;
   }
 
-.vignette a,
-.vignette a:hover
-{
-  text-decoration: none;
-  border: none;
-  }
 .vignette img
 {
   margin: 0;
-  padding: .5ex;
+  padding: 1ex;
   clear: both;
+  -moz-border-radius: 1ex;
   }
-

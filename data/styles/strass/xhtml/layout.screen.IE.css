@@ -1,22 +1,24 @@
-#footer
+#content, #webaddons
 {
-  display: none;
-  }
+    margin: 0 !important;
+    padding: 0 !important;
+}
 
 #content
 {
-  margin: 0;
-  width: 80%;
-  float: right;
-  }
-
-#content > *
-{
-  padding: 0;
-  }
+    width: 80% !important;
+    float: left !important;
+}
 
 #webaddons
 {
-  float: left;
-  width: 18%;
-  }
+    width: 20% !important;
+    float: right !important;
+    margin-top: 4em;
+}
+
+#branche
+{
+    top: 7em;
+    width: 400% !important;
+}

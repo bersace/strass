@@ -1,15 +1,15 @@
-form textarea,
-form select,
-form option,
-form button,
-form input
+div.control *
 {
-  border: 1px dotted #BA8;
-  background-color: #442200;
-  color: #FEFEFE;
+  float: left;
   }
 
-fieldset
+div.control label
 {
-  background: none;
+  display: block;
+  width: 15em;
+  }
+
+div.control span label
+{
+  width: auto;
   }

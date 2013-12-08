@@ -1,0 +1,40 @@
+#informations p.avatar
+{
+  float: right;
+  margin-top: -3em;
+  padding: 1ex;
+  border: 1px solid black;
+  background: white;
+  -moz-border-radius: 1ex;
+  max-width: 15%;
+  }
+
+#informations ul,
+#informations #notes
+{
+  display: inline-block;
+  vertical-align: top;
+  }
+
+#informations ul
+{
+  width: 30%;
+  }
+
+#informations #notes
+{
+  width: 45%;
+  }
+
+
+#progression,
+#formation,
+#commentaires,
+#articles
+{
+  width: 48%;
+  margin: 0;
+  padding: 0;
+  display: inline-block;
+  text-align: vertical;
+  }

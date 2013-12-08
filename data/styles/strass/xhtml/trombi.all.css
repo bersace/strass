@@ -1,40 +1,36 @@
-/* TROMBINOSCOPE */
-.trombi li p.avatar,
-.trombi li.individu ul
+/* TROMBI */
+
+#trombi li p
 {
-  display: inline-block;
-  vertical-align: top;
-  margin-top: 1em;
+  width: 128px;
+  text-align: center;
+  padding: 0;
+  margin: 0;
   }
 
-.trombi li p.avatar
+#trombi li.individu
 {
-  margin-left: 1em;
+  list-style: none;
+  margin: .5ex;
+  color: black;
   }
 
-.trombi #content > ul
-{
-  display: block;
-  }
-
-.trombi li.individu
-{
-  display: block;
-  width: 100%;
-  }
-
-.trombi li.individu li
-{
-  margin: .25ex;
-  }
-
-.trombi li.individu.odd
-{
-  background: url("img/transparent-blanc.png");
-  }
-
-.trombi li.individu li.prenom-nom,
-.trombi li.individu li.telephone
+#trombi li.individu > ul li:first-child
 {
   font-weight: bold;
   }
+
+#trombi li.individu
+{
+  display: block;
+  clear: both;
+  float: left;
+  margin: 1ex;
+  color: black !important;
+  }
+
+#trombi li.individu > *
+{
+  float: left;
+  }
+

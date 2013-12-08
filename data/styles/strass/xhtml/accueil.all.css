@@ -1,27 +1,16 @@
 /* MISE EN PAGE FLEXIBLE de la page d'accueil d'unité : #prochacts et
 #sousunites peuvent ne pas exister. */
 
-#presentation img
-{
-  float: left;
-  margin: 0 1ex 1ex 0;
-  }
-
 #accueil #effectifs,
 #accueil #sousunites,
 #accueil #prochacts,
 #accueil #rapports,
 #accueil #photos
 {
-  width: 48%:
+  width: 48%;
   padding: 0 1%;
   margin: 0;
   float: left;
-  }
-
-#accueil #effectifs
-{
-  clear: left;
   }
 
 #accueil #sousunites + *
@@ -39,21 +28,12 @@
   width: 98%;
   }
 
-#accueil #rapports,
-#accueil #effectifs + .section
+#accueil #rapports
 {
-  width: 43%;
+  width: 38%;
   }
-
-#accueil #effectifs,
 #accueil #sousunites + #rapports + #photos,
 #accueil #effectifs + #prochacts + #rapports + #photos
 {
-  width: 53%;
-  }
-
-#rapports li,
-#prochacts li
-{
-  white-space: nowrap;
+  width: 58%;
   }

@@ -21,7 +21,7 @@
 }
 
 #historique,
-#participants,
+#content .section #participants,
 #infos .h,
 #chaine .h
 {
@@ -36,13 +36,6 @@
     width: 70%;
     font-size: 1.1em;
 }
-
-.document.consulter #content h2
-{
-  display: block;
-  text-align: center;
-  font-size: 2em;
-  }
 
 .document.consulter #content h3
 {

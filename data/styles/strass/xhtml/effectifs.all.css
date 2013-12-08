@@ -1,89 +1,62 @@
-.effectifs .section table
+
+/* masquer les en-tête redondant des sous unités */
+#effectifs div.section + div.section thead
 {
-  margin-left: -1em;
+  display: none;
+  }
+
+.effectifs table
+{
   width: 100%;
   }
 
-.effectifs td
+.effectifs .section table
 {
-  text-align: left;
-  height: 20px;
-  vertical-align: middle;
+  margin-left: -1em;
   }
 
-/* commun */
+#accueil #effectifs td + td
+{
+  width: auto;
+  }
+
+/* COLONNES */
 td.accr
 {
+  width: 4em;
+  padding-left: 24px;
   text-align: right;
   }
 
-td.prenom-nom
+.contacts	td.prenom-nom,
+.infos		td.prenom-nom,
+.progression	td.prenom-nom
 {
-  min-width: 14em !important;
+  width: 20em;
   }
 
-/* contact */
+.maitrise td.prenom-nom
+{
+  width: 10em;
+  }
+
 td.fixe,
-td.portable
+td.portable,
+td.telephone
 {
   width: 8em;
   text-align: center;
   }
 
-td.adelec,
-td.adresse
+.effectifs tr .naissance,
+tr .age,
+tr .origine
 {
-  min-width: 14em;
-  }
-
-/* infos */
-td.age
-{
-  width: 4em;
-  }
-
-td.naissance
-{
-  width: 6em;
-  text-align: center;
-  }
-
-td.origine
-{
-  width: 14em;
+  display: none;
   }
 
 td.numero
 {
   width: 4em;
-  }
-
-/* progression */
-td.perespi,
-td.parrain
-{
-  width: 14em;
-  }
-
-
-td.age
-{
   text-align: center;
-  }
-
-td.totem
-{
-  width: 10em;
-  }
-
-/* le lien vers l'individu expose déjà l'étape. avec une superbe icône */
-tr > .etape
-{
-  display: none;
-  }
-
-/* masquer les en-tête redondant des sous unités */
-.effectifs > div.section + div.section thead tr
-{
-  display: none;
   }

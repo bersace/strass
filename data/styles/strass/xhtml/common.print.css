@@ -1,63 +1,40 @@
 html, body
 {
-  font-size: 8pt;
+  font-size: 9pt;
   font-family: serif;
   background: white;
   color: black;
-  margin: 0;
-  padding: 0;
   }
 
-/* en-tête */
-#footer .author,
-#footer .organization,
-h1
+#footer
 {
-  text-align: center;
-  padding: 0;
-  margin: 0;
+  color: #004400;
   }
 
-
-#footer .author
+#footer .logo
 {
-  font-size: 1.75em;
-  font-weight: bold;
+  border: none;
   }
 
-#footer .organization,
-h1
+#document h1
 {
-  font-size: 1.25em;
+  font-size: 1.6em !important;
+  font-weight: normal;
   }
 
-/* contenu */
-#content h2
-{
-  font-size: 1.25em;
-  padding: 0 0 .5ex;
-  margin: O;
-  }
-
-#content h3
-{
-  margin: .5ex 0 1ex;
-  font-size: 1.05em;
-  }
-
-/* éléments */
 a
 {
   color: inherit;
   text-decoration: none;
   }
 
-ul
+.h,
+h3, h4, h5, h6
 {
-  padding-left: 2em;
+  margin-bottom: 0;
   }
 
-.suite
+p
 {
-    display: none;
-}
+  margin-top: 0;
+  }

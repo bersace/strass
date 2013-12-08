@@ -1,82 +1,65 @@
 body
 {
   font-family: "Deja Vu Sans",sans-serif;
-  font-size: 9pt;
+  font-size: 10pt;
   color: black;
   margin: 0;
   }
 
-.h, th, legend,
-h1, h2, h3, h4, h5, h6,
-#footer .organization,
-#footer .author
+.h, th,
+h2, h3, h4, h5, h6
 {
-  color: #542A00;
-  }
-
-#content .h
-{
-  padding-top: 1em;
+  color: #004400;
   }
 
 a
 {
-  color: #986400;
+  color: #117700;
   }
-
 
 h1
 {
-  text-align: center;
   font-size: 1.35em;
   }
 
 h2
 {
-  font-size: 1.20em;
+  font-size: 1.30em;
   }
 
 h3
 {
-  font-size: 1.15em;
+  font-size: 1.25em;
   }
 
 h4
 {
-  font-size: 1.10em;
+  font-size: 1.20em;
   }
 
 h5
 {
-  font-size: 1.75em;
+  font-size: 1.15em;
   }
 
 h6
 {
-  font-size: 1.05em;
+  font-size: 1.10em;
   }
 
-p
+.section > p
 {
-  text-align: left;
+  text-align: justify;
   }
 
 ul
 {
-  list-style-type: square;
-  text-align: left;
-  padding-left: 2em;
-  }
-
-li
-{
-  margin-bottom: .5ex;
+  list-style-type: disc;
   }
 
 #content div.section
 {
   margin-left: 1em;
-  text-align: justify;
   }
 
 #footer
@@ -84,9 +67,8 @@ li
   color: #AAA;
   }
 
-
-.suite
+img
 {
-  text-align: right;
-  font-style: italic;
+  border: 1px solid black;
+  background: white;
   }

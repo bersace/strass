@@ -1,6 +1,18 @@
 /* ACCUEIL */
-td.accr
+#presentation img
 {
-    text-align: right;
+  float: left;
+  margin: 0 1ex 1ex 0;
+  }
+
+#presentation
+{
+  float: left;
+  clear: both;
+  }
+
+#accueil #effectifs
+{
+  clear: left;
   }
 

@@ -1,26 +1,26 @@
 /* SOUSUNITES */
-li.sousunite > ul li:first-child
-{
-  font-size: 1.2em;
-  }
-
-li.sousunite
+#sousunites li.sousunite
 {
   list-style: none;
-  width: 100%;
-  margin: 1ex;
-  padding: .5ex;
+  margin: .5ex;
+  color: black !important;
+  }
+
+#sousunites li.sousunite > ul li:first-child
+{
+  font-weight: bold;
+  }
+
+#sousunites li.sousunite
+{
   display: block;
   clear: both;
   float: left;
+  margin: 1ex;
   }
 
-li.sousunite > *
+#sousunites li.sousunite > *
 {
   float: left;
   }
 
-li.sousunite.odd
-{
-  background: url("img/transparent-blanc.png");
-  }
