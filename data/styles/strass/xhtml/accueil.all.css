@@ -1,6 +1,14 @@
 /* MISE EN PAGE FLEXIBLE de la page d'accueil d'unité : #prochacts et
 #sousunites peuvent ne pas exister. */
 
+#presentation {
+    float: left;
+    clear: left;
+    width: 30%;
+    margin: 0 2em 0 0;
+    padding: 0;
+}
+
 #accueil #effectifs,
 #accueil #sousunites,
 #accueil #prochacts,
