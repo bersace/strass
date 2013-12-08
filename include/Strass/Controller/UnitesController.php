@@ -368,27 +368,6 @@ class UnitesController extends Strass_Controller_Action
 		}
 	}
 
-	function sousunitesAction()
-	{
-		$this->view->unite = $unite = $this->_helper->Unite();
-		$this->view->soustype = $st = $unite->getSousTypeName(true);
-		$this->branche->append(wtk_ucfirst($st),
-				       array('annee' => null));
-		$this->view->annee = $annee = $this->_helper->Annee();
-		$this->view->sousunites = $unite->getSousUnites(false, $annee);
-		$this->view->acl = Zend_Registry::get('acl');
-		$this->view->moi = Zend_Registry::get('individu');
-
-		$this->metas(array('DC.Title' => 'Les '.$st.' de '.$unite->getFullname()));
-
-		if (!$unite->isTerminale())
-			$this->actions->append(array('label' => "Fonder une ".$unite->getSousTypeName()),
-					       array('action' => 'fonder',
-						     'parente' => $unite->id),
-					       array(null, $unite));
-
-	}
-	
 	function fonderAction()
 	{
 		$this->view->parente = $unite = $this->_helper->Unite(null, false);
@@ -877,7 +856,7 @@ class UnitesController extends Strass_Controller_Action
 	protected function liensEffectifs($unite, $annee)
 	{
 		$listes = array('accueil'	=> wtk_ucfirst($unite->getFullName()).' %s',
-				'contacts'	=> 'Liste de contacts %s',
+				'contacts'	=> 'Contacts %s',
 				// 'progressions'	=> 'Progressions individuelles'
 				);
 
@@ -894,11 +873,6 @@ class UnitesController extends Strass_Controller_Action
 				$this->connexes->append(sprintf($etiquette, $annee),
 							array('action'  => $action),
 							array(null, $unite, $action));
-
-		if ($label = wtk_ucfirst($unite->getSousTypeName(true)))
-			$this->connexes->append($label." ".$annee,
-						array('action' => 'sousunites',
-						      'annee' => $annee));
 
 		$this->connexes->append("Calendrier ".$annee,
 					array('controller' => 'activites',
