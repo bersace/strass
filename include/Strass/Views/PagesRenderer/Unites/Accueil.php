@@ -35,18 +35,8 @@ function unites_accueil_pack($view, $list, $unites, $annee)
   }
 }
 
-class Strass_Views_PagesRenderer_Unites_Accueil extends Wtk_Pages_Renderer
+class Strass_Views_PagesRenderer_Unites_Accueil extends Strass_Views_PagesRenderer_Historique
 {
-	protected $_view;
-
-	function __construct($view)
-	{
-		$this->_view = $view;
-		parent::__construct($view->url(array('unite' => $view->unite->id,
-						     'annee' => '%i')),
-				    true, null);
-	}
-
 	function render($annee, $data, $s)
 	{
 		$v = $this->_view;
