@@ -66,11 +66,6 @@ div.section > table
     overflow: hidden;
 }
 
-#historique
-{
-    display: none;
-}
-
 .liste #effectifs table td +td +td
 {
   border-left: 1px dashed #845d18;

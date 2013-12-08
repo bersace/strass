@@ -48,39 +48,9 @@ class ActivitesController extends Strass_Controller_Action
 			$this->assert(null, $u, 'calendrier',
 				      "Vous n'avez pas le droit de voir le calendrier de cette unité.");
 
-
-		$ta = new Activites();
-		$db = $ta->getAdapter();
-		$min = $this->_helper->Annee->dateDebut($annee).' 00:00';
-		$max = $this->_helper->Annee->dateFin($annee).' 23:59';
-		$select = $db->select()
-			->from('activites')
-			->join('participe',
-			       'participe.activite = activites.id'.
-			       ' AND '.
-			       $db->quoteInto('participe.unite = ?', $u->id),
-			       array())
-			->where("debut >= ?", $min)
-			->where("debut <= ?", $max)
-			->where("fin >= ?", $min)
-			->where("fin <= ?", $max)
-			->order('activites.debut');
-		$as = $ta->fetchSelect($select);
-
-
-		/* sélectionner les années où l'unité a participé à des activités */
-		$select = $db->select()
-			->distinct()
-			->from('activites',
-			       array('annee' => 'STRFTIME("%Y", debut, "-8 months")'))
-			->join('participe',
-			       'participe.activite = activites.id'.
-			       ' AND '.
-			       $db->quoteInto('participe.unite = ?',$u->id),
-			       array())
-			->order('annee DESC');
-
-		$this->view->annees = $db->query($select->__toString())->fetchAll();
+		$this->view->model = new Strass_Pages_Model_Calendrier($u, $annee);
+		$this->view->unite = $u;
+		$this->view->annee = $annee;
 
 		// CONNEXES
 		$this->connexes->append(wtk_ucfirst($u->getFullname()),
@@ -94,11 +64,6 @@ class ActivitesController extends Strass_Controller_Action
 				       array('action' => 'prevoir',
 					     'unite' => null),
 				       array(Zend_Registry::get('individu'), $u));
-
-		$this->view->activites = $as;
-		$this->view->annee = $annee;
-		$this->view->unite = $u;
-		$this->view->future = $future;
 
 		$this->formats('ics');
 	}

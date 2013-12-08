@@ -1,42 +1,41 @@
 <?php
 
-$s = $this->content;
+class Strass_Views_PagesRenderer_Calendrier extends Strass_Views_PagesRenderer_Historique
+{
+  function render($annee = NULL, $data, $s) {
+    extract($data);
 
-if ($this->activites->count()) {
-	$ss = $s->addSection('calendrier');
-	$tam = new Wtk_Table_Model('id', 'type', 'lieu', 'date', 'intitule');
+    if (!$activites->count())
+      return new Wtk_Text("Aucune activité prévue en ".$annee);
 
-	foreach($this->activites as $a) {
-		$tam->append($a->id, wtk_ucfirst($a->getTypeName()), $a->lieu,
-			     wtk_ucfirst($a->getDate(false, true)),
-			     wtk_ucfirst($a->getIntitule(false)));
-	}
-	$t = $ss->addTable($tam);
+    $ss = $s->addSection('calendrier');
+    $tam = new Wtk_Table_Model('id', 'type', 'lieu', 'date', 'intitule');
 
-	$t->addColumn(new Wtk_Table_Column("Date",
-					   new Wtk_Table_CellRenderer_Text('text', 'date')));
+    foreach($activites as $a) {
+      $tam->append($a->id, wtk_ucfirst($a->getTypeName()), $a->lieu,
+		   wtk_ucfirst($a->getDate(false, true)),
+		   wtk_ucfirst($a->getIntitule(false)));
+    }
+    $t = $ss->addTable($tam);
+
+    $t->addColumn(new Wtk_Table_Column("Date",
+				       new Wtk_Table_CellRenderer_Text('text', 'date')));
                                        
-	$c = new Wtk_Table_CellRenderer_Link('href', 'id',
-					     'label', 'intitule');
-	$t->addColumn(new Wtk_Table_Column("Activité", $c));
-	$url = $this->url(array('action' => $this->future ? 'consulter' : 'rapport',
-				'activite' => '%s'));
-	$c->setUrlFormat(urldecode($url));
+    $c = new Wtk_Table_CellRenderer_Link('href', 'id',
+					 'label', 'intitule');
+    $t->addColumn(new Wtk_Table_Column("Activité", $c));
+    // TODO: déterminer par activité si c'est future. Un
+    // CellRendererLink spécialisé ferait l'affaire
+    $url = $this->view->url(array('action' => $future ? 'consulter' : 'rapport',
+				  'activite' => '%s'));
+    $c->setUrlFormat(urldecode($url));
                            
-	if($this->future)
-		$ss->addText("**La présence de chacun est primordiale** pour le bon déroulement ".
-			     "des activités et pour la progression de tous.");
- }
- else {
-	 $s->addText("Aucune activités prévues en ".$this->annee);
- }
+    if($future)
+      $ss->addText("**La présence de chacun est primordiale** pour le bon déroulement ".
+		   "des activités et pour la progression de tous.");
+    return $s;
+  }
+}
 
-if ($this->annees) {
-	$ss = $s->addSection('historique', "Historique");
-	$l = $ss->addList();
-	foreach ($this->annees as $annee)
-		{
-			$l->addItem($this->lien(array('annee' => $annee['annee']),
-						$annee['annee']));
-		}
- }
+$this->content->addPages(null, $this->model,
+			 new Strass_Views_PagesRenderer_Calendrier($this));

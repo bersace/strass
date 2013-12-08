@@ -397,3 +397,21 @@ a:hover
   font-style: italic;
   text-align: right;
   }
+
+
+#historique .h
+{
+  font-size: 1.75ex;
+  }
+
+#historique div.section
+{
+  float: left;
+  }
+
+#historique .selectionnee a
+{
+  font-weight: bold;
+  text-decoration: none;
+  color: black;
+  }

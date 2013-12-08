@@ -1,21 +1,3 @@
-
-#historique .h
-{
-  font-size: 1.75ex;
-  }
-
-#historique div.section
-{
-  float: left;
-  }
-
-#historique .selectionnee a
-{
-  font-weight: bold;
-  text-decoration: none;
-  color: black;
-  }
-  
 #effectifs > table.meute td.accr
 {
     width: auto;

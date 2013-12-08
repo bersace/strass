@@ -38,3 +38,8 @@ p
 {
   margin-top: 0;
   }
+
+#historique
+{
+    display: none;
+}
