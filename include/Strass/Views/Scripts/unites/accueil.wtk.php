@@ -39,8 +39,6 @@ class Strass_Views_PagesRenderer_Unites_Accueil extends Strass_Views_PagesRender
 
   function render($annee, $data, $s)
   {
-    $v = $this->_view;
-    $v->document->addStyleComponents('vignette');
     extract($data);
 
     // Présentation
@@ -49,17 +47,11 @@ class Strass_Views_PagesRenderer_Unites_Accueil extends Strass_Views_PagesRender
       $ss->addText($texte);
 
     // Section les unités
-    if (!$unite->parent) {
-      $unites = [$unite];
-    }
-    else {
-      $unites = $unite->getSousUnites(false, $annee);
-    }
-
-    if ($unites) {
+    if ($sousunites) {
+      $this->_view->document->addStyleComponents('vignette');
       $ss = $s->addSection('unites', 'Les '.$unite->getSousTypeName(true));
       $l = $ss->addList();
-      $this->renderUnites($l, $unites, $annee);
+      $this->renderUnites($l, $sousunites, $annee);
     }
   }
 }
