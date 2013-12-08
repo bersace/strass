@@ -24,7 +24,7 @@ function unites_accueil_pack($view, $list, $unites, $annee)
     }
 
     $url = $view->url(array('unite' => $unite->id));
-    $link = new Wtk_Link($url, $lable,
+    $link = new Wtk_Link($url, $label,
 			 new Wtk_Container($image, new Wtk_Paragraph($label)));
     $link->addFlags($unite->type);
     $item = $list->addItem($link);
