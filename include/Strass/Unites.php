@@ -337,7 +337,7 @@ class Unite extends Strass_Db_Table_Row_Abstract implements Zend_Acl_Resource_In
 			if (!$soustype)
 				$soustype = $st->nom;
 			else if ($st->nom != $soustype)
-				$soustype = 'sous-unité';
+				$soustype = 'unité';
 		}
 		return $soustype.($pluriel ? 's' : '');
 

@@ -53,19 +53,24 @@ class Strass_Views_PagesRenderer_Unites_Accueil extends Wtk_Pages_Renderer
 		$v->document->addStyleComponents('vignette');
 		extract($data);
 
-		// présentation
+		// Présentation
 		$ss = $s->addSection('presentation');
 		if ($texte)
 			$ss->addText($texte);
 
-		// Photos des unités
-		$ss = $s->addSection('unites', 'Les unités');
-		$l = $ss->addList();
+		// Section les unités
 		if (!$unite->parent) {
-		  unites_accueil_pack($v, $l, [$unite]);
+		  $unites = [$unite];
 		}
 		else {
-		  unites_accueil_pack($v, $l, $unite->getSousUnites(false, false));
+		  $unites = $unite->getSousUnites(false, false);
+		}
+
+		if ($unites) {
+		  $unites = $unite->getSousUnites(false, false);
+		  $ss = $s->addSection('unites', 'Les '.$unite->getSousTypeName(true));
+		  $l = $ss->addList();
+		  unites_accueil_pack($v, $l, $unites);
 		}
 	}
 }
