@@ -1,1 +1,7 @@
 *.sqlite~*
+# base de test
+*.sqlite
+# conf de test
+config/strass.php
+# pages de tests
+*.wiki

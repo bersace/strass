@@ -1,0 +1,4 @@
+# Ignorer les données de tests
+*.wiki
+images/
+documents/
