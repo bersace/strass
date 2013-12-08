@@ -207,7 +207,7 @@ class PhotosController extends Strass_Controller_Action
 				$mini = $prefixe.'-vignette'.$suffixe;
 				$tr->load($fichier);
 				list($w, $h) = $tr->getImageSize();
-				$hv = 128;
+				$hv = 256;
 				$ratio = $h / $hv;
 				$w /= $ratio;
 				$tr->resize(intval($w), $hv);

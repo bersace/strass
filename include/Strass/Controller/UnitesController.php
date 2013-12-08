@@ -527,8 +527,8 @@ class UnitesController extends Strass_Controller_Action
 					$tr = Image_Transform::factory('GD');
 					$tr->load($tmp);
 					list($w, $h) = $tr->getImageSize();
-					// largeur max de 192;
-					$max = 192;
+					// largeur max de 256;
+					$max = 256;
 					$ratio = max($w/$max, $h/$max);
 
 					if ($ratio > 1 || $i->getMimeType() != 'image/png') {
