@@ -61,7 +61,12 @@ class Strass_Views_PagesRenderer_Unites_Accueil extends Wtk_Pages_Renderer
 		// Photos des unités
 		$ss = $s->addSection('unites', 'Les unités');
 		$l = $ss->addList();
-		unites_accueil_pack($v, $l, [$unite]);
+		if (!$unite->parent) {
+		  unites_accueil_pack($v, $l, [$unite]);
+		}
+		else {
+		  unites_accueil_pack($v, $l, $unite->getSousUnites(false, false));
+		}
 	}
 }
 
