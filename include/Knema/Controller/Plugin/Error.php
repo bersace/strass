@@ -7,7 +7,7 @@ class Knema_Controller_Plugin_Error extends Zend_Controller_Plugin_Abstract
 	public function routeStartup()
 	{
 		// passer à E_USER_ERROR en prod, automatiquement ?
-		Orror::init(E_USER_ERROR,
+	  Orror::init(E_ALL &~ (E_STRICT|E_DEPRECATED),
 			    array($this, 'errorHandler'),
 			    array($this, 'kill'),
 			    false);
