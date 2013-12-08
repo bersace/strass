@@ -1,6 +1,6 @@
 <?php
 
-function unites_accueil_pack($view, $list, $unites)
+function unites_accueil_pack($view, $list, $unites, $annee)
 {
   $photos = new Photos;
   foreach ($unites as $unite) {
@@ -30,8 +30,8 @@ function unites_accueil_pack($view, $list, $unites)
     $item = $list->addItem($link);
     $item->addFlags($unite->type, 'vignette');
 
-    // insérer les sou unités ouverte à la suite
-    unites_accueil_pack($view, $list, $unite->getSousUnites(false, false));
+    // insérer les sous unités ouverte à la suite
+    unites_accueil_pack($view, $list, $unite->getSousUnites(false, $annee), $annee);
   }
 }
 
@@ -63,14 +63,13 @@ class Strass_Views_PagesRenderer_Unites_Accueil extends Wtk_Pages_Renderer
 		  $unites = [$unite];
 		}
 		else {
-		  $unites = $unite->getSousUnites(false, false);
+		  $unites = $unite->getSousUnites(false, $annee);
 		}
 
 		if ($unites) {
-		  $unites = $unite->getSousUnites(false, false);
 		  $ss = $s->addSection('unites', 'Les '.$unite->getSousTypeName(true));
 		  $l = $ss->addList();
-		  unites_accueil_pack($v, $l, $unites);
+		  unites_accueil_pack($v, $l, $unites, $annee);
 		}
 	}
 }
