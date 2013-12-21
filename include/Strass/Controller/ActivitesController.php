@@ -153,10 +153,14 @@ class ActivitesController extends Strass_Controller_Action
 				// génération de l'intitulé
 				$unites = $tu->find(array_values($participantes));
 				$intitule = $m->get('intitule');
-				$intitule = $intitule ? $intitule : Activite::generateIntitule($tuple, $unites, false);
-				$tuple['intitule'] = $intitule.Activite::generateDate(Activite::findType($tuple['debut'], $tuple['fin']),
-										      strtotime($tuple['debut']),
-										      strtotime($tuple['fin']));
+				$tuple['intitule'] = $intitule;
+				// on génère l'intitulé pour d'id
+				if (!$intitule)
+				  $intitule = Activite::generateIntitule($tuple, $unites, false);
+				$intitule .= Activite::generateDate(Activite::findType($tuple['debut'],
+										       $tuple['fin']),
+								    strtotime($tuple['debut']),
+								    strtotime($tuple['fin']));
 				$tuple['id'] = $id = wtk_strtoid($tuple['intitule']);
 
 				// enregistrement de l'activité
@@ -505,14 +509,8 @@ class ActivitesController extends Strass_Controller_Action
 		$m = new Wtk_Form_Model('activite');
 		$i = $m->addEnum('unites', 'Unités participantes', $explicites, $unites, true);    // multiple
 		$m->addConstraint(new Wtk_Form_Model_Constraint_Required($i));
-		// laisser la génération d'intitulé se mettre à jour.
-		$intitule = Activite::generateIntitule($a->toArray(), $participantes);
-		if ($a->intitule != $intitule)
-			$intitule = $a->intitule;
-		else
-			$intitule = '';
 
-		$m->addString('intitule', 'Intitulé explicite', $intitule);
+		$m->addString('intitule', 'Intitulé explicite', $a->intitule);
 		$m->addString('lieu', 'Lieu', $a->lieu);
 		$m->addString('depart', 'Départ', $a->depart);
 		$m->addDate('debut', 'Début', $a->debut, '%Y-%m-%d %H:%M');
@@ -585,7 +583,7 @@ class ActivitesController extends Strass_Controller_Action
 				unset($data['apporter']);
 				$intitule = $m->get('intitule');
 				$annee = intval(date('Y', strtotime($data['debut']) - 243 * 24 * 60 * 60));
-				$a->intitule = $intitule ? $intitule : Activite::generateIntitule($data, $unites);
+				$a->intitule = $intitule;
 				$a->id = wtk_strtoid($a->getIntitule());
 				$a->save();
 

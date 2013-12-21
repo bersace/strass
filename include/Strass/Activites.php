@@ -42,10 +42,12 @@ class Activite extends Strass_Db_Table_Row_Abstract implements Zend_Acl_Resource
 	static protected $us = array();
 	protected $gi;
     
-	static protected $types = array('diner' => 'dîner',
-					'sortie' => 'sortie',
-					'we' => 'week-end',
-					'camp' => 'camp');
+	static protected $types = array('diner' => 'Dîner',
+					'sortie' => 'Sortie',
+					'we' => 'Week-end',
+					'camp' => 'Camp');
+
+	static protected $type_accr = array('we' => 'WE');
 
 	static $mois = array('January' => 'janvier',
 			     'February' => 'février',
@@ -144,21 +146,28 @@ class Activite extends Strass_Db_Table_Row_Abstract implements Zend_Acl_Resource
 		return $type;
 	}
 
-	public function getIntitule($date = true, $lieu = true)
+	public function getIntitule($date = true, $lieu = true, $compact = false)
 	{
 		// Si l'intitulé est généré, alors le regénérer.
-		if ($this->intitule == $this->getGeneratedIntitule())
-			return self::generateIntitule($this->_data,
-						      $this->getUnitesParticipantes(),
-						      $date, $lieu);
-		else {
-			$dt = strtotime($this->debut);
-			$ft = strtotime($this->fin);
-			$gdate = self::generateDate(self::findType($this->debut, $this->fin),
-						    $dt,$ft);
-			// s'il est imposé, alors ajouter l'année (ou pas).
-			return $this->intitule.($date ? $gdate : '');
-		}
+	  if ($this->intitule) {
+	    $intitule = $this->intitule;
+	  }
+	  else {
+	    $intitule = self::generateIntitule($this->_data,
+					       $this->getUnitesParticipantes(),
+					       false, $lieu, $compact);
+	  }
+
+	  if ($date) {
+	    $dt = strtotime($this->debut);
+	    $ft = strtotime($this->fin);
+	    $gdate = self::generateDate(self::findType($this->debut, $this->fin),
+					$dt,$ft);
+	    // s'il est imposé, alors ajouter l'année (ou pas).
+	    $intitule.= $gdate;
+	  }
+
+	  return $intitule;
 	}
     
 	protected function getGeneratedIntitule()
@@ -170,8 +179,9 @@ class Activite extends Strass_Db_Table_Row_Abstract implements Zend_Acl_Resource
 		return $this->gi;
 	}
 
+
 	public static function generateIntitule(array $data, $unites,
-						$date = true, $location = true) {
+						$date = true, $location = true, $compact = false) {
 		extract($data);
 		$dt = strtotime($debut);
 		$ft = strtotime($fin);
@@ -187,30 +197,20 @@ class Activite extends Strass_Db_Table_Row_Abstract implements Zend_Acl_Resource
 		$first = $explicites instanceof Countable ? $explicites->current() : $explicites;
 		if ($type == 'camp' && ($first->type == 'clan' || $first->type == 'eqcclan')) {
 			$i = 'Route';
-			// été/noël/hiver ?
-			switch(strftime('%m', $dt)) {
-			case 12:
-			case 1:
-				$i.= ' de Noël';
-				break;
-			case 2:
-			case 3:
-				$i.= " d'hiver";
-				break;
-			case 4:
-			case 5:
-				$i.= " de Pâques";
-				break;
-			case 7:
-			case 8:
-				$i.= " d'été";
-				break;
-			default:
-				break;
-			}
+		}
+		else if ($compact) {
+		  switch ($type) {
+		  case 'we':
+		    $i = 'WE';
+		    break;
+		  default:
+		    $i = self::$types[$type];
+		    break;
+		  }
 		}
 		else
 			$i = self::$types[$type];
+
 
 		// type des unités participante
 		if ($explicites instanceof Countable) {   // inter unités
@@ -225,36 +225,88 @@ class Activite extends Strass_Db_Table_Row_Abstract implements Zend_Acl_Resource
 		}
 		else {                  // unité unique
 			$unite = $explicites;
-			switch ($type) {
-			case 'camp':
-				if ($unite->type == 'hp') {
-					$i.= ' HP';
-				}
+			if ($compact && $type == 'we') {
+			  switch ($unite->type) {
+			  case 'hp':
+			    $i.= 'HP';
+			    break;
+			  case 'aines':
+			    $i.= 'CA';
+			    break;
+			  case 'troupe':
+			    $i.= "T ".$unite->nom;
+			    break;
+			  case 'groupe':
+			    $i.= "G";
+			    break;
+			  case 'patrouille':
+			    $i.= "P ".$unite->getName();
+			    break;
+			  case 'equipe':
+			  case 'eqclan':
+			    $i.= "E ".$unite->getFullname();
+			    break;
+			  default:
+			    $i.= " de ".$unite->getTypeName();
+			    break;
+			  }
+			  
+			}
+			else {
+			  switch ($type) {
+			  case 'camp':
+			    if ($unite->type == 'hp') {
+			      $i.= ' HP';
+			    }
+			    else {
+			      // été/noël/hiver ?
+			      switch(strftime('%m', $dt)) {
+			      case 12:
+			      case 1:
+				$i.= ' de Noël';
 				break;
-			default:
-				switch ($unite->type) {
-				case 'hp':
-					$i.= ' HP';
-					break;
-				case 'patrouille':
-					$i.= " de ".$unite->getFullname();
-					break;
-				case 'equipe':
-				case 'eqclan':
-					$i.= " d'".$unite->getTypeName();
-					break;
-				default:
-					$i.= " de ".$unite->getTypeName();
-					break;
-				}
+			      case 2:
+			      case 3:
+				$i.= " d'hiver";
+				break;
+			      case 4:
+			      case 5:
+				$i.= " de Pâques";
+				break;
+			      case 7:
+			      case 8:
+				$i.= " d'été";
+				break;
+			      default:
+				break;
+			      }
+			    }
+			    break;
+			  default:
+			    switch ($unite->type) {
+			    case 'hp':
+			      $i.= ' HP';
+			      break;
+			    case 'patrouille':
+			      $i.= " de ".$unite->getFullname();
+			      break;
+			    case 'equipe':
+			    case 'eqclan':
+			      $i.= " d'".$unite->getTypeName();
+			      break;
+			    default:
+			      $i.= " de ".$unite->getTypeName();
+			      break;
+			    }
+			  }
 			}
 		}
 
 		if ($lieu && $location) {
-			if ($type == 'we' || $type == 'sortie')
-				$i.= ' à '.$lieu;
-			else if ($type == 'camp')
-				$i.= ' '.$lieu;
+		  if ($compact || $type == 'camp')
+		    $i.= ' '.$lieu;
+		  else
+		    $i.= ' à '.$lieu;
 		}
 
 		if ($date)

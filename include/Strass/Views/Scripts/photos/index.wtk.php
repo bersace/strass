@@ -8,7 +8,7 @@ class Scout_Pages_Renderer_Albums extends Strass_Views_PagesRenderer_Historique
     $l = $parent->addList()->addFlags('albums');
     foreach ($activites as $activite) {
       $v = $this->view->vignettePhoto($activite->getPhotoAleatoire(),
-				      wtk_ucfirst($activite->getIntitule(false)),
+				      $activite->getIntitule(false, true, true),
 				      array('action'		=> 'consulter',
 					    'controller'	=> 'photos',
 					    'activite'	=> $activite->id,
