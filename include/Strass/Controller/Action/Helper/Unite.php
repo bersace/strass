@@ -31,14 +31,15 @@ class Strass_Controller_Action_Helper_Unite extends Zend_Controller_Action_Helpe
 		case 'activites':
 		  $action = 'calendrier';
 		  break;
+		case 'photos':
+		  $controller = 'unites';
+		  $action = 'accueil';
+		  break;
 		default:
 		  $action = null;
 		  break;
 		}
 		
-		$controller = $this->getRequest()->getParam('controller');
-		$controller = in_array($controller, array('unites', 'activites')) ? $controller : 'unites';
-		$action = $action ? $action : ($controller == 'activites' ? 'calendrier' : 'accueil');
 		$this->_actionController->branche->append(wtk_ucfirst($unite->getFullname()),
 							  array('controller'	=> $controller,
 								'action'	=> $action,

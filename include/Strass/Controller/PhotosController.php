@@ -5,12 +5,10 @@ require_once 'Strass/Activites.php';
 
 class PhotosController extends Strass_Controller_Action
 {
-	protected $_titreBranche = 'Photos';
-
 	function indexAction()
 	{
-		$annee = $this->_helper->Annee();
 		$this->view->unite = $this->_helper->Unite();
+		$annee = $this->_helper->Annee();
 
 		$this->metas(array('DC.Title' => 'Albums photos '.$annee,
 				   'DC.Subject' => 'photos,albums,'.$annee));
