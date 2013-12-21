@@ -75,6 +75,12 @@ a:hover
   margin-right: 0;
   }
 
+#webaddons > .section > .h a
+{
+    color: inherit;
+    text-decoration: inherit;
+}
+
 #webaddons > .section > .h span
 {
   display: block;
