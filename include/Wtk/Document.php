@@ -15,6 +15,8 @@ class Wtk_Document extends Wtk_Section
 		$this->styles = array();
 		$this->custom_style_components = array();
 		$this->embedStyle(false);
+		$this->header = new Wtk_Section('header', null);
+		$this->aside = new Wtk_Section('aside', null);
 		$this->footer = new Wtk_Section('footer', null);
 	}
 
@@ -98,9 +100,10 @@ class Wtk_Document extends Wtk_Section
 			$this->data['dojoTypes'] = $djts;
 			$this->data['alternatives'] = $this->alternatives;
 			$this->data['metas'] = $this->metas;
-			$section = $this->sectionTemplate();
 			$tpl = $this->elementTemplate();
-			$tpl->addChild('content', $section);
+			$tpl->addChild('header', $this->header->template());
+			$tpl->addChild('content', $this->sectionTemplate());
+			$tpl->addChild('aside', $this->aside->template());
 			$tpl->addChild('footer', $this->footer->template());
 			$this->template = $tpl;
 		}

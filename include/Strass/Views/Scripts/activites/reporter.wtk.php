@@ -1,6 +1,6 @@
 <?php
 
-$s = $this->content->addSection('rapport',
+$s = $this->document->addSection('rapport',
 				new Wtk_Container($this->lienActivite($this->activite),
 						  new Wtk_Inline(" : "),
 						  $this->lienUnite($this->unite),

@@ -1,6 +1,6 @@
 <?php
 
-$s = $this->content->addSection('editer', new Wtk_Container(new Wtk_Inline("Modifier la fiche de "),
+$s = $this->document->addSection('editer', new Wtk_Container(new Wtk_Inline("Modifier la fiche de "),
 							    $this->lienIndividu($this->individu)));
 $f = $s->addChild(new Wtk_Form($this->model));
 

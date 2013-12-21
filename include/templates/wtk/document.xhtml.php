@@ -88,7 +88,9 @@ dojo.require("dojo.parser");
 <?php endif; ?>
   </head>
   <body>
+    <?php $this->header->output(); ?>
     <?php $this->content->output (); ?>
+    <?php $this->aside->output(); ?>
     <?php $this->footer->output(); ?>
   </body>
 </html>

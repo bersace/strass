@@ -1,6 +1,6 @@
 <?php
 
-$s = $this->content->addSection(null, 'Enregistrer une citation');
+$s = $this->document->addSection(null, 'Enregistrer une citation');
 $f = $s->addForm($this->model);
 $f->addEntry('auteur', 24);
 $f->addEntry('citation', 64, 2);

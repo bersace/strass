@@ -19,7 +19,10 @@ abstract class Knema_Format_Wtk extends Knema_Format
 		$site = Zend_Registry::get('site');
 		$document->setStyle(new Wtk_Document_Style($site->style, 'data/styles/'));
 		$document->addStyleComponents('layout', $cn, $an, $mn);
-		$content = $document->addSection('content');
+
+		$link = new Wtk_Link('/', $site->metas->title);
+		$document->header->setTitle($link);
+
 
 		foreach($controller->view->page->formats as $format) {
 			if ($format->suffix != $this->suffix) {
@@ -29,7 +32,6 @@ abstract class Knema_Format_Wtk extends Knema_Format
 		}
 
 		$view->document = $document;
-		$view->content = $content;
 	}
 
 	protected function _render($view)

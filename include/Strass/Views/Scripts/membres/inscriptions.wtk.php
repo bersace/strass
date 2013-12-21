@@ -54,6 +54,6 @@ class Scout_Page_RendererInscriptions extends Wtk_Pages_Renderer
 	}
 }
 
-$s = $this->content->addSection('inscriptions', "Inscriptions en attente");
+$s = $this->document->addSection('inscriptions', "Inscriptions en attente");
 $s->addChild(new Wtk_Pages(null, $this->inscriptions,
 			   new Scout_Page_RendererInscriptions($this)));

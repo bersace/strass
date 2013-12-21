@@ -1,7 +1,7 @@
 <?php
 
 $this->document->addStyleComponents('vignette');
-$s = $this->content->addSection("rapports");
+$s = $this->document->addSection("rapports");
 foreach($this->participations as $participation)
 {
 	$activite = $participation->findParentActivites();

@@ -19,7 +19,7 @@ class Scout_Pages_Renderer_Photo extends Wtk_Pages_Renderer
 }
 
 $this->document->addStyleComponents('signature');
-$s = $this->content->addSection('photo', ucfirst($this->photo->titre));
+$s = $this->document->addSection('photo', ucfirst($this->photo->titre));
 $s->addPages(null, $this->model,
 	     new Scout_Pages_Renderer_Photo($this->url(array('photo' => '%i')).'#photo',
 							  false,

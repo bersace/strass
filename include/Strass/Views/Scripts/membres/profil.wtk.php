@@ -1,6 +1,6 @@
 <?php
 
-$s = $this->content->addSection(null, 'Modifier votre profil');
+$s = $this->document->addSection(null, 'Modifier votre profil');
 
 $f = $s->addChild(new Wtk_Form($this->model));
 $fs = $f->addChild(new Wtk_Form_Fieldset("Change le mot de passe"));

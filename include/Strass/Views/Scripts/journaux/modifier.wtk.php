@@ -1,6 +1,6 @@
 <?php
 
-$s = $this->content->addSection('journal', "Modifier le journal « ".$this->journal->nom." »");
+$s = $this->document->addSection('journal', "Modifier le journal « ".$this->journal->nom." »");
 $f = $s->addChild(new Wtk_Form($this->model));
 $f->addEntry('nom', 32);
 $g = $f->addChild(new Wtk_Form_Fieldset("Rubriques"));

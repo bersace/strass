@@ -1,7 +1,7 @@
 <?php
 
 $this->document->addStyleComponents('vignette', 'article');
-$c = $this->content;
+$c = $this->document;
 
 if ($this->participation->boulet) {
 	$s = $c->addSection(null, null);

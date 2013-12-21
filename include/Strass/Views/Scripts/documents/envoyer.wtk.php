@@ -1,7 +1,7 @@
 <?php
 
 $i = $this->model->getInstance('unite');
-$s = $this->content->addSection('documents', "Envoyer un document".(count($i) == 1 ? " à l'unité ".current(current($i)) : ""));
+$s = $this->document->addSection('documents', "Envoyer un document".(count($i) == 1 ? " à l'unité ".current(current($i)) : ""));
 $f = $s->addChild(new Wtk_Form($this->model));
 if (count($i) > 1) {
   $f->addChild('Select', 'unite');

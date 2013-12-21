@@ -1,6 +1,6 @@
 <?php
 
-$s = $this->content->addSection('inscrire', new Wtk_Container(new Wtk_Inline("Inscrire dans "),
+$s = $this->document->addSection('inscrire', new Wtk_Container(new Wtk_Inline("Inscrire dans "),
 							      $this->lienUnite($this->unite)));
 $f = $s->addChild(new Wtk_Form($this->model));
 

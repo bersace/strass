@@ -76,7 +76,7 @@ class Dio_Office_Document extends Dio_Element implements Dio_Embeddable
 		switch($name) {
 		case 'content':
 			// retrieve directly format specific content (spreadsheet, text, etc.)
-			return $this->_body->content;
+			return $this->_body->document;
 		case 'meta':
 		case 'metas':
 			$name = 'meta';

@@ -1,6 +1,6 @@
 <?php
 
-$s = $this->content->addSection(null, new Wtk_Container(new Wtk_RawText("Gérer les appartenances de "),
+$s = $this->document->addSection(null, new Wtk_Container(new Wtk_RawText("Gérer les appartenances de "),
 							$this->lienIndividu($this->individu)));
 $f = $s->addChild(new Wtk_Form($this->apps));
 $f->addTable('appartenances',
@@ -18,7 +18,7 @@ $b->addChild(new Wtk_Form_Submit($this->apps->getSubmission('enregistrer')));
 
 // PROGRESSION
 if ($this->progression->getInstance('progression')->count()) {
-	$s = $this->content->addSection(null, new Wtk_Container(new Wtk_RawText("Gérer la progression de "),
+	$s = $this->document->addSection(null, new Wtk_Container(new Wtk_RawText("Gérer la progression de "),
 								$this->lienIndividu($this->individu)));
 	$f = $s->addChild(new Wtk_Form($this->progression));
 	$f->addTable('progression',
@@ -35,7 +35,7 @@ if ($this->progression->getInstance('progression')->count()) {
 // FORMATION
 
 if ($this->formation->getInstance('formation')->count()) {
-	$s = $this->content->addSection(null, new Wtk_Container(new Wtk_RawText("Gérer la formation de "),
+	$s = $this->document->addSection(null, new Wtk_Container(new Wtk_RawText("Gérer la formation de "),
 								$this->lienIndividu($this->individu)));
 	$f = $s->addChild(new Wtk_Form($this->formation));
 	$f->addTable('formation',

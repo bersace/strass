@@ -1,6 +1,6 @@
 <?php
 
-$s = $this->content->addSection(null,
+$s = $this->document->addSection(null,
 				new Wtk_Container("Compléter la formation de ",
 						  $this->lienIndividu($this->individu)));
 

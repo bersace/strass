@@ -1,6 +1,6 @@
 <?php
 
-$s = $this->content->addSection('prevoir', new Wtk_Container(new Wtk_Inline("Modifier l'activité "),
+$s = $this->document->addSection('prevoir', new Wtk_Container(new Wtk_Inline("Modifier l'activité "),
 							     $this->lienActivite($this->activite)));
 $f = $s->addChild(new Wtk_Form($this->model));
 $g = $f->addForm_Fieldset('Informations générales');

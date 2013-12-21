@@ -54,7 +54,7 @@ class Scout_Page_RendererIndividu extends Wtk_Pages_Renderer
 	}
 }
 
-$s = $this->content->addSection('nouveaux', "Les nouveaux du groupe");
+$s = $this->document->addSection('nouveaux', "Les nouveaux du groupe");
 $s->addParagraph("Voici la liste des individus inscrit dans aucune unités.");
 $s->addChild(new Wtk_Pages(null, $this->individus,
 			   new Scout_Page_RendererIndividu($this, $this->profils)));

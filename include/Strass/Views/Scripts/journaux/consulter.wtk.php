@@ -1,7 +1,7 @@
 <?php
 
 $this->document->addStyleComponents('signature', 'article');
-$s = $this->content->addSection('article', $this->article->titre);
+$s = $this->document->addSection('article', $this->article->titre);
 $s->addParagraph(new Wtk_Inline("//in// "),
 		 $this->lienJournal($this->journal),
 		 ", ",

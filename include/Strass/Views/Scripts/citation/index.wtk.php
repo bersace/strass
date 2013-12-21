@@ -16,7 +16,7 @@ class Scout_Pages_RendererCitation extends Wtk_Pages_Renderer
 }
 
 $this->document->addStyleComponents('signature');
-$s = $this->content;
+$s = $this->document;
 $s->addPages(null,
 	     new Wtk_Pages_Model_Table($this->citations, null, 'date DESC', 10,
 				       $this->current),

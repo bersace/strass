@@ -1,6 +1,6 @@
 <?php
 
-$s = $this->content->addSection('chaine', $this->activite->getIntitule());
+$s = $this->document->addSection('chaine', $this->activite->getIntitule());
 $f = $s->addForm($this->model);
 $f->addParagraph()->addFlags('info')->addInline("Voici le contenu du courriel, vous pouvez le complétez.");
 $f->addEntry('intro', 64, 3)->useLabel(false);

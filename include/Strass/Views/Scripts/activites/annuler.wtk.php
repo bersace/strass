@@ -1,6 +1,6 @@
 <?php
 
-$s = $this->content->addSection(null,
+$s = $this->document->addSection(null,
 				new Wtk_Container(new Wtk_RawText("Annuler l'activité "),
 						  $this->lienActivite($this->activite)));
 $f = $s->addChild(new Wtk_Form($this->model));

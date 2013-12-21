@@ -1,6 +1,6 @@
 <?php
 
-$s = $this->content->addSection('documents');
+$s = $this->document->addSection('documents');
 $pre = NULL;
 foreach($this->docs as $doc) {
 	$unite = $doc->findParentUnites();

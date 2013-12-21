@@ -1,7 +1,7 @@
 <?php
 
 $i = $this->model->getInstance('unites');
-$s = $this->content->addSection('prevoir', "Prévoir une nouvelle activité".(count($i) == 1 ? " pour ".current(current($i)) :""));
+$s = $this->document->addSection('prevoir', "Prévoir une nouvelle activité".(count($i) == 1 ? " pour ".current(current($i)) :""));
 $f = $s->addChild(new Wtk_Form($this->model));
 $g = $f->addForm_Fieldset('Informations générales');
 $i = $this->model->getInstance('unites');

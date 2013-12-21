@@ -29,7 +29,7 @@ class Scout_Pages_Renderer_Livredor extends Wtk_Pages_Renderer
 }
 
 $this->document->addStyleComponents('signature');
-$s = $this->content;
+$s = $this->document;
 $p = $s->addPages(null,
 		  new Wtk_Pages_Model_Table($this->livredor,
 					    'public IS NOT NULL',

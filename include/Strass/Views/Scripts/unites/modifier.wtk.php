@@ -1,5 +1,5 @@
 <?php
-$section = $this->content->addSection(null,
+$section = $this->document->addSection(null,
 				      new Wtk_Container(new Wtk_RawText("Modifier "),
 							$this->lienUnite($this->unite)));
 

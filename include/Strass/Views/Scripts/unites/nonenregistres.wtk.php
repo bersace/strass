@@ -80,7 +80,7 @@ class Scout_Page_RendererIndividu extends Wtk_Pages_Renderer
 	}
 }
 
-$s = $this->content->addSection('nonenregistres', "Les non enregistrés");
+$s = $this->document->addSection('nonenregistres', "Les non enregistrés");
 $s->addParagraph("Voici la liste des personnes inscrit dans cette unité, mais ne s'étant pas enregistré sur le site.");
 $s->addChild(new Wtk_Pages(null, $this->individus,
 			   new Scout_Page_RendererIndividu($this, $this->profils)));

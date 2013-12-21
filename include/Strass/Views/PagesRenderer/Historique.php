@@ -18,6 +18,7 @@ abstract class Strass_Views_PagesRenderer_Historique extends Wtk_Pages_Renderer
       return;
 
     $ss = $pages->addSection('historique', "Historique");
+    $ss->addFlags('pagelinks');
     $pre = null;
     foreach($model->data as $annee => $chef) {
       switch($model->unite->type) {
@@ -36,7 +37,7 @@ abstract class Strass_Views_PagesRenderer_Historique extends Wtk_Pages_Renderer
 	$intitule = $chef ? $chef->prenom : null;
 	break;
       }
-      
+
       if ($pre == null || $pre != $chef) {
 	$sss = $ss->addSection(null, $intitule ? "L'année ".$intitule : null);
 	$l = $sss->addList();

@@ -57,7 +57,7 @@ class Scout_Page_RendererIndividu extends Wtk_Pages_Renderer
 	}
 }
 
-$s = $this->content->addSection('membres', "Les membres inscrits sur le site");
+$s = $this->document->addSection('membres', "Les membres inscrits sur le site");
 $s->addParagraph("Voici la liste des individus pouvant s'identifier sur le site.");
 $s->addChild(new Wtk_Pages(null, $this->individus,
 			   new Scout_Page_RendererIndividu($this, $this->profils)));

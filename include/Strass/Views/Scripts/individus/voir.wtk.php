@@ -1,14 +1,12 @@
 <?php
 
-$s = $this->content->addSection('individu', $this->individu->getFullname(false, false));
-
-$ss = $s->addSection('informations', "Informations personnelles");
+$s = $this->document->addSection('informations', "Informations personnelles");
 
 
 if ($i = $this->individu->getImage())
-	$ss->addParagraph()->addFlags('avatar')->addImage($i, "Photo", $this->individu->getFullname());
+	$s->addParagraph()->addFlags('avatar')->addImage($i, "Photo", $this->individu->getFullname());
 
-$l = $ss->addList();
+$l = $s->addList();
 $l->addItem(new Wtk_RawText("Né en ".$this->individu->getDateNaissance('%Y')." (".$this->individu->getAge()." ans)"));
 $info = array('adelec'		=> "**Adélec :** [mailto:%s %s]",
 	      'jabberid'	=> "**Id Jabber :** [xmpp:%s %s]",
@@ -44,14 +42,14 @@ if ($this->chef && $this->isadmin)
 
 // notes
 if ($this->individu->notes) {
-	$sss = $ss->addSection('notes', "Notes");
-	$sss->addText($this->individu->notes);
+	$ss = $s->addSection('notes', "Notes");
+	$ss->addText($this->individu->notes);
  }
 
 // progression
 if ($this->progression->count()) {
-	$ss = $s->addSection('progression', 'Progression');
-	$l = $ss->addList();
+	$s = $this->document->addSection('progression', 'Progression');
+	$l = $s->addList();
 
 	foreach($this->progression as $progression) {
 		$etape = $progression->findParentEtape();
@@ -64,8 +62,8 @@ if ($this->progression->count()) {
 
 // formation
 if ($this->formation->count()) {
-	$ss = $s->addSection('formation', 'Formation');
-	$l = $ss->addList();
+	$s = $this->document->addSection('formation', 'Formation');
+	$l = $s->addList();
 	foreach($this->formation as $formation) {
 		$diplome = $formation->findParentDiplomes();
 		$l->addItem(wtk_ucfirst($diplome->titre).
@@ -77,8 +75,8 @@ if ($this->formation->count()) {
 
 // activité
 if ($this->appactives->count()) {
-	$ss = $s->addSection('activites', "Actuellement");
-	$l = $ss->addList();
+	$s = $this->document->addSection('activites', "Actuellement");
+	$l = $s->addList();
 	foreach($this->appactives as $app) {
 		$l->addItem(new Wtk_Container(new Wtk_RawText(ucfirst($app->findParentRoles()->__toString())." dans "),
 					      $this->lienUnite($app->findParentUnites()),
@@ -88,8 +86,8 @@ if ($this->appactives->count()) {
 
 // historique
 if ($this->historique->count()) {
-	$ss = $s->addSection('historique', "Historique");
-	$l = $ss->addList();
+	$s = $this->document->addSection('historique', "Historique");
+	$l = $s->addList();
 	foreach($this->historique as $app) {
 		$l->addItem(new Wtk_Container(new Wtk_RawText(ucfirst($app->findParentRoles()->__toString())." dans "),
 					      $this->lienUnite($app->findParentUnites(),
@@ -101,8 +99,8 @@ if ($this->historique->count()) {
 // commentaires
 
 if ($this->commentaires->count()) {
-	$ss = $s->addSection('commentaires', "Derniers commentaires de photos");
-	$l = $ss->addList();
+	$s = $this->document->addSection('commentaires', "Derniers commentaires de photos");
+	$l = $s->addList();
 	foreach($this->commentaires as $commentaire)
 		$l->addItem(new Wtk_Container($this->lienPhoto($commentaire->findParentPhotos()),
 					      new Wtk_RawText(" le ".strftime("%e-%m-%Y", strtotime($commentaire->date)).".")));
@@ -110,8 +108,8 @@ if ($this->commentaires->count()) {
 
 // articles
 if ($this->articles->count()) {
-	$ss = $s->addSection('articles', "Derniers articles");
-	$l = $ss->addList();
+	$s = $this->document->addSection('articles', "Derniers articles");
+	$l = $s->addList();
 	foreach($this->articles as $article) {
 		$l->addItem(new Wtk_Container($this->lienArticle($article),
 					      new Wtk_RawText(" le ".strftime("%e-%m-%Y", strtotime($article->date)).".")));

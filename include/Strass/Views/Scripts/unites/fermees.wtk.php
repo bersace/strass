@@ -11,5 +11,5 @@ function pack_unites($view, $parent, $unites)
   }
 }
 
-$section = $this->content->addSection('unites', "Unités fermées");
+$section = $this->document->addSection('unites', "Unités fermées");
 pack_unites($this, $section, $this->unites);

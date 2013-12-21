@@ -1,6 +1,6 @@
 <?php
 
-$s = $this->content->addSection('modifier', "Modifier « ".$this->photo->titre." »");
+$s = $this->document->addSection('modifier', "Modifier « ".$this->photo->titre." »");
 
 $v = $s->addSection('vignette');
 $v->addChild(new Wtk_Paragraph($this->vignettePhoto($this->photo)));

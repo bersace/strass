@@ -8,7 +8,7 @@ foreach ($this->errors as $i => $error) {
 	else
 		$titre = "Erreur".(count($this->errors)>1 ? " #".($i+1) : "");
 
-	$section = $this->content->addSection("error".$i, $titre);
+	$section = $this->document->addSection("error".$i, $titre);
 	$section->addChild (new Wtk_Text ("// ".$error->getMessage()." // \n"));
 
 	if ($error instanceof Knema_Controller_Action_Exception_Forbidden) {

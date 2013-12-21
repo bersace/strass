@@ -1,6 +1,6 @@
 <?php
 
-$s = $this->content->addSection(null, "Supprimer la photo « ".$this->photo->titre." »");
+$s = $this->document->addSection(null, "Supprimer la photo « ".$this->photo->titre." »");
 
 $v = $s->addSection('vignette');
 $v->addParagraph($this->vignettePhoto($this->photo));

@@ -1,7 +1,7 @@
 <?php
 
 $this->document->addStyleComponents('trombi');
-$s = $this->content;
+$s = $this->document;
 $l = $s->addList();
 
 $acl = Zend_Registry::get('acl');

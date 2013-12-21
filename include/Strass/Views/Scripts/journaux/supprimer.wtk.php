@@ -1,6 +1,6 @@
 <?php
 
-$s = $this->content->addSection('supprimer',
+$s = $this->document->addSection('supprimer',
 				new Wtk_Container(new Wtk_Inline("Supprimer l'article "),
 						  $this->lienArticle($this->article)));
 $f = $s->addChild(new Wtk_Form($this->model));

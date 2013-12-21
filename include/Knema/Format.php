@@ -61,7 +61,8 @@ abstract class Knema_Format
 			return;
 
 		$view = $controller->view;
-		$view->addons = $view->document->addSection('webaddons');
+		$view->document = $view->document;
+		$view->addons = $view->document->aside;
 		$view->addons->level = 1;
 		foreach($view->page as $addon) {
 			$addon->initView($view);

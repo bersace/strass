@@ -1,6 +1,6 @@
 <?php
 
-$s = $this->content->addSection('brouillons',
+$s = $this->document->addSection('brouillons',
 				new Wtk_Container($this->lienJournal($this->journal)));
 $s->addFlags($this->journal->id);
 $s->addChild(new Wtk_Pages(null,

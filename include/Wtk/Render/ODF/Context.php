@@ -8,8 +8,8 @@ class Wtk_Render_ODF_Context {
 	function __construct($document)
 	{
 		$this->doc = $document;
-		$this->content = $document->content;
-		$this->_parents = array($this->content);
+		$this->document = $document->document;
+		$this->_parents = array($this->document);
 	}
 
 	function pushParent($parent)

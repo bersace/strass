@@ -10,7 +10,6 @@ class Strass_Views_PagesRenderer_Unites_Accueil extends Strass_Views_PagesRender
       $src = $unite->getImage();
       if ($src) {
 	$image = new Wtk_Image($src, "Photo d'unité", $label);
-	$image->addFlags('vignette');
       }
       else {
 	$photo = $photos->findPhotoAleatoireUnite($unite);
@@ -20,8 +19,10 @@ class Strass_Views_PagesRenderer_Unites_Accueil extends Strass_Views_PagesRender
 	  $image = new Wtk_Image($photo->getCheminVignette(),
 				 $photo->titre.' '.$this->view->page->metas->get('DC.Subject'),
 				 $photo->titre);
-	else
+	else {
 	  $image = new Wtk_Paragraph("Pas d'image !");
+	  $image->addFlags('image');
+	}
       }
 
       $url = $this->view->url(array('unite' => $unite->id));
@@ -29,7 +30,11 @@ class Strass_Views_PagesRenderer_Unites_Accueil extends Strass_Views_PagesRender
 			   new Wtk_Container($image, new Wtk_Paragraph($label)));
       $link->addFlags($unite->type);
       $item = $list->addItem($link);
-      $item->addFlags($unite->type, 'vignette');
+      $item->addFlags($unite->type);
+      if ($src)
+	$item->addFlags('unite');
+      else
+	$item->addFlags('vignette');
 
       // insérer les sous unités ouverte à la suite
       $this->renderUnites($list, $unite->getSousUnites(false, $annee), $annee);
@@ -51,6 +56,7 @@ class Strass_Views_PagesRenderer_Unites_Accueil extends Strass_Views_PagesRender
       $this->view->document->addStyleComponents('vignette');
       $ss = $s->addSection('unites', 'Les '.$unite->getSousTypeName(true));
       $l = $ss->addList();
+      $l->addFlags('vignettes');
       $this->renderUnites($l, $sousunites, $annee);
     }
   }
@@ -58,6 +64,5 @@ class Strass_Views_PagesRenderer_Unites_Accueil extends Strass_Views_PagesRender
 
 
 $this->document->addStyleComponents('accueil', 'effectifs');
-$s = $this->content->addSection("accueil", wtk_ucfirst($this->unite->getName())." ".$this->unite->extra);
-$s->addPages(null, $this->model,
-	     new Strass_Views_PagesRenderer_Unites_Accueil($this));
+$this->document->addPages(null, $this->model,
+			  new Strass_Views_PagesRenderer_Unites_Accueil($this));

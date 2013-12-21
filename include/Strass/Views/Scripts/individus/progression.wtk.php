@@ -1,6 +1,6 @@
 <?php
 
-$s = $this->content->addSection(null,
+$s = $this->document->addSection(null,
 				new Wtk_Container("Enregistrer la progression de ",
 						  $this->lienIndividu($this->individu)));
 

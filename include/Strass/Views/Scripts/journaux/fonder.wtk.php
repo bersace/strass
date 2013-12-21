@@ -1,6 +1,6 @@
 <?php
 
-$s = $this->content->addSection("fonder-journal", "Fonder le journal pour ".$this->unite);
+$s = $this->document->addSection("fonder-journal", "Fonder le journal pour ".$this->unite);
 $f = $s->addChild(new Wtk_Form($this->model));
 $f->addEntry('nom');
 $g = $f->addChild(new Wtk_Form_Fieldset("Rubriques", $this->model));

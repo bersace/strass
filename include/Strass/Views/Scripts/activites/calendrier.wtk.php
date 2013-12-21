@@ -37,5 +37,5 @@ class Strass_Views_PagesRenderer_Calendrier extends Strass_Views_PagesRenderer_H
   }
 }
 
-$this->content->addPages(null, $this->model,
+$this->document->addPages(null, $this->model,
 			 new Strass_Views_PagesRenderer_Calendrier($this));

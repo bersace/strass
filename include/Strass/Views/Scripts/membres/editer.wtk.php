@@ -1,6 +1,6 @@
 <?php
 
-$s = $this->content->addSection("Éditer la fiche d'inscription");
+$s = $this->document->addSection("Éditer la fiche d'inscription");
 
 $f = $s->addForm($this->model);
 

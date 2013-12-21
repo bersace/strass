@@ -1,6 +1,6 @@
 <?php
 
-$s = $this->content->addSection(null, "Éditer le message de bienvenue");
+$s = $this->document->addSection(null, "Éditer le message de bienvenue");
 
 $f = $s->addChild(new Wtk_Form($this->model));
 $c = $f->addEntry('introduction', 64, 8);

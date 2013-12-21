@@ -91,6 +91,6 @@ class Scout_Page_RendererIndividu extends Wtk_Pages_Renderer
 	}
 }
 
-$s = $this->content->addSection('anciens', "Les anciens d".($this->unite ? "e ".$this->unite->getFullName() : "u groupe"));
+$s = $this->document->addSection('anciens', "Les anciens d".($this->unite ? "e ".$this->unite->getFullName() : "u groupe"));
 $s->addPages(null, $this->individus,
 	     new Scout_Page_RendererIndividu($this, $this->profils));

@@ -1,6 +1,6 @@
 <?php
 $a = $this->activite;
-$s = $this->content->addSection('activite');
+$s = $this->document->addSection('activite');
 
 // INFORMATIONS GÉNÉRALES
 $ss = $s->addSection('informations', 'Informations générales');

@@ -36,7 +36,7 @@ class Scout_Pages_Renderer_Livredor extends Wtk_Pages_Renderer
 }
 
 $this->document->addStyleComponents('signature');
-$s = $this->content->addSection('livredor', "Livre d'or");
+$s = $this->document->addSection('livredor', "Livre d'or");
 if ($this->messages->count()) {
 	$p = $s->addPages(null,
 			  $this->messages,

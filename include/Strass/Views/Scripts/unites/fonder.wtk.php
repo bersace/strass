@@ -1,5 +1,5 @@
 <?php
-$section = $this->content;
+$section = $this->document;
 
 $f = $section->addChild(new Wtk_Form($this->model));
 

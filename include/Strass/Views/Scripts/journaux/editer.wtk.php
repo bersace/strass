@@ -1,6 +1,6 @@
 <?php
 
-$s = $this->content->addSection('editer', new Wtk_Container($this->lienJournal($this->journal),
+$s = $this->document->addSection('editer', new Wtk_Container($this->lienJournal($this->journal),
 							    new Wtk_Inline(" : Éditer "),
 							    $this->lienArticle($this->article)));
 $f = $s->addChild(new Wtk_Form($this->model));

@@ -1,7 +1,7 @@
 <?php
 
 $this->document->addStyleComponents('sousunites');
-$s = $this->content->addSection('sousunites', "Les ".$this->soustype);
+$s = $this->document->addSection('sousunites', "Les ".$this->soustype);
 $l = $s->addList();
 
 $acl = Zend_Registry::get('acl');

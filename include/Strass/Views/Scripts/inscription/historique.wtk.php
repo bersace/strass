@@ -17,7 +17,7 @@ class Scout_Pages_Renderer_EditerHistorique extends Wtk_Pages_Renderer_Form
 }
 
 
-$s = $this->content->addSection('historique',
+$s = $this->document->addSection('historique',
 				new Wtk_Container("Compléter l'historique du scoutisme de ",
 						  $this->lienIndividu($this->individu)));
 

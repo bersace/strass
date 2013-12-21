@@ -54,7 +54,7 @@ class Dio_Document_Content extends Dio_Document
 		case 'body':
 			return $this->body;
 		case 'content':
-			return $this->body->content;
+			return $this->body->document;
 		case 'astyles':
 		case 'automaticStyles':
 			return $this->astyles;

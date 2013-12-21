@@ -1,5 +1,5 @@
 <?php
-$s = $this->content->addSection('historique',
+$s = $this->document->addSection('historique',
 				new Wtk_Container(new Wtk_RawText("Compléter l'effectif de "),
 						  $this->lienUnite($this->unite)));
 

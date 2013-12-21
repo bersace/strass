@@ -1,6 +1,6 @@
 <?php
 
-$s = $this->content->addSection('ecrire', new Wtk_Container($this->lienJournal($this->journal),
+$s = $this->document->addSection('ecrire', new Wtk_Container($this->lienJournal($this->journal),
 							    ($this->rubrique ? new Wtk_Inline(" : ") : null),
 							    $this->lienRubrique($this->rubrique),
 							    new Wtk_Inline(" : Écrire un article")));

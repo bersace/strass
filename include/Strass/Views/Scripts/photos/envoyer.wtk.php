@@ -1,6 +1,6 @@
 <?php
 
-$s = $this->content->addSection('photos', "Envoyer une photo");
+$s = $this->document->addSection('photos', "Envoyer une photo");
 $f = $s->addChild(new Wtk_Form($this->model));
 $i = $this->model->getInstance('activite');
 if ($i->count() > 1) {

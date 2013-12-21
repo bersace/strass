@@ -40,5 +40,5 @@ class Strass_Pages_Renderer_Log extends Wtk_Pages_Renderer
 	}
 }
 
-$this->content->addPages(null, $this->logs,
+$this->document->addPages(null, $this->logs,
 			 new Strass_Pages_Renderer_Log($this));

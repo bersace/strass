@@ -1,7 +1,7 @@
 <?php
 $this->document->addStyleComponents('vignette', 'signature', 'article');
 
-$s = $this->content->addSection('accueil', "Bienvenue");
+$s = $this->document->addSection('accueil', "Bienvenue");
 $s->addText($this->bienvenue);
 
 function pack_unites($view, $list, $unites)
@@ -25,7 +25,7 @@ function pack_unites($view, $list, $unites)
 	}
 }
 
-$section = $this->content->addSection('unites', "Les unités");
+$section = $this->document->addSection('unites', "Les unités");
 $list = $section->addList();
 pack_unites($this, $list, $this->unites);
 

@@ -89,7 +89,7 @@ class Dio_Archive extends ZipArchive
 		switch($name) {
 		case 'content':
 			// retrieve directly format specific content (spreadsheet, text, etc.)
-			return $this->_content->content;
+			return $this->_content->document;
 		case 'meta':
 		case 'metas':
 			return $this->_meta->meta;

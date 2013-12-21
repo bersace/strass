@@ -1,4 +1,4 @@
 <?php
-$s = $this->content->addSection('page');
+$s = $this->document->addSection('page');
 $s->addText($this->wiki);
 

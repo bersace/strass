@@ -32,7 +32,7 @@ class Dio_Office_Body extends Dio_Element {
 	{
 		$cclass = self::getContentClass($this->type);
 		$content = new $cclass;
-		$this->content = $this->appendChild($content);
+		$this->document = $this->appendChild($content);
 	}
 
 	static function getContentClass($type)

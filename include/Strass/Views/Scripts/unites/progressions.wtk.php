@@ -2,7 +2,7 @@
 
 $this->document->addStyleComponents('effectifs');
 
-$s = $this->content->addFlags($this->unite->type);
+$s = $this->document->addFlags($this->unite->type);
 
 if ($this->apps->count() || count($this->sousunites)) {
 	$ss = $s->addSection("progression", "Progressions personnelles")->addFlags('effectifs');

@@ -35,7 +35,7 @@ class Scout_Pages_Renderer_EditerIndividu extends Wtk_Pages_Renderer_Form
 }
 
 
-$s = $this->content->addSection('editer', new Wtk_Container(new Wtk_RawText("Modifier la fiche de "),
+$s = $this->document->addSection('editer', new Wtk_Container(new Wtk_RawText("Modifier la fiche de "),
 							    $this->lienIndividu($this->individu)));
 
 $s->addChild(new Wtk_Pages(null,

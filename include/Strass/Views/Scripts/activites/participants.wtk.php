@@ -1,6 +1,6 @@
 <?php
 
-$s = $this->content->addSection("participants", "Participants");
+$s = $this->document->addSection("participants", "Participants");
 
 $model = null;
 foreach($this->apps as $apps) {

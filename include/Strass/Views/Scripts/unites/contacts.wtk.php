@@ -15,7 +15,7 @@ class Strass_Views_PagesRenderer_Unites_Contacts extends Strass_Views_PagesRende
     else {
       $sss = $ss;
     }
-  
+
     if ($apps->count()) {
       $t = $sss->addChild($this->view->tableEffectifs($this->view->appsTableModel($apps),
 						       $this->view->profils, 'contacts'));
@@ -36,6 +36,6 @@ class Strass_Views_PagesRenderer_Unites_Contacts extends Strass_Views_PagesRende
   }
 }
 
-$s = $this->content->addFlags($this->unite->type);
+$s = $this->document->addFlags($this->unite->type);
 $s->addPages(null, $this->model,
 	     new Strass_Views_PagesRenderer_Unites_Contacts($this));

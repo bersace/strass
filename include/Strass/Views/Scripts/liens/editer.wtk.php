@@ -1,6 +1,6 @@
 <?php
 
-$s = $this->content->addSection(null, "Ajouter des liens");
+$s = $this->document->addSection(null, "Ajouter des liens");
 $f = $s->addChild(new Wtk_Form($this->model));
 $f->addChild('Table', 'liens', array('url'		=> array('Entry', 24),
 				     'nom'		=> array('Entry', 24),

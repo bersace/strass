@@ -1,6 +1,6 @@
 <?php
 $this->document->addStyleComponents('signature');
-$s = $this->content->addSection('journal');
+$s = $this->document->addSection('journal');
 if ($this->current < 2) {
 	// ÉDITO
 	if ($this->editorial) {

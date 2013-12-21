@@ -515,7 +515,7 @@ class Unite extends Strass_Db_Table_Row_Abstract implements Zend_Acl_Resource_In
 			       'activites.debut > CURRENT_TIMESTAMP',
 			       array())
 			->where('participe.unite = "'.$this->id.'"')
-			->order('debut ASC');
+			->order('debut DESC');
 
 		if ($explicites) {
 			$notexists = $db->select()
@@ -549,10 +549,10 @@ class Unite extends Strass_Db_Table_Row_Abstract implements Zend_Acl_Resource_In
 			->from('appartient',
 			       array('poste' => 'role',
 				     'debut' => "strftime('%Y', debut, '-8 months')",
-				     'fin' => "strftime('%Y', fin, '-8 months')"))
+				     'fin' => "strftime('%Y', fin, '-7 months')"))
 			->join('individus',
 			       'individus.id = appartient.individu')
-			->order('debut DESC');
+			->order('debut ASC');
         
 		switch($this->type) {
 		case 'hp':
@@ -571,21 +571,18 @@ class Unite extends Strass_Db_Table_Row_Abstract implements Zend_Acl_Resource_In
 		$annees = array();
 		$cette_annee = intval(strftime('%Y', time()-243*24*60*60));
 		foreach($is as $individu) {
-			$fin = $individu->fin ? $individu->fin : $cette_annee;
-			$fin = ($fin == $cette_annee) ? $fin+1 : $fin;
-			for($annee = $individu->debut; $annee < $fin; $annee++) {
-				if (!array_key_exists($annee, $annees))
-					$annees[$annee] = null;
-
-				if ($annees[$annee] instanceof Individu)
-					continue;
+			 $fin = $individu->fin ? $individu->fin : $cette_annee;
+			 $fin = ($fin == $cette_annee) ? $fin+1 : $fin;
+			 for($annee = $individu->debut; $annee < $fin; $annee++) {
+				 if (!array_key_exists($annee, $annees))
+					 $annees[$annee] = null;
 
 				if ($individu->poste == 'chef') {
 					$annees[$annee] = $individu;
 				}
 			}
 		}
-		krsort($annees);
+		ksort($annees);
 		return $annees;
 	}
 

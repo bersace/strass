@@ -24,7 +24,7 @@ class Strass_Pages_Renderer_ProgressionUnite extends Wtk_Pages_Renderer_Form
 	}
 }
 
-$s = $this->content->addSection('progression', "Enregistrer la progression");
+$s = $this->document->addSection('progression', "Enregistrer la progression");
 $s->addPages(null, $this->model,
 	     new Strass_Pages_Renderer_ProgressionUnite($this, $this->model->getFormModel()),
 	     false);

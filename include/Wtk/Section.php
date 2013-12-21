@@ -15,7 +15,7 @@ class Wtk_Section extends Wtk_Container
 		$this->id	= $id;
 		$this->level = $title ? 1 : 0;
 		$this->setTitle($title);
-		$this->contents	= array ();
+		$this->documents	= array ();
 	}
 
 	function setTitle($title)

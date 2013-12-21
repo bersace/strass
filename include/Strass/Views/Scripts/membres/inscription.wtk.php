@@ -95,6 +95,6 @@ class Scout_Pages_RendererInscription extends Wtk_Pages_Renderer_Form
 }
 
 $this->document->addStyleComponents('circulaire');
-$s = $this->content->addSection('inscription');
+$s = $this->document->addSection('inscription');
 $s->addPages(null, $this->model,
 	     new Scout_Pages_RendererInscription($this, $this->model->getFormModel()));

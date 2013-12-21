@@ -1,6 +1,6 @@
 <?php
 
-$s = $this->content->addSection('liens');
+$s = $this->document->addSection('liens');
 $l = $s->addChild(new Wtk_List());
 foreach($this->liens as $lien) {
   $p = new Wtk_Paragraph(new Wtk_Inline($lien->description));

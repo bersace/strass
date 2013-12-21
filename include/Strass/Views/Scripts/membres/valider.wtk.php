@@ -2,7 +2,7 @@
 
 $this->document->addStyleComponents('table');
 
-$s = $this->content->addSection('valider', "Valider une inscription");
+$s = $this->document->addSection('valider', "Valider une inscription");
 
 $i = $this->inscription;
 $f = $s->addForm($this->model);

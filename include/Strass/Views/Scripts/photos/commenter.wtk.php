@@ -1,6 +1,6 @@
 <?php
 
-$s = $this->content->addSection('commenter', array("Commenter « ".$this->photo->titre." »"));
+$s = $this->document->addSection('commenter', array("Commenter « ".$this->photo->titre." »"));
 
 $v = $s->addSection('vignette');
 $v->addChild(new Wtk_Paragraph($this->vignettePhoto($this->photo)));

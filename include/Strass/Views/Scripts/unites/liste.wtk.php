@@ -1,7 +1,7 @@
 <?php
 
 if ($this->model) {
-	$f = $this->content->addForm($this->model);
+	$f = $this->document->addForm($this->model);
 	$g = $f->addForm_Fieldset('Colonnes');
 	$g->addSelect('existantes');
 	$g = $f->addForm_Fieldset('Colonnes supplémentaires');
@@ -14,7 +14,7 @@ if ($this->model) {
 	return;
  }
 
-$s = $this->content->addFlags($this->unite->type);
+$s = $this->document->addFlags($this->unite->type);
 
 if ($this->apps->count() || count($this->sousunites)) {
 	$ss = $s->addSection("effectifs", "Effectifs ".$this->annee." - ".($this->annee+1))->addFlags('effectifs');
