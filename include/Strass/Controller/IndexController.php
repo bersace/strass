@@ -24,13 +24,12 @@ class IndexController extends Strass_Controller_Action implements Zend_Acl_Resou
 
 	public function indexAction()
 	{
-		$unites = new Unites();
-		$unite = $unites->getOuvertes("unites.parent IS NULL")->current();
-		if ($unite) {
-		  $this->redirectSimple('accueil', 'unites', null, array('unite' => $unite->id));
-		} else {
-		  Orror::kill("Pas d'unités");
-		}
+	  $unite = $this->_helper->Unite();
+	  if ($unite) {
+	    $this->redirectSimple('accueil', 'unites', null, array('unite' => $unite->id));
+	  } else {
+	    Orror::kill("Pas d'unités");
+	  }
 	}
 
 	function editerAction()
