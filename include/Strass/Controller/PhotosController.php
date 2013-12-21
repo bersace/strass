@@ -9,51 +9,17 @@ class PhotosController extends Strass_Controller_Action
 
 	function indexAction()
 	{
-		$activites = new Activites();
-		$this->view->annee = $annee = $this->_helper->Annee();
+		$annee = $this->_helper->Annee();
+		$this->view->unite = $this->_helper->Unite();
+
 		$this->metas(array('DC.Title' => 'Albums photos '.$annee,
 				   'DC.Subject' => 'photos,albums,'.$annee));
 
-		// liste des activités ayants des photos cette $annee.
-		$db = $activites->getAdapter();
-		$select = $db->select()
-			->distinct()
-			->from('activites')
-			->join('photos', 'photos.activite = activites.id', array())
-			->where("activites.debut > ?", $this->_helper->Annee->dateDebut($annee))
-			->where("activites.debut < ?", $this->_helper->Annee->dateFin($annee))
-			->where("activites.debut < STRFTIME('%Y-%m-%d %H:%M', CURRENT_TIMESTAMP)")
-			->order('fin');
+		$this->view->model = new Strass_Pages_Model_Photos($this->view->unite, $annee);
             
-		$page = $this->_helper->Page();
-
-		if (in_array($this->_getParam('format'), array('rss', 'atom'))) {
-			$tp = new Photos();
-			$this->view->photos = $tp->fetchAll(null, 'date DESC', 50);
-		}
-		else {
-			$this->view->activites = new Wtk_Pages_Model_Iterator($activites->fetchSelect($select),
-									      30, $page);
-		}
-
-
-		// liste des années
-		$select = $db->select()
-			->distinct()
-			->from('activites',
-			       array('annee' => 'STRFTIME("%Y", debut, "-8 months")'))
-			->join('photos',
-			       'photos.activite = activites.id',
-			       array())
-			->order('fin');
-        
-		$this->view->annees = $annees = $select->query()->fetchAll();
-
 		$this->actions->append("Envoyer une photo",
 				       array('action' => 'envoyer',
 					     'annee' => null));
-
-		$this->formats('atom','rss');
 	}
 
 	function sansphotosAction()

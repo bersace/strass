@@ -23,6 +23,9 @@ class UnitesController extends Strass_Controller_Action
 
 		$this->metas(array('DC.Title' => wtk_ucfirst($u->getName()).' '.$a));
 
+		$this->connexes->append("Photos",
+					array('controller' => 'photos',
+					      'action' => 'index'));
 		$this->liensEffectifs($u, $a);
 		$this->view->profils = (bool) Zend_Registry::get('individu');
 

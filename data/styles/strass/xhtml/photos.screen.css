@@ -29,15 +29,3 @@
   float: none;
   padding-left: 40%;
   }
-
-#historique
-{
-  clear: both;
-  }
-
-#historique li
-{
-  float: left;
-  list-style: none;
-  margin: 0.5ex;
-  }
