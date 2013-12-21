@@ -18,7 +18,7 @@ abstract class Strass_Views_PagesRenderer_Historique extends Wtk_Pages_Renderer
       return;
 
     $ss = $pages->addSection('historique', "Historique");
-    $pre = -1;
+    $pre = null;
     foreach($model->data as $annee => $chef) {
       switch($model->unite->type) {
       case 'groupe':
@@ -37,10 +37,10 @@ abstract class Strass_Views_PagesRenderer_Historique extends Wtk_Pages_Renderer
 	break;
       }
       
-      if ($pre == -1 || $pre != $intitule) {
+      if ($pre == null || $pre != $chef) {
 	$sss = $ss->addSection(null, $intitule ? "L'année ".$intitule : null);
 	$l = $sss->addList();
-	$pre = $intitule;
+	$pre = $chef;
       }
       else {
 	$sss->setTitle($intitule ? "Les années ".$intitule : null);
