@@ -1,43 +1,24 @@
 html
 {
-  background: #EAD382;
+
   }
 
 body
 {
-  background-image: url("img/tissu-beige.png");
-  background-position: top left;
-  background-repeat: repeat-x;
-  height: 500px;
-  padding: 1ex 0;
+    background: #d6c996;
   }
 
-#document
+#header .h
 {
-  width: 100%;
-  margin: 0;
-  padding: 0;
-  padding-top: 1em;
-  height: 128px;
-  background-image: url("img/promesse.png");
-  background-position: 1em center;
-  background-repeat: no-repeat;
-  }
+    font-size: 3em;
+    font-family: serif;
+}
 
-#content
+#header .h a
 {
-  background-image: url("img/foulard.png");
-  background-position: right 0;
-  background-repeat: no-repeat;
-  }
-
-#footer .metas .organization
-{
-  background-image: url("img/bande-groupe.png");
-  background-position: bottom center;
-  background-repeat: no-repeat;
-  }
-
+    color: inherit;
+    text-decoration: inherit;
+}
 
 a:hover, a:visited
 {
@@ -49,45 +30,43 @@ a:hover
   text-decoration: none;
   }
 
+#document
+{
+    background-color: #FAFBF8;
+    border-style: solid;
+    border-color: #615230;
+    border-radius: 1ex;
+}
 
-
-#webaddons
+#aside
 {
   padding-top: 2em;
   background-position: bottom left;
   background-repeat: no-repeat;
   }
 
-#webaddons > div.section > *
+#aside > div.section > *
 {
   margin-right: 1ex;
   }
 
-#webaddons > .section > .h
+#aside > .section > .h
 {
   text-align: right;
   font-size: 1.1em;
-  color: white;
-  height: 48px;
-  background-repeat: no-repeat;
-  background-position: left top;
-  margin-bottom: -.5em;
-  margin-right: 0;
+  margin: 0;
+  padding: 1ex;
+  color: #F2EDE4;
+  background: #615230;
   }
 
-#webaddons > .section > .h a
+#aside > .section > .h a
 {
     color: inherit;
     text-decoration: inherit;
 }
 
-#webaddons > .section > .h span
-{
-  display: block;
-  padding: 10px 1em 0 0;
-  }
-
-#webaddons .section li a
+#aside .section li a
 {
   display: block;
   padding: 0;
@@ -95,12 +74,12 @@ a:hover
   margin-right: 2px;
   }
 
-#webaddons .section ul
+#aside .section ul
 {
   padding-left: 1em;
   }
 
-#webaddons .section li
+#aside .section li
 {
   list-style-type: none;
   background-repeat: no-repeat;
@@ -140,38 +119,6 @@ a:hover
   }
 
 
-/* FLOTS */
-#menu .h
-{
-  background-image: url("img/flot-rouge.png");
-  }
-
-#connexes .h
-{
-  background-image: url("img/flot-vert.png");
-  }
-
-#console > .h,
-#login > .h
-{
-  background-image: url("img/flot-jaune.png");
-  }
-
-#navigateurs .h
-{
-  background-image: url("img/flot-orange.png");
-  }
-
-#citation .h
-{
-  background-image: url("img/flot-bleu.png");
-  }
-
-#formats .h
-{
-  background-image: url("img/flot-gris.png");
-  }
-
 #menu li.current a
 {
   color: black;
@@ -183,11 +130,7 @@ a:hover
 
 #footer
 {
-  color: #AB7C2B;
-  padding-bottom: 1em;
-  background-image: url("img/sifflet.png");
-  background-repeat: no-repeat;
-  background-position: bottom right;
+  color: #0a0905;
   }
 
 /* CONSOLE */
@@ -220,8 +163,8 @@ a:hover
   background-image: url("icones/accueil.png");
   }
 
-#webaddons li.unites,
-#webaddons li.membres
+#aside li.unites,
+#aside li.membres
 {
   background-image: url("icones/effectifs.png");
   }
@@ -236,7 +179,7 @@ a:hover
   background-image: url("icones/individus.png");
   }
 
-#webaddons li.activites,
+#aside li.activites,
 #formats li.ics
 {
   background-image: url("icones/activites.png");
@@ -248,12 +191,12 @@ a:hover
   background-image: url("icones/tableur.png");
   }
 
-#webaddons li.photos
+#aside li.photos
 {
   background-image: url("icones/photos.png");
   }
 
-#webaddons li.journaux
+#aside li.journaux
 {
   background-image: url("icones/journaux.png");
   }
@@ -292,12 +235,12 @@ a:hover
   background-image: url("icones/fermer.png");
   }
 
-#webaddons li.progression
+#aside li.progression
 {
   background-image: url("icones/progression.png");
   }
 
-#webaddons li.formation
+#aside li.formation
 {
   background-image: url("icones/diplome.png");
   }
@@ -346,12 +289,12 @@ a:hover
   background-image: url("icones/contacts.png");
   }
 
-#webaddons li.citation
+#aside li.citation
 {
   background-image: url("icones/citation.png");
   }
 
-#webaddons li.prevoir
+#aside li.prevoir
 {
   background-image: url("icones/prevoir.png");
   }
@@ -405,17 +348,48 @@ a:hover
   }
 
 
-#historique .h
+#historique.pagelinks
 {
-  font-size: 1.75ex;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: left;
+    align-items: stretch;
+}
+
+#historique.pagelinks .h
+{
+    width: 100%;
+    font-size: 1.75ex;
+}
+
+#historique.pagelinks div.section
+{
+    width: 29%;
+    margin: 0 2%;
   }
 
-#historique div.section
+#historique.pagelinks div.section .h
 {
-  float: left;
-  }
+    margin-bottom: .5ex;
+}
 
-#historique .selectionnee a
+#historique.pagelinks ul
+{
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    margin: 0;
+    padding: 0;
+}
+
+#historique.pagelinks li
+{
+    display: inline-block;
+    margin: .5ex;
+}
+
+#historique.pagelinks .selectionnee a
 {
   font-weight: bold;
   text-decoration: none;

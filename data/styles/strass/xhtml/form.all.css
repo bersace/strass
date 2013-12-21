@@ -202,20 +202,20 @@ legend
   }
 
 /* FORMULAIRE LATÉRAUX */
-#webaddons div.control label
+#aside div.control label
 {
   float: left;
   width: 8em;
   }
 
-#webaddons div.control .input
+#aside div.control .input
 {
   margin: 0;
   float: right;
   display: block;
   }
 
-#webaddons div.control input
+#aside div.control input
 {
   max-width: 11em;
   }

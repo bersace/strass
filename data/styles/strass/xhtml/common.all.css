@@ -9,12 +9,12 @@ body
 .h, th,
 h2, h3, h4, h5, h6
 {
-  color: #004400;
+  color: #615230;
   }
 
 a
 {
-  color: #117700;
+  color: #615230;
   }
 
 h1
@@ -69,6 +69,4 @@ ul
 
 img
 {
-  border: 1px solid black;
-  background: white;
   }

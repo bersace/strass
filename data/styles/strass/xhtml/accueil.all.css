@@ -1,42 +1,20 @@
 #presentation {
-    float: left;
-    clear: left;
-    width: 30%;
+    text-align: left;
+    width: 40%;
     margin: 0 2em 0 0;
     padding: 0;
 }
 
-.suite
-{
-  text-align: right;
-  }
+#unites .vignettes {
+    display: block;
+}
 
-.vignette
-{
-  float: none;
-  display: inline-block;
-  }
+#unites .vignettes li {
+    display: block;
+    float: left;
+}
 
-#unites ul
+#historique
 {
-  display: block;
-  padding: 0;
-  margin: 0;
-  }
-
-#unites li
-{
-  display: inline-block;
-  }
-
-#unites li > a
-{
-  display: inline-block;
-  margin: 0 1em;
-  text-align: center;
-  height: 18em; /* gruik pour aligner des vignettes, plus petites que les photos d'unités… */
-  }
-
-#historique {
     clear: both;
 }

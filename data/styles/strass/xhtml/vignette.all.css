@@ -1,16 +1,27 @@
-li.vignette
+.vignettes
+{
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.vignettes > li
 {
   list-style: none;
-  }
-
-.vignette
-{
+  display: inline-block;
   text-align: center;
-  float: left;
   margin: 1ex;
   }
 
-.vignette p
+.vignettes > li .image
+{
+    height: 192px;
+    line-height: 192px;
+    width: auto;
+    padding: 1ex;
+    color: #888;
+}
+
+.vignettes li p
 {
   margin: 0;
   font-size: .9em;
@@ -20,6 +31,7 @@ li.vignette
   height: 2em;
   }
 
+.vignettes a,
 .vignette a
 {
   color: black;
@@ -30,7 +42,8 @@ li.vignette
 .vignette img
 {
   margin: 0;
-  padding: 1ex;
   clear: both;
-  -moz-border-radius: 1ex;
+  border-radius: .25ex;
+  outline: 1px solid #615230;
+  background: white;
   }

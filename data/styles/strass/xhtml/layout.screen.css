@@ -1,68 +1,53 @@
-#footer .metas .organization
+body
 {
-  display: block;
-  width: 100%;
-  position: absolute;
-  top: -1em;
-  height: 128px;
-  }
+    font-size: 10pt;
+    width: 80em;
+    margin: 1em auto;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+}
 
-h1 span
+body > div
 {
-  display: none;
-  }
+    margin: 1ex 0;
+}
 
-#content
-{
-  float: left;
-  margin-right: -16em;
-  min-height: 512px;
-  width: inherit;
-  padding-top: 7em;
-  }
 
-#content > *
+#header
 {
-  padding-right: 16em;
-  width: auto;
-  }
+    width: 100%;
+    height: 8em;
+    position: relative;
+}
 
-#webaddons
+#header > .h
 {
-  float: right;
-  width: 15em;
-  margin: 0 0 1em;
-  padding: 2em 0 4em 1ex;
-  }
+    display: block;
+    text-align: center;
+}
 
-#content, #webaddons
+#header #branche
 {
-  margin-top: 100px;
-  }
+    position: absolute;
+    bottom: 0;
+}
 
-#webaddons label
+#document
 {
-  font-size: .9em;
-  }
+    width: 63em;
+    padding: .9em;
+    border-width: 1pt;
+}
 
-#webaddons input.entry,
-#webaddons input.password
+#aside
 {
-  width: 6em;
-  }
-  
-#branche
-{
-    position: absolute !important;
-    left: 1ex;
-    top: 148px;
-    padding-top: 4.5em;
-    width: 80% !important;
+    width: 15em;
 }
 
 #footer
 {
-    clear: both;
+    width: 65em;
 }
 
 #footer .logo
