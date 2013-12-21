@@ -157,7 +157,8 @@ class ActivitesController extends Strass_Controller_Action
 				// on génère l'intitulé pour d'id
 				if (!$intitule)
 				  $intitule = Activite::generateIntitule($tuple, $unites, false);
-				$intitule .= Activite::generateDate(Activite::findType($tuple['debut'],
+				$intitule .= Activite::generateDate($intitule,
+								    Activite::findType($tuple['debut'],
 										       $tuple['fin']),
 								    strtotime($tuple['debut']),
 								    strtotime($tuple['fin']));

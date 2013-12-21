@@ -161,7 +161,7 @@ class Activite extends Strass_Db_Table_Row_Abstract implements Zend_Acl_Resource
 	  if ($date) {
 	    $dt = strtotime($this->debut);
 	    $ft = strtotime($this->fin);
-	    $gdate = self::generateDate(self::findType($this->debut, $this->fin),
+	    $gdate = self::generateDate($intitule, self::findType($this->debut, $this->fin),
 					$dt,$ft);
 	    // s'il est imposé, alors ajouter l'année (ou pas).
 	    $intitule.= $gdate;
@@ -310,15 +310,18 @@ class Activite extends Strass_Db_Table_Row_Abstract implements Zend_Acl_Resource
 		}
 
 		if ($date)
-			$i.= self::generateDate($type, $dt, $ft);
+		  $i.= self::generateDate($intitule, $type, $dt, $ft);
 
 		return $i;
 	}
 
-	static function generateDate($type, $dt, $ft)
+	static function generateDate($intitule, $type, $dt, $ft)
 	{
 		$i = "";
 
+		// gruik
+		if (strpos($intitule, 'Rentr') === 0)
+		  return strftime(' %Y', $ft);
 
 		switch ($type) {
 		case 'diner':
