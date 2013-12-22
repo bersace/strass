@@ -42,7 +42,7 @@ class Statique implements Zend_Acl_Resource_Interface
     
 	function read()
 	{
-		return file_get_contents($this->getFilename());
+		return @file_get_contents($this->getFilename());
 	}
     
 	function write($contents)
