@@ -56,13 +56,12 @@ class Knema_Addon_Liens extends Knema_Addon implements Iterator, Countable
 		if ($pos < 0)
 			$pos = $count + $pos;
 
-		if ($pos >= $count)
-			$this->liens[] = $lien;
-
-		for($i = $pos; $i < $count ; $i++) {
-			$sauf = $this->liens[$i];
-			$this->liens[$i] = $lien;
-			$lien = $sauf;
+		if ($pos < $count) {
+		  for($i = $pos; $i < $count ; $i++) {
+		    $sauf = $this->liens[$i];
+		    $this->liens[$i] = $lien;
+		    $lien = $sauf;
+		  }
 		}
 		$this->liens[] = $lien;
 	}
