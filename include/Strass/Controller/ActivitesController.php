@@ -56,9 +56,6 @@ class ActivitesController extends Strass_Controller_Action
 		$this->connexes->append(wtk_ucfirst($u->getFullname()),
 					array('controller' => 'unites',
 					      'action' => 'accueil'));
-		$this->connexes->append("Rapports d'activités",
-					array('controller' => 'activites',
-					      'action' => 'rapports'));
 
 		$this->actions->append("Nouvelle activité",
 				       array('action' => 'prevoir',
@@ -278,33 +275,6 @@ class ActivitesController extends Strass_Controller_Action
 					       array('action' => 'envoyer',
 						     'controller' => 'photos'),
 					       array(null, $a, 'envoyer-photo'));
-
-			if (!$i)
-				return;
-
-			// Sélectionner l'unité où l'individu à le
-			// droit de rapporter dans le rapports d'activités.
-			$db = Zend_Registry::get('db');
-			$select = $db->select()
-				->from('appartient')
-				->join('participe',
-				       $db->quoteInto('participe.activite = ?', $a->id).
-				       ' AND '.
-				       'participe.unite = appartient.unite',
-				       array())
-				->where('individu = ?', $i->id)
-				->where('fin IS NULL');
-			$ta = new Appartenances();
-			$app = $ta->fetchSelect($select)->current();
-			$unite = null;
-			if ($app)
-				$unite = $app->findParentUnites();
-
-			if ($unite)
-				$this->actions->append('Reporter',
-						       array('action' => 'reporter',
-							     'unite' => $unite->id),
-						       array(null, $unite));
 		}
 		else {
 			$this->actions->append('Envoyer la chaîne',
@@ -768,140 +738,6 @@ class ActivitesController extends Strass_Controller_Action
 
 		$this->view->activite = $a;
 		$this->view->model = $m;
-	}
-
-	function rapportsAction()
-	{
-		$u = $this->_helper->Unite();
-		$this->branche->append("Rapports d'activités",
-				       array('annee' => null));
-		$annee = $this->_helper->Annee();
-
-		$this->metas(array('DC.Title' => "Rapports d'activités ".$annee,
-				   'title.alternative.append' => wtk_ucfirst($u->getFullname())));
-
-		$ps = new Participations();
-		$db = $ps->getAdapter();
-		$min = $this->_helper->Annee->dateDebut($annee).' 00:00';
-		$max = $this->_helper->Annee->dateFin($annee).' 23:59';
-		$on = "'".$min."' <= debut AND debut <= '".$max."'".
-			' AND '.
-			"'".$min."' <= fin AND fin <= '".$max."'".
-			' AND '.
-			// N'afficher que les activités passées
-			' fin <= "'.strftime('%Y-%m-%d 23:59').'"';
-
-		$select = $db->select()
-			->distinct()
-			->from('participe')
-			->join('activites',
-			       'participe.activite = activites.id'.' AND '.$on, array())
-			->where('unite = ?', $u->id)
-			->order('debut');
-		$ps = $ps->fetchSelect($select);
-
-		$this->view->unite = $u;
-		$this->view->participations = $ps;
-
-		$photos = array();
-		foreach($ps as $p) {
-			$photos[$p->activite] =
-				$p->findParentActivites()->getPhotoAleatoire();
-		}
-		$this->view->photos = $photos;
-
-		$this->connexes->append("Calendrier ".$annee,
-					array('action' => 'calendrier'));
-	}
-
-	function rapportAction()
-	{
-		list($u, $p, $a) = $this->getParticipation(false);
-
-		$this->metas(array('DC.Title' => "Rapport de ".$a,
-				   'title.alternative.append' => wtk_ucfirst($u->getFullname())));
-
-
-		$this->view->unite = $u;
-		$this->view->activite = $p->findParentActivites();
-		$this->view->participation = $p;
-		$s = $p->getTable()->select()->order('RANDOM()')->limit(1);
-		$this->view->photo =
-			$this->view->activite->findPhotos($s)->current();
-
-
-		// BRANCHES
-		$this->branche->insert(-1,
-				       "Rapports",
-				       array('action' => 'rapports',
-					     'activite' => null));
-
-		$this->connexes->append("Revoir la chaîne",
-					array('action' => 'consulter',
-					      'activite' => $a->id,
-					      'unite' => null));
-
-		$this->connexes->append("Photos de l'activité",
-					array('action' => 'consulter',
-					      'controller' => 'photos',
-					      'unite' => null));
-
-		$this->connexes->append("Tout les rapports",
-					array('action' => 'rapports',
-					      'controller' => 'activites',
-					      'annee'	=> $a->getAnnee()));
-
-		$this->actions->append("Enregistrer la progression",
-				       array('controller' => 'unites',
-					     'action' => 'progression',
-					     'activite' => $a->id),
-				       array(null, $u));
-		$this->actions->append("Éditer le rapport",
-				       array('action' => 'reporter'),
-				       array(null, $p));
-
-		$this->actions->append("Envoyer une photo",
-				       array('action' => 'envoyer',
-					     'controller' => 'photos'),
-				       array(null, $a, 'envoyer-photo'));
-
-	}
-
-	function reporterAction()
-	{
-		list($u, $p, $a) = $this->getParticipation();
-		$this->assert(Zend_Registry::get('individu'), $p, 'reporter',
-			      "Vous n'avez pas le droit d'éditer le rapports d'activités");
-
-		$m = new Wtk_Form_Model('rapport');
-		$m->addInstance('String', 'boulet', "Boulet", $p->boulet);
-		$m->addInstance('String', 'rapport', "Rapport", $p->rapport);
-		$m->addNewSubmission('enregistrer', "Enregistrer");
-
-		if ($m->validate()) {
-			$db = $p->getTable()->getAdapter();
-			$db->beginTransaction();
-			try {
-				$ks = array('boulet', 'rapport');
-				foreach($ks as $k)
-					$p->$k = $m->$k;
-				$p->derniere_edition = strftime('%Y-%m-%d %T');
-				$p->save();
-				$db->commit();
-				$this->redirectSimple('rapport', null, null,
-						      array('activite' => $a->id,
-							    'unite' => $u->id));
-			}
-			catch(Exception $e) {
-				$db->rollBack();
-				throw $e;
-			}
-		}
-
-		$this->view->model = $m;
-		$this->view->unite = $u;
-		$this->view->participation = $p;
-		$this->view->activite = $a;
 	}
 
 

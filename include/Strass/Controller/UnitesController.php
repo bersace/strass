@@ -769,10 +769,6 @@ class UnitesController extends Strass_Controller_Action
 					array('controller' => 'activites',
 					      'action' => 'calendrier',
 					      'annee' => $annee));
-		$this->connexes->append("Rapports d'activités",
-					array('controller' => 'activites',
-					      'action' => 'rapports',
-					      'annee' => $annee));
 		$p = $unite->findParentUnites();
 		if ($p)
 			$this->connexes->append("Voir ".$p->__toString(),

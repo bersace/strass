@@ -45,22 +45,14 @@ if ($a->message) {
 $unites = $a->getUnitesParticipantes();
 
 if ($unites->count()) {
-	$titre = $a->isFuture() ? "Unités participantes" : "Rapports des unités";
+	$titre = "Unités participantes";
 	$ss = $s->addSection('participants', $titre);
 
-	$l = $ss->addChild(new Wtk_List());
-
+	$l = $ss->addList();
 
 	// Suivant que l'activité soit future ou passée, on ira à la page de
-	// l'unité (effectif) ou au livre d'or.
-	if ($a->isFuture()) {
-		$url = array('annee' => $a->getAnnee());
-	}
-	else {
-		$url = array('controller' => 'activites',
-			     'action' => 'rapport',
-			     'activite' => $a->id);
-	}
+	// l'unité (effectif).
+	$url = array('annee' => $a->getAnnee());
 
 	foreach($unites as $unite) {
 		$l->addItem($this->lienUnite($unite, null, $url));
