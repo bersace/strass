@@ -1,7 +1,10 @@
 <?php
 
 $i = $this->model->getInstance('unites');
-$s = $this->document->addSection('prevoir', "Prévoir une nouvelle activité".(count($i) == 1 ? " pour ".current(current($i)) :""));
+$pour = (count($i) == 1 ? " pour ".current(current($i)) :"");
+$this->document->setTitle("Prévoir une nouvelle activité".$pour);
+
+$s = $this->document;
 $f = $s->addChild(new Wtk_Form($this->model));
 $g = $f->addForm_Fieldset('Informations générales');
 $i = $this->model->getInstance('unites');

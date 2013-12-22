@@ -80,15 +80,35 @@ class ActivitesController extends Strass_Controller_Action
 		$this->metas(array('DC.Title' => 'Prévoir une nouvelle activité'));
 
 		$unites = $this->getUnitesProgrammable();
-
 		$annee = $this->_getParam('annee');
-		$annee = $annee ? $annee : date('Y'); // on ne décale
-						      // pas en
-						      // arrière afin
-						      // de réserver
-						      // pour la date
-						      // actuel si
-						      // possible.
+
+		if (count($unites) == 1) {
+		  $uid = array_shift(array_keys($unites));
+		  $unite = $this->_helper->Unite($uid);
+		  
+		  $urlOptions = array('controller'=> 'activites',
+				      'action'	=> 'calendrier',
+				      'unite'	=> $unite->id);
+		  $this->branche->append('Calendrier',
+					 $urlOptions,
+					 array(),
+					 true);
+		  
+		  if ($annee) {
+		    $urlOptions = array('controller'=> 'activites',
+					'action'	=> 'calendrier',
+					'unite'	=> $unite->id,
+					'annee' => $annee);
+		    $this->branche->append($urlOptions['annee'],
+					   $urlOptions,
+					   array(),
+					   true);
+		  }
+		}
+
+		// on ne décale pas en arrière afin de réserver pour
+		// la date actuel si possible.
+		$annee = $annee ? $annee : date('Y');
 
 		$m->addEnum('unites', 'Unités participantes',
 				key($unites), $unites, true);        // multiple

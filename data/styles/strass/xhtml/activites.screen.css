@@ -18,7 +18,8 @@
   }
 
 
-#document.activites.modifier form table
+#document.activites.modifier form table,
+#document.activites.prevoir form table
 {
     min-width: 80%;
 }
