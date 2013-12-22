@@ -18,3 +18,6 @@
  - La structure HTML a changé pour se rapprocher de la sémantique HTML5.
 
  - Un thème par défaut est proposé.
+
+ - Les pages d'erreurs ont maintenant tout les menus et la console
+   pour se déconnecter.
