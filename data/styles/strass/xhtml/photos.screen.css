@@ -1,23 +1,24 @@
-#photo img
+#document.photos.voir img
 {
   width: 100%;
   height: auto;
   padding: 0;
+  z-index: 0;
   }
 
-#photo p.photo
+#document.photos.voir p.photo
 {
   text-align: center;
   }
 
-#photos ul
+#document.photos.voirs ul
 {
   margin: 1em;
   padding: 0;
   }
 
 #albums .vignette p,
-#photos .vignette p
+#document.photos.voirs .vignette p
 {
   height: 3em;
   }

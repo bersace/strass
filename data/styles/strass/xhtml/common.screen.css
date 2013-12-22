@@ -8,6 +8,16 @@ body
     background: #d6c996;
   }
 
+a:hover, a:visited
+{
+  color: #223300;
+  }
+
+a:hover
+{
+  text-decoration: none;
+  }
+
 #header .h
 {
     font-size: 3em;
@@ -20,16 +30,6 @@ body
     text-decoration: inherit;
 }
 
-a:hover, a:visited
-{
-  color: #223300;
-  }
-
-a:hover
-{
-  text-decoration: none;
-  }
-
 #document
 {
     background-color: #FAFBF8;
@@ -38,16 +38,16 @@ a:hover
     border-radius: 1ex;
 }
 
+#footer
+{
+  color: #0a0905;
+  }
+
 #aside
 {
   padding-top: 2em;
   background-position: bottom left;
   background-repeat: no-repeat;
-  }
-
-#aside > div.section > *
-{
-  margin-right: 1ex;
   }
 
 #aside > .section > .h
@@ -59,6 +59,11 @@ a:hover
   color: #F2EDE4;
   background: #615230;
   }
+
+#aside > .section > * + *
+{
+    margin-left: 1ex;
+}
 
 #aside > .section > .h a
 {
@@ -76,7 +81,7 @@ a:hover
 
 #aside .section ul
 {
-  padding-left: 1em;
+  padding-left: 0;
   }
 
 #aside .section li
@@ -126,13 +131,6 @@ a:hover
   font-weight: bold;
   }
 
-
-
-#footer
-{
-  color: #0a0905;
-  }
-
 /* CONSOLE */
 #console > .h
 {
@@ -150,10 +148,6 @@ a:hover
   font-size: 1.05em;
   margin: 0;
   padding: 0;
-  }
-
-#console li a
-{
   }
 
 /* ICÔNES */
@@ -348,6 +342,7 @@ a:hover
   }
 
 
+/* Historique */
 #historique.pagelinks
 {
     display: flex;

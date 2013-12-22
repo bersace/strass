@@ -205,7 +205,8 @@ legend
 #aside div.control label
 {
   float: left;
-  width: 8em;
+  width: 7em;
+  overflow: hidden;
   }
 
 #aside div.control .input
@@ -217,6 +218,6 @@ legend
 
 #aside div.control input
 {
-  max-width: 11em;
+  max-width: 6em;
   }
 

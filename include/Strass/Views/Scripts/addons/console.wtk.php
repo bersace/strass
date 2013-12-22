@@ -5,6 +5,7 @@ $username = $user->getIdentity();
 
 if ($username == 'nobody') {
 	// login
+  $this->document->addStyleComponents('form');
 	$section = $this->addons->addSection('login', "Membres");
 	$l = $section->addChild(new Wtk_List());
 	$l->addItem($this->lien(array('controller'	=> 'membres',
