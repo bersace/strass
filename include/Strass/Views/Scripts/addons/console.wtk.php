@@ -3,9 +3,10 @@
 $user = Zend_Registry::get('user');
 $username = $user->getIdentity();
 
+$this->document->addStyleComponents('form');
+
 if ($username == 'nobody') {
 	// login
-  $this->document->addStyleComponents('form');
 	$section = $this->addons->addSection('login', "Membres");
 	$l = $section->addChild(new Wtk_List());
 	$l->addItem($this->lien(array('controller'	=> 'membres',
@@ -46,5 +47,5 @@ if ($username == 'nobody') {
 
 	 $f = $s->addForm($this->auth_logout_model);
 	 $f->addHidden('logout');
-	 $f->addForm_Submit($this->auth_logout_model->getSubmission('logout'));
+	 $f->addForm_ButtonBox()->addForm_Submit($this->auth_logout_model->getSubmission('logout'));
  }
