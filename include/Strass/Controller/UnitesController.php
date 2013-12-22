@@ -747,30 +747,29 @@ class UnitesController extends Strass_Controller_Action
 	// helper ?
 	protected function liensEffectifs($unite, $annee)
 	{
-		$listes = array('accueil'	=> wtk_ucfirst($unite->getFullName()).' %s',
-				'contacts'	=> 'Contacts %s',
+		$listes = array('accueil'	=> wtk_ucfirst($unite->getFullName()),
+				'contacts'	=> 'Contacts',
 				// 'progressions'	=> 'Progressions individuelles'
 				);
 
 		// BRANCHES
 		$a = $this->_getParam('action'); 
 		if ($a != 'accueil' and array_key_exists($a, $listes))
-			$this->branche->insert(-1,
-					       trim(sprintf($listes[$a], '')),
+			$this->branche->insert(-1, $listes[$a],
 					       array('annee' => null));
 
 		// CONNEXES
 		foreach($listes as $action => $etiquette)
 			if ($this->_getParam('action') != $action)
-				$this->connexes->append(sprintf($etiquette, $annee),
+				$this->connexes->append($etiquette,
 							array('action'  => $action),
 							array(null, $unite, $action));
 
-		$this->connexes->append("Calendrier ".$annee,
+		$this->connexes->append("Calendrier",
 					array('controller' => 'activites',
 					      'action' => 'calendrier',
 					      'annee' => $annee));
-		$this->connexes->append("Rapports d'activités ".$annee,
+		$this->connexes->append("Rapports d'activités",
 					array('controller' => 'activites',
 					      'action' => 'rapports',
 					      'annee' => $annee));
