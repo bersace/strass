@@ -231,7 +231,7 @@ class PhotosController extends Strass_Controller_Action
 
 		$m = new Wtk_Pages_Model_Assoc($data, $photo->id);
 
-		$this->metas(array('DC.Title' => $photo->titre,
+		$this->metas(array('DC.Title' => wtk_ucfirst($photo->titre),
 				   'DC.Subject' => 'photo',
 				   'DC.Date.created' => $photo->date));
 		$this->connexes->append("Revenir à l'album",

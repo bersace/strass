@@ -21,8 +21,13 @@ class Wtk_Pages extends Wtk_Container
 		if ($this->model->count()) {
 			$cont = $this->addChild($this->renderer->renderContainer());
 
-			foreach($this->model as $id => $data) {
-				$child = $this->renderer->render($id, $data, $cont);
+			if ($this->model->count()) {
+			  foreach($this->model as $id => $data) {
+			    $child = $this->renderer->render($id, $data, $cont);
+			  }
+			}
+			else {
+			  $this->renderer->renderEmpty($cont);
 			}
 
 			$this->renderer->renderLinks($this, $this->model);

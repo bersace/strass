@@ -8,7 +8,6 @@ class Scout_Pages_Renderer_Photo extends Wtk_Pages_Renderer
     $p = new Wtk_Image($photo->getCheminImage(),
 		       $photo->titre,
 		       $photo->titre);
-    $p->useViewHelper();
 
     // mieux un div ou un p ?
     $c->addParagraph($p)
@@ -17,9 +16,9 @@ class Scout_Pages_Renderer_Photo extends Wtk_Pages_Renderer
     return $c;
   }
 }
-
+
 $this->document->addStyleComponents('signature');
-$s = $this->document->addSection('photo', ucfirst($this->photo->titre));
+$s = $this->document;
 $s->addPages(null, $this->model,
 	     new Scout_Pages_Renderer_Photo($this->url(array('photo' => '%i')).'#photo',
 							  false,
