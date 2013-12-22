@@ -131,6 +131,8 @@ class JournauxController extends Strass_Controller_Action
 	/* lire un journal = lister derniers articles et rubriques */
 	function lireAction()
 	{
+		$articles = new Articles();
+
 		$this->view->journal = $j = $this->_helper->Journal();
 		$this->metas(array('DC.Title' => wtk_ucfirst($j->nom),
 				   'DC.Subject' => 'journaux,journal,gazette'));
@@ -139,17 +141,15 @@ class JournauxController extends Strass_Controller_Action
 		$this->view->rubriques = $r = $j->findRubriques();
 		$p = $this->_getParam('page');
 		$p = $p ? $p : 1;
-		$this->view->articles = $j->findArticles('public IS NOT NULL',
-							 'date DESC');
+		$s = $articles->select()->where('public IS NOT NULL')->order('date DESC');
+		$this->view->articles = $j->findArticles($s);
 		$this->view->current = $p;
 
 		$config = new Knema_Config_Php('strass');
 
 		// ÉDITORIAL
-		$articles = new Articles();
 		$db = $articles->getAdapter();
-		$where = array('public IS NOT NULL');
-
+		$where = array('public IS NOT NULL', "date > datetime('now', '-1 year')");
 		$where['rubrique = ?'] = $config->site->rubrique;
 		$where['id = ?'] = $j->id;
 
@@ -385,7 +385,7 @@ class JournauxController extends Strass_Controller_Action
 				       array(),
 				       true);
 
-		$this->metas(array('DC.Title' => $a->titre." - ".wtk_ucfirst($j->nom),
+		$this->metas(array('DC.Title' => $a->titre,
 				   'DC.Subject' => 'journaux,journal,gazette'));
 
 

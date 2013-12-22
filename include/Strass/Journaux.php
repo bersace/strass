@@ -11,8 +11,7 @@ class Journaux extends Zend_Db_Table_Abstract {
 							  'onDelete' => self::CASCADE));
   }
 
-class Journal extends Strass_Db_Table_Row_Abstract implements
-Zend_Acl_Resource_Interface
+class Journal extends Strass_Db_Table_Row_Abstract implements Zend_Acl_Resource_Interface
 {
 	protected $_privileges = array(array('chef',		null),
 				       array('assistant',	null));
