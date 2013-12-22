@@ -50,28 +50,6 @@ return array (
         'controller' => '',
       ),
     ),
-    0 => 
-    array (
-      'metas' => 
-      array (
-        'label' => 'Photos',
-      ),
-      'url' => 
-      array (
-        'controller' => 'photos',
-      ),
-    ),
-    1 => 
-    array (
-      'metas' => 
-      array (
-        'label' => 'Blog',
-      ),
-      'url' => 
-      array (
-        'controller' => 'journaux',
-      ),
-    ),
     2 => 
     array (
       'metas' => 
