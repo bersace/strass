@@ -52,6 +52,13 @@ div.control .input
   clear: right;
   }
 
+div.control .input:first-child
+{
+  margin: 0 auto;
+  float: none;
+  text-align: center;
+  }
+
 input[type=text],
 input[type=password],
 textarea
@@ -103,7 +110,7 @@ table.control div.control.check > .input
 table.control
 {
   clear: both;
-  margin: 1ex;
+  margin: 1ex auto;
   }
 
 tr td .check input,
@@ -198,7 +205,7 @@ legend
 {
   font-weight: bold;
   font-size: 1.1em;
-  color: #004400;
+  color: #615230;
   }
 
 /* FORMULAIRE LATÉRAUX */

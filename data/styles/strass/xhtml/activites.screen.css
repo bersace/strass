@@ -16,3 +16,9 @@
   min-height: 32px;
   font-size: 1.1em;
   }
+
+
+#document.activites.modifier form table
+{
+    min-width: 80%;
+}
