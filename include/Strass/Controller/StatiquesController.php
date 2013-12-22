@@ -14,10 +14,9 @@ class StatiquesController extends Strass_Controller_Action
 		$page = new Statique($page);
 
 		if (!$page->readable())
-			throw new Knema_Controller_Action_Exception("Impossible d'afficher la page");
-
-
-		$this->view->wiki = $page->read();
+		  $this->view->wiki = null;
+		else
+		  $this->view->wiki = $page->read();
 		$this->metas(array('DC.Title' => $page->getTitle()));
 		$this->branche->append($page->getTitle());
 		$this->actions->append('Éditer',

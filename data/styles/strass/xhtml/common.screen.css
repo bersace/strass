@@ -390,3 +390,12 @@ a:hover
   text-decoration: none;
   color: black;
   }
+
+
+#document .empty
+{
+    text-align: center;
+    height: 16em;
+    line-height: 16em;
+    color: #7f7d73;
+}
