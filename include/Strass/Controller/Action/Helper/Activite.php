@@ -42,22 +42,49 @@ class Strass_Controller_Action_Helper_Activite extends Zend_Controller_Action_He
 		$id = $id ? $id : $this->getRequest()->getParam('activite');
 		$activites = new Activites();
 		$activite = $activites->find($id)->current();
-		if (!$activite && $throw)
-			throw new Knema_Controller_Action_Exception_Notice("Activité ".$id." inexistante.");
 
-		if ($activite) {
-			if ($reset) {
-				$urlOptions+= array('controller'=> 'activites',
-						    'action'	=> 'consulter',
-						    'activite'	=> $id);
-				$this->_actionController->branche->append(wtk_ucfirst($activite->getIntitule()),
-									  $urlOptions,
-									  array(),
-									  true);
-			}
-			else 
-				$this->_actionController->branche->append(wtk_ucfirst($activite->getIntitule()));
+		if (!$activite)
+		  if ($throw)
+		    throw new Knema_Controller_Action_Exception_Notice("Activité ".$id." inexistante.");
+		  else
+		    return null;
+
+		$unites = $activite->getUnitesParticipantesExplicites();
+		if ($unites->count() == 1) {
+		  $unite = $unites->current();
+		  $urlOptions+= array('controller'=> 'unites',
+				      'action'	=> 'accueil',
+				      'unite'	=> $unite->id);
+		  $this->_actionController->branche->append(wtk_ucfirst($unite->getName()),
+							  $urlOptions,
+							  array(),
+							  true);
+
+		  $urlOptions+= array('controller'=> 'activites',
+				      'action'	=> 'calendrier',
+				      'unite'	=> $unite->id);
+		  $this->_actionController->branche->append('Calendrier',
+							  $urlOptions,
+							  array(),
+							  true);
+
+		  $urlOptions+= array('controller'=> 'activites',
+				      'action'	=> 'calendrier',
+				      'unite'	=> $unite->id,
+				      'annee' => $activite->getAnnee());
+		  $this->_actionController->branche->append($urlOptions['annee'],
+							  $urlOptions,
+							  array(),
+							  true);
 		}
+
+		$urlOptions+= array('controller'=> 'activites',
+				      'action'	=> 'consulter',
+				    'activite'	=> $id);
+		$this->_actionController->branche->append(wtk_ucfirst($activite->getIntitule(false)),
+							  $urlOptions,
+							  array(),
+							  true);
 
 		return $activite;
 	}
