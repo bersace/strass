@@ -21,7 +21,7 @@ class UnitesController extends Strass_Controller_Action
 									 $this->_helper->Annee->cetteAnnee(),
 									 $this->assert(null, $u, 'calendrier'));
 
-		$this->metas(array('DC.Title' => wtk_ucfirst($u->getName()).' '.$a));
+		$this->metas(array('DC.Title' => wtk_ucfirst($u->getFullname()).' '.$a));
 
 		$this->connexes->append("Photos",
 					array('controller' => 'photos',
