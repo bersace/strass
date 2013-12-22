@@ -1,5 +1,9 @@
 <?php
   // simple listage des erreurs.
+if (count($this->errors > 1)) {
+    $this->document->setTitle("Erreurs");
+  }
+
 foreach ($this->errors as $i => $error) {
 	if ($error instanceof Knema_Controller_Action_Exception_Forbidden)
 		$titre = "Accès refusé";
@@ -7,6 +11,11 @@ foreach ($this->errors as $i => $error) {
 		$titre = "Notice";
 	else
 		$titre = "Erreur".(count($this->errors)>1 ? " #".($i+1) : "");
+
+	if (count($this->errors) == 1) {
+	  $this->document->setTitle($titre);
+	  $titre = null;
+	}
 
 	$section = $this->document->addSection("error".$i, $titre);
 	$section->addChild (new Wtk_Text ("// ".$error->getMessage()." // \n"));
