@@ -560,7 +560,7 @@ class Unite extends Strass_Db_Table_Row_Abstract implements Zend_Acl_Resource_In
 			$select->join('unites',
 				      'unites.id = appartient.unite',
 				      array());
-			$select->where("unites.parent = ?", $this->parent);
+			$select->where("unites.id = ?", $this->parent);
 			break;
 		default:
 			$select->where("appartient.unite = ?", $this->id);
