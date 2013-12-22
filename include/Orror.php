@@ -268,6 +268,7 @@ class Orror {
       $errors[E_RECOVERABLE_ERROR] = __("Recoverable error");
     }
 
+    echo '<div class="error">';
     if ($level) {
       echo 
 	"<p><b>".
@@ -293,6 +294,7 @@ class Orror {
       }
 
       echo "<p>\n";
+      echo "</div>\n";
     }
     else {
       echo "<!--\n".$msg."-->\n";
