@@ -20,26 +20,6 @@ class PhotosController extends Strass_Controller_Action
 					     'annee' => null));
 	}
 
-	function sansphotosAction()
-	{
-		$activites = new Activites();
-		$this->metas(array('DC.Title' => 'Activités sans photos '));
-		$db = $activites->getAdapter();
-		$select = $db->select()
-			->distinct()
-			->from('activites')
-			->where("activites.debut < STRFTIME('%Y-%m-%d %H:%M', CURRENT_TIMESTAMP)")
-			->where($db->quoteInto('NOT EXISTS (?)',
-					       new Zend_Db_Expr($db->select()
-								->from('photos')
-								->where('photos.activite = activites.id')
-								->__toString())))
-			->order('fin DESC');
-
-		$this->view->activites = $activites->fetchSelect($select);
-		$this->branche->append('Activités sans photos');
-	}
-
 	function consulterAction()
 	{
 		$this->view->activite = $a = $this->_helper->Activite();
