@@ -34,6 +34,9 @@ class UnitesController extends Strass_Controller_Action
 		$this->liensEffectifs($u, $a);
 		$this->view->profils = (bool) Zend_Registry::get('individu');
 
+		$this->connexes->append("Nouveaux",
+					array('action' => 'nouveaux'),
+					array(null, $u, 'nouveaux'));
 		$this->connexes->append("Liste personnalisée",
 					array('action' => 'liste'),
 					array(null, $u, 'lister'));
