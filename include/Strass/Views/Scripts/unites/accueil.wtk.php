@@ -48,6 +48,12 @@ class Strass_Views_PagesRenderer_Unites_Accueil extends Strass_Views_PagesRender
 
     // Présentation
     $ss = $s->addSection('presentation');
+
+    $src = $unite->getImage();
+    if ($src) {
+      $ss->addImage($src, "Photos d'unité", wtk_ucfirst($unite->getFullname()));
+    }
+
     if ($texte)
       $ss->addText($texte);
 
