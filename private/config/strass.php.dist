@@ -50,17 +50,6 @@ return array (
         'controller' => '',
       ),
     ),
-    'effectifs' => 
-    array (
-      'metas' => 
-      array (
-        'label' => 'Unités',
-      ),
-      'url' => 
-      array (
-        'controller' => 'unites',
-      ),
-    ),
     0 => 
     array (
       'metas' => 

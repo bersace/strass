@@ -8,10 +8,15 @@ require_once 'Image/Transform.php';
 
 class UnitesController extends Strass_Controller_Action
 {
-	function indexAction()
-	{
-		$this->redirectSimple('ouvertes');
-	}
+  function indexAction()
+  {
+    $unite = $this->_helper->Unite();
+    if ($unite) {
+      $this->redirectSimple('accueil', 'unites', null, array('unite' => $unite->id));
+    } else {
+      Orror::kill("Pas d'unités");
+    }
+  }
 
 	function accueilAction()
 	{
@@ -37,38 +42,7 @@ class UnitesController extends Strass_Controller_Action
 					array(null, $u, 'nonenregistres'));
 	}
 
-	function ouvertesAction()
-	{
-		$this->metas(array('DC.Title' => 'Unités ouvertes'));
-
-		$unites = new Unites();
-		// on chope les unités parentes.
-		$this->view->unites = $unites->getOuvertes("unites.parent IS NULL");
-		$this->branche->append('Unités ouvertes');
-		$this->connexes->append("Unités fermées",
-					array('action' => 'fermees'));
-		$this->connexes->append("Nouveaux",
-					array('action' => 'nouveaux'));
-		$this->connexes->append("Anciens",
-					array('action' => 'anciens'));
-		$this->actions->append("Fonder une unité",
-				       array('action' => 'fonder'));
-	}
-
-	function fermeesAction()
-	{
-		$this->metas(array('DC.Title' => 'Unités fermées'));
-
-		$this->branche->append('Unités fermées');
-		$this->connexes->append("Unités ouvertes",
-					array('action' => 'ouvertes'));
-
-		$unites = new Unites();
-		$this->view->unites = $unites->getFermees();
-	}
-
 	// LES VUES DES EFFECTIFS
-
 	function listeAction()
 	{
 		$this->view->unite = $unite = $this->_helper->Unite();
@@ -144,22 +118,6 @@ class UnitesController extends Strass_Controller_Action
 		else {
 			$this->view->model = $m;
 		}
-
-		$this->liensEffectifs($unite, $annee);
-	}
-
-	function trombiAction()
-	{
-		$this->view->unite = $unite = $this->_helper->Unite();
-		$this->view->annee = $annee = $this->_helper->Annee();
-
-		$this->metas(array('DC.Title' => 'Trombinoscope '.$annee,
-				   'DC.Title.alternate' => 'Trombinoscope '.$annee.' – '.
-				   wtk_ucfirst($unite->getFullname())));
-		$this->formats('vcf');
-
-		$this->view->apps = $unite->getApps($annee);
-		$this->view->annees = $unite->getAnneesOuverte();
 
 		$this->liensEffectifs($unite, $annee);
 	}
@@ -726,54 +684,6 @@ class UnitesController extends Strass_Controller_Action
 		$this->view->model = $m;
 	}
 
-
-	function anciensAction()
-	{
-		$t = new Individus();
-		$u = $this->_helper->Unite(null, false);
-
-		$db = $t->getAdapter();
-		$select = $db->select()
-			->distinct()
-			->from('individus')
-			->order('individus.id ASC');
-
-		if ($u) {
-			$subselect = $db->select()
-				->from('individus', 'id')
-				->join('appartient',
-				       'appartient.individu = individus.id',
-				       array());
-			$subselect->where('appartient.unite = ?', $u->id);
-			// sous-unités ?
-			$subselect->where('appartient.fin IS NULL');
-
-			$select->join('appartient',
-				      'appartient.individu = individus.id',
-				      array());
-			$select->where('appartient.unite = ?', $u->id);
-			$select->where('individus.id NOT IN ?',
-				       $subselect);
-		}
-		else {
-			$select->joinLeft('appartient',
-					  'appartient.individu = individus.id'.
-					  ' AND '.
-					  'appartient.fin IS NULL',
-					  array());
-			$select->where('appartient.individu IS NULL');
-		}
-
-		$is = $t->fetchSelect($select);
-		$p = $this->_helper->Page();
-		$this->view->individus = new Wtk_Pages_Model_Iterator($is, 20, $p);
-		$this->view->unite = $u;
-		$this->view->profils = (bool) Zend_Registry::get('individu');
-    
-		$this->branche->append('Anciens');
-		$this->metas(array('DC.Title' => 'Anciens'.($u ? ' – '.wtk_ucfirst($u->getFullname()) : '')));
-	}
-
 	function nouveauxAction()
 	{
 		$t = new Individus();
@@ -926,8 +836,5 @@ class UnitesController extends Strass_Controller_Action
 						     'action' => 'fonder'),
 					       array(null, $unite, 'fonder-journal'));
 
-		$this->connexes->append('Anciens',
-					array('action' => 'anciens',
-					      'unite' => $unite->id));
 	}
 }
