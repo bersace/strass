@@ -1,7 +1,8 @@
 <?php
 
-$s = $this->document->addSection('prevoir', new Wtk_Container(new Wtk_Inline("Modifier l'activité "),
-							     $this->lienActivite($this->activite)));
+$this->document->setTitle(new Wtk_Container(new Wtk_Inline("Modifier l'activité "),
+						 $this->lienActivite($this->activite)));
+$s = $this->document;
 $f = $s->addChild(new Wtk_Form($this->model));
 $g = $f->addForm_Fieldset('Informations générales');
 $i = $this->model->getInstance('unites');
