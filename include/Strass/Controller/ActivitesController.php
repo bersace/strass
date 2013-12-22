@@ -923,9 +923,9 @@ class ActivitesController extends Strass_Controller_Action
 		$unites = array();
 		$individu = Zend_Registry::get('individu');
 		if (!$this->assert($individu)) {
-			// Sélectionner les unité où l'individu est actuellement inscrit
+			// Sélectionner les unité où l'individu est ou a été inscrit
 			// et dont il a le droit de prévoir une activité.
-			$us = $individu->getUnites(true, true);
+			$us = $individu->getUnites(false, true);
 			foreach($us as $u)
 				if ($this->assert($individu, $u, 'prevoir-activite'))
 					$unites[$u->id] = wtk_ucfirst($u->getFullname());
