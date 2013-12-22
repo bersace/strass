@@ -5,7 +5,6 @@ require_once 'Wtk.php';
 class Knema_Page implements Iterator, Countable
 {
 	public	$metas;
-	public	$menu;
 	public	$addons;
 	public	$formats = array();
 	public	$format;
@@ -13,9 +12,6 @@ class Knema_Page implements Iterator, Countable
 	function __construct($metas)
 	{
 		$this->metas = $metas;
-
-		$config = new Knema_Config_Php('strass');
-		$this->menu = $config->menu->toArray();
 		$this->addons = array();
 	}
 

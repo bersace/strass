@@ -9,7 +9,7 @@ $list = $menu->addChild (new Wtk_List ());
 $controller = Zend_Controller_Front::getInstance()->getRequest()->getParam('controller');
 $controller = $controller == 'index' ? null : $controller;
 
-foreach ($this->page->menu as $item) {
+foreach ($this->menu as $item) {
 	if (isset($item['private']) && Zend_Registry::get('user')->username == 'nobody')
 		continue;
 
@@ -20,4 +20,3 @@ foreach ($this->page->menu as $item) {
 	$i->addFlags($urlOptions['controller'] ? $urlOptions['controller'] : 'index',
 		     $controller == $urlOptions['controller'] ? 'current' : null);
 }
-
