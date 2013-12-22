@@ -39,13 +39,20 @@ class Strass_Controller_Action_Helper_Unite extends Zend_Controller_Action_Helpe
 		  $action = null;
 		  break;
 		}
-		
-		$this->_actionController->branche->append(wtk_ucfirst($unite->getFullname()),
-							  array('controller'	=> $controller,
-								'action'	=> $action,
-								'unite'		=> $id),
-							  array(),
-							  true);
+
+		$u = $unite;
+		while ($u) {
+		  $this->_actionController->branche->insert(1,
+		  					    wtk_ucfirst($u->getName()),
+		  					    array('controller'=> $controller,
+		  						  'action' => $action,
+		  						  'unite' => $u->id),
+		  					    array(),
+		  					    true);
+		  $u = $u->findParentUnites();
+		}
+
+
 		$page = Zend_Registry::get('page');
 		$fn = wtk_ucfirst($unite->getFullname());
 		$page->metas->set('DC.Title', $fn);
