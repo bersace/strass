@@ -16,7 +16,8 @@ $loader->registerNamespace('Dio_');
 $loader->registerNamespace('Wtk_');
 $loader->registerNamespace('Strass_');
 
-rename('cache', 'private/cache');
+if (file_exists('cache'))
+  rename('cache', 'private/cache');
 
 // config
 Zend_Registry::set('config_basedir', 'config/');
@@ -38,8 +39,8 @@ $config = new Strass_Config_Php('strass', $config);
 $config->write();
 
 // Renommages
-rename("resources/styles/".$config->site->style, "data/styles/");
-rename('data/statiques/', 'private/statiques');
+rename("resources/styles/".$config->site->style, "data/styles/".$config->site->style);
+shell_exec("rsync -av data/statiques/ private/statiques/");
 
 // Nettoyages
 shell_exec('rm -rf resources/ config/ data/db/');
