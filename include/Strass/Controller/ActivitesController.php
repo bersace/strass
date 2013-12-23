@@ -7,8 +7,6 @@ require_once 'Strass/Photos.php';
 
 class ActivitesController extends Strass_Controller_Action
 {
-	// 	protected $_titreBranche = 'Activités';
-
 	/**
 	 * Par défaut on redirige automatiquement vers l'unité actuelle de l'individu
 	 * sinon, vers les photos …
@@ -51,11 +49,6 @@ class ActivitesController extends Strass_Controller_Action
 		$this->view->model = new Strass_Pages_Model_Calendrier($u, $annee);
 		$this->view->unite = $u;
 		$this->view->annee = $annee;
-
-		// CONNEXES
-		$this->connexes->append(wtk_ucfirst($u->getFullname()),
-					array('controller' => 'unites',
-					      'action' => 'accueil'));
 
 		$this->actions->append("Nouvelle activité",
 				       array('action' => 'prevoir',
@@ -117,17 +110,6 @@ class ActivitesController extends Strass_Controller_Action
 				'%Y-%m-%d %H:%M');
 		$m->addString('intitule', 'Intitulé explicite', "");
 		$m->addString('lieu', 'Lieu');
-		$m->addString('depart', 'Départ', "au local");
-		$m->addString('retour', 'Retour', "au local");
-
-		$m->addInteger('cotisation', 'Cotisation', 0);
-		$i = $m->addTable('apporter', "Apporter",
-				  array('item' => array('String', "Apporter")));
-		// un champ vide, au cas où le client ne supporte pas la
-		// javascript, qu'il puisse ajouter au moins deux rubriques :)
-		$i->addRow(array('item' => ""));
-
-		$m->addString('message', 'Message complémentaire');
 
 		// attacher
 		$td = new Documents;
@@ -276,11 +258,6 @@ class ActivitesController extends Strass_Controller_Action
 						     'controller' => 'photos'),
 					       array(null, $a, 'envoyer-photo'));
 		}
-		else {
-			$this->actions->append('Envoyer la chaîne',
-					       array('action' => 'chaine'),
-					       array(null, $a));
-		}
 
 		$this->actions->append('Modifier',
 				       array('action' => 'modifier',
@@ -290,16 +267,6 @@ class ActivitesController extends Strass_Controller_Action
 				       array('action' => 'annuler',
 					     'activite' => $a->id),
 				       array(null, $a));
-
-		$upe = $a->getUnitesParticipantesExplicites();
-		if ($upe->count() == 1) {
-			$u = $upe->current();
-			$this->connexes->append('Calendrier',
-						array('action' => 'calendrier',
-						      'unite' => $u->id,
-						      'annee' => $a->getAnnee()),
-						array(null, $u));
-		}
 
 		if ($a->getType() == 'camp') {
 			$this->connexes->append('Participants',
@@ -362,127 +329,6 @@ class ActivitesController extends Strass_Controller_Action
 
 	}
 
-	function chaineAction()
-	{
-		$this->view->activite = $a = $this->_helper->Activite();
-
-		$this->assert(null, $a, 'chaine',
-			      "Vous n'avez pas le droit d'envoyer la chaîne de cette activité.");
-
-		$this->metas(array('DC.Title' => 'Envoyer la chaîne de '.$a->getIntitule()));
-
-
-
-		$this->view->model = $m = new Wtk_Form_Model('message');
-		$m->addString('intro', "Intro", "Chers scouts,");
-		$m->addString('message', 'Message supplémentaire');
-		$moi = Zend_Registry::get('individu');
-		$m->addString('signature', "Signature", "FSS,\n".$moi->getFullname(false));
-		$m->addNewSubmission('envoyer', 'Envoyer');
-
-		$this->view->intro = "Cette activité se déroul".($a->isFuture()? 'er' : '')."a ".
-			$a->getDate().($a->lieu ? " à ".$a->lieu : "").". ".
-			"Rendez-vous à ".
-			strftime("%Hh%M", strtotime($a->debut)).
-			($a->depart ? " ".$a->depart : "").", ".
-			"retour ".strftime("vers %Hh%M", strtotime($a->fin)).
-			($a->retour ? " ".$a->retour : "").". ";
-		$this->view->warn = "**La présence de chacun est primordiale** ".
-			"pour le bon déroulement de cette activité. ".
-			"**Répondez à ce courriel pour confirmer votre présence**.";
-
-		// À APPORTER
-		$this->view->apporter = $l = new Wtk_List();
-
-		if ($a->cotisation)
-			$l->addItem()->addRawText($a->cotisation." € de cotisation ;");
-
-		foreach($a->findApports() as $apport)
-			$l->addItem()->addInline($apport->item." ;");
-
-		// ENVOI
-		if ($m->validate()) {
-
-			$annee = $a->getAnnee();
-			$us = $a->findUnitesViaParticipations();
-			$is = array();
-			foreach($us as $u) {
-				$as = $u->getApps($annee);
-				foreach($as as $app) {
-					$i = $app->findParentIndividus();
-					if ($i->adelec)
-						$is[$i->adelec] = $i->getFullname(false);
-				}
-			}
-
-			$mail = new Strass_Mail(wtk_ucfirst($a->getIntitule()));
-			$mail->replyTo($moi->adelec, $moi->getFullname(false));
-
-			foreach($is as $adelec => $nom)
-				$mail->addTo($adelec, $nom);
-
-			$d = $mail->getDocument();
-			$s = $d->addSection($a->getIntitule());
-			$plus = false;
-			// INTRO
-			$intro = $s->addText();
-			if ($message = $m->get('intro'))
-				$intro->append($message."\n\n");
-			$intro->append($this->view->intro);
-			
-
-			// APPORTER
-			if ($this->view->apporter->count()) {
-				$ss = $s->addSection('apporter', 'À apporter');
-				$ss->addChild($this->view->apporter);
-				$plus = true;
-			}
-
-
-			// DÉTAILS
-			$ss = $s->addSection('message', "Détails");
-			if ($a->message)
-				$ss->addText($a->message);
-
-			if ($message = $m->get('message'))
-				$ss->addText($message);
-			
-			if (!$ss->count())
-				$s->removeChild($ss);
-			else
-				$plus = true;
-
-			// s'il y a des détails, demander explicitement de lire attentivement … :/
-			if ($plus)
-				$intro->append("**Veuillez lire attentivement les informations qui suivent.**");
-			
-			$s->addParagraph()->addFlags('warn')
-				->addInline($this->view->warn);
-			$s->addText($m->get('signature'));
-
-			// pièces-jointes
-			$das = $a->findDocsActivite();
-			foreach($das as $da) {
-				$doc = $da->findParentDocuments();
-				$at = $mail->createAttachment(file_get_contents($doc->getFichier()),
-							      $doc->type_mime);
-				$at->filename = $doc->id.'.'.$doc->suffixe;
-				$at->description = $doc->titre;
-			}
-
-			$mail->send();
-			$this->redirectSimple('consulter');
-		}
-
-		$this->branche->append(ucfirst($a->intitule),
-				       array('action' => 'consulter'));
-
-		$this->actions->append('Modifier',
-				       array('action' => 'modifier',
-					     'activite' => $this->view->activite->id),
-				       array(null, $a));
-	}
-
 	function modifierAction()
 	{
 		$a = $this->_helper->Activite();
@@ -503,21 +349,8 @@ class ActivitesController extends Strass_Controller_Action
 
 		$m->addString('intitule', 'Intitulé explicite', $a->intitule);
 		$m->addString('lieu', 'Lieu', $a->lieu);
-		$m->addString('depart', 'Départ', $a->depart);
 		$m->addDate('debut', 'Début', $a->debut, '%Y-%m-%d %H:%M');
-		$m->addString('retour', 'Retour', $a->retour);
 		$m->addDate('fin', 'Fin', $a->fin, '%Y-%m-%d %H:%M');
-
-		$m->addInteger('cotisation', 'Cotisation', intval($a->cotisation));
-		$apports = $a->findApports();
-		$i = $m->addTable('apporter', "Apporter",
-				  array('item' => array('String', "Apporter")));
-		foreach($apports as $apport) {
-			$i->addRow(array('item' => $apport->item));
-		}
-		$i->addRow(array('item' => ""));
-		
-		$m->addString('message', 'Informations complémentaires', $a->message);
 
 		// pièces-jointes
 		$g = $m->addGroup('documents', "Pièces-jointes");
@@ -564,14 +397,13 @@ class ActivitesController extends Strass_Controller_Action
 			try {
 				$tu = new Unites();
 				// mettre à jour l'activité elle-même.
-				$champs = array('debut', 'fin', 'lieu', 'depart', 'retour', 'cotisation', 'message');
+				$champs = array('debut', 'fin', 'lieu');
 				foreach($champs as $champ)
 					$a->$champ = $m->get($champ);
 
 				$data = $m->get();
 				$unites = $tu->find($data['unites']);
 				unset($data['unites']);
-				unset($data['apporter']);
 				$intitule = $m->get('intitule');
 				$annee = intval(date('Y', strtotime($data['debut']) - 243 * 24 * 60 * 60));
 				$a->intitule = $intitule;
@@ -582,7 +414,6 @@ class ActivitesController extends Strass_Controller_Action
 				$unites = $tu->getIdSousUnites((array) $m->get('unites'),
 							       $a->getAnnee());
 				$this->updateParticipations($a, $unites);
-				$this->updateApports($a, $m->get('apporter'));
 
 				// PIÈCES-JOINTES
 				$td = new Documents;
@@ -801,24 +632,5 @@ class ActivitesController extends Strass_Controller_Action
 			else if ($p)
 				$p->delete();
 		}
-	}
-
-	function updateApports($activite, $items)
-	{
-		$ti = new Apports();
-
-		// suppression de l'ancienne liste.
-		$anciennes = $activite->findApports();
-		foreach($anciennes as $item)
-			$item->delete();
-
-		// re création de la nouvelle.
-		foreach($items as $i => $item)
-			if ($item['item']) {
-				$tuple = array('activite'	=> $activite->id,
-					       'item'		=> $item['item'],
-					       'ordre'		=> $i);
-				$ti->insert($tuple);
-			}
 	}
 }

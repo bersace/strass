@@ -8,8 +8,7 @@ class Activites extends Knema_Db_Table_Abstract
 {
 	protected $_name = 'activites';
 	protected $_rowClass = 'Activite';
-	protected $_dependentTables = array('Participations', 'Photos',
-					    'Apports', 'DocsActivite',
+	protected $_dependentTables = array('Participations', 'Photos', 'DocsActivite',
 					    'Commentaires');
 
 	function findActivites($futures = TRUE) {
@@ -406,19 +405,6 @@ class Activite extends Strass_Db_Table_Row_Abstract implements Zend_Acl_Resource
 		return count($stmt->fetchAll());
 	}
 
-	function findApports()
-	{
-		$ta = new Apports;
-		$s = $ta->select()
-			->from('apporter')
-			->join('activites',
-			       'id = activite',
-			       array())
-			->where('activite = ?', $this->id)
-			->order('ordre');
-		return $ta->fetchSelect($s);
-	}
-
 	protected function _postUpdate()
 	{
 		rename($this->getDossierPhoto($this->_cleanData['id']),
@@ -474,15 +460,6 @@ class Activite extends Strass_Db_Table_Row_Abstract implements Zend_Acl_Resource
 	}
 }
 
-class Apports extends Knema_Db_Table_Abstract
-{
-	protected $_name = 'apporter';
-	protected $_referenceMap = array('Activite' => array('columns' => 'activite',
-							     'refTableClass' => 'Activites',
-							     'refColumns' => 'id', 'onUpdate' => self::CASCADE,
-							     'onDelete' => self::CASCADE));
-}
-
 class Participations extends Knema_Db_Table_Abstract
 {
 	protected $_name = 'participe';
@@ -498,8 +475,7 @@ class Participations extends Knema_Db_Table_Abstract
 
 }
 
-class Participe extends Strass_Db_Table_Row_Abstract implements
-Zend_Acl_Resource_Interface
+class Participe extends Strass_Db_Table_Row_Abstract implements Zend_Acl_Resource_Interface
 {
 	protected $_privileges = array(array('chef', NULL),
 				       array(NULL, 'reporter'));

@@ -1,6 +1,6 @@
 <?php
 $a = $this->activite;
-$s = $this->document->addSection('activite');
+$s = $this->document;
 
 // INFORMATIONS GÉNÉRALES
 $ss = $s->addSection('informations', 'Informations générales');
@@ -12,33 +12,12 @@ if ($a->isFuture()) {
 		       "Veuillez lire attentivement les informations qui suivent.");
  }
 
-// À APPORTER
-$l = new Wtk_List();
-if ($a->cotisation)
-	$l->addItem()->addRawText($a->cotisation." € de cotisation ;");
-
-foreach($a->findApports() as $apport)
-	$l->addItem(new Wtk_Inline($apport->item." ;"));
-
-if ($l->count()) {
-	$ss = $s->addSection('apporter', 'À apporter');
-	$ss->addChild($l);
- }
-
-
 // PIÈCES JOINTES
 if ($this->documents->count()) {
 	$ss = $s->addSection('piecesjointes', "Pièces-jointes");
 	$l = $ss->addChild(new Wtk_List());
 	foreach($this->documents as $docact)
 		$l->addItem($this->lienDocument($docact->findParentDocuments()));
- }
-
-// MESSAGE
-
-if ($a->message) {
-	$ss = $s->addSection('message', "Informations complémentaires");
-	$ss->addText($a->message);
  }
 
 // UNITÉ PARTICIPANTES

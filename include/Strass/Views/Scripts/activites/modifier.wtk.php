@@ -13,21 +13,9 @@ if (count($i) > 1) {
 	 $g->addHidden('unites');
  }
 $g->addEntry('lieu', 32);
-
-$c = $g->addForm_Compound('Aller');
-$c->addDate('debut', 'le %d-%m-%Y à %H heures %M');
-$c->addEntry('depart', 32);
-
-$c = $g->addForm_Compound('Retour');
-$c->addDate('fin', 'le %d-%m-%Y à %H heures %M');
-$c->addEntry('retour', 32);
-
+$c = $g->addDate('debut', 'le %d-%m-%Y à %H heures %M');
+$c = $g->addDate('fin', 'le %d-%m-%Y à %H heures %M');
 $g->addEntry('intitule', 48);
-
-$g = $f->addForm_Fieldset('Chaîne');
-$g->addSpin('cotisation', ' €');
-$g->addTable('apporter', array('item' => array('Entry', 32)));
-$g->addEntry('message', 64, 9)->useLabel(false);
 
 try {
 	$g = $f->addForm_Fieldset('Pièces-jointes');
