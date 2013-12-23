@@ -4,13 +4,8 @@ $s = $this->document;
 
 // INFORMATIONS GÉNÉRALES
 $ss = $s->addSection('informations', 'Informations générales');
-$intro = $ss->addText("Ce".($a->intitule{0} == 's' ? 'tte' : '')." ".$a->getIntitule(false, false).
+$intro = $ss->addText("Cette activité ".
 		      " se déroul".($a->isFuture()? 'er' : '')."a ".$a->getDate().($a->lieu ? " à ".$a->lieu : "").". ");
-if ($a->isFuture()) {
-	$intro->append("**Rendez-vous à ".strftime("%Hh%M", strtotime($a->debut)).($a->depart ? " ".$a->depart : "")."**, ".
-		       "retour ".strftime("vers %Hh%M", strtotime($a->fin)).($a->retour ? " ".$a->retour : "").". ".
-		       "Veuillez lire attentivement les informations qui suivent.");
- }
 
 // PIÈCES JOINTES
 if ($this->documents->count()) {
