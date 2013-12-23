@@ -1,3 +1,4 @@
+#!/usr/bin/php
 <?php
 
 umask(0022);
@@ -15,8 +16,7 @@ $loader->registerNamespace('Dio_');
 $loader->registerNamespace('Wtk_');
 $loader->registerNamespace('Strass_');
 
-mkdir('old', 0700);
-mkdir('private/cache', 0700, true);
+rename('cache', 'private/cache');
 
 // config
 Zend_Registry::set('config_basedir', 'config/');
@@ -33,25 +33,15 @@ $config['inscription'] = $tmp->toArray();
 $tmp = new Strass_Config_Php('knema/menu');
 $config['menu'] = $tmp->toArray();
 
-// plus d'index séparé
-unlink('config/strass/index.php');
-// remplacé par include/…
-unlink('config/knema/formats.php');
-
 Zend_Registry::set('config_basedir', 'private/config/');
 $config = new Strass_Config_Php('strass', $config);
 $config->write();
 
-
-// Vidages de resources/
-rename('resources/styles', 'data/styles');
-
 // Renommages
-rename('data/statiques', 'private/statiques');
+rename("resources/styles/".$config->site->style, "data/styles/");
+rename('data/statiques/', 'private/statiques');
 
-// Archivage
-rename('resources', 'old/resources');
-rename('config', 'old/config');
-rename('data/db', 'old/db');
+// Nettoyages
+shell_exec('rm -rf resources/ config/ data/db/');
 
 echo "OK !\n";
