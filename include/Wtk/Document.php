@@ -4,7 +4,6 @@ class Wtk_Document extends Wtk_Section
 {
 	public		$metas;
 	protected	$custom_style_components;
-	protected	$footer;
 	protected	$alternatives = array();
 	protected	$template;
 

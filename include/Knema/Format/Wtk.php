@@ -20,6 +20,10 @@ abstract class Knema_Format_Wtk extends Knema_Format
 		$document->setStyle(new Wtk_Document_Style($site->style, 'data/styles/'));
 		$document->addStyleComponents('layout', $cn, $an, $mn);
 
+		$document->addFlags($site->association);
+		$document->header->addFlags($site->association);
+		$document->footer->addFlags($site->association);
+
 		$link = new Wtk_Link('/', $site->metas->title);
 		$document->header->setTitle($link);
 

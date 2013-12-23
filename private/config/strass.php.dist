@@ -19,6 +19,7 @@ return array (
       'subject' => 'scout,europe,agse,fse,clan,clans,paris,lieutenant,lt,theodose,tom,morel,route,routier,equipe,district,sainte,geneviève',
       'language' => 'fr',
     ),
+    'association' => 'suf',
     'short_title' => 'Clan Lt Tom Morel',
     'id' => 'morel',
     'realm' => 'morel',

@@ -18,6 +18,13 @@ a:hover
   text-decoration: none;
   }
 
+#header
+{
+    background-image: url("associations/suf.png");
+    background-repeat: no-repeat;
+    background-position: 96% center;
+}
+
 #header .h
 {
     font-size: 3em;
