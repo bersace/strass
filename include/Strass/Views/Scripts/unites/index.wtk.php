@@ -68,7 +68,5 @@ class Strass_Views_PagesRenderer_Unites_Accueil extends Strass_Views_PagesRender
   }
 }
 
-
-$this->document->addStyleComponents('accueil', 'effectifs');
 $this->document->addPages(null, $this->model,
 			  new Strass_Views_PagesRenderer_Unites_Accueil($this));

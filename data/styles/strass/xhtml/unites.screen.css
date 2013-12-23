@@ -93,3 +93,8 @@ table.meute tr.fauvette td.accr
   background-image: url("postes/sec.png");
   }
   
+.maitrise table .formation + *
+{
+  display: none;
+  }
+

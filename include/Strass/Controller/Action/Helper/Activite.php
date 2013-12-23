@@ -53,7 +53,7 @@ class Strass_Controller_Action_Helper_Activite extends Zend_Controller_Action_He
 		if ($unites->count() == 1) {
 		  $unite = $unites->current();
 		  $urlOptions+= array('controller'=> 'unites',
-				      'action'	=> 'accueil',
+				      'action'	=> 'index',
 				      'unite'	=> $unite->id);
 		  $this->_actionController->branche->append(wtk_ucfirst($unite->getName()),
 							  $urlOptions,

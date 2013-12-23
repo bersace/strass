@@ -8,42 +8,32 @@ require_once 'Image/Transform.php';
 
 class UnitesController extends Strass_Controller_Action
 {
-  function indexAction()
+  public function indexAction()
   {
-    $unite = $this->_helper->Unite();
-    if ($unite) {
-      $this->redirectSimple('accueil', 'unites', null, array('unite' => $unite->id));
-    } else {
-      Orror::kill("Pas d'unités");
-    }
-  }
+    $this->view->unite = $u = $this->_helper->Unite();
+    $this->view->annee = $a = $this->_helper->Annee();
+    $this->view->model = new Strass_Pages_Model_AccueilUnite($u, $a,
+							     $this->_helper->Annee->cetteAnnee(),
+							     $this->assert(null, $u, 'calendrier'));
 
-	function accueilAction()
-	{
-		$this->view->unite = $u = $this->_helper->Unite();
-		$this->view->annee = $a = $this->_helper->Annee();
-		$this->view->model = new Strass_Pages_Model_AccueilUnite($u, $a,
-									 $this->_helper->Annee->cetteAnnee(),
-									 $this->assert(null, $u, 'calendrier'));
-
-		$this->metas(array('DC.Title' => wtk_ucfirst($u->getFullname()).' '.$a));
-
-		$this->connexes->append("Photos",
-					array('controller' => 'photos',
-					      'action' => 'index'));
-		$this->liensEffectifs($u, $a);
-		$this->view->profils = (bool) Zend_Registry::get('individu');
-
-		$this->connexes->append("Nouveaux",
-					array('action' => 'nouveaux'),
-					array(null, $u, 'nouveaux'));
-		$this->connexes->append("Liste personnalisée",
-					array('action' => 'liste'),
-					array(null, $u, 'lister'));
-		$this->connexes->append("Non enregistré",
-					array('action'  => 'nonenregistres'),
+    $this->metas(array('DC.Title' => wtk_ucfirst($u->getFullname()).' '.$a));
+    
+    $this->connexes->append("Photos",
+			    array('controller' => 'photos',
+				  'action' => 'index'));
+    /* $this->liensEffectifs($u, $a); */
+    $this->view->profils = (bool) Zend_Registry::get('individu');
+    
+    $this->connexes->append("Nouveaux",
+			    array('action' => 'nouveaux'),
+			    array(null, $u, 'nouveaux'));
+    $this->connexes->append("Liste personnalisée",
+			    array('action' => 'liste'),
+			    array(null, $u, 'lister'));
+    $this->connexes->append("Non enregistré",
+			    array('action'  => 'nonenregistres'),
 					array(null, $u, 'nonenregistres'));
-	}
+  }
 
 	// LES VUES DES EFFECTIFS
 	function listeAction()
@@ -296,9 +286,9 @@ class UnitesController extends Strass_Controller_Action
 				else {
 					$u = reset($unites);
 					$this->_helper->Log("Progression enregistrée", array($u),
-							    $this->_helper->Url('accueil', 'unites', null, array('unite' => $u->id)),
+							    $this->_helper->Url('index', 'unites', null, array('unite' => $u->id)),
 							    (string) $u);
-					$this->redirectSimple('accueil', 'unites');
+					$this->redirectSimple('index', 'unites');
 				}
 			}
 			catch(Exception $e) {
@@ -382,11 +372,11 @@ class UnitesController extends Strass_Controller_Action
 
 				$u = $unites->find($data['id']);
 				$this->_helper->Log("Nouvelle unité", array($u),
-						    $this->_helper->Url('accueil', 'unites', null,
+						    $this->_helper->Url('index', 'unites', null,
 									array('unite' => $data['id'])),
 						    (string) $u);
 				$db->commit();
-				$this->redirectSimple('accueil', 'unites', null,
+				$this->redirectSimple('index', 'unites', null,
 						      array('unite' => $data['id']));
 			}
 			catch(Exception $e) {
@@ -420,7 +410,7 @@ class UnitesController extends Strass_Controller_Action
 			      $u->extra);
 		$m->addFile('image', "Image");
 		$w = $u->getWiki(null, false);
-		$m->addString('presentation', "Message d'accueil", is_readable($w) ? file_get_contents($w) : '');
+		$m->addString('presentation', "Message d'index", is_readable($w) ? file_get_contents($w) : '');
 		$m->addNewSubmission('enregistrer', "Enregistrer");
 
 		// métier;
@@ -474,12 +464,12 @@ class UnitesController extends Strass_Controller_Action
 				file_put_contents($w, trim($m->get('presentation')));
 
 				$this->_helper->Log("Unité modifiée", array($u),
-						    $this->_helper->Url('accueil', 'unites', null,
+						    $this->_helper->Url('index', 'unites', null,
 									array('unite' => $data['id'])),
 						    (string) $u);
 
 				$db->commit();
-				$this->redirectSimple('accueil', 'unites', null,
+				$this->redirectSimple('index', 'unites', null,
 						      array('unite' => $u->id));
 			}
 			catch(Exception $e) {
@@ -597,11 +587,11 @@ class UnitesController extends Strass_Controller_Action
 
 				$ind = $ti->find($data['individu'])->current();
 				$this->_helper->Log("Effectifs complétés", array($u, $ind),
-						    $this->_helper->Url('accueil', 'unites', null, array('unite' => $u->id)),
+						    $this->_helper->Url('index', 'unites', null, array('unite' => $u->id)),
 						    (string) $u);
 
 				$db->commit();
-				$this->redirectSimple('accueil', null, null, null, false);
+				$this->redirectSimple('index', null, null, null, false);
 			}
 			catch(Exception $e) {
 				$db->rollBack();
@@ -631,10 +621,10 @@ class UnitesController extends Strass_Controller_Action
 			try {
 				$u->fermer($m->get('fin'));
 				$this->_helper->Log("Fermeture de l'unité ".$u, array($u),
-						    $this->_helper->Url('accueil', 'unites', null, array('unite' => $u->id)),
+						    $this->_helper->Url('index', 'unites', null, array('unite' => $u->id)),
 						    (string) $u);
 				$db->commit();
-				$this->redirectSimple('accueil');
+				$this->redirectSimple('index');
 			}
 			catch(Exception $e) {
 				$db->rollBack();
@@ -679,7 +669,7 @@ class UnitesController extends Strass_Controller_Action
 				}
 			}
 			else
-				$this->redirectSimple('accueil', 'unites', null,
+				$this->redirectSimple('index', 'unites', null,
 						      array('unite' => $u->id));
 		}
 
@@ -747,14 +737,14 @@ class UnitesController extends Strass_Controller_Action
 	// helper ?
 	protected function liensEffectifs($unite, $annee)
 	{
-		$listes = array('accueil'	=> wtk_ucfirst($unite->getFullName()),
+		$listes = array('index'	=> wtk_ucfirst($unite->getFullName()),
 				'contacts'	=> 'Contacts',
 				// 'progressions'	=> 'Progressions individuelles'
 				);
 
 		// BRANCHES
 		$a = $this->_getParam('action'); 
-		if ($a != 'accueil' and array_key_exists($a, $listes))
+		if ($a != 'index' and array_key_exists($a, $listes))
 			$this->branche->insert(-1, $listes[$a],
 					       array('annee' => null));
 

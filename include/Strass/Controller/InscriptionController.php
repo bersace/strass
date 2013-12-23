@@ -155,7 +155,7 @@ class InscriptionController extends Strass_Controller_Action
 
 				$db->commit();
 
-				$this->redirectSimple('accueil', 'unites', null,
+				$this->redirectSimple('index', 'unites', null,
 						      array('unite' => $u->id),
 						      true);
 			}
@@ -431,7 +431,7 @@ class InscriptionController extends Strass_Controller_Action
 
 		$m->validate();
 
-		// si le groupe dispose d'unité pouvant accueillir l'individu,
+		// si le groupe dispose d'unité pouvant indexlir l'individu,
 		// les proposer.
 		if (($m->get('actuel/promouvoir') || !$curr) && $unites->count()) {
 
@@ -476,7 +476,7 @@ class InscriptionController extends Strass_Controller_Action
 		if (!$this->view->model->pagesCount())
 			throw new Knema_Controller_Action_Exception_Notice("Impossible d'inscrire cet individu ".
 									   "dans notre groupe. ".
-									   "Aucune unité ne peut l'accueillir !");
+									   "Aucune unité ne peut l'indexlir !");
 
 		// VALIDATION
 		if ($m->validate()) {

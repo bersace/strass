@@ -4,12 +4,12 @@
    etc.). include/ reste.
 
  - La pagination par années (Les années Dupont…) ont été aménagée pour
-   accueil, effectifs, calendrier et photos des unités.
+   index, effectifs, calendrier et photos des unités.
 
  - Les photos sont affichés par unités et par années comme les
    effectifs et le calendrier.
 
- - La page d'accueil est remplacée par la page d'accueil de l'unité
+ - La page d'index est remplacée par la page d'index de l'unité
    racine.
 
  - L'accès aux citations se fait en cliquant sur le titre « Citation »

@@ -26,14 +26,14 @@ class Strass_Controller_Action_Helper_Unite extends Zend_Controller_Action_Helpe
 		$controller = $this->getRequest()->getParam('controller');
 		switch($controller) {
 		case 'unites':
-		  $action = 'accueil';
+		  $action = 'index';
 		  break;
 		case 'activites':
 		  $action = 'calendrier';
 		  break;
 		case 'photos':
 		  $controller = 'unites';
-		  $action = 'accueil';
+		  $action = 'index';
 		  break;
 		default:
 		  $action = null;

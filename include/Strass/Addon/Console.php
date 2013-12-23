@@ -47,7 +47,7 @@ class Strass_Addon_Console extends Strass_Addon_Liens
 			if (count($us) == 1) {
 				$u = current($us);
 				$actions[] = array('url' => $view->url(array('controller' => 'unites',
-									     'action' => 'accueil',
+									     'action' => 'index',
 									     'unite' => $u->id),
 								       true),
 						   'label' => wtk_ucfirst($u->getFullName()));

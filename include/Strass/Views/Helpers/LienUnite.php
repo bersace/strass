@@ -11,7 +11,7 @@ class Strass_View_Helper_LienUnite {
 	public function lienUnite($unite, $label = null,
 				  $urlOptions = array(), $reset = true) {
 		$urlOptions = array_merge(array('controller' => 'unites',
-						'action' => 'accueil',
+						'action' => 'index',
 						'unite' => $unite->id),
 					  (array) $urlOptions);
 		$label = $label ? $label : wtk_ucfirst($unite->getName());
