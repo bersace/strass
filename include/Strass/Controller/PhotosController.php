@@ -117,6 +117,9 @@ class PhotosController extends Strass_Controller_Action
 
 				// fichier
 				$tr = Image_Transform::factory('GD');
+				if (PEAR::isError($tr))
+				  Orror::kill($tr);
+
 				$tr->load($tmp);
 
 				$suffixe = '.jpeg';
