@@ -25,6 +25,9 @@ body > div
 {
     display: block;
     text-align: center;
+    line-height: 128px;
+    margin: 0;
+    padding: 0;
 }
 
 #header #branche
