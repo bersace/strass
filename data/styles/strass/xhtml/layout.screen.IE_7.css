@@ -1,0 +1,16 @@
+#branche
+{
+    top: 120px !important;
+}
+
+#content
+{
+    position: relative;
+    top: 120px;
+}
+
+#footer
+{
+    display: none;
+}
+

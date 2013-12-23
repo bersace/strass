@@ -1,0 +1,29 @@
+/* TODO: il faudrait étendre la coloration des pages suivant le type de l'unité
+traité */
+#content li.groupe
+{
+  color: #FF7F00;
+  }
+  
+#content li.aines
+{
+  color: #C10D51;
+  }
+  
+#content li.clan,
+#content li.feu
+{
+  color: #CC0000;
+  }
+
+#content li.troupe,
+#content li.compagnie
+{
+  color: #69D100;
+  }
+
+#content li.meute,
+#content li.ronde
+{
+  color: #EDD400;
+  }

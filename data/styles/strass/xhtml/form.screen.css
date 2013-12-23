@@ -1,0 +1,12 @@
+div.required > label:before
+{
+  content: "*";
+  color: red;
+  }
+
+fieldset
+{
+  margin-top: 1em;
+  border: 1px solid #F8F8F8;
+  }
+
