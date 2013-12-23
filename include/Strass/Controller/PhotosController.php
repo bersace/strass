@@ -29,13 +29,6 @@ class PhotosController extends Strass_Controller_Action
 		$s = $photos->select()->order('date');
 		$this->view->photos = $a->findPhotos($s);
 
-		$annee = $a->getAnnee();
-		$this->branche->insert(-1,
-				       $annee,
-				       array('controller' => 'photos',
-					     'action' => 'index',
-					     'annee' => $annee), array(), true);
-
 		$this->connexes->append("Chaîne",
 					array('controller' => 'activites',
 					      'action'  => 'consulter'));
