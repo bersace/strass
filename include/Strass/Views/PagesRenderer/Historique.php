@@ -23,6 +23,7 @@ abstract class Strass_Views_PagesRenderer_Historique extends Wtk_Pages_Renderer
     foreach($model->data as $annee => $chef) {
       switch($model->unite->type) {
       case 'groupe':
+      case 'aines':
 	$intitule = $chef ? $chef->nom : null;
 	break;
       case 'troupe':
