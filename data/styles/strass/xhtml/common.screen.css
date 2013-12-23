@@ -34,6 +34,11 @@ a:hover
     background-image: url("associations/fse.png");
 }
 
+#header.europa
+{
+    background-image: url("associations/europa.png");
+}
+
 #header .h
 {
     font-size: 3em;
