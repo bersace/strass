@@ -13,7 +13,7 @@ class Strass_Controller_Action_Helper_Article extends Zend_Controller_Action_Hel
 		$article = $articles->find($id, $d, $j)->current();
 
 		if (!$article && $throw)
-			throw new Knema_Controller_Action_Exception_Notice("Article  inconnu");
+			throw new Strass_Controller_Action_Exception_Notice("Article  inconnu");
 
 		if ($article) {
 			$this->_actionController->branche->append($article->titre,

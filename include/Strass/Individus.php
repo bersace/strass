@@ -5,7 +5,7 @@ require_once 'Progression.php';
 require_once 'Formation.php';
 require_once 'Photos.php';
 
-class Individus extends Knema_Db_Table_Abstract implements Zend_Acl_Resource_Interface
+class Individus extends Strass_Db_Table_Abstract implements Zend_Acl_Resource_Interface
 {
 	protected	$_name			= 'individus';
 	protected	$_rowClass		= 'Individu';
@@ -426,7 +426,7 @@ class Individu extends Strass_Db_Table_Row_Abstract implements Zend_Acl_Role_Int
 	}
 }
 
-class Appartenances extends Knema_Db_Table_Abstract
+class Appartenances extends Strass_Db_Table_Abstract
 {
 	protected	$_name		= 'appartient';
 	protected	$_rowClass	= 'Appartient';
@@ -498,7 +498,7 @@ class Privileges extends Zend_Db_Table_Abstract
 // {
 // }
 
-class Inscriptions extends Knema_Db_Table_Abstract implements Zend_Acl_Resource_Interface
+class Inscriptions extends Strass_Db_Table_Abstract implements Zend_Acl_Resource_Interface
 {
 	protected	$_name		= 'inscriptions';
 

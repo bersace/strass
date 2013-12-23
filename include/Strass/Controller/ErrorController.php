@@ -1,7 +1,7 @@
 <?php
-interface Knema_Controller_ErrorController {}
+interface Strass_Controller_ErrorController {}
 
-class ErrorController extends Strass_Controller_Action implements Knema_Controller_ErrorController
+class ErrorController extends Strass_Controller_Action implements Strass_Controller_ErrorController
 {
 	protected $_titreBranche = 'Erreur';
 

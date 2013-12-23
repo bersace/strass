@@ -3,7 +3,7 @@
 require_once 'Strass/Journaux.php';
 require_once 'Strass/Documents.php';
 
-class Unites extends Knema_Db_Table_Abstract
+class Unites extends Strass_Db_Table_Abstract
 {
 	protected $_name = 'unites';
 	protected $_rowClass = 'Unite';
@@ -605,7 +605,7 @@ class Unite extends Strass_Db_Table_Row_Abstract implements Zend_Acl_Resource_In
 	}
 }
 
-class TypesUnite extends Knema_Db_Table_Abstract
+class TypesUnite extends Strass_Db_Table_Abstract
 {
 	protected $_name = 'types_unite';
 	protected $_rowClass = 'TypeUnite';

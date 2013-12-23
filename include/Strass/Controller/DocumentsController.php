@@ -55,7 +55,7 @@ class DocumentsController extends Strass_Controller_Action
 
 		$unites = $this->unitesEnvoyables();
 		if (!count($unites))
-			throw new Knema_Controller_Exception
+			throw new Strass_Controller_Exception
 				("Vous n'avez le droit d'envoyer de document pour aucune unité");
 
 		$this->metas(array('DC.Title' => 'Envoyer un document'));

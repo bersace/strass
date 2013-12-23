@@ -188,7 +188,7 @@ class UnitesController extends Strass_Controller_Action
 
 		$etapes = $te->fetchSelect($s);
 		if (!count($etapes))
-			throw new Knema_Controller_Action_Exception("Aucune étape de progression disponible pour cette unité.");
+			throw new Strass_Controller_Action_Exception("Aucune étape de progression disponible pour cette unité.");
 
 		// création des valeurs possibles.
 		$enum = array();
@@ -247,7 +247,7 @@ class UnitesController extends Strass_Controller_Action
 
 			if (!count($enum)) {
 				$dep = $etape->findParentEtape();
-				throw new Knema_Controller_Action_Exception("Aucun individus ne peut avoir ".
+				throw new Strass_Controller_Action_Exception("Aucun individus ne peut avoir ".
 									    $etape->participe_passe." ".$etape->titre.", ".
 									    "assurez-vous d'avoir bien enregistrer chaque individu ayant ".
 									    $dep->participe_passe." ".$dep->titre.".");
@@ -526,7 +526,7 @@ class UnitesController extends Strass_Controller_Action
 		$ti = new Individus;
 		$is = $ti->fetchSelect($select);
 		if (!$is->count())
-			throw new Knema_Controller_Action_Exception("Aucun individu n'est disponible ".
+			throw new Strass_Controller_Action_Exception("Aucun individu n'est disponible ".
 								    "pour cette unité pour l'année ".
 								    $a."-".($a+1).". Inscrivez un nouveau membre.");
 
@@ -563,7 +563,7 @@ class UnitesController extends Strass_Controller_Action
 		// unités avec une personne par poste :
 		if (!count($values)
 		    && in_array($t->id, array('patrouille', 'equipe', 'sizloup', 'sizjeannette')))
-			throw new Knema_Controller_Action_Exception("L'unité est complète pour l'année ".$a." !");
+			throw new Strass_Controller_Action_Exception("L'unité est complète pour l'année ".$a." !");
 
 		// on sélectionne le premier poste disponible.
 		$m->addEnum('role', 'Poste', key($values), $enum);

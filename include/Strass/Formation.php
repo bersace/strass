@@ -1,6 +1,6 @@
 <?php
 
-class Diplomes extends Knema_Db_Table_Abstract
+class Diplomes extends Strass_Db_Table_Abstract
 {
 	protected	$_name			=  'diplomes';
 	protected	$_dependentTables	= array('Formation');
@@ -24,7 +24,7 @@ class Diplome extends Zend_Db_Table_Row_Abstract
 	}
 }
 
-class Formation extends Knema_Db_Table_Abstract
+class Formation extends Strass_Db_Table_Abstract
 {
 	protected	$_name		= 'formation';
 	protected	$_referenceMap	= array('Diplome'	=> array('columns'	=> array('diplome', 'branche'),

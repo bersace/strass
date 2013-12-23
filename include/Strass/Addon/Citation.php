@@ -1,7 +1,7 @@
 <?php
 require_once 'Strass/Citation.php';
 
-class Strass_Addon_Citation extends Knema_Addon
+class Strass_Addon_Citation extends Strass_Addon
 {
 	protected $citation;
 

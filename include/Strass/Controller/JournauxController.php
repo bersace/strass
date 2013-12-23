@@ -62,7 +62,7 @@ class JournauxController extends Strass_Controller_Action
 		$u = $this->_helper->Unite();
 		$tu = $u->findParentTypesUnite();
 		if ($tu->isTerminale() && $tu->age_min < 12)
-			throw new Knema_Controller_Action_Exception("Impossible de créer un journal d'unité ".
+			throw new Strass_Controller_Action_Exception("Impossible de créer un journal d'unité ".
 								    "pour ".$u->getFullName());
 
 		$this->assert(null, $u, 'fonder-journal',
@@ -145,7 +145,7 @@ class JournauxController extends Strass_Controller_Action
 		$this->view->articles = $j->findArticles($s);
 		$this->view->current = $p;
 
-		$config = new Knema_Config_Php('strass');
+		$config = new Strass_Config_Php('strass');
 
 		// ÉDITORIAL
 		$db = $articles->getAdapter();
@@ -311,7 +311,7 @@ class JournauxController extends Strass_Controller_Action
 						$fichier =
 							$dossier.($nom ? $nom : $if->getBasename());
 						if (!move_uploaded_file($if->getTempFilename(), $fichier)) {
-							throw new Knema_Controller_Action_Exception
+							throw new Strass_Controller_Action_Exception
 								("Impossible de récupérer l'image ".$if->getBasename());
 						}
 					}

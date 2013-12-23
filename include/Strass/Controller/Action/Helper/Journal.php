@@ -10,7 +10,7 @@ class Strass_Controller_Action_Helper_Journal extends Zend_Controller_Action_Hel
 		$journaux = new Journaux();
 		$journal = $journaux->find($id)->current();
 		if (!$journal && $throw)
-			throw new Knema_Controller_Action_Exception_Notice("Journal ".$id." inexistant.");
+			throw new Strass_Controller_Action_Exception_Notice("Journal ".$id." inexistant.");
 
 		if ($journal) {
 			if ($reset) {

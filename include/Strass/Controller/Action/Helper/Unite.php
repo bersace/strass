@@ -18,7 +18,7 @@ class Strass_Controller_Action_Helper_Unite extends Zend_Controller_Action_Helpe
 
 		if (!$unite)
 		  if ($throw)
-		    throw new Knema_Controller_Action_Exception_Notice("Unité ".$id." inconnue");
+		    throw new Strass_Controller_Action_Exception_Notice("Unité ".$id." inconnue");
 		  else
 		    return null;
 

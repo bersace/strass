@@ -17,7 +17,7 @@ class Strass_Controller_Action_Helper_Individu extends Zend_Controller_Action_He
 		$individu = $ti->find($id)->current();
 
 		if (!$individu && $throw)
-			throw new Knema_Controller_Action_Exception_Notice("Individu ".$id." inconnu.");
+			throw new Strass_Controller_Action_Exception_Notice("Individu ".$id." inconnu.");
 
 		if ($individu) {
 			if ($reset) {

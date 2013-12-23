@@ -4,7 +4,7 @@ require_once 'Strass/Unites.php';
 require_once 'Strass/Photos.php';
 require_once 'Strass/Documents.php';
 
-class Activites extends Knema_Db_Table_Abstract
+class Activites extends Strass_Db_Table_Abstract
 {
 	protected $_name = 'activites';
 	protected $_rowClass = 'Activite';
@@ -460,7 +460,7 @@ class Activite extends Strass_Db_Table_Row_Abstract implements Zend_Acl_Resource
 	}
 }
 
-class Participations extends Knema_Db_Table_Abstract
+class Participations extends Strass_Db_Table_Abstract
 {
 	protected $_name = 'participe';
 	protected $_rowClass = 'Participe';

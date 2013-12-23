@@ -46,14 +46,14 @@ class PhotosController extends Strass_Controller_Action
 		if (!$activite) {
 			$i = Zend_Registry::get('individu');
 			if (!$i)
-				throw new Knema_Controller_Action_Exception_Forbidden("Vous devez être identifé pour envoyer des photos.");
+				throw new Strass_Controller_Action_Exception_Forbidden("Vous devez être identifé pour envoyer des photos.");
 
 			$annee = $this->_helper->Annee(false);
 			$debut = $annee ? $this->_helper->Annee->dateDebut($annee) : null;
 			$fin = $annee ? $this->_helper->Annee->dateFin($annee) : null;
 			$as = $this->_helper->Activite->pourIndividu(Zend_Registry::get('individu'), $debut, $fin);
 			if (!$as)
-				throw new Knema_Controller_Action_Exception_Forbidden("Vous ne pouvez envoyer de photos dans aucune activités.");
+				throw new Strass_Controller_Action_Exception_Forbidden("Vous ne pouvez envoyer de photos dans aucune activités.");
 			foreach($as as $a)
 				if ($this->assert(null, $a, 'envoyer-photo')) 
 					$enum[$a->id] = wtk_ucfirst($a->getIntitule());
@@ -135,7 +135,7 @@ class PhotosController extends Strass_Controller_Action
 				$h /= $ratio;
 				$tr->resize(intval($w), intval($h));
 				if (Pear::isError($e = @$tr->save($fichier, 'jpeg')))
-					throw new Knema_Controller_Action_Exception_Internal(null,
+					throw new Strass_Controller_Action_Exception_Internal(null,
 											     "Impossible d'enregistrer le fichier ".$fichier." : ".
 											     "« ".$e->getMessage()." »");
 				$tr->free();
@@ -149,7 +149,7 @@ class PhotosController extends Strass_Controller_Action
 				$w /= $ratio;
 				$tr->resize(intval($w), $hv);
 				if (Pear::isError($e = @$tr->save($mini, 'jpeg')))
-					throw new Knema_Controller_Action_Exception_Internal(null,
+					throw new Strass_Controller_Action_Exception_Internal(null,
 											     "Impossible d'enregistrer le fichier ".$mini." : ".
 											     "« ".$e->getMessage()." »");
 				$tr->free();
@@ -253,7 +253,7 @@ class PhotosController extends Strass_Controller_Action
 			$fin = $annee ? $this->_helper->Annee->dateFin($annee) : null;
 			$as = $this->_helper->Activite->pourIndividu(Zend_Registry::get('individu'), $debut, $fin);
 			if (!$as)
-				throw new Knema_Controller_Action_Exception_Forbidden("Vous ne pouvez envoyer de photos dans aucune activités.");
+				throw new Strass_Controller_Action_Exception_Forbidden("Vous ne pouvez envoyer de photos dans aucune activités.");
 			foreach($as as $a)
 				if ($this->assert(null, $a, 'envoyer-photo')) 
 					$enum[$a->id] = wtk_ucfirst($a->getIntitule());

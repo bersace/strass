@@ -12,7 +12,7 @@ class Strass_Controller_Action_Helper_Rubrique extends Zend_Controller_Action_He
 		$rubriques = new Rubriques();
 		$rubrique = $rubriques->find($id, $j)->current();
 		if (!$rubrique && $throw)
-			throw new Knema_Controller_Action_Exception_Notice("Rubrique ".$id." inconnue");
+			throw new Strass_Controller_Action_Exception_Notice("Rubrique ".$id." inconnue");
 		if ($rubrique) {
 			$this->_actionController->branche->append(wtk_ucfirst($rubrique->nom),
 								  array('controller'	=> 'journaux',

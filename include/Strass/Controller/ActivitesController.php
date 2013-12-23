@@ -15,7 +15,7 @@ class ActivitesController extends Strass_Controller_Action
 	{
 		$i = Zend_Registry::get('individu');
 		if (!$i)
-			throw new Knema_Controller_Action_Exception_Notice("Vous devez être identifié pour voir ".
+			throw new Strass_Controller_Action_Exception_Notice("Vous devez être identifié pour voir ".
 									   "le calendrier des activités.");
 
 		$u = current($i->getUnites());
@@ -24,7 +24,7 @@ class ActivitesController extends Strass_Controller_Action
 			$this->redirectUrl(array('action' => 'calendrier',
 						 'unite' => $u->id));
 		else
-			throw new Knema_Controller_Action_Exception_Notice("Vous n'appartenez à aucune ".
+			throw new Strass_Controller_Action_Exception_Notice("Vous n'appartenez à aucune ".
 									   "unité, impossible de vous ".
 									   "présenter vos activités !");
 	}
@@ -63,7 +63,7 @@ class ActivitesController extends Strass_Controller_Action
 	{
 		$individu = Zend_Registry::get('individu');
 		if (!$individu)
-			throw new Knema_Controller_Action_Exception_Notice("Vous devez être inscrit et identifié ".
+			throw new Strass_Controller_Action_Exception_Notice("Vous devez être inscrit et identifié ".
 									   "pour prévoir une nouvelle activité");
 		$this->view->model = $m = new Wtk_Form_Model('prevoir');
 
@@ -579,7 +579,7 @@ class ActivitesController extends Strass_Controller_Action
 		$ps = new Participations();
 		$p = $a && $u ? $ps->find($a->id, $u->id)->current() : null;
 		if (!$p && $throw)
-			throw new Knema_Controller_Action_Exception_Notice(wtk_ucfirst($u->getFullname()).	
+			throw new Strass_Controller_Action_Exception_Notice(wtk_ucfirst($u->getFullname()).	
 									   " ne participe pas à l'activité ".
 									   $a->getIntitule());
 		return array($u, $p, $a);
@@ -606,7 +606,7 @@ class ActivitesController extends Strass_Controller_Action
 		}
 
 		if (!count($unites) && $assert) {
-			throw new Knema_Controller_Action_Exception
+			throw new Strass_Controller_Action_Exception
 				("Vous n'avez le droit de prévoir d'activité pour aucune unités !");
 		}
 		return $unites;

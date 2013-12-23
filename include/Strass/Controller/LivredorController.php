@@ -117,7 +117,7 @@ class LivredorController extends Strass_Controller_Action
 		$message = $tm->find($this->_getParam('auteur'), $this->_getParam('date'))->current();
 
 		if (!$message)
-			throw new Knema_Controller_Action_Exception("Message introuvable");
+			throw new Strass_Controller_Action_Exception("Message introuvable");
 
 		$db = $tm->getAdapter();
 		$db->beginTransaction();
@@ -150,7 +150,7 @@ class LivredorController extends Strass_Controller_Action
 		$message = $tm->find($this->_getParam('auteur'), $this->_getParam('date'))->current();
 
 		if (!$message)
-			throw new Knema_Controller_Action_Exception("Message introuvable");
+			throw new Strass_Controller_Action_Exception("Message introuvable");
 
 		$db = $tm->getAdapter();
 		$db->beginTransaction();

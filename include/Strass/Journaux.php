@@ -55,7 +55,7 @@ class Rubrique extends Zend_Db_Table_Row_Abstract       // implements Zend_Acl_R
 {
 }
 
-class Articles extends Knema_Db_Table_Abstract
+class Articles extends Strass_Db_Table_Abstract
 {
 	protected $_name = 'articles';
 	protected $_rowClass = 'Article';
@@ -111,7 +111,7 @@ class Article extends Strass_Db_Table_Row_Abstract implements Zend_Acl_Resource_
 	function getImages()
 	{
 		$dossier = $this->getDossier();
-		$fichiers = scandir($dossier);
+		$fichiers = (array) @scandir($dossier);
 		$images = array();
 		foreach($fichiers as $fichier) {
 			if ($fichier != '.' && $fichier != '..') {

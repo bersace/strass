@@ -13,7 +13,6 @@ require_once('Zend/Loader/Autoloader.php');
 $loader = Zend_Loader_Autoloader::getInstance();
 $loader->registerNamespace('Dio_');
 $loader->registerNamespace('Wtk_');
-$loader->registerNamespace('Knema_');
 $loader->registerNamespace('Strass_');
 
 mkdir('old', 0700);
@@ -22,16 +21,16 @@ mkdir('private/cache', 0700, true);
 // config
 Zend_Registry::set('config_basedir', 'config/');
 $config = array();;
-$tmp = new Knema_Config_Php('knema/db');
+$tmp = new Strass_Config_Php('knema/db');
 $newpath = 'private/strass.sqlite';
 rename($tmp->config->dbname, $newpath);
 $tmp->config->dbname = $newpath;
 $config['db'] = $tmp->toArray();
-$tmp = new Knema_Config_Php('knema/site');
+$tmp = new Strass_Config_Php('knema/site');
 $config['site'] = $tmp->toArray();
-$tmp = new Knema_Config_Php('strass/inscription');
+$tmp = new Strass_Config_Php('strass/inscription');
 $config['inscription'] = $tmp->toArray();
-$tmp = new Knema_Config_Php('knema/menu');
+$tmp = new Strass_Config_Php('knema/menu');
 $config['menu'] = $tmp->toArray();
 
 // plus d'index séparé
@@ -40,7 +39,7 @@ unlink('config/strass/index.php');
 unlink('config/knema/formats.php');
 
 Zend_Registry::set('config_basedir', 'private/config/');
-$config = new Knema_Config_Php('strass', $config);
+$config = new Strass_Config_Php('strass', $config);
 $config->write();
 
 

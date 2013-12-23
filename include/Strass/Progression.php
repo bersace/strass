@@ -1,6 +1,6 @@
 <?php
 
-class Etape extends Knema_Db_Table_Abstract
+class Etape extends Strass_Db_Table_Abstract
 {
 	protected	$_name			=  'etapes';
 	protected	$_dependentTables	= array('Progression');
@@ -9,7 +9,7 @@ class Etape extends Knema_Db_Table_Abstract
 									 'refColumns'		=> array('id')));
 }
 
-class Progression extends Knema_Db_Table_Abstract
+class Progression extends Strass_Db_Table_Abstract
 {
 	protected	$_name		= 'progression';
 	protected	$_referenceMap	= array('Étape'		=> array('columns'	=> array('etape', 'sexe'),

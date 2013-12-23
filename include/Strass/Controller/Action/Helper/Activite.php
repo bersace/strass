@@ -45,7 +45,7 @@ class Strass_Controller_Action_Helper_Activite extends Zend_Controller_Action_He
 
 		if (!$activite)
 		  if ($throw)
-		    throw new Knema_Controller_Action_Exception_Notice("Activité ".$id." inexistante.");
+		    throw new Strass_Controller_Action_Exception_Notice("Activité ".$id." inexistante.");
 		  else
 		    return null;
 

@@ -4,7 +4,7 @@ class Wtk_Pages_Model_Table extends Wtk_Pages_Model
 {
 	protected $rowcount;
 
-	function __construct(Knema_Db_Table_Abstract $table, $where = array(), $order = array(), $count= 15, $current = 1)
+	function __construct($table, $where = array(), $order = array(), $count= 15, $current = 1)
 	{
 		$db = $table->getAdapter();
 		$info = $table->info();

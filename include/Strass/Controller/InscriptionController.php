@@ -84,7 +84,7 @@ class InscriptionController extends Strass_Controller_Action
 				array('patrouille', 'equipe', 'sizloup',
 				      'sizjeannette'))) {
 			throw new
-				Knema_Controller_Action_Exception("L'unité est complète pour l'année ".$annee." !");
+				Strass_Controller_Action_Exception("L'unité est complète pour l'année ".$annee." !");
 		}
 
     
@@ -474,7 +474,7 @@ class InscriptionController extends Strass_Controller_Action
 		$this->view->model = new Wtk_Pages_Model_Form($m);
 
 		if (!$this->view->model->pagesCount())
-			throw new Knema_Controller_Action_Exception_Notice("Impossible d'inscrire cet individu ".
+			throw new Strass_Controller_Action_Exception_Notice("Impossible d'inscrire cet individu ".
 									   "dans notre groupe. ".
 									   "Aucune unité ne peut l'indexlir !");
 

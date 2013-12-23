@@ -180,7 +180,7 @@ class MembresController extends Strass_Controller_Action implements Zend_Acl_Res
 
 		$this->view->model = new Wtk_Pages_Model_Form($m);
 
-		$this->view->cotisation = file_get_contents('private/statiques/strass/inscription/cotisation.wiki');
+		$this->view->cotisation = @file_get_contents('private/statiques/strass/inscription/cotisation.wiki');
 		$racine = $this->_helper->UniteRacine();
 		$app = $racine->findAppartenances("role = 'chef' AND fin IS NULL")->current();
 		$chef = $app->findParentIndividus();
@@ -270,7 +270,7 @@ class MembresController extends Strass_Controller_Action implements Zend_Acl_Res
 			$ins = $t->fetchAll()->current();
 
 		if (!$ins)
-			throw new Knema_Controller_Action_Exception_Notice("Aucune inscription à valider.");
+			throw new Strass_Controller_Action_Exception_Notice("Aucune inscription à valider.");
 
 		$tind = new Individus();
 		$id = wtk_strtoid($ins->prenom.' '.$ins->nom);
@@ -444,10 +444,10 @@ class MembresController extends Strass_Controller_Action implements Zend_Acl_Res
 			$ind = $moi;
 
 		if (!$moi)
-			throw new Knema_Controller_Action_Exception_Notice("Vous n'être pas identifié.");
+			throw new Strass_Controller_Action_Exception_Notice("Vous n'être pas identifié.");
 
 		if (!$ind)
-			throw new Knema_Controller_Action_Exception
+			throw new Strass_Controller_Action_Exception
 				("Aucun individu ne correspond à //".$id."//.");
 
 		$this->assert($moi, $ind, 'profil',

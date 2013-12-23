@@ -1,6 +1,6 @@
 <?php
 
-class Livredor extends Knema_Db_Table_Abstract implements Zend_Acl_Resource_Interface
+class Livredor extends Strass_Db_Table_Abstract implements Zend_Acl_Resource_Interface
 {
 	protected	$_name			= 'livredor';
 	protected	$_rowClass		= 'Message';

@@ -1,5 +1,5 @@
 <?php
-require_once 'Knema/Log.php';
+require_once 'Strass/Log.php';
 
 class LogController extends Strass_Controller_Action
 {

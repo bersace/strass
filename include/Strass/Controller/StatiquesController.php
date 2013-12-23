@@ -8,7 +8,7 @@ class StatiquesController extends Strass_Controller_Action
 	{
 		$page = $this->_getParam('page');
 		if (!$page) {
-			throw new Knema_Controller_Action_Exception("Aucune page à afficher");
+			throw new Strass_Controller_Action_Exception("Aucune page à afficher");
 		}
         
 		$page = new Statique($page);
@@ -28,7 +28,7 @@ class StatiquesController extends Strass_Controller_Action
 	{             
 		$page = $this->_getParam('page');
 		if (!$page)
-			throw new Knema_Controller_Action_Exception("Aucune page à éditer");
+			throw new Strass_Controller_Action_Exception("Aucune page à éditer");
         
 		$page = new Statique($page);
 		$this->metas(array('DC.Title' => "Éditer ".$page->getTitle()));
