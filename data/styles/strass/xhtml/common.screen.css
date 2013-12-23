@@ -20,9 +20,18 @@ a:hover
 
 #header
 {
-    background-image: url("associations/suf.png");
     background-repeat: no-repeat;
     background-position: 96% center;
+}
+
+#header.suf
+{
+    background-image: url("associations/suf.png");
+}
+
+#header.fse
+{
+    background-image: url("associations/fse.png");
 }
 
 #header .h
