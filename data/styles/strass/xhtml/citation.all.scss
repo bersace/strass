@@ -1,0 +1,38 @@
+#document.citation {
+    li {
+	list-style-type: none;
+    }
+
+    .section.citation
+    {
+	position: relative;
+
+	&:hover ul.adminlinks li
+	{
+	    visibility: visible;
+	}
+    }
+
+    ul.adminlinks {
+	position: absolute;
+	top: 0;
+	right: 0;
+	display: block;
+	text-align: right;
+
+	li {
+	    display: inline-block;
+	    box-shadow: 2pt 4pt 1ex rgba(4, 4, 4, 0.5);
+	    border-radius: 1ex;
+	    visibility: hidden;
+	    margin: .5ex;
+
+	    a {
+		display: block;
+		background: #d6d2c1;
+		padding: 1ex;
+		border-radius: 1ex;
+	    }
+	}
+    }
+}
