@@ -6,4 +6,10 @@ setup:
 serve:
 	php -S localhost:8000
 
+# Pour le moment, on restaure un site en version 1
+restore:
+	git reset --hard
+	git clean --force -d
+	cp --archive --link $(ORIG)/config/ $(ORIG)/data $(ORIG)/resources ./
+
 .PHONY: all serve setup
