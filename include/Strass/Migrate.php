@@ -20,12 +20,11 @@ class Strass_Migrate {
 
     $target = $current + 1;
     error_log("Migration vers la version ".$target.".");
+
     $class = 'Strass_Migrate_To'.$target;
     $handler = new $class;
-    if (!ini_get('html_errors')) {
-      $handler->offline();
-    }
-    $handler->online($this->db);
+    $handler->run($this->db);
+
     Strass_Version::save($target);
 
     /* chainage vers la version suivante */
@@ -34,6 +33,21 @@ class Strass_Migrate {
 }
 
 class Strass_MigrateHandler {
+  function run($db) {
+    if (!ini_get('html_errors')) {
+      $this->offline();
+    }
+
+    $db->beginTransaction();
+    try {
+      $this->online($db);
+      $db->commit();
+    }
+    catch (Exception $e) {
+      $db->rollBack();
+    }
+  }
+
   /* À exécuter si on a un accès shell */
   function offline() {
   }
