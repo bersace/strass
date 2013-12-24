@@ -33,7 +33,7 @@ class Strass_Pages_Model_Select extends Wtk_Pages_Model
 
 	function pagesCount()
 	{
-		return round(($this->rowcount / $this->item_per_page) + .5);
+		return ceil(($this->rowcount / $this->item_per_page));
 	}
 
 	function getPrevId($ref = null)
