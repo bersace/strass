@@ -268,7 +268,7 @@ class Strass_Controller_Router_Route_Uri extends Zend_Controller_Router_Route_Re
 		$wcs = array();
 		foreach($data as $k => $v) {
 			// les valeur nulle seront remplacées par les valeurs par défaut.
-			if (!$v) {
+			if ($v === null) {
 				unset($data[$k]);
 			}
 			// si la variable est inconnu, la mettre dans le paramètre.
