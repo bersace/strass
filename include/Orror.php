@@ -32,6 +32,7 @@ define('E_EXCEPTION', E_ALL*2);
  * simplement les erreurs. (traitement, traduction, etc.)
  */
 class Orror {
+  static $html;
 
   /**
    * Initialise la gestion des erreurs.
@@ -52,6 +53,7 @@ class Orror {
     if ($handle_exceptions) {
       set_exception_handler(array('Orror', 'exception_handler'));
     }
+    Orror::$html = ini_get('html_errors');
   }
 
   /**
@@ -148,7 +150,7 @@ class Orror {
 
   static function print_r($datas, $return = FALSE)
   {
-    $msg = "<pre>";
+    $msg = Orror::$html ? "<pre>" : "";
     foreach($datas as $data) {
       switch(gettype($data)) {
       case 'boolean':
@@ -161,7 +163,7 @@ class Orror {
 	break;
       }
     }
-    $msg.= "</pre>\n";
+    $msg.= Orror::$html ? "</pre>\n" : "\n";
 
     if (!$return) {
       echo $msg;
@@ -182,7 +184,11 @@ class Orror {
   {
     $args = func_get_args();
 
-    $error['msg'] = self::print_r($args, true)."<strong>Kill !</strong>\n";
+    $error['msg'] = self::print_r($args, true);
+    if (Orror::$html)
+      $error['msg'].= "<strong>Kill !</strong>\n";
+    else
+      $error['msg'].= "**Kill !**\n";
 
     // Recherche du fichier et de la ligne de l'erreur.
     $dbg = debug_backtrace();
@@ -200,7 +206,7 @@ class Orror {
 
   static function sink()
   {
-    if ($_ENV['ORROR_SINK']) {
+    if (array_key_exists('ORROR_SINK', $_ENV)) {
       call_user_func($_ENV['ORROR_SINK']);
     }
     else {
@@ -249,8 +255,7 @@ class Orror {
   }
 
   /**
-   * Afficheur par défaut des erreurs. La sortie est obligatoirement
-   * en HTML.
+   * Afficheur par défaut des erreurs.
    */
   static function output($msg, $file, $line, $class, $function, $level, $backtrace, $exception = null)
   {
@@ -268,36 +273,59 @@ class Orror {
       $errors[E_RECOVERABLE_ERROR] = __("Recoverable error");
     }
 
-    echo '<div class="error">';
-    if ($level) {
+    if (ini_get('html_errors')) {
+      echo '<div class="error">';
+      if ($level) {
+	echo 
+	  "<p><b>".
+	  $errors[$level].
+	  "</b>: ".
+	  ($function || ($class && $function) ? "<span>".($class ? $class."::" : "").$function."()</span>: " : "");
+	echo $msg."<br/>\n";
+	echo 
+	  "<span>".
+	  S_("in %s on line %s.",
+	     "<b>".str_replace(dirname($_SERVER['SCRIPT_FILENAME']).'/', '', $file)."</b>",
+	     "<b>".$line."</b>").
+	  "</span><br/>\n";
+	
+	if (count($backtrace)) {
+	  echo "<b>".__("Backtrace:")."</b><br/>\n";
+	  foreach ($backtrace as $i => $step) {
+	    if (isset($step['file']) && isset($step['line'])) {
+	      $class = isset($step['class']) ? $step['class']."." : "";
+	      echo "#".$i." ".str_replace(dirname($_SERVER['SCRIPT_FILENAME']).'/', '', $step['file']).":".$step['line']." ".$class.$step['function']."()<br/>\n";
+	    }
+	  }
+	}
+	
+	echo "<p>\n";
+	echo "</div>\n";
+      }
+      else {
+	echo "<!--\n".$msg."-->\n";
+      }
+    }
+    else {
       echo 
-	"<p><b>".
-	$errors[$level].
-	"</b>: ".
-	($function || ($class && $function) ? "<span>".($class ? $class."::" : "").$function."()</span>: " : "");
-      echo $msg."<br/>\n";
-      echo 
-	"<span>".
-	S_("in %s on line %s.",
-	   "<b>".str_replace(dirname($_SERVER['SCRIPT_FILENAME']).'/', '', $file)."</b>",
-	   "<b>".$line."</b>").
-	"</span><br/>\n";
-
+	$errors[$level].": ".
+	($function || ($class && $function) ? ($class ? $class."::" : "").$function."(): " : "");
+      echo $msg."\n";
+      echo sprintf("in %s on line %s.\n",
+		   str_replace(dirname($_SERVER['SCRIPT_FILENAME']).'/', '', $file),
+		   $line);
+      
       if (count($backtrace)) {
-	echo "<b>".__("Backtrace:")."</b><br/>\n";
+	echo "Backtrace:\n";
 	foreach ($backtrace as $i => $step) {
 	  if (isset($step['file']) && isset($step['line'])) {
 	    $class = isset($step['class']) ? $step['class']."." : "";
-	    echo "#".$i." ".str_replace(dirname($_SERVER['SCRIPT_FILENAME']).'/', '', $step['file']).":".$step['line']." ".$class.$step['function']."()<br/>\n";
+	    echo "   #".$i." ".str_replace(dirname($_SERVER['SCRIPT_FILENAME']).'/', '', $step['file']).":".$step['line']." ".$class.$step['function']."()\n";
 	  }
 	}
       }
-
-      echo "<p>\n";
-      echo "</div>\n";
-    }
-    else {
-      echo "<!--\n".$msg."-->\n";
+      
+      echo "\n";
     }
   }
 
