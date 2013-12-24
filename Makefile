@@ -8,6 +8,8 @@ serve:
 
 # Pour le moment, on restaure un site en version 1
 restore:
+	git add include/ Makefile migrate
+	git commit -m "pre-restore" || true
 	git reset --hard
 	git clean --force -d
 	cp --archive --link $(ORIG)/config/ $(ORIG)/data $(ORIG)/resources ./

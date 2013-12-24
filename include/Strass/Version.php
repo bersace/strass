@@ -5,7 +5,7 @@ final class Strass_Version {
 
   static $filename = 'private/STRASS_VERSION';
 
-  static function currentVersion() {
+  static function current() {
     if (file_exists(Strass_Version::$filename)) {
       return (int) trim(@file_get_contents('private/STRASS_VERSION'));
     }
@@ -19,7 +19,7 @@ final class Strass_Version {
     }
   }
 
-  static function saveVersion($version) {
+  static function save($version) {
     file_put_contents(Strass_Version::$filename, (string) $version);
   }
 }
