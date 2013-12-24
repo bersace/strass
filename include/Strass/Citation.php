@@ -2,7 +2,7 @@
 
 class Citation extends Strass_Db_Table_Abstract implements Zend_Acl_Resource_Interface
 {
-	protected $_name = 'citations';
+	protected $_name = 'citation';
 
 	function __construct()
 	{

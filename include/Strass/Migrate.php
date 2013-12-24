@@ -1,6 +1,10 @@
 <?php
 
 class Strass_Migrate {
+  function __construct() {
+    $this->db = Strass_Db::setup();
+  }
+
   function migrate() {
     $current = Strass_Version::current();
     $strass = Strass_Version::VERSION;
@@ -21,7 +25,7 @@ class Strass_Migrate {
     if (!ini_get('html_errors')) {
       $handler->offline();
     }
-    $handler->online();
+    $handler->online($this->db);
     Strass_Version::save($target);
 
     /* chainage vers la version suivante */
@@ -35,6 +39,6 @@ class Strass_MigrateHandler {
   }
 
   /* exécutable en ligne, par l'assistant */
-  function online() {
+  function online($db) {
   }
 }
