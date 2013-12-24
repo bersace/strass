@@ -8,6 +8,7 @@ serve:
 
 # Pour le moment, on restaure un site en version 1
 restore:
+	if ! test -n "$(ORIG)" ; then echo "ORIG manquant"; exit 1; fi
 	git add include/ Makefile migrate
 	git commit -m "pre-restore" || true
 	git reset --hard
