@@ -65,9 +65,14 @@ abstract class Strass_Format
 		$view->addons = $view->document->aside;
 		$view->addons->level = 1;
 		foreach($view->page as $addon) {
-			$addon->initView($view);
-			$script = $controller->getViewScript($addon->viewScript(), 'addons');
-			$view->render($script);
+		  try {
+		    $addon->initView($view);
+		    $script = $controller->getViewScript($addon->viewScript(), 'addons');
+		    $view->render($script);
+		  }
+		  catch (Exception $e) {
+		    error_log("Unable to render addon ".get_class($addon));
+		  }
 		}
 	}
 
