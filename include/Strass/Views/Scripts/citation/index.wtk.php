@@ -25,6 +25,10 @@ class Scout_Pages_RendererCitation extends Wtk_Pages_Renderer
 						      'action' => 'editer',
 						      'citation' => $citation->id),
 						"Éditer", true));
+      $l->addItem()->addChild($this->view->lien(array('controller' => 'citation',
+						      'action' => 'supprimer',
+						      'citation' => $citation->id),
+						"Supprimer", true));
     }
   }
 }

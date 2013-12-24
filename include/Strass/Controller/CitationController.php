@@ -86,4 +86,39 @@ class CitationController extends Strass_Controller_Action
 			}
 		}
 	}
+
+	function supprimerAction()
+	{
+		$tc = new Citation();
+		$this->assert(null, $tc, 'supprimer',
+			      "Vous n'avez pas le droit de supprimer les citations.");
+
+		$this->view->citation = $citation = $tc->find($this->_getParam('citation'))->current();
+		$this->metas(array('DC.Title' => 'Supprimer une citation'));
+
+		$this->view->model = $m = new Wtk_Form_Model('citation');
+		$m->addBool('confirmer', "Je confirme vouloir supprimer cette citation.");
+		$m->addNewSubmission('continuer', 'continuer');
+
+		if ($m->validate()) {
+		  if ($m->get('confirmer')) {
+		    $db = $tc->getAdapter();
+		    $db->beginTransaction();
+		    try {
+		      $citation->delete();
+		      
+		      $this->_helper->Log("Citation de ".$citation->auteur."supprimée", array(),
+					  $this->_helper->Url(null, 'citation'),
+					  'Citations');
+		      $db->commit();
+		    }
+		    catch (Exception $e) {
+		      $db->rollback();
+		      throw $e;
+		    }
+		  }
+
+		  $this->redirectSimple('index');
+		}
+	}
 }
