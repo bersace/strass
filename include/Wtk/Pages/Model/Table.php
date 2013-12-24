@@ -25,7 +25,8 @@ class Wtk_Pages_Model_Table extends Wtk_Pages_Model
 		$data = $table->fetchAll($where, $order, $count, $offset);
 		parent::__construct($data, $count, $current);
 
-		$this->pages_id = $this->rowcount ? range(1, intval($this->rowcount/$this->item_per_page + .5)) : array();
+		$page_count = intval(ceil($this->rowcount/$this->item_per_page));
+		$this->pages_id = $this->rowcount ? range(1, $page_count) : array();
 	}
 
 	function getPagesIds()
