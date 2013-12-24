@@ -16,6 +16,17 @@ $loader->registerNamespace('Dio_');
 $loader->registerNamespace('Wtk_');
 $loader->registerNamespace('Strass_');
 
+function getVersion() {
+  if (file_exists('private/STRASS_VERSION')) {
+    return (int) trim(@file_get_contents('private/STRASS_VERSION'));
+  }
+  else {
+    return 1;
+  }
+}
+
+Orror::kill(getVersion());
+
 if (file_exists('cache'))
   rename('cache', 'private/cache');
 

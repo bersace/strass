@@ -177,8 +177,7 @@ class Orror {
   /**
    * Termine le programme et affiche le fichier et la ligne où le
    * programme a été arrêté. Tout les arguments sont dumpé avec
-   * print_r. La fonction d'affichage est obligatoirement
-   * Orror::output().
+   * print_r.
    */
   static function kill()
   {
@@ -192,7 +191,6 @@ class Orror {
 
     // Recherche du fichier et de la ligne de l'erreur.
     $dbg = debug_backtrace();
-    $current = array_pop($dbg);
     $error['file'] = $dbg[0]['file'];
     $error['line'] = $dbg[0]['line'];
     $error['class'] = isset($dbg[0]['class']) ? $dbg[0]['class'] : NULL;
