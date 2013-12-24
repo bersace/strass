@@ -2,19 +2,38 @@
 
 abstract class Strass_Db_Table_Abstract extends Zend_Db_Table_Abstract
 {
-	function countRows($where = null)
+	function countRows($select = null)
 	{
-		$db = $this->getAdapter();
-		$select = $db->select()
-			->distinct()
-			->from($this->_name, array('count' => 'COUNT(*)'));
-		if ($where) { 
-			$select->where($where);
-		}
+	  $db = $this->getAdapter();
 
-		$stmt = $db->query($select->__toString());
-		$res = $stmt->fetch();
-		return $res['count'];
+	  if (is_string($select)) {
+	    $where = $select;
+	    $select = null;
+	  }
+	  else {
+	    $where = null;
+	  }
+
+	  if (!$select) {
+	    $select = $db->select()
+	      ->distinct();
+	  }
+	  else {
+	    // On clone, car le $select est souvent utilisé pour autre
+	    // chose que count après cette fonction
+	    $select = clone($select);
+	  }
+
+	  $select->from($this->_name, array('count' => 'COUNT(*)'));
+
+	  if ($where) {
+	    $select = $select->where($where);
+	  }
+
+
+	  $stmt = $db->query($select->__toString());
+	  $res = $stmt->fetch();
+	  return $res['count'];
 	}
 
 
