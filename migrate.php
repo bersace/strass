@@ -20,8 +20,13 @@ function getVersion() {
   if (file_exists('private/STRASS_VERSION')) {
     return (int) trim(@file_get_contents('private/STRASS_VERSION'));
   }
-  else {
+  else if (file_exists('config/knema/db.php')) {
+    /* Installation non versionnée (morel et suf1520) */
     return 1;
+  }
+  else {
+    /* In principio erat zero. Rien n'est installé */
+    return 0;
   }
 }
 
