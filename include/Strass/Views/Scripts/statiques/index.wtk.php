@@ -1,9 +1,9 @@
 <?php
-$s = $this->document->addSection('page');
+// Laisser le contenu définir le titre du document
+$this->document->setTitle(null);
 if ($this->wiki) {
-  $s->addText($this->wiki);
+  $this->document->addText($this->wiki);
 }
 else {
-  $s->addParagraph("Pas de contenu")->addFlags('empty');
+  $this->document->addParagraph("Pas de contenu")->addFlags('empty');
 }
-
