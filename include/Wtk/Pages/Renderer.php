@@ -28,9 +28,10 @@ abstract class Wtk_Pages_Renderer
 
 	abstract function render($id, $data, $container);
 
+
 	function renderEmpty($container)
 	{
-	  return $container->addRawText("Pas de contenu");
+	  return $container->addParagraph("Pas de contenu")->addFlags('empty');
 	}
 
 	function renderLinks($pages, $model)
