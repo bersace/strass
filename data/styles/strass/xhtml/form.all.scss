@@ -1,230 +1,283 @@
+/*-*- css -*-*/
+
 form
 {
-  clear: both;
-  width: 100%;
-  text-align: center;
-  }
+    clear: both;
+    width: 100%;
+    text-align: center;
+}
 
 .buttonbox
 {
-  clear: both;
-  text-align: center;
-  padding: .5ex;
-  }
+    clear: both;
+    text-align: center;
+    padding: .5ex;
+}
 
 div.control
 {
-  text-align: left;
-  clear: both;
-  padding: .5ex;
-  }
+    text-align: left;
+    clear: both;
+    padding: .5ex;
+}
 
 div.control > *
 {
-  margin: 0;
-  }
+    margin: 0;
+}
 
 div.control > label
 {
-  float: left;
-  width: 16em;
-  display: block;
-  padding: .5ex 0;
-  white-space: nowrap;
-  }
+    float: left;
+    width: 16em;
+    display: block;
+    padding: .5ex 0;
+    white-space: nowrap;
+}
 
 div.control label:after
 {
-  content: " :";
-  }
+    content: " :";
+}
 
 .control.select span label:after,
 .control.check label:after
 {
-  content: "";
-  }
+    content: "";
+}
 
 div.control .input
 {
-  margin: 0;
-  float: left;
-  display: block;
-  clear: right;
-  }
+    margin: 0;
+    float: left;
+    display: block;
+    clear: right;
+}
 
 div.control .input:first-child
 {
-  margin: 0 auto;
-  float: none;
-  text-align: center;
-  }
+    margin: 0 auto;
+    float: none;
+    text-align: center;
+}
 
 input[type=text],
 input[type=password],
 textarea
 {
-  border: 1px solid black;
-  padding: 1px;
-  }
+    border: 1px solid black;
+    padding: 1px;
+}
 
 div.control.compound div.control
 {
-  float: left;
-  clear: none;
-  }
+    float: left;
+    clear: none;
+}
 
 input.spin
 {
-  text-align: right;
-  }
+    text-align: right;
+}
 
 div.control.date input
 {
-  margin: 1px;
-  font-family: monospace;
-  text-align: center;
-  }
+    margin: 1px;
+    font-family: monospace;
+    text-align: center;
+}
 
 div.control.check > .input
 {
-  clear: left;
-  position: relative;
-  top: -1.5em;
-  margin-bottom: -1.65em;
-  }
+    clear: left;
+    position: relative;
+    top: -1.5em;
+    margin-bottom: -1.65em;
+}
 
 table.control div.control.check > .input
 {
-  position: static;
-  }
+    position: static;
+}
 
 .control.check > label
 {
-  text-align: left;
-  width: 100%;
-  float: right;
-  position: relative;
-  left: 2em;
-  }
+    text-align: left;
+    width: 100%;
+    float: right;
+    position: relative;
+    left: 2em;
+}
 
 table.control
 {
-  clear: both;
-  margin: 1ex auto;
-  }
+    clear: both;
+    margin: 1ex auto;
+}
 
 tr td .check input,
 tr td .check label
 {
-  top: auto !important;
-  float: none;
-  position: static;
-  margin: 0;
-  padding: 0;
-  width: auto;
-  text-align: inherit;
-  }
+    top: auto !important;
+    float: none;
+    position: static;
+    margin: 0;
+    padding: 0;
+    width: auto;
+    text-align: inherit;
+}
 
 .form.errors .h
 {
-  display: none;
-  }
+    display: none;
+}
 
 .form.errors p
 {
-  background-color: #FB7;
-  background-image: url("icones/erreur.png");
-  background-repeat: no-repeat;
-  background-position: 1ex .72ex;
-  border: 2px solid red;
-  -moz-border-radius: .75ex;
-  color: #400;
-  margin: .5ex 5%;
-  padding: 1ex 1ex 1ex 48px;
-  }
+    background-color: #FB7;
+    background-image: url("icones/erreur.png");
+    background-repeat: no-repeat;
+    background-position: 1ex .72ex;
+    border: 2px solid red;
+    -moz-border-radius: .75ex;
+    color: #400;
+    margin: .5ex 5%;
+    padding: 1ex 1ex 1ex 48px;
+}
 
 .form .warn
 {
-  background-color: #FC7;
-  background-image: url("icones/attention.png");
-  background-repeat: no-repeat;
-  background-position: 1ex .72ex;
-  border: 2px solid #DA4;
-  -moz-border-radius: .75ex;
-  color: #400;
-  margin: .5ex 5%;
-  text-align: justify;
-  padding: 1ex 1ex 1ex 48px;
-  min-height: 32px;
-  }
+    background-color: #FC7;
+    background-image: url("icones/attention.png");
+    background-repeat: no-repeat;
+    background-position: 1ex .72ex;
+    border: 2px solid #DA4;
+    -moz-border-radius: .75ex;
+    color: #400;
+    margin: .5ex 5%;
+    text-align: justify;
+    padding: 1ex 1ex 1ex 48px;
+    min-height: 32px;
+}
 
 
 .form .info
 {
-  background-color: #BF5;
-  background-image: url("icones/information.png");
-  background-repeat: no-repeat;
-  background-position: 1ex .72ex;
-  border: 2px solid #8B2;
-  -moz-border-radius: .75ex;
-  color: #400;
-  margin: .5ex 5%;
-  text-align: justify;
-  padding: 1ex 1ex 1ex 48px;
-  min-height: 32px;
-  }
+    background-color: #BF5;
+    background-image: url("icones/information.png");
+    background-repeat: no-repeat;
+    background-position: 1ex .72ex;
+    border: 2px solid #8B2;
+    -moz-border-radius: .75ex;
+    color: #400;
+    margin: .5ex 5%;
+    text-align: justify;
+    padding: 1ex 1ex 1ex 48px;
+    min-height: 32px;
+}
 
 fieldset, form p
 {
-  clear: both;
-  }
+    clear: both;
+}
 
 input,
 textarea,
 select
 {
-  }
+}
 
 input:focus,
 textarea:focus,
 select:focus
 {
-  color: black;
-  background: #F8F8F8;
-  }
+    color: black;
+    background: #F8F8F8;
+}
 
 
 fieldset
 {
-  margin-top: 1em;
-  border-width: 1px;
-  border-style: solid;
-  }
+    margin-top: 1em;
+    border-width: 1px;
+    border-style: solid;
+}
 
 legend
 {
-  font-weight: bold;
-  font-size: 1.1em;
-  color: #615230;
-  }
+    font-weight: bold;
+    font-size: 1.1em;
+    color: #615230;
+}
 
 /* FORMULAIRE LATÉRAUX */
 #aside div.control label
 {
-  float: left;
-  width: 7em;
-  overflow: hidden;
-  }
+    float: left;
+    width: 7em;
+    overflow: hidden;
+}
 
 #aside div.control .input
 {
-  margin: 0;
-  float: right;
-  display: block;
-  }
+    margin: 0;
+    float: right;
+    display: block;
+}
 
 #aside div.control input
 {
-  max-width: 6em;
-  }
+    max-width: 6em;
+}
 
+@media screen {
+    div.required > label:before
+    {
+	content: "*";
+	color: red;
+    }
+
+    fieldset
+    {
+	margin-top: 1em;
+	border: 1px solid #F8F8F8;
+    }
+
+}
+
+@media print {
+
+    input[type=text],
+    input[type=password],
+    textarea
+    {
+	border: none;
+	border-bottom: 1px dotted black;
+    }
+
+    input[type=checkbox],
+    input[type=radio]
+    {
+	display: none !important;
+    }
+
+
+    .select span label
+    {
+	background-image: url("img/radio.png");
+	background-position: left center;
+	background-repeat: no-repeat;
+	padding: 0 1ex 0 16px;
+    }
+
+    .select.multiple span label
+    {
+	background-image: url("img/checkbox.png");
+    }
+
+    button,
+    input[type=button]
+    {
+	display: none;
+    }
+}

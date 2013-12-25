@@ -1,7 +1,9 @@
+/*-*- css -*-*/
+
 table
 {
-  border-spacing: 0;
-  }
+    border-spacing: 0;
+}
 
 thead th
 {
@@ -9,16 +11,28 @@ thead th
 }
 th
 {
-  text-align: center;
-  }
+    text-align: center;
+}
 
 td
 {
-  vertical-align: top;
-  padding: .5ex .75ex;
-  }
+    vertical-align: top;
+    padding: .5ex .75ex;
+}
 
 tr.odd
 {
-  background: #d6d2c1;
-  }
+    background: #d6d2c1;
+}
+
+@media print {
+    td
+    {
+	padding: .25ex .75ex;
+    }
+
+    tr.odd
+    {
+	background: #F0F0F0;
+    }
+}

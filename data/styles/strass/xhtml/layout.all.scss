@@ -1,25 +1,168 @@
+/*-*- css -*-*/
+
 h1
 {
-  padding: 1ex 0;
-  margin: 0;
-  }
+    padding: 1ex 0;
+    margin: 0;
+}
 
 
 #footer
 {
-  width: 100%;
-  clear: both;
-  display: block;
-  }
+    width: 100%;
+    clear: both;
+    display: block;
+}
 
 #footer p.copyright
 {
-  font-size: .9em;
-  text-align: center;
-  padding: 2em 0;
-  }
+    font-size: .9em;
+    text-align: center;
+    padding: 2em 0;
+}
 
 #footer .metas
 {
     display: none;
-  }
+}
+
+@media screen {
+    body
+    {
+	font-size: 10pt;
+	width: 80em;
+	margin: 1em auto;
+	display: flex;
+	flex-direction: row;
+	flex-wrap: wrap;
+    }
+
+    body > div
+    {
+	margin: 1ex 0;
+    }
+
+
+    #header
+    {
+	width: 100%;
+	height: 128px;
+	position: relative;
+    }
+
+    #header > .h
+    {
+	display: block;
+	text-align: center;
+	line-height: 128px;
+	margin: 0;
+	padding: 0;
+    }
+
+    #header #branche
+    {
+	position: absolute;
+	bottom: 0;
+    }
+
+    #document
+    {
+	width: 63em;
+	padding: .9em;
+	border-width: 1pt;
+    }
+
+    #aside
+    {
+	width: 15em;
+    }
+
+    #footer
+    {
+	width: 65em;
+    }
+
+    #footer .logo
+    {
+	display: none;
+    }
+}
+
+@media print {
+    body, #document, #content
+    {
+	margin: 0;
+	padding: 0;
+    }
+
+    #footer .logo
+    {
+	display: block !important;
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 83pt;
+	height: auto;
+    }
+
+    #footer .metas .author
+    {
+	display: block;
+	position: absolute;
+	top: 16pt;
+	left: 82pt;
+	font-size: 1em;
+	font-weight: normal;
+	margin: 0 60px 2em 0;
+	padding: 0;
+	background: none;
+    }
+
+    h1
+    {
+	position: absolute;
+	left: 82pt;
+	margin: 0 !important;
+	width: 74%;
+	top: 27pt;
+	padding: 0 0 2pt 0;
+	border-bottom: 1pt solid black;
+    }
+
+    #document
+    {
+	background-image: url("img/SUF.png");
+	background-repeat: no-repeat;
+	background-position: top right;
+	margin: 0;
+	padding: 0;
+    }
+
+    #content
+    {
+	padding-top: 64pt;
+    }
+
+    div.section .h
+    {
+	margin-left: -4pt;
+    }
+
+    div.section
+    {
+	margin-left: 4pt;
+    }
+
+    #content h1
+    {
+	margin: 0;
+    }
+
+    #webaddons,
+    #footer .copyright,
+    #footer .metas *,
+    #branche
+    {
+	display: none;
+    }
+}

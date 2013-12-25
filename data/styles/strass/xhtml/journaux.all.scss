@@ -1,45 +1,55 @@
+/*-*- css -*-*/
+
 #article .signature
 {
-  clear: both;
-  }
+    clear: both;
+}
 
 #rubriques li,
 #rubriques li p
 {
-  display: inline;
-  }
+    display: inline;
+}
 
 li.xl a
 {
-  font-size: 2em;
-  }
+    font-size: 2em;
+}
 
 li.l a
 {
-  font-size: 1.75em;
-  }
+    font-size: 1.75em;
+}
 
 li.m a
 {
-  font-size: 1.5em;
-  }
+    font-size: 1.5em;
+}
 
 li.s a
 {
-  font-size: 1.25em;
-  }
+    font-size: 1.25em;
+}
 
 li.xs a
 {
-  font-size: 1em;
-  }
+    font-size: 1em;
+}
 
 form .check
 {
-  text-align: center;
-  }
+    text-align: center;
+}
 
 #actions li.ecrire
 {
-  list-style-image: url("icones/ecrire.png");
-  }
+    list-style-image: url("icones/ecrire.png");
+}
+
+@media print {
+    .journaux.consulter h2,
+    .journaux.consulter h2 + p
+    {
+	display: none;
+    }
+}

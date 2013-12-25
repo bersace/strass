@@ -1,15 +1,17 @@
+/*-*- css -*-*/
+
 /* ACCUEIL */
 #presentation img
 {
-  float: left;
-  margin: 0 1ex 1ex 0;
-  }
+    float: left;
+    margin: 0 1ex 1ex 0;
+}
 
 #presentation
 {
-  float: left;
-  clear: both;
-  }
+    float: left;
+    clear: both;
+}
 
 #presentation {
     text-align: left;
@@ -35,61 +37,304 @@
 /* masquer les en-tête redondant des sous unités */
 #effectifs div.section + div.section thead
 {
-  display: none;
-  }
+    display: none;
+}
 
 .effectifs table
 {
-  width: 100%;
-  }
+    width: 100%;
+}
 
 .effectifs .section table
 {
-  margin-left: -1em;
-  }
+    margin-left: -1em;
+}
 
 #index #effectifs td + td
 {
-  width: auto;
-  }
+    width: auto;
+}
 
 /* COLONNES */
 td.accr
 {
-  width: 4em;
-  padding-left: 24px;
-  text-align: right;
-  }
+    width: 4em;
+    padding-left: 24px;
+    text-align: right;
+}
 
 .contacts	td.prenom-nom,
 .infos		td.prenom-nom,
 .progression	td.prenom-nom
 {
-  width: 20em;
-  }
+    width: 20em;
+}
 
 .maitrise td.prenom-nom
 {
-  width: 10em;
-  }
+    width: 10em;
+}
 
 td.fixe,
 td.portable,
 td.telephone
 {
-  width: 8em;
-  text-align: center;
-  }
+    width: 8em;
+    text-align: center;
+}
 
 .effectifs tr .naissance,
 tr .age,
 tr .origine
 {
-  display: none;
-  }
+    display: none;
+}
 
 td.numero
 {
-  width: 4em;
-  text-align: center;
-  }
+    width: 4em;
+    text-align: center;
+}
+
+@media screen {
+    #effectifs > table.meute td.accr
+    {
+	width: auto;
+    }
+
+
+    /* barrettes */
+    td.accr
+    {
+	background-position: left center;
+	background-repeat: no-repeat;
+    }
+    
+    table.groupe tr.chef td.accr
+    {
+	background-image: url("postes/cg.png");
+    }
+
+    table.groupe tr.aumonier td.accr
+    {
+	background-image: url("postes/aumonier.png");
+    }
+    
+    table.groupe tr.assistant td.accr,
+    table.groupe tr.tresorier td.accr,
+    table.groupe tr.secretaire td.accr
+    {
+	background-image: url("postes/acg.png");
+    }
+    
+    table.clan tr.chef td.accr
+    {
+	background-image: url("postes/cc.png");
+    }
+    
+    table.troupe tr.chef td.accr,
+    table.compagnie tr.chef td.accr
+    {
+	background-image: url("postes/ct.png");
+    }
+    
+    table.troupe tr.assistant td.accr,
+    table.compagnie tr.assistant td.accr
+    {
+	background-image: url("postes/act.png");
+    }
+    
+    
+    table.patrouille tr.chef td.accr,
+    table.equipe tr.chef td.accr
+    {
+	background-image: url("postes/cp.png");
+    }
+    
+    table.patrouille tr.assistant td.accr,
+    table.equipe tr.assistant td.accr
+    {
+	background-image: url("postes/sp.png");
+    }
+
+    
+    table.meute tr.chef td.accr,
+    table.ronde tr.chef td.accr
+    {
+	background-image: url("postes/akela.png");
+    }
+
+    table.meute tr.bagheera td.accr,
+    table.meute tr.baloo td.accr,
+    table.meute tr.raksha td.accr,
+    table.meute tr.chil td.accr,
+    table.meute tr.kaa td.accr,
+    table.meute tr.hathi td.accr,
+    table.meute tr.wontolla td.accr,
+    table.meute tr.rama td.accr,
+    table.meute tr.rikkitikitavi td.accr,
+    table.meute tr.chuchundra td.accr,
+    table.meute tr.gris td.accr,
+    table.meute tr.sahi td.accr,
+    table.meute tr.fauvette td.accr
+    {
+	background-image: url("postes/bagheera.png");
+    }
+
+
+    .effectifs tr.siz td.accr
+    {
+	background-image: url("postes/siz.png");
+    }
+
+    .effectifs tr.sec td.accr
+    {
+	background-image: url("postes/sec.png");
+    }
+    
+    .maitrise table .formation + *
+    {
+	display: none;
+    }
+
+}
+
+@media print {
+    #content #effectifs div.section
+    {
+	padding: 0 !important;
+	margin: 0 !important;
+    }
+
+    div.section > table
+    {
+	margin: 0 !important;
+    }
+
+    #effectifs > div.section
+    {
+	margin-right: 0;
+	padding-right: 0;
+    }
+
+    #effectifs .section .h
+    {
+	margin-left: 2em;
+    }
+
+
+    #effectifs table
+    {
+	width: 100%;
+    }
+
+    #effectifs table td a
+    {
+	text-decoration: none;
+	color: black;
+    }
+
+    #effectifs tr.odd
+    {
+	background: none !important;
+    }
+
+    #effectifs tr.odd td + td
+    {
+	background: #F0F0F0;
+    }
+
+    #effectifs td.accr
+    {
+	color: grey;
+    }
+
+    #effectifs td.prenom-nom,
+    #effectifs td.nom-abbr
+    {
+	width: 30%;
+	padding: 2pt 5pt;
+    }
+
+    /* masquer le nom-prénom des cheftaines de meutes. */
+    #maitrise table.meute td.prenom-nom a
+    {
+	position: absolute;
+	display: block;
+	top: -512px;
+	left: -1024px;
+	width: 1px;
+	height: 1px;
+	overflow: hidden;
+    }
+
+    .liste #effectifs table td +td +td
+    {
+	border-left: 1px dashed #845d18;
+	width: 10%;
+    }tr .adelec,
+    .contacts tr .adresse
+    {
+	display: none;
+    }
+
+    #document #content .effectifs h2
+    {
+	font-size: 1.05em;
+	text-align: left;
+	margin: 1ex 0 .5ex;
+    }
+
+    #document td.prenom-nom
+    {
+	width: 20em;
+    }
+
+    th.prenom-nom,
+    th.adelec,
+    th.adresse
+    {
+	text-align: left;
+    }
+
+
+    table tr .accr
+    {
+	width: 3em;
+	padding: 0;
+    }
+
+    #effectifs th.accr
+    {
+	visibility: hidden;
+	border: none;
+    }
+
+    #effectifs #maitrise .h
+    {
+	display: none;
+    }
+
+    .maitrise	table,
+    .participants	table
+    {
+	width: 100%;
+    }
+
+    td.adresse
+    {
+	width: 20em;
+    }
+
+    td.naissance,
+    .maitrise td.cep1,
+    .maitrise td.cep2
+    {
+	width: 10ex;
+    }
+
+    .maitrise table .formation + *
+    {
+	width: 10%;
+    }
+}

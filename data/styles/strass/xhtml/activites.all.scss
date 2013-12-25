@@ -1,0 +1,76 @@
+/*-*- css -*-*/
+
+@media screen {
+    #calendrier table
+    {
+	width: 80%;
+	margin: 1em 10%;
+    }
+
+    #calendrier > p,
+    #participants + p
+    {
+	background-image: url("icones/attention.png");
+	background-position: top left;
+	background-repeat: no-repeat;
+	margin: 2em 25%;
+	width: 50%;
+	padding: 0 0 0 36px;
+	min-height: 32px;
+	font-size: 1.1em;
+    }
+
+
+    #document.activites.modifier form table,
+    #document.activites.prevoir form table
+    {
+	min-width: 80%;
+    }
+}
+
+@media print {
+    #calendrier table
+    {
+	margin: 1em 10%;
+	padding: O;
+	width: 80%;
+    }
+
+    #calendrier td
+    {
+	padding: .75ex .75ex;
+    }
+
+    #calendrier td.date
+    {
+	width: 30%;
+    }
+
+    #calendrier td.intitule
+    {
+	width: 70%;
+    }
+
+    #historique,
+    #content .section #participants,
+    #infos .h,
+    #chaine .h
+    {
+	display: none;
+    }
+
+
+    #calendrier > p,
+    #participants + p
+    {
+	margin: 2em 15%;
+	width: 70%;
+	font-size: 1.1em;
+    }
+
+    .document.consulter #content h3
+    {
+	text-align: left;
+	font-size: 1.3em;
+	margin-left: 1em;
+    }}

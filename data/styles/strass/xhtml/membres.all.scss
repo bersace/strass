@@ -1,22 +1,40 @@
+/*-*- css -*-*/
+
 #valider .form .select
 {
-  display: block;
-  width: 100%;
-  }
+    display: block;
+    width: 100%;
+}
 
 #valider-verdict
 {
-  display: block;
-  width: 100%;
-  text-align: center;
-  }
+    display: block;
+    width: 100%;
+    text-align: center;
+}
 
 #valider-verdict *
 {
-  display: inline;
-  }
+    display: inline;
+}
 
 #progression
 {
-  display: none;
-  }
+    display: none;
+}
+
+@media screen {
+
+    #cotisation,
+    #envoi
+    {
+	display: none;
+    }
+}
+
+@media print {
+    .warn, .info
+    {
+	display: none;
+    }
+}
