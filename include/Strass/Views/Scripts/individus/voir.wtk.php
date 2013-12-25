@@ -9,13 +9,9 @@ if ($i = $this->individu->getImage())
 $l = $s->addList();
 $l->addItem(new Wtk_RawText("Né en ".$this->individu->getDateNaissance('%Y')." (".$this->individu->getAge()." ans)"));
 $info = array('adelec'		=> "**Adélec :** [mailto:%s %s]",
-	      'jabberid'	=> "**Id Jabber :** [xmpp:%s %s]",
 	      'portable'	=> "**Téléphone portable :** %s",
 	      'fixe'		=> "**Téléphone fixe :** %s",
 	      'adresse'		=> "**Addresse :** %s",
-	      'origine'		=> "**Unité d'origine :** %s",
-	      'situation'	=> "**Situation :** %s",
-	      'username'	=> "**Identifiant :** %s",
 	      );
 
 $acl = Zend_Registry::get('acl');
@@ -24,8 +20,6 @@ if ($acl->isAllowed($ind, $this->individu, 'totem'))
 	$info['totem'] = '**Totem :** %s';
 
 if ($this->chef) {
-	$info['perespi'] = "**Père spi :** %s";
-	$info['parrain'] = "**Parrain :** %s";
 	$info['numero']	 = "**Numéro adhérent :** %s";
  }
 
