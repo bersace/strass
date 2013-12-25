@@ -1,6 +1,6 @@
 <?php
 
-$s = $this->document->addSection('poster', "Déposer un message sur le livre d'or");
+$s = $this->document;
 $f = $s->addForm($this->model);
 $f->addParagraph()->addFlags('info')
 ->addInline("Le livre d'or est **modéré**, ".

@@ -1,3 +1,5 @@
+/*-*- css -*-*/
+
 body
 {
   font-family: "Deja Vu Sans",sans-serif;
@@ -70,3 +72,32 @@ ul
 img
 {
   }
+
+
+*:hover > ul.adminlinks {
+    visibility: visible;
+}
+
+ul.adminlinks {
+    position: absolute;
+    top: -.5ex;
+    right: 0;
+    margin: 0;
+    display: block;
+    text-align: right;
+    visibility: hidden;
+    
+    li {
+	display: inline-block;
+	box-shadow: 2pt 4pt 1ex rgba(4, 4, 4, 0.5);
+	border-radius: 1ex;
+	margin: 0 .5ex;
+	
+	a {
+	    display: block;
+	    background: #d6d2c1;
+	    padding: 1ex;
+	    border-radius: 1ex;
+	}
+    }
+}

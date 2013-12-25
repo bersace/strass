@@ -23,3 +23,7 @@
    pour se déconnecter.
 
  - Les admins peuvent éditer et supprimer les citations.
+
+ - Les admins peuvent éditer et supprimer les messages du livre d'or,
+   avant ou après modération. Les messages du livre d'or peuvent
+   repasser en modération.
