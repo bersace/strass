@@ -45,6 +45,7 @@ class Strass_MigrateHandler {
     }
     catch (Exception $e) {
       $db->rollBack();
+      throw $e;
     }
   }
 
