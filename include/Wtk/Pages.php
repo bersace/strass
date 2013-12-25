@@ -18,22 +18,19 @@ class Wtk_Pages extends Wtk_Container
   
 	protected function _finalize()
 	{
-		if ($this->model->count()) {
-			$cont = $this->addChild($this->renderer->renderContainer());
+	  $cont = $this->addChild($this->renderer->renderContainer());
+	  if ($this->model->count()) {
+	    foreach($this->model as $id => $data) {
+	      $child = $this->renderer->render($id, $data, $cont);
+	    }
 
-			if ($this->model->count()) {
-			  foreach($this->model as $id => $data) {
-			    $child = $this->renderer->render($id, $data, $cont);
-			  }
-			}
-			else {
-			  $this->renderer->renderEmpty($cont);
-			}
+	    $this->renderer->renderLinks($this, $this->model);
+	  }
+	  else {
+	    $this->renderer->renderEmpty($cont);
+	  }
 
-			$this->renderer->renderLinks($this, $this->model);
-		}
-
-		$this->_finalizeChildren();
+	  $this->_finalizeChildren();
 	}
 
 	function template()
