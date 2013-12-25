@@ -2,6 +2,11 @@
 
 abstract class Strass_Db_Table_Abstract extends Zend_Db_Table_Abstract
 {
+  function findBySlug($slug) {
+    $s = $this->select()->where('slug = ?', $slug);
+    return $this->fetchSelect($s)->current();
+  }
+
 	function countRows($select = null)
 	{
 	  $db = $this->getAdapter();
