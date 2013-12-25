@@ -1,6 +1,6 @@
 <?php
 
-class Scout_Pages_Renderer_EditerIndividu extends Wtk_Pages_Renderer_Form
+class Strass_Pages_Renderer_EditerIndividu extends Wtk_Pages_Renderer_Form
 {
 	protected $view;
 
@@ -35,10 +35,8 @@ class Scout_Pages_Renderer_EditerIndividu extends Wtk_Pages_Renderer_Form
 }
 
 
-$s = $this->document->addSection('editer', new Wtk_Container(new Wtk_RawText("Modifier la fiche de "),
-							    $this->lienIndividu($this->individu)));
+$this->document->setTitle(new Wtk_Container(new Wtk_RawText("Modifier la fiche de "),
+					    $this->lienIndividu($this->individu)));
 
-$s->addChild(new Wtk_Pages(null,
-			   $this->model,
-			   new Scout_Pages_Renderer_EditerIndividu($this, $this->model->getFormModel()),
-			   false));
+$renderer = new Strass_Pages_Renderer_EditerIndividu($this, $this->model->getFormModel());
+$this->document->addPages(null, $this->model, $renderer, false);

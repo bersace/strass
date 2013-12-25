@@ -389,139 +389,139 @@ class InscriptionController extends Strass_Controller_Action
 
 	function editerAction()
 	{
-		$this->view->individu = $individu = $this->_helper->Individu();
-		$this->assert(null, $individu, 'editer',
-			      "Vous n'avez pas le droit d'éditer l'inscription de cet individu");
+	  $this->view->individu = $individu = $this->_helper->Individu();
+	  $this->assert(null, $individu, 'editer',
+			"Vous n'avez pas le droit d'éditer l'inscription de cet individu");
 
-		$this->metas(array('DC.Title' => "Évoluer l'inscription de ".$individu->getFullname()));
+	  $this->metas(array('DC.Title' => "Évoluer l'inscription de ".$individu->getFullname()));
 		
-		$this->view->model = $m = new Wtk_Form_Model('editer');
-		$m->addNewSubmission('valider', 'Valider');
+	  $this->view->model = $m = new Wtk_Form_Model('editer');
+	  $m->addNewSubmission('valider', 'Valider');
 
-		$ttu = new TypesUnite();
-		$db = $ttu->getAdapter();
-		$tu = new Unites();
-		$age = $individu->getAge();
-		$ta = new Appartenances();
-		$s = $ta->select()->where('fin IS NULL');
-		$apps = $individu->findAppartenances($s);
-		$curr = $apps->current();
+	  $ttu = new TypesUnite();
+	  $db = $ttu->getAdapter();
+	  $tu = new Unites();
+	  $age = $individu->getAge();
+	  $ta = new Appartenances();
+	  $s = $ta->select()->where('fin IS NULL');
+	  $apps = $individu->findAppartenances($s);
+	  $curr = $apps->current();
 
-		// sélectionner les types auxquel peut participer l'individu
-		$where = $db->quoteInto('age_min <= ? AND ? < age_max', $age);
-		$where.= $db->quoteInto(' AND (sexe = ? OR sexe = \'m\')', $individu->sexe);
-		$types = $ttu->fetchAll($where);
+	  // sélectionner les types auxquel peut participer l'individu
+	  $where = $db->quoteInto('age_min <= ? AND ? < age_max', $age);
+	  $where.= $db->quoteInto(' AND (sexe = ? OR sexe = \'m\')', $individu->sexe);
+	  $types = $ttu->fetchAll($where);
 
-		$wheres = array();
-		foreach($types as $type) {
-			$wheres[] = $db->quoteInto('type = ?', $type->id);
-		}
-		$where = implode(' OR ', $wheres);
-		$unites = $tu->fetchAll($where);
+	  $wheres = array();
+	  foreach($types as $type) {
+	    $wheres[] = $db->quoteInto('type = ?', $type->id);
+	  }
+	  $where = implode(' OR ', $wheres);
+	  $unites = $tu->fetchAll($where);
 
-		// éditer l'inscription courante
-		if ($curr) {
-			$g = $m->addGroup('actuel', "Actuellement");
-			$i = $g->addDate('fin', "N'est plus ".$curr->findParentRoles()->getAccronyme()." depuis");
-			if ($unites->count())
-				$i = $g->addBool('promouvoir',
-						 "Promouvoir à un poste supérieur ou inscrire dans une autre unité",
-						 true);
-		}
+	  // éditer l'inscription courante
+	  if ($curr) {
+	    $g = $m->addGroup('actuel', "Actuellement");
+	    $i = $g->addDate('fin', "N'est plus ".$curr->findParentRoles()->getAccronyme()." depuis");
+	    if ($unites->count())
+	      $i = $g->addBool('promouvoir',
+			       "Promouvoir à un poste supérieur ou inscrire dans une autre unité",
+			       true);
+	  }
 
-		$m->validate();
+	  $m->validate();
 
-		// si le groupe dispose d'unité pouvant indexlir l'individu,
-		// les proposer.
-		if (($m->get('actuel/promouvoir') || !$curr) && $unites->count()) {
+	  // si le groupe dispose d'unité pouvant indexlir l'individu,
+	  // les proposer.
+	  if (($m->get('actuel/promouvoir') || !$curr) && $unites->count()) {
 
-			// NOUVELLE UNITÉ
-			$g = $m->addGroup('unite', "Unité");
+	    // NOUVELLE UNITÉ
+	    $g = $m->addGroup('unite', "Unité");
 
-			$enum = array();
-			$selected = NULL;
-			foreach($unites as $unite) {
-				$enum[$unite->id] = ucfirst($unite->getFullName());
-				if ($curr && $unite->id == $curr->unite) {
-					$selected = $curr->findParentUnites();
-				}
-			}
+	    $enum = array();
+	    $selected = NULL;
+	    foreach($unites as $unite) {
+	      $enum[$unite->id] = ucfirst($unite->getFullName());
+	      if ($curr && $unite->id == $curr->unite) {
+		$selected = $curr->findParentUnites();
+	      }
+	    }
 
-			if (!$selected) {
-				$selected = $tu->find(key($enum))->current();
-			}
+	    if (!$selected) {
+	      $selected = $tu->find(key($enum))->current();
+	    }
 
-			$i = $g->addEnum('unite', "Nouvelle unité", $selected->id, $enum);
+	    $i = $g->addEnum('unite', "Nouvelle unité", $selected->id, $enum);
 
-			$m->validate();
+	    $m->validate();
 
-			// ROLE
-			$g = $m->addGroup('appartenance');
-			$type = $tu->find($m->get('unite/unite'))->current()->findParentTypesUnite();
-			// configurer l'inscription dans la nouvelle unité.
-			$enum = array();
-			$roles = $type->findRoles();
-			foreach($roles as $role) {
-				$enum[$role->id] = wtk_ucfirst($role->titre);
-			}
-			$selected = $curr ? $curr->role : key($enum);
-			$i = $g->addEnum('role', "Nouveau role", $selected, $enum);
-      
-			if (!$m->get('actuel/fin'))
-				$g->addDate('debut', "Début effectif");
-		}
+	    // ROLE
+	    $g = $m->addGroup('appartenance');
+	    $type = $tu->find($m->get('unite/unite'))->current()->findParentTypesUnite();
+	    // configurer l'inscription dans la nouvelle unité.
+	    $enum = array();
+	    $roles = $type->findRoles();
+	    foreach($roles as $role) {
+	      $enum[$role->id] = wtk_ucfirst($role->titre);
+	    }
+	    $selected = $curr ? $curr->role : key($enum);
+	    $i = $g->addEnum('role', "Nouveau role", $selected, $enum);
 
-		$this->view->model = new Wtk_Pages_Model_Form($m);
+	    if (!$m->get('actuel/fin'))
+	      $g->addDate('debut', "Début effectif");
+	  }
 
-		if (!$this->view->model->pagesCount())
-			throw new Strass_Controller_Action_Exception_Notice("Impossible d'inscrire cet individu ".
-									   "dans notre groupe. ".
-									   "Aucune unité ne peut l'indexlir !");
+	  $this->view->model = new Wtk_Pages_Model_Form($m);
 
-		// VALIDATION
-		if ($m->validate()) {
-			$db = $individu->getTable()->getAdapter();
-			$db->beginTransaction();
-			try {
-				// appartenances
-				if ($m->get('actuel')) {
-					$curr->fin = $m->get('actuel/fin');
-					$curr->save();
-				}
+	  if (!$this->view->model->pagesCount())
+	    throw new Strass_Controller_Action_Exception_Notice("Impossible d'inscrire cet individu ".
+								"dans notre groupe. ".
+								"Aucune unité ne peut l'indexlir !");
 
-				if ($m->get('actuel/promouvoir') || !$m->get('actuel')) {
-					$u = $tu->find($m->get('unite/unite'))->current();
-					$debut = $m->get('appartenance/debut');
-					$debut = $debut ? $debut : $m->get('actuel/fin');
-					$data= array('individu'	=> $individu->id,
-						     'unite'		=> $u->id,
-						     'debut'		=> $debut,
-						     'role'		=> $m->get('appartenance/role'),
-						     'type'		=> $u->type
-						     );
-					$ta->insert($data);
-				}
+	  // VALIDATION
+	  if ($m->validate()) {
+	    $db = $individu->getTable()->getAdapter();
+	    $db->beginTransaction();
+	    try {
+	      // appartenances
+	      if ($m->get('actuel')) {
+		$curr->fin = $m->get('actuel/fin');
+		$curr->save();
+	      }
 
-				$this->_helper->Log("Inscription modifiée", array($individu),
-						    $this->_helper->Url('voir', 'individus', null, array('individu' => $individu->id)),
-						    (string) $individu);
+	      if ($m->get('actuel/promouvoir') || !$m->get('actuel')) {
+		$u = $tu->find($m->get('unite/unite'))->current();
+		$debut = $m->get('appartenance/debut');
+		$debut = $debut ? $debut : $m->get('actuel/fin');
+		$data= array('individu'	=> $individu->slug,
+			     'unite'	=> $u->id,
+			     'debut'	=> $debut,
+			     'role'	=> $m->get('appartenance/role'),
+			     'type'	=> $u->type
+			     );
+		$ta->insert($data);
+	      }
+
+	      $this->_helper->Log("Inscription modifiée", array($individu),
+				  $this->_helper->Url('voir', 'individus', null, array('individu' => $individu->slug)),
+				  (string) $individu);
  
-				$db->commit();
-				$this->redirectUrl(array('controller'	=> 'individus',
-							 'action'	=> 'voir',
-							 'inscription'	=> $ind->id),
-						   null, false);
-			}
-			catch (Exception $e) {
-				$db->rollBack();
-				throw $e;
-			}
-		}
+	      $db->commit();
+	      $this->redirectUrl(array('controller' => 'individus',
+				       'action'	=> 'voir',
+				       'individu' => $individu->slug),
+				 null, false);
+	    }
+	    catch (Exception $e) {
+	      $db->rollBack();
+	      throw $e;
+	    }
+	  }
 
-		$this->actions->append("Administrer",
-				       array('controller'	=> 'inscription',
-					     'action'	=> 'administrer'),
-				       array(Zend_Registry::get('user'), $individu));
+	  $this->actions->append("Administrer",
+				 array('controller'	=> 'inscription',
+				       'action'	=> 'administrer'),
+				 array(null, $individu));
 	}
 
 	function historiqueAction()

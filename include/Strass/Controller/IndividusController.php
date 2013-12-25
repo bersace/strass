@@ -204,20 +204,18 @@ class IndividusController extends Strass_Controller_Action
 		$te = new Etape();
 		$db = $te->getAdapter();
 		$exists = $db->select()
-			->distinct()
-			->from('progression')
-			->where("individu = '".$i->id."'")
-			->where("etape = depend");
+		  ->distinct()
+		  ->from('progression')
+		  ->where("individu = ?", $i->slug)
+		  ->where("etape = depend");
 		$notexists = $db->select()
-			->distinct()
-			->from('progression')
-			->where("individu = '".$i->id."'")
-			->where('etape = id')
-			->where('progression.sexe = etapes.sexe');
+		  ->distinct()
+		  ->from('progression')
+		  ->where("individu = ?", $i->slug)
+		  ->where('etape = id')
+		  ->where('progression.sexe = etapes.sexe');
 		$select = $db->select()
-			->where("sexe = '".$i->sexe."'".
-				' OR '.
-				"sexe = 'm'")
+			->where("sexe = ? OR sexe = 'm'", $i->sexe)
 			// on ne teste pas l'age pour permettre de
 			// compléter l'historique
 			->where("depend IS NULL".
@@ -243,7 +241,7 @@ class IndividusController extends Strass_Controller_Action
 			$db->beginTransaction();
 			try {
 				$data = $m->get();
-				$data['individu'] = $i->id;
+				$data['individu'] = $i->slug;
 				$data['sexe'] = $sexes[$data['etape']];
 				$tp = new Progression();
 				$tp->insert($data);
@@ -265,55 +263,55 @@ class IndividusController extends Strass_Controller_Action
 	// compléter la formation d'un individu
 	function formationAction()
 	{
-		$this->view->individu = $i = $this->_helper->Individu();
-		$this->assert(null, $i, 'former',
-			      "Vous n'avez pas le droit d'éditer la formation de cet individu");
-		$this->metas(array('DC.Title' => 'Éditer la formation de '.$i->getFullname()));
-		$this->view->model = $m = new Wtk_Form_Model('formation');
+	  $this->view->individu = $i = $this->_helper->Individu();
+	  $this->assert(null, $i, 'former',
+			"Vous n'avez pas le droit d'éditer la formation de cet individu");
+	  $this->metas(array('DC.Title' => 'Éditer la formation de '.$i->getFullname()));
+	  $this->view->model = $m = new Wtk_Form_Model('formation');
 
-		$td = new Diplomes();
-		$db = $td->getAdapter();
-		$notexists = $db->select()
-			->distinct()
-			->from('formation')
-			->where("individu = '".$i->id."'")
-			->where('diplome = id');
-		$select = $db->select()
-			->where("NOT EXISTS (?)", new Zend_Db_Expr($notexists->__toString()))
-			->where("sexe = 'm' OR sexe = ?", $i->sexe)
-			->where("? >= age_min", $i->getAge());
-		$etapes = $td->fetchSelect($select);
+	  $td = new Diplomes();
+	  $db = $td->getAdapter();
+	  $notexists = $db->select()
+	    ->distinct()
+	    ->from('formation')
+	    ->where("individu = ?", $i->slug)
+	    ->where('diplome = id');
+	  $select = $db->select()
+	    ->where("NOT EXISTS (?)", new Zend_Db_Expr($notexists->__toString()))
+	    ->where("sexe = 'm' OR sexe = ?", $i->sexe)
+	    ->where("? >= age_min", $i->getAge());
+	  $etapes = $td->fetchSelect($select);
 
-		$enum = array();
-		foreach($etapes as $etape)
-			$enum[$etape->id."#".$etape->branche] = $etape->accr." ".$etape->getBranche();
-		$m->addEnum('diplome', 'Diplôme', key($enum),$enum);
-		$m->addDate('date', 'Date', strftime("%Y-%m-%d %H:%M:%S"), '%Y-%m-%d');
-		$m->addNewSubmission('enregistrer', 'Enregistrer');
+	  $enum = array();
+	  foreach($etapes as $etape)
+	    $enum[$etape->id."#".$etape->branche] = $etape->accr." ".$etape->getBranche();
+	  $m->addEnum('diplome', 'Diplôme', key($enum),$enum);
+	  $m->addDate('date', 'Date', strftime("%Y-%m-%d %H:%M:%S"), '%Y-%m-%d');
+	  $m->addNewSubmission('enregistrer', 'Enregistrer');
 
-		if ($m->validate()) {
-			$db->beginTransaction();
-			try {
-				$data = $m->get();
-				$data['individu'] = $i->id;
-				$tf = new Formation();
-				$did = explode('#', $data['diplome']);
-				$data['diplome'] = (string)$did[0];
-				if ($did[1] != 'NULL')
-					$data['branche'] = $did[1];
-				$tf->insert($data);
+	  if ($m->validate()) {
+	    $db->beginTransaction();
+	    try {
+	      $data = $m->get();
+	      $data['individu'] = $i->slug;
+	      $tf = new Formation();
+	      $did = explode('#', $data['diplome']);
+	      $data['diplome'] = (string)$did[0];
+	      if ($did[1] != 'NULL')
+		$data['branche'] = $did[1];
+	      $tf->insert($data);
 
-				$this->_helper->Log("Formation enregistrée", array($i),
-						    $this->_helper->Url('voir', 'individus', null, array($i->id)),
-						    (string) $i);
+	      $this->_helper->Log("Formation enregistrée", array($i),
+				  $this->_helper->Url('voir', 'individus', null, array($i->slug)),
+				  (string) $i);
 
-				$db->commit();
-				$this->redirectSimple('voir');
-			}
-			catch (Exception $e) {
-				$db->rollback();
-				throw $e;
-			}
-		}
+	      $db->commit();
+	      $this->redirectSimple('voir');
+	    }
+	    catch (Exception $e) {
+	      $db->rollback();
+	      throw $e;
+	    }
+	  }
 	}
 }
