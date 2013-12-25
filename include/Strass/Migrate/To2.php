@@ -27,6 +27,7 @@ class Strass_Migrate_To2 extends Strass_MigrateHandler {
     // Renommages
     rename("resources/styles/".$config->site->style, "data/styles/".$config->site->style);
     shell_exec("rsync -av data/statiques/ private/statiques/");
+    $this::rrmdir('data/statiques');
     
     // Nettoyages
     shell_exec('rm -rf resources/ config/ data/db/');

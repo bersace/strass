@@ -302,14 +302,14 @@ class Unite extends Strass_Db_Table_Row_Abstract implements Zend_Acl_Resource_In
 	function getImage($id = null, $test = true)
 	{
 		$id = $id ? $id : $this->id;
-		$image = 'data/images/strass/unites/'.$id.'.png';
+		$image = 'data/unites/'.$id.'.png';
 		return !$test || is_readable($image) ? $image : null;
 	}
 
 	function getWiki($id = null, $test = true)
 	{
 		$id = $id ? $id : $this->id;
-		$image = 'private/statiques/strass/unites/'.$id.'.wiki';
+		$image = 'private/unites/'.$id.'.wiki';
 		return !$test || is_readable($image) ? $image : null;
 	}
 

@@ -271,7 +271,7 @@ class Individu extends Strass_Db_Table_Row_Abstract implements Zend_Acl_Role_Int
 		if (!$ind)
 			return null;
 		$id = $id ? $id : $this->id;
-		$image = 'data/images/strass/individus/'.$id.'.png';
+		$image = 'data/avatars/'.$id.'.png';
 		return !$test || is_readable($image) ? $image : null;
 	}
 

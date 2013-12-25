@@ -55,4 +55,15 @@ class Strass_MigrateHandler {
   /* exécutable en ligne, par l'assistant */
   function online($db) {
   }
+
+  /* assistants */
+  static function rrmdir($dir) {
+    foreach(glob($dir . '/*') as $file) {
+      if(is_dir($file))
+	self::rrmdir($file);
+      else
+	unlink($file);
+    }
+    rmdir($dir);
+  }
 }

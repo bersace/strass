@@ -104,7 +104,7 @@ class Article extends Strass_Db_Table_Row_Abstract implements Zend_Acl_Resource_
 
 	function getDossier($data = null) {
 		$data = $data ? $data : $this->_data;
-		return 'data/images/strass/journaux/'.$data['journal'].'/'.
+		return 'data/journaux/'.$data['journal'].'/'.
 			strftime('%Y-%m-%d', strtotime($data['date'])).'/'.$data['id'].'/';
 	}
 

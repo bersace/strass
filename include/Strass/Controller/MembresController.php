@@ -5,6 +5,8 @@ require_once 'Strass/Unites.php';
 
 class MembresController extends Strass_Controller_Action implements Zend_Acl_Resource_Interface
 {
+  static $cotisation = 'private/cotisation.wiki';
+
 	function init()
 	{
 		parent::init();
@@ -35,8 +37,8 @@ class MembresController extends Strass_Controller_Action implements Zend_Acl_Res
 				   'DC.Subject' => 'livre,or'));
 
 		$this->view->model = $m = new Wtk_Form_Model('fiche');
-		$c = 'private/statiques/strass/inscription/cotisation.wiki';
-		$m->addString('cotisation', "Cotisation", is_readable($c) ? file_get_contents($c) : '');
+		$c = is_readable($this::$cotisation) ? file_get_contents($this::$cotisation) : '';
+		$m->addString('cotisation', "Cotisation", $c);
 		$conf = $this->_helper->Config('strass');
 		$m->addBool('scoutisme', "Demander l'historique du scoutisme de la personne dans le groupe ?", $conf->inscription->scoutisme);
 		$m->addNewSubmission('valider', 'Valider');
@@ -180,7 +182,7 @@ class MembresController extends Strass_Controller_Action implements Zend_Acl_Res
 
 		$this->view->model = new Wtk_Pages_Model_Form($m);
 
-		$this->view->cotisation = @file_get_contents('private/statiques/strass/inscription/cotisation.wiki');
+		$this->view->cotisation = file_get_contents($this::$cotisation);
 		$racine = $this->_helper->UniteRacine();
 		$app = $racine->findAppartenances("role = 'chef' AND fin IS NULL")->current();
 		$chef = $app->findParentIndividus();
@@ -695,7 +697,7 @@ class MembresController extends Strass_Controller_Action implements Zend_Acl_Res
 
 		if ($cotisation) {
 			$cotisation = "Votre inscription sera validé à la réception de votre côtisation.\n\n".
-				file_get_contents('private/statiques/strass/inscription/cotisation.wiki');
+			  file_get_contents($this::$cotisation);
 			$racine = $this->_helper->UniteRacine();
 			$app = $racine->findAppartenances("role = 'chef' AND fin IS NULL")->current();
 			$chef = $app->findParentIndividus();

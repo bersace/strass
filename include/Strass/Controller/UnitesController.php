@@ -365,7 +365,7 @@ class UnitesController extends Strass_Controller_Action
 
 				//      $tmp = $m->getInstance('image')->getTempFilename();
 				//      $type = $m->image['type'];
-				//      $image = 'data/strass/unites/'.$m->id.'.png';
+				//      $image = 'data/unites/'.$m->id.'.png';
 				//      if (!move_uploaded_file($tmp, $image)) {
 				//        throw new Exception("Impossible de récupérer l'image.");
 				//      }

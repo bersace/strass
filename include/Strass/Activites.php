@@ -384,7 +384,7 @@ class Activite extends Strass_Db_Table_Row_Abstract implements Zend_Acl_Resource
 	}
 
 	function getDossierPhoto($id = NULL) {
-		return 'data/images/strass/photos/'.($id ? $id : $this->id);
+		return 'data/photos/'.($id ? $id : $this->id);
 	}
 
 	function getPhotoAleatoire()

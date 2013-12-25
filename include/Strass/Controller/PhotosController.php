@@ -122,14 +122,14 @@ class PhotosController extends Strass_Controller_Action
 
 				$tr->load($tmp);
 
+				$dossier = $activite->getDossierPhoto();
 				$suffixe = '.jpeg';
-				$prefixe = 'data/images/strass/photos/'.$activite->id.'/'.$data['id'];
-				$fichier = $prefixe.$suffixe;
+				$fichier = $dossier.$data['id'].$suffixe;
 
 				list($w, $h) = $tr->getImageSize();
 
 				// image
-				if (!file_exists($dossier = dirname($prefixe)))
+				if (!file_exists($dossier))
 					mkdir($dossier, 0755, true);
 				$max = 1280;
 				$ratio = max($h/$max, $w/$max);
@@ -144,7 +144,7 @@ class PhotosController extends Strass_Controller_Action
 				$tr->free();
 
 				// vignette
-				$mini = $prefixe.'-vignette'.$suffixe;
+				$mini = $dossier.$data['id'].'-vignette'.$suffixe;
 				$tr->load($fichier);
 				list($w, $h) = $tr->getImageSize();
 				$hv = 256;
