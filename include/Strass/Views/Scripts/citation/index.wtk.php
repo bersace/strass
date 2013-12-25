@@ -1,20 +1,10 @@
 <?php
 
-class Scout_Pages_RendererCitation extends Wtk_Pages_Renderer
+class Strass_Pages_RendererCitation extends Strass_Pages_Renderer
 {
-  function __construct($view, $href, $intermediate, $model) {
-    parent::__construct($href, $intermediate, $model);
-    $this->view = $view;
-  }
-
-  function renderContainer($root = null)
+  function render($listid, $citation, $cont)
   {
-    return new Wtk_List;
-  }
-
-  function render($listid, $citation, $liste)
-  {
-    $s = $liste->addItem()->addSection()->addFlags('citation');
+    $s = $cont->addSection()->addFlags('citation');
     $s->addParagraph("« ".$citation->texte." »")->addFlags('citation');
     $s->addParagraph($citation->auteur)->addFlags('signature');
 
@@ -34,11 +24,6 @@ class Scout_Pages_RendererCitation extends Wtk_Pages_Renderer
 }
 
 $this->document->addStyleComponents('signature');
-$s = $this->document;
-$s->addPages(null,
-	     $this->model,
-	     new Scout_Pages_RendererCitation($this,
-					      $this->url(array('page' => '%i')),
-					      true,
-					      array('previous' => 'Précédentes',
-						    'next' => 'Suivantes')));
+$renderer = new Strass_Pages_RendererCitation($this, $this->url(array('page' => '%i')),
+					      true, Strass_Pages_Renderer::$feminin);
+$this->document->addPages(null, $this->model, $renderer);
