@@ -1,29 +1,30 @@
- - Le nombre de dossiers a été réduit. Un dossier private/ contient
-   les données à ne pas publier par le serveur HTTP. data/ contient
-   les données à publier (style, scripts, images, documents,
-   etc.). include/ reste.
+ - La page d'accueil est remplacée par la page d'accueil de l'unité
+   racine.
 
- - La pagination par années (Les années Dupont…) ont été aménagée pour
+ - La pagination par années (Les années Dupont…) a été aménagée pour
    index, effectifs, calendrier et photos des unités.
 
  - Les photos sont affichés par unités et par années comme les
    effectifs et le calendrier.
 
- - La page d'index est remplacée par la page d'index de l'unité
-   racine.
-
  - L'accès aux citations se fait en cliquant sur le titre « Citation »
    de la barre latérale.
-
- - La structure HTML a changé pour se rapprocher de la sémantique HTML5.
-
- - Un thème par défaut est proposé.
-
- - Les pages d'erreurs ont maintenant tout les menus et la console
-   pour se déconnecter.
 
  - Les admins peuvent éditer et supprimer les citations.
 
  - Les admins peuvent éditer et supprimer les messages du livre d'or,
    avant ou après modération. Les messages du livre d'or peuvent
    repasser en modération.
+
+ - Les pages d'erreurs ont maintenant tout les menus et la console
+   pour se déconnecter.
+
+ - Un thème par défaut est proposé.
+
+ - La structure HTML a changé pour se rapprocher de la sémantique HTML5.
+
+ - Le nombre de dossiers a été réduit. Un dossier private/ contient
+   les données à ne pas publier par le serveur HTTP. data/ contient
+   les données à publier (style, scripts, images, documents,
+   etc.). include/ reste. Également, les dossiers de data/ ont été
+   étalé en largeur plutôt que multiplier les dossiers mono-fils.
