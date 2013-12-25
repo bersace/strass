@@ -26,11 +26,7 @@ class Strass_View_Helper_AppsTableModel
 						       // infos perso
 						       'naissance'	=> 'Naissance',
 						       'age'		=> 'Âge',
-						       'situation'	=> 'Situation',
-						       'origine'	=> 'Origine',
 						       // progression,
-						       'perespi'	=> 'Père spi',
-						       'parrain'	=> 'Parrain',
 						       'totem'		=> 'Totem',
 						       'etape'		=> 'Étape',
 						       'numero'		=> 'N°',
@@ -100,11 +96,7 @@ class Strass_View_Helper_AppsTableModel
 				   // infos
 				   strftime('%d-%m-%Y', strtotime($individu->naissance)),
 				   $individu->getAge(),
-				   wtk_nbsp($individu->situation),
-				   wtk_nbsp($individu->origine),
 				   // progression,
-				   wtk_nbsp($individu->perespi),
-				   wtk_nbsp($individu->parrain),
 				   $individu->totem,
 				   isset($etape) ? $etape->titre : '',
 				   $individu->numero ? $individu->numero : null,
