@@ -1,6 +1,5 @@
 <?php
 
-require_once 'Strass/Users.php';
 require_once 'Strass/Unites.php';
 
 class MembresController extends Strass_Controller_Action implements Zend_Acl_Resource_Interface

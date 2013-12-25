@@ -187,10 +187,6 @@ class InscriptionController extends Strass_Controller_Action
 				$db = $i->getTable()->getAdapter();
 				$db->beginTransaction();
 				try {
-					$u = $i->findParentUsers();
-					if ($u) {
-						$u->delete();
-					}
 					$nom = $i->getFullName();
 					$i->delete();
 					$this->_helper->Log("Désincription de ".$nom, array(),

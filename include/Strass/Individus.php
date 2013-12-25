@@ -416,13 +416,6 @@ class Individu extends Strass_Db_Table_Row_Abstract implements Zend_Acl_Role_Int
 
 	function _postDelete()
 	{
-		if ($this->username) {
-			$tu = new Users();
-			$u = $tu->find($username)->current();
-			if ($u)
-				$u->delete();
-		}
-
 		if ($i = $this->getImage())
 			unlink($i);
 	}
