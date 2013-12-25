@@ -113,6 +113,20 @@ class Individu extends Strass_Db_Table_Row_Abstract implements Zend_Acl_Role_Int
 	  return $roles;
 	}
 
+	static function getRealUsername($adelec) {
+	  $db = Zend_Registry::get('db');
+	  $s = $db->select()
+	    ->from('individu', array('username'))
+	    ->where('adelec = ?', $adelec);
+	  $stmt = $s->query();
+	  $res = current($stmt->fetchAll());
+
+	  if ($res)
+	    return $res['username'];
+	  else
+	    return $adelec;
+	}
+
 	static function hashPassword($username, $password) {
 	  /* Free suffixe le realm par l'UID. On doit donc générer le
 	     hash avec le suffixe pour que ça corresponde. */

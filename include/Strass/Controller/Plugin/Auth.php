@@ -90,17 +90,19 @@ class Strass_Controller_Plugin_Auth extends Zend_Controller_Plugin_Abstract
 	    $om = Zend_Registry::get('logout_model');
 
 	    if ($im->validate()) {
-	      $username = $im->username;
+	      $username = $im->adelec;
+	      // Regénérer le digest à partir du username original
+	      $credential = Individu::hashPassword(Individu::getRealUsername($im->adelec), $im->password);
 
 	      $this->db->setIdentity($username);
-	      $this->db->setCredential(Individus::hashPassword($username, $im->password));
+	      $this->db->setCredential($credential);
 	      $result = $auth->authenticate($this->db);
 
 	      if (!$result->isValid()) {
 		switch($result->getCode()) {
 		case Zend_Auth_Result::FAILURE_IDENTITY_NOT_FOUND:
 		  throw new Wtk_Form_Model_Exception('%s inexistant.',
-						     $im->getInstance('username'));
+						     $im->getInstance('adelec'));
 		  break;
 		case Zend_Auth_Result::FAILURE_CREDENTIAL_INVALID:
 		  throw new Wtk_Form_Model_Exception("Mot de passe invalide.",
