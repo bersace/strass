@@ -10,7 +10,7 @@ class CitationController extends Strass_Controller_Action
 
 		$this->view->citations = $table = new Citation();
 		$s = $table->select()->order('date DESC');
-		$this->view->model = new Strass_Pages_Model_Rowset($table, $s, 10, $this->_getParam('page'));
+		$this->view->model = new Strass_Pages_Model_Rowset($s, 10, $this->_getParam('page'));
 
 		$this->actions->append("Enregistrer un citation",
 				       array('action' => 'enregistrer'));

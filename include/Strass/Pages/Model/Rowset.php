@@ -4,8 +4,10 @@ class Strass_Pages_Model_Rowset extends Wtk_Pages_Model
 {
 	protected $rowcount;
 
-	function __construct(Zend_Db_Table_Abstract $table, Zend_Db_Select $select, $count= 15, $current = 1)
+	function __construct(Zend_Db_Table_Select $select, $count= 15, $current = 1)
 	{
+	  $table = $select->getTable();
+	  $this->select = $select;
 	  $this->rowcount = $table->countRows($select);
 
 	  // selection les tuples de cette pages.
