@@ -71,7 +71,7 @@ abstract class Strass_Format
 		    $view->render($script);
 		  }
 		  catch (Exception $e) {
-		    error_log("Unable to render addon ".get_class($addon));
+		    error_log("Unable to render addon ".get_class($addon).": ".(string) $e);
 		  }
 		}
 	}
