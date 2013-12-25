@@ -84,124 +84,112 @@ class IndividusController extends Strass_Controller_Action
 
 	function editerAction()
 	{
-		$this->view->individu = $individu = $this->_helper->Individu();
-		$this->assert(null, $individu, 'editer',
-			      "Vous n'avez pas le droit d'éditer la fiche de cet individu.");
+	  $this->view->individu = $individu = $this->_helper->Individu();
+	  $this->assert(null, $individu, 'editer',
+			"Vous n'avez pas le droit d'éditer la fiche de cet individu.");
 
-		$this->metas(array('DC.Title' => 'Éditer '.$individu->getFullname()));
+	  $this->metas(array('DC.Title' => 'Éditer '.$individu->getFullname()));
 
-		$this->view->model = $m = new Wtk_Form_Model('editer');
+	  $this->view->model = $m = new Wtk_Form_Model('editer');
 
-		if ($this->assert(null, $individu, 'editer-id')) {
-			$m->addConstraintRequired($m->addString('prenom', 'Prénom', $individu->prenom));
-			$m->addConstraintRequired($m->addString('nom', 'Nom', $individu->nom));
-			$m->addDate('naissance', 'Date de naissance', $individu->naissance);
+	  if ($this->assert(null, $individu, 'editer-id')) {
+	    $m->addConstraintRequired($m->addString('prenom', 'Prénom', $individu->prenom));
+	    $m->addConstraintRequired($m->addString('nom', 'Nom', $individu->nom));
+	    $m->addDate('naissance', 'Date de naissance', $individu->naissance);
+	  }
+
+	  $m->addFile('image', 'Photo');
+
+	  $sachem = $this->assert(null, $individu, 'totem');
+	  if ($sachem)
+	    $m->addString('totem', 'Totem', $individu->totem);
+
+	  $m->addString('notes', "Notes", $individu->notes);
+	  // devrait suffire chez les FSE, et les SUF ?
+	  $m->addInteger('numero', "Numéro adhérent", $individu->numero, 1, 999999);
+
+	  // contacts;
+	  $m->addString('adelec', "Adélec", $individu->adelec);
+	  $m->addString('portable', "Téléphone portable", $individu->portable);
+	  $m->addString('fixe', "Téléphone fixe", $individu->fixe);
+	  $m->addString('adresse', "Adresse", $individu->adresse);
+	  
+	  $m->addNewSubmission('valider', 'Valider');
+
+	  if ($m->validate()) {
+	    $db = $individu->getTable()->getAdapter();
+	    $db->beginTransaction();
+	    try {
+	      // contacts
+	      $champs = array('nom', 'prenom', 'naissance',
+			      'adelec', 'portable',
+			      'fixe', 'adresse', 'notes');
+
+	      if ($sachem)
+		$champs[] = 'totem';
+
+	      if ($this->assert(null, $individu, 'progression')) {
+		$champs[] = 'numero';
+	      }
+
+	      foreach($champs as $champ)
+		if ($m->getInstance($champ))
+		  $individu->$champ = trim($m->get($champ));
+
+	      $individu->fixe = $this->_helper->Telephone($individu->fixe);
+	      $individu->portable = $this->_helper->Telephone($individu->portable);
+	      $individu->slug = wtk_strtoid($individu->getFullname(false, false));
+	      $individu->save();
+
+	      $image = $m->getInstance('image');
+	      if ($image->isUploaded()) {
+		$tmp = $image->getTempFilename();
+		if ($fichier = $individu->getImage())
+		  unlink($fichier);
+
+		$fichier = $individu->getImage(null, false);
+		$dossier = dirname($fichier);
+		if (!file_exists($dossier))
+		  mkdir($dossier, 0755, true);
+		// largeur max de 128px;
+		$mw = 128;
+		$tr = Image_Transform::factory('GD');
+		$tr->load($tmp);
+		list($w, $h) = $tr->getImageSize();
+		$ratio = $w > $mw ? $w/$mw : null;
+		if ($ratio || $image->getMimeType() != 'image/png') {
+		  if ($ratio) {
+		    $w /= $ratio;
+		    $h /= $ratio;
+		    $tr->resize(intval($w), intval($h));
+		  }
+		  $tr->save($fichier, 'png');
 		}
-
-		if ($this->assert(null, $individu, 'progression')) {
-			$m->addString('perespi', 'Père spi', $individu->perespi);
-			$m->addString('parrain', 'Parrain', $individu->parrain);
+		else {
+		  copy($tmp, $fichier);
 		}
+		$tr->free();
+	      }
 
-		$m->addFile('image', 'Photo');
+	      $this->_helper->Log("Fiche individu mis-à-jour", array($individu),
+				  $this->_helper->Url('voir', 'individus', null, array('individu' => $individu->slug)),
+				  (string) $individu);
 
-		$sachem = $this->assert(null, $individu, 'totem');
-		if ($sachem) {
-			$m->addString('totem', 'Totem', $individu->totem);
-		}
-		$m->addString('origine', "Unité d'origine", $individu->origine);
-		$m->addString('situation', "Situation", $individu->situation);
-		$m->addString('notes', "Notes", $individu->notes);
-		// devrait suffire chez les FSE, et les SUF ?
-		$m->addInteger('numero', "Numéro adhérent", $individu->numero, 1, 999999);
+	      $db->commit();
+	      $this->redirectSimple('voir', 'individus', null,
+				    array('individu' => $individu->slug));
+	      
+	    }
+	    catch (Exception $e) {
+	      $db->rollBack();
+	      throw $e;
+	    }
+	  }
 
-		// contacts;
-		$m->addString('adelec', "Adélec", $individu->adelec);
-		$m->addString('jabberid', "Id Jabber", $individu->jabberid);
-		$m->addString('portable', "Téléphone portable", $individu->portable);
-		$m->addString('fixe', "Téléphone fixe", $individu->fixe);
-		$m->addString('adresse', "Adresse", $individu->adresse);
-
-		$m->addNewSubmission('valider', 'Valider');
-
-		if ($m->validate()) {
-			$db = $individu->getTable()->getAdapter();
-			$db->beginTransaction();
-
-			try {
-				// contacts
-				$champs = array('nom', 'prenom', 'naissance',
-						'origine', 'situation',
-						'adelec', 'jabberid', 'portable',
-						'fixe', 'adresse', 'notes');
-
-				if ($sachem)
-					$champs[] = 'totem';
-
-				if ($this->assert(null, $individu, 'progression')) {
-					$champs[] = 'perespi';
-					$champs[] = 'parrain';
-					$champs[] = 'numero';
-				}
-
-				foreach($champs as $champ)
-					if ($m->getInstance($champ))
-						$individu->$champ = trim($m->get($champ));
-
-				$individu->fixe = $this->_helper->Telephone($individu->fixe);
-				$individu->portable = $this->_helper->Telephone($individu->portable);
-				$individu->id = wtk_strtoid($individu->getFullname(false, false));
-				$individu->save();
-
-				$image = $m->getInstance('image');
-				if ($image->isUploaded()) {
-					$tmp = $image->getTempFilename();
-					if ($fichier = $individu->getImage())
-						unlink($fichier);
-
-					$fichier = $individu->getImage(null, false);
-					$dossier = dirname($fichier);
-					if (!file_exists($dossier))
-						mkdir($dossier, 0755, true);
-					// largeur max de 128px;
-					$mw = 128;
-					$tr = Image_Transform::factory('GD');
-					$tr->load($tmp);
-					list($w, $h) = $tr->getImageSize();
-					$ratio = $w > $mw ? $w/$mw : null;
-					if ($ratio || $image->getMimeType() != 'image/png') {
-						if ($ratio) {
-							$w /= $ratio;
-							$h /= $ratio;
-							$tr->resize(intval($w), intval($h));
-						}
-						$tr->save($fichier, 'png');
-					}
-					else {
-						copy($tmp, $fichier);
-					}
-					$tr->free();
-				}
-
-				$this->_helper->Log("Fiche individu mis-à-jour", array($individu),
-						    $this->_helper->Url('voir', 'individus', null, array('individu' => $individu->id)),
-						    (string) $individu);
-
-				$db->commit();
-				$this->redirectSimple('voir', 'individus', null,
-						      array('individu' => $individu->id));
-	
-			}
-			catch (Exception $e) {
-				$db->rollBack();
-				throw $e;
-			}
-		}
-
-		$this->actions->append("Administrer",
-				       array('controller'	=> 'inscription',
-					     'action'	=> 'administrer'),
-				       array(null, $individu, 'admin'));
+	  $this->actions->append("Administrer",
+				 array('controller'	=> 'inscription',
+				       'action'	=> 'administrer'),
+				 array(null, $individu, 'admin'));
 	}
 
 	// éditer la progression d'un individu
