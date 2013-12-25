@@ -1,3 +1,13 @@
+RÉGRESSIONS
+
+ - Abandons des fonctionnalités : chaîne détaillée, envoie de chaîne,
+   rapport d'activité, trombinoscope d'unité, liste des anciens, liste
+   des unités fermées et ouvertes.
+
+ - Changement de la structure HTML. Les styles CSS sont cassés.
+
+NOUVEAUTÉS UTILISATEUR
+
  - La page d'accueil est remplacée par la page d'accueil de l'unité
    racine.
 
@@ -17,11 +27,16 @@
    repasser en modération.
 
  - Les pages d'erreurs ont maintenant tout les menus et la console
-   pour se déconnecter.
+   utilisateur.
+
+CHANGEMENTS WEBMESTRE
 
  - Un thème par défaut est proposé.
 
- - La structure HTML a changé pour se rapprocher de la sémantique HTML5.
+ - Utilisation de SCSS pour génerer le CSS des thèmes.
+
+ - Versionnage des données et migration offline du modèle SQL et des
+   données.
 
  - Le nombre de dossiers a été réduit. Un dossier private/ contient
    les données à ne pas publier par le serveur HTTP. data/ contient
