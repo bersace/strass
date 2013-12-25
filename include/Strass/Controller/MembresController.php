@@ -434,7 +434,7 @@ class MembresController extends Strass_Controller_Action implements Zend_Acl_Res
 
 	function profilAction()
 	{
-		$moi = Zend_Registry::get('individu');
+		$moi = Zend_Registry::get('user');
 		$id = $this->_getParam('membre');
 
 
@@ -571,7 +571,7 @@ class MembresController extends Strass_Controller_Action implements Zend_Acl_Res
 		$p = $this->_getParam('page');
 		$p = $p ? $p : 1;
 		$this->view->individus = new Wtk_Pages_Model_Iterator($is, 20, $p);
-		$this->view->profils = (bool) Zend_Registry::get('individu');
+		$this->view->profils = (bool) Zend_Registry::get('user');
 		$this->branche->append('Membres');
 	}
 
@@ -579,7 +579,7 @@ class MembresController extends Strass_Controller_Action implements Zend_Acl_Res
 	{
 		$i = $this->_helper->Individu();
 
-		$moi = Zend_Registry::get('individu');
+		$moi = Zend_Registry::get('user');
 		$acl = Zend_Registry::get('acl');
 		$this->assert(null, null, null,
 			      "Vous n'avez pas le droit de prendre".

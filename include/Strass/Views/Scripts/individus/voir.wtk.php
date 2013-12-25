@@ -19,7 +19,7 @@ $info = array('adelec'		=> "**Adélec :** [mailto:%s %s]",
 	      );
 
 $acl = Zend_Registry::get('acl');
-$ind = Zend_Registry::get('individu');
+$ind = Zend_Registry::get('user');
 if ($acl->isAllowed($ind, $this->individu, 'totem'))
 	$info['totem'] = '**Totem :** %s';
 

@@ -71,7 +71,7 @@ class Articles extends Strass_Db_Table_Abstract
 							     'onDelete' => self::CASCADE),
 					 'Auteur' => array('columns' => 'auteur',
 							   'refTableClass' => 'Individus',
-							   'refColumns' => 'id',
+							   'refColumns' => 'slug',
 							   'onUpdate' => self::CASCADE,
 							   'onDelete' => self::SET_NULL));
 

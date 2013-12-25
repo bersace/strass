@@ -13,7 +13,7 @@ class Strass_View_Helper_ItemIndividu
   {
     $lien = $this->view->lienIndividu($individu);
     $acl = Zend_Registry::get('acl');
-    $self = Zend_Registry::get('individu');
+    $self = Zend_Registry::get('user');
     $tf = $individu->findParentFamilles()->telephone;
     $telephone = $acl->isAllowed($self, $individu, 'voir') ?
       $tf ? $tf : $individu->telephone : NULL;

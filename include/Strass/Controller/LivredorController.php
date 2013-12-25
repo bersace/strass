@@ -47,7 +47,7 @@ class LivredorController extends Strass_Controller_Action
       try {
 	$tuple = $m->get();
 	$tuple['date'] = strftime('%Y-%m-%d %H:%m');
-	$tuple['public'] = Zend_Registry::get('individu') ? '1' : null;
+	$tuple['public'] = Zend_Registry::get('user') ? '1' : null;
 	$ti->insert($tuple);
 
 	// signaler à l'admin qu'il faut modérer un nouveau message

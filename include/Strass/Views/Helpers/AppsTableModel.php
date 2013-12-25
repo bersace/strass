@@ -47,7 +47,7 @@ class Strass_View_Helper_AppsTableModel
 	{
 		$m = $model;
 		$acl = Zend_Registry::get('acl');
-		$ind = Zend_Registry::get('individu');
+		$ind = Zend_Registry::get('user');
 		foreach($apps as $app) {
 			$individu = $app->findParentIndividus();
 			$vn = $individu->voirNom();

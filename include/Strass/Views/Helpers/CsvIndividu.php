@@ -44,7 +44,7 @@ class Strass_View_Helper_CsvIndividu
 		}
 			
 		$acl = Zend_Registry::get('acl');
-		$moi = Zend_Registry::get('individu');
+		$moi = Zend_Registry::get('user');
 		$vals = array();
 		foreach(self::$columns as $col => $attr) {
 			switch($attr) {

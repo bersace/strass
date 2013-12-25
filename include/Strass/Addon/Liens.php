@@ -20,17 +20,13 @@ class Strass_Addon_Liens extends Strass_Addon implements Iterator, Countable
 	protected function lien($metas, array $urlOptions = array(), array $acl = array(), $reset = false)
 	{
 		if ($acl && $acl[0] == null)
-			$acl[0] = Zend_Registry::get('individu');
+			$acl[0] = Zend_Registry::get('user');
 
 		if (!$metas)
 			return false;
     
 		if ($acl && count($acl) < 3 && isset($urlOptions['action']))
 			array_push($acl, $urlOptions['action']);
-
-		if ($acl && count($acl) > 2 && is_null($acl[0])) {
-			$acl[0] = Zend_Registry::get('user');
-		}
 
 		if (!is_array($metas))
 			$metas = array('label' => $metas);

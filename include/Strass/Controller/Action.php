@@ -68,7 +68,7 @@ abstract class Strass_Controller_Action extends Zend_Controller_Action implement
 
 	function assert($role = null, $resource = null, $action = null, $message = null)
 	{
-		$role = $role ? $role : Zend_Registry::get('individu');
+		$role = $role ? $role : Zend_Registry::get('user');
 		if (!$role && $message) {
 			$this->_helper->Auth->http();
 			$role = $this->_helper->Individu->auth();

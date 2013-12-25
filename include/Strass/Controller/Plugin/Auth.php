@@ -1,7 +1,7 @@
 <?php
 
 require_once 'Wtk.php';
-require_once 'Strass/Users.php';
+require_once 'Strass/Individus.php';
 
 /* nobody,nogroup = inconnu; */
 class Strass_Controller_Plugin_Auth extends Zend_Controller_Plugin_Abstract
@@ -15,6 +15,17 @@ class Strass_Controller_Plugin_Auth extends Zend_Controller_Plugin_Abstract
 		$acl = new Zend_Acl;
 		Zend_Registry::set('acl', $acl);
 
+		if (!$acl->hasRole('individus')) {
+		  $acl->addRole(new Zend_Acl_Role('individus'));
+		  $acl->addRole(new Zend_Acl_Role('nobody'));
+		  // groupes virtuels
+		  $acl->addRole(new Zend_Acl_Role('admins'));
+		  $acl->allow('admins');
+		  $acl->addRole(new Zend_Acl_Role('sachem'));
+		  $acl->allow('sachem', null, 'totem');
+		  $acl->addRole(new Zend_Acl_Role('members'));
+		}
+
 		$config = new Strass_Config_Php('strass');
 		try {
 			$lifetime = $config->site->duree_connexion;
@@ -27,7 +38,7 @@ class Strass_Controller_Plugin_Auth extends Zend_Controller_Plugin_Abstract
 
 		// models formulaire
 		$m = new Wtk_Form_Model('login');
-		$i = $m->addString('username', "Identifiant");
+		$i = $m->addString('adelec', "Courriel");
 		$m->addConstraintRequired($i);
 		$i = $m->addString('password', "Mot de passe");
 		$m->addConstraintRequired($i);
@@ -46,7 +57,7 @@ class Strass_Controller_Plugin_Auth extends Zend_Controller_Plugin_Abstract
 		$auth->getStorage();
 
 		// DB AUTH
-		$this->db = new Zend_Auth_Adapter_DbTable($db, 'users', 'username', 'password');
+		$this->db = new Zend_Auth_Adapter_DbTable($db, 'individu', 'adelec', 'password');
 
 		// HTTP_AUTH
 		// Gestion du safe_mode avec realm modifié.
@@ -57,12 +68,8 @@ class Strass_Controller_Plugin_Auth extends Zend_Controller_Plugin_Abstract
 
 		$this->http = new Zend_Auth_Adapter_Http($config);
     
-		$db = new Strass_Auth_Adapter_Http_Resolver_DbTable($db, 'users', 'username', 'ha1');
+		$db = new Strass_Auth_Adapter_Http_Resolver_DbTable($db, 'individu', 'adelec', 'password');
 		$this->http->setDigestResolver($db);
-
-		// init le groupe admins.
-		$admins = new Groups();
-		$admins = $admins->find('admins')->current();
 
 		$this->form();
 		$this->getUser();
@@ -77,42 +84,42 @@ class Strass_Controller_Plugin_Auth extends Zend_Controller_Plugin_Abstract
 	 */
 	private function form()
 	{
-		try {
-			$auth = Zend_Auth::getInstance();
-			$im = Zend_Registry::get('login_model');
-			$om = Zend_Registry::get('logout_model');
-			if ($im->validate()) {
-				$username = $im->username;
+	  try {
+	    $auth = Zend_Auth::getInstance();
+	    $im = Zend_Registry::get('login_model');
+	    $om = Zend_Registry::get('logout_model');
 
-				$this->db->setIdentity($username);
-				// workaround SQLite not supporting MD5() treatment
-				$this->db->setCredential(md5($im->password));
-				$result = $auth->authenticate($this->db);
+	    if ($im->validate()) {
+	      $username = $im->username;
 
-				if (!$result->isValid()) {
-					switch($result->getCode()) {
-					case Zend_Auth_Result::FAILURE_IDENTITY_NOT_FOUND:
-						throw new Wtk_Form_Model_Exception('%s inexistant.',
-										   $im->getInstance('username'));
-						break;
-					case Zend_Auth_Result::FAILURE_CREDENTIAL_INVALID:
-						throw new Wtk_Form_Model_Exception("Mot de passe invalide.",
-										   $im->getInstance('password'));
-						break;
-					default:
-						throw new Wtk_Form_Model_Exception("Identification échouée");
-						break;
-					}
-				}
-			}
-			else if ($om->validate()) {
-				$auth->clearIdentity();
-			}
+	      $this->db->setIdentity($username);
+	      $this->db->setCredential(Individus::hashPassword($username, $im->password));
+	      $result = $auth->authenticate($this->db);
+
+	      if (!$result->isValid()) {
+		switch($result->getCode()) {
+		case Zend_Auth_Result::FAILURE_IDENTITY_NOT_FOUND:
+		  throw new Wtk_Form_Model_Exception('%s inexistant.',
+						     $im->getInstance('username'));
+		  break;
+		case Zend_Auth_Result::FAILURE_CREDENTIAL_INVALID:
+		  throw new Wtk_Form_Model_Exception("Mot de passe invalide.",
+						     $im->getInstance('password'));
+		  break;
+		default:
+		  throw new Wtk_Form_Model_Exception("Identification échouée");
+		  break;
 		}
-		catch (Wtk_Form_Model_Exception $e) {
-			$auth->clearIdentity();
-			$im->errors[] = $e;
-		}
+	      }
+	    }
+	    else if ($om->validate()) {
+	      $auth->clearIdentity();
+	    }
+	  }
+	  catch (Wtk_Form_Model_Exception $e) {
+	    $auth->clearIdentity();
+	    $im->errors[] = $e;
+	  }
 	}
 
 	function sudo($target)
@@ -145,30 +152,28 @@ class Strass_Controller_Plugin_Auth extends Zend_Controller_Plugin_Abstract
 	{
 		// authentification
 		$auth = Zend_Auth::getInstance();
+		$user = null;
+		$username = null;
 
 		if ($auth->hasIdentity()) {
 			$id = $auth->getIdentity();
-			if ($id instanceof User) {
-				$username = null;
+			if ($id instanceof Individu) {
 				$user = $id;
 			}
 			else
-				$username = is_array($id) ? $id['username'] : $id;
+				$username = is_array($id) ? $id['adelec'] : $id;
 		}
 		else {
 			$auth->clearIdentity();
-			$username = 'nobody';
 		}
 
 		if ($username) {
-			$users = new Users();
-			$rows = $users->find($username);
-			$user = $rows->current();
+		  $t = new Individus();
+		  $user = $t->findByIdentity($username);
 		}
 
 		if (!$user) {
-			$username = 'nobody';
-			$user = $users->find($username)->current();
+		  $user = new Nobody();
 		}
 
 		Zend_Registry::set('user', $user);

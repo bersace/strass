@@ -31,7 +31,7 @@ class Strass_View_Helper_LienActivite {
 
 
 		$acl = Zend_Registry::get('acl');
-		$i = Zend_Registry::get('individu');
+		$i = Zend_Registry::get('user');
 		if ($acl->isAllowed($i, $resource, $action)) {
 			return $this->view->lien(array('activite' => $activite->id,
 						       'action' => $action, 

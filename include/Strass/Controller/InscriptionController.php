@@ -521,7 +521,7 @@ class InscriptionController extends Strass_Controller_Action
 		$this->actions->append("Administrer",
 				       array('controller'	=> 'inscription',
 					     'action'	=> 'administrer'),
-				       array(Zend_Registry::get('individu'), $individu));
+				       array(Zend_Registry::get('user'), $individu));
 	}
 
 	function historiqueAction()

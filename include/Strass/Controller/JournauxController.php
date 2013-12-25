@@ -212,17 +212,17 @@ class JournauxController extends Strass_Controller_Action
 		$this->actions->append("Écrire un article",
 				       array('action' => 'ecrire',
 					     'journal' => $j->id),
-				       array(Zend_Registry::get('individu'), $j));
+				       array(Zend_Registry::get('user'), $j));
 		$this->actions->append("Modifier",
 				       array('action' => 'modifier',
 					     'journal' => $j->id),
-				       array(Zend_Registry::get('individu'), $j));
+				       array(Zend_Registry::get('user'), $j));
 		$brouillons = $j->findArticles('public IS NULL');
 		if ($brouillons->count()) {
 			$this->actions->append("Brouillons",
 					       array('action' => 'brouillons',
 						     'journal' => $j->id),
-					       array(Zend_Registry::get('individu'), $j));
+					       array(Zend_Registry::get('user'), $j));
 			
 		}
 	}
@@ -285,7 +285,7 @@ class JournauxController extends Strass_Controller_Action
 				unset($data['images']);
 				$data+=array('public' => null);
 
-				$ind = Zend_Registry::get('individu');
+				$ind = Zend_Registry::get('user');
 				$data = array_merge($data,
 						    array('id' => wtk_strtoid($m->get('titre')),
 							  'journal' => $j->id,
@@ -391,10 +391,10 @@ class JournauxController extends Strass_Controller_Action
 
 		$this->actions->append("Éditer cet article",
 				       array('action' => 'editer'),
-				       array(Zend_Registry::get('individu'), $a));
+				       array(Zend_Registry::get('user'), $a));
 		$this->actions->append("Supprimer cet article",
 				       array('action' => 'supprimer'),
-				       array(Zend_Registry::get('individu'), $a));
+				       array(Zend_Registry::get('user'), $a));
 		$this->formats('odt');
 	}
 

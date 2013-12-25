@@ -13,7 +13,7 @@ class ActivitesController extends Strass_Controller_Action
 	 */
 	function indexAction()
 	{
-		$i = Zend_Registry::get('individu');
+		$i = Zend_Registry::get('user');
 		if (!$i)
 			throw new Strass_Controller_Action_Exception_Notice("Vous devez être identifié pour voir ".
 									   "le calendrier des activités.");
@@ -53,7 +53,7 @@ class ActivitesController extends Strass_Controller_Action
 		$this->actions->append("Nouvelle activité",
 				       array('action' => 'prevoir',
 					     'unite' => null),
-				       array(Zend_Registry::get('individu'), $u));
+				       array(Zend_Registry::get('user'), $u));
 
 		$this->formats('ics');
 	}
@@ -61,7 +61,7 @@ class ActivitesController extends Strass_Controller_Action
 	/* prévoir une nouvelle activité pour une ou plusieurs unités */
 	function prevoirAction()
 	{
-		$individu = Zend_Registry::get('individu');
+		$individu = Zend_Registry::get('user');
 		if (!$individu)
 			throw new Strass_Controller_Action_Exception_Notice("Vous devez être inscrit et identifié ".
 									   "pour prévoir une nouvelle activité");
@@ -241,7 +241,7 @@ class ActivitesController extends Strass_Controller_Action
 		$this->metas(array('DC.Title' => wtk_ucfirst($a->getIntitule())));
 
 		$this->view->documents = $a->findDocsActivite();
-		$i = Zend_Registry::get('individu');
+		$i = Zend_Registry::get('user');
 
 		if (!$a->isFuture()) {
 			$this->connexes->append('Photos',
@@ -515,7 +515,7 @@ class ActivitesController extends Strass_Controller_Action
 	function annulerAction()
 	{
 		$a = $this->_helper->Activite();
-		$this->assert(Zend_Registry::get('individu'), $a, 'annuler',
+		$this->assert(Zend_Registry::get('user'), $a, 'annuler',
 			      "Vous n'avez pas le droit d'annuler cette activités");
 
 		$this->metas(array('DC.Title' => 'Annuler '.$a->getIntitule()));
@@ -588,7 +588,7 @@ class ActivitesController extends Strass_Controller_Action
 	// HELPER
 	function getUnitesProgrammable($assert = TRUE) {
 		$unites = array();
-		$individu = Zend_Registry::get('individu');
+		$individu = Zend_Registry::get('user');
 		if (!$this->assert($individu)) {
 			// Sélectionner les unité où l'individu est ou a été inscrit
 			// et dont il a le droit de prévoir une activité.

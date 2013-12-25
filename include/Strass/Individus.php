@@ -7,31 +7,31 @@ require_once 'Photos.php';
 
 class Individus extends Strass_Db_Table_Abstract implements Zend_Acl_Resource_Interface
 {
-	protected	$_name			= 'individus';
+	protected	$_name			= 'individu';
 	protected	$_rowClass		= 'Individu';
 	protected	$_dependentTables	= array('Appartenances',
 							'Articles',
 							'Progression',
 							'Formation',
 							'Commentaires');
-	protected	$_referenceMap		= array('User'		=> array('columns'		=> 'username',
-										 'refTableClass'	=> 'Users',
-										 'refColumns'		=> 'username'));
 
 	function __construct()
 	{
-		parent::__construct();
+	  parent::__construct();
 
-		$acl = Zend_Registry::get('acl');
-		if (!$acl->hasRole('individus'))
-			$acl->addRole(new Zend_Acl_Role('individus'));
-		if (!$acl->has('individus'))
-			$acl->add(new Zend_Acl_Resource($this->getResourceId()));
+	  $acl = Zend_Registry::get('acl');
+	  if (!$acl->has($this))
+	    $acl->add($this);
 	}
 
 	function getResourceId()
 	{
 		return 'individus';
+	}
+
+	function findByIdentity($identity) {
+	  $s = $this->select()->where('adelec = ?', $identity);
+	  return $this->fetchSelect($s)->current();
 	}
 }
 
@@ -49,62 +49,11 @@ class Individu extends Strass_Db_Table_Row_Abstract implements Zend_Acl_Role_Int
 	public function __construct(array $config = array())
 	{
 		parent::__construct($config);
-		$acl = Zend_Registry::get('acl');
 
-		$this->age = date("Y", time() - strtotime($this->naissance)) - date("Y", 0); 
-
-		// init role
-		//mc('    Init Role', array(0xFF, 0xAA, 0x22));
-		if (!$acl->hasRole($this)) {
-			// choix conservateur : si on n'est plus chef, on ne l'est
-			// plus. Donc on pert les privilèges (qui eux, sont indépendant
-			// du temps, le chef d'aujourd'hui peut éditer tout, mais le
-			// chef d'hier ne peut plus rien).
-			$apps = $this->findAppartenances('fin IS NULL');
-			$roles = array('individus');
-
-			// hériter des privilèges de l'utilisateur
-			if ($this->username)
-				$roles[] = $this->findParentUsers();
-
-			foreach($apps as $app) {
-				$u = $app->findParentUnites();
-
-				// retourne siz pour les sizaine, chef sinon
-				$roles[] = $app->getRoleId();
-				$roles[] = $app->unite;
-				$unite = $app->findParentUnites();
-				$parente = $unite->findParentUnites();
-				// récursif ?
-				if ($parente) {
-					$roles[] = $parente;
-					$grandparente = $parente->findParentUnites();
-					if ($grandparente)
-						$roles[] = $grandparente;
-				}
-				$roles = array_merge($roles,
-						     // Un membre d'une unité est l'équivalent
-						     // d'un chef d'une sous-unité. Dans les
-						     // faits, les membres d'une unités sont
-						     // se résument à l'ensemble de la
-						     // maîtrise de la dite unité exceptées
-						     // les unités finales
-						     $this->getSousRoles($acl, $u));
-			}
-
-			if ($this->totem)
-				$roles[] = 'sachem';
-
-			if (!$acl->hasRole('sachem')) {
-				$acl->addRole(new Zend_Acl_Role('sachem'));
-				$acl->allow('sachem', null, 'totem');
-			}
-
-			$acl->addRole(new Zend_Acl_Role($this->getRoleId()), $roles);
-		}
-    
+		$this->initRoleAcl();
 		$this->initResourceAcl($this->getUnites(NULL));
 
+		$this->age = date("Y", time() - strtotime($this->naissance)) - date("Y", 0); 
 		$t = new Appartenances();
 		$s = $t->select()->where('fin IS NULL');
 		$this->ancien = $this->findAppartenances($s)->count() == 0;
@@ -115,10 +64,67 @@ class Individu extends Strass_Db_Table_Row_Abstract implements Zend_Acl_Role_Int
 	function _initResourceAcl($acl)
 	{
 		$acl->allow($this, $this, array('editer', 'desinscrire', 'profil'));
-		$acl->deny($this->username, $this, 'sudo');
+		$acl->deny($this->getRoleId(), $this, 'sudo');
 		$acl->allow('individus', $this, 'voir');
 	}
   
+	protected function _parentRoles()
+	{
+	  $acl = Zend_Registry::get('acl');
+
+	  // Choix conservateur : si on n'est plus chef, on ne l'est
+	  // plus. Donc on pert les privilèges (qui eux, sont indépendant
+	  // du temps, le chef d'aujourd'hui peut éditer tout, mais le
+	  // chef d'hier ne peut plus rien).
+	  $apps = $this->findAppartenances('fin IS NULL');
+	  $roles = array('individus');
+
+	  // hériter des privilèges de l'utilisateur
+	  if ($this->admin)
+	    $roles[] = 'admins';
+	  if ($this->password)
+	    $roles[] = 'members';
+
+	  foreach($apps as $app) {
+	    $u = $app->findParentUnites();
+
+	    // retourne siz pour les sizaine, chef sinon
+	    $roles[] = $app->getRoleId();
+	    $roles[] = $app->unite;
+	    $unite = $app->findParentUnites();
+	    $parente = $unite->findParentUnites();
+	    // récursif ?
+	    if ($parente) {
+	      $roles[] = $parente;
+	      $grandparente = $parente->findParentUnites();
+	      if ($grandparente)
+		$roles[] = $grandparente;
+	    }
+	    // Un membre d'une unité est l'équivalent d'un chef d'une
+	    // sous-unité. Dans les faits, les membres d'une unités
+	    // sont se résument à l'ensemble de la maîtrise de la dite
+	    // unité exceptées les unités finales
+	    $roles = array_merge($roles, $this->getSousRoles($acl, $u));
+	  }
+
+	  if ($this->totem)
+	    $roles[] = 'sachem';
+
+	  return $roles;
+	}
+
+	static function hashPassword($username, $password) {
+	  /* Free suffixe le realm par l'UID. On doit donc générer le
+	     hash avec le suffixe pour que ça corresponde. */
+	  $config = new Strass_Config_Php('strass');
+	  return hash('md5', $username.':'.$config->site->realm.$config->site->realm_suffix.':'.$password);
+	}
+
+	public function getIdentity ()
+	{
+	  return $this->adelec ? $this->adelec : 'nobody';
+	}
+
 	protected function getSousRoles($acl, $unite)
 	{
 		$su = $unite->findUnites();
@@ -133,31 +139,19 @@ class Individu extends Strass_Db_Table_Row_Abstract implements Zend_Acl_Role_Int
 		return $roles;
 	}
     
-
 	public function getRoleId()
 	{
-		return $this->id;
+		return $this->slug;
 	}
  
 	public function getResourceId()
 	{
-		return $this->id;
+		return $this->slug;
 	}
 
 	function isAdmin()
 	{
-		$s = $this->getTable()->getAdapter()->select();
-		$s->from('individus')
-			->where('individus.id = ?', $this->id)
-			->join('membership',
-			       'membership.username = individus.username',
-			       array())
-			->join('groups',
-			       'groups.groupname = membership.groupname',
-			       array())
-			->where('groups.groupname = ?', 'admins');
-		$stmt = $s->query();
-		return (bool) $stmt->fetch();
+	  return $this->admin;
 	}
 
 	function __toString()
@@ -170,13 +164,13 @@ class Individu extends Strass_Db_Table_Row_Abstract implements Zend_Acl_Role_Int
 	 */
 	public function voirNom($i = null)
 	{
-		$ind = Zend_Registry::get('individu');
+		$ind = Zend_Registry::get('user');
 		return !$this->nj || ($ind && $ind->getAge() > 11);
 	}
 
 	function getFullName($compute = true, $totem = true)
 	{
-		$ind = Zend_Registry::get('individu');
+		$ind = Zend_Registry::get('user');
 		if ($compute && !$ind)
 			// aux inconnus, on n'affiche que les initiales.
 			return $this->getName();
@@ -267,7 +261,7 @@ class Individu extends Strass_Db_Table_Row_Abstract implements Zend_Acl_Role_Int
 
 	function getImage($id = null, $test = true)
 	{
-		$ind = Zend_Registry::get('individu');
+		$ind = Zend_Registry::get('user');
 		if (!$ind)
 			return null;
 		$id = $id ? $id : $this->id;
@@ -280,22 +274,22 @@ class Individu extends Strass_Db_Table_Row_Abstract implements Zend_Acl_Role_Int
 	{
 		$db = $this->getTable()->getAdapter();
 		$select = $db->select()
-			->distinct()
-			->from('progression')
-			->join('individus',
-			       'individu = "'.$this->id.'"',
-			       array())
-			->join('etapes',
-			       'etape = etapes.id AND progression.sexe = etapes.sexe',
-			       array())
-			->order('etapes.ordre DESC');
+		  ->distinct()
+		  ->from('progression')
+		  ->join('individu',
+			 $db->quoteInto('progression.individu = ?', $this->id),
+			 array())
+		  ->join('etapes',
+			 'etape = etapes.id AND progression.sexe = etapes.sexe',
+			 array())
+		  ->order('etapes.ordre DESC');
 
 		if ($annee)
 			$select->where("STRFTIME('%Y-%m', progression.date) <= ?".
 				       " OR ".
 				       "progression.date IS NULL".
 				       " OR ".
-				       "progression.date = ''", ($annee+1).'-10');
+				       "progression.date = ? - 10", ($annee+1));
 
 		$tp = new Progression();
 		return $tp->fetchSelect($select)->current();
@@ -426,13 +420,43 @@ class Individu extends Strass_Db_Table_Row_Abstract implements Zend_Acl_Role_Int
 	}
 }
 
+class Nobody implements Zend_Acl_Resource_Interface, Zend_Acl_Role_Interface {
+  function __construct() {
+    $this->id = null;
+    $this->slug = null;
+  }
+
+  public function getIdentity() {
+    return 'nobody';
+  }
+
+  public function getRoleId()
+  {
+    return 'nobody';
+  }
+ 
+  public function getResourceId()
+  {
+    return 'nobody';
+  }
+
+  function isAdmin()
+  {
+    return false;
+  }
+
+  function getUnites() {
+    return array();
+  }
+}
+
 class Appartenances extends Strass_Db_Table_Abstract
 {
 	protected	$_name		= 'appartient';
 	protected	$_rowClass	= 'Appartient';
 	protected	$_referenceMap	= array('Individu'	=> array('columns'		=> 'individu',
 									 'refTableClass'	=> 'Individus',
-									 'refColumns'		=> 'id',
+									 'refColumns'		=> 'slug',
 									 'onUpdate'		=> self::CASCADE,
 									 'onDelete'		=> self::CASCADE),
 						'Unite'		=> array('columns'		=> 'unite',
@@ -483,20 +507,6 @@ class Appartient extends Strass_Db_Table_Row_Abstract implements Zend_Acl_Role_I
 	}
 }
 
-
-
-class Privileges extends Zend_Db_Table_Abstract
-{
-	protected	$_name		= 'privileges';
-	//   protected	$_rowClass	= 'Privilege';
-	protected	$_referenceMap	= array('Role'		=> array('columns'		=> 'role',
-									 'refTableClass'	=> 'Roles',
-									 'refColumns'		=> 'id'));
-}
-
-// class Privilege extends Zend_Db_Table_Row_Abstract
-// {
-// }
 
 class Inscriptions extends Strass_Db_Table_Abstract implements Zend_Acl_Resource_Interface
 {

@@ -21,7 +21,7 @@ foreach ($this->errors as $i => $error) {
 	$section->addChild (new Wtk_Text ("// ".$error->getMessage()." // \n"));
 
 	if ($error instanceof Strass_Controller_Action_Exception_Forbidden) {
-		if (Zend_Registry::get('individu')) {
+		if (Zend_Registry::get('user')) {
 			$config = new Strass_Config_Php('strass');
 			$section->addText("Si vous devriez avoir accès au site, ".
 					  "[mailto:".$config->site->admin." contactez le webmestre].");

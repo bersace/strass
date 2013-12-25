@@ -17,7 +17,7 @@ class Progression extends Strass_Db_Table_Abstract
 									 'refColumns'	=> array('id', 'sexe')),
 						'Individu'	=> array('columns'	=> 'individu',
 									 'refTableClass'=> 'Individus',
-									 'refColumns'	=> array('id'),	
+									 'refColumns'	=> array('slug'),	
 									 'onUpdate' => self::CASCADE,
 									 'onDelete' => self::CASCADE));
 }

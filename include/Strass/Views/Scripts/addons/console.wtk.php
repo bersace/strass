@@ -19,7 +19,7 @@ if ($username == 'nobody') {
 
 	$model = $this->auth_login_model;
 	$form = $section->addForm ($model);
-	$form->addEntry('username', 34);
+	$form->addEntry('adelec', 34);
 	$form->addPassword('password');
 	$form->addForm_ButtonBox()->addForm_Submit($model->getSubmission('login'));
  }

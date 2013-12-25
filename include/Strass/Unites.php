@@ -451,8 +451,8 @@ class Unite extends Strass_Db_Table_Row_Abstract implements Zend_Acl_Resource_In
 			break;
 		}
 
-		$select->join('individus',
-			      "individus.id = appartient.individu\n",
+		$select->join('individu',
+			      "individu.slug = appartient.individu\n",
 			      array())
 			->order('roles.ordre')
 			->order('naissance');
@@ -550,8 +550,8 @@ class Unite extends Strass_Db_Table_Row_Abstract implements Zend_Acl_Resource_In
 			       array('poste' => 'role',
 				     'debut' => "strftime('%Y', debut, '-8 months')",
 				     'fin' => "strftime('%Y', fin, '-7 months')"))
-			->join('individus',
-			       'individus.id = appartient.individu')
+			->join('individu',
+			       'individu.slug = appartient.individu')
 			->order('debut ASC');
         
 		switch($this->type) {

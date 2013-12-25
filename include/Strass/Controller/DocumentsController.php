@@ -27,7 +27,7 @@ class DocumentsController extends Strass_Controller_Action
 
 	function unitesEnvoyables()
 	{
-		$i = Zend_Registry::get('individu');
+		$i = Zend_Registry::get('user');
 		if (!$i)
 			return array();
 
@@ -50,7 +50,7 @@ class DocumentsController extends Strass_Controller_Action
 
 	function envoyerAction()
 	{
-		$i = Zend_Registry::get('individu');
+		$i = Zend_Registry::get('user');
 
 
 		$unites = $this->unitesEnvoyables();

@@ -16,7 +16,7 @@ class Strass_View_Helper_TableEffectifs
 
 		if ($profils) {
 			$acl = Zend_Registry::get('acl');
-			$moi = Zend_Registry::get('individu');
+			$moi = Zend_Registry::get('user');
 
 			if ($type == 'participants') 
 				$colonnes['numero'] = "N°";

@@ -44,14 +44,14 @@ class PhotosController extends Strass_Controller_Action
 
 		$enum = array();
 		if (!$activite) {
-			$i = Zend_Registry::get('individu');
+			$i = Zend_Registry::get('user');
 			if (!$i)
 				throw new Strass_Controller_Action_Exception_Forbidden("Vous devez être identifé pour envoyer des photos.");
 
 			$annee = $this->_helper->Annee(false);
 			$debut = $annee ? $this->_helper->Annee->dateDebut($annee) : null;
 			$fin = $annee ? $this->_helper->Annee->dateFin($annee) : null;
-			$as = $this->_helper->Activite->pourIndividu(Zend_Registry::get('individu'), $debut, $fin);
+			$as = $this->_helper->Activite->pourIndividu(Zend_Registry::get('user'), $debut, $fin);
 			if (!$as)
 				throw new Strass_Controller_Action_Exception_Forbidden("Vous ne pouvez envoyer de photos dans aucune activités.");
 			foreach($as as $a)
@@ -164,7 +164,7 @@ class PhotosController extends Strass_Controller_Action
 					$tc = new Commentaires;
 					$data = array('activite' => $activite->id,
 						      'photo'	=> $key['id'],
-						      'individu' => Zend_Registry::get('individu')->id,
+						      'individu' => Zend_Registry::get('user')->id,
 						      'commentaire' => $m->get('commentaire'),
 						      'date' => strftime('%Y-%m-%d %T'));
 					$tc->insert($data);
@@ -215,7 +215,7 @@ class PhotosController extends Strass_Controller_Action
 					      'photo' => null));
 
 		// cherche le commentaire de l'individu
-		if ($i = Zend_Registry::get('individu')) {
+		if ($i = Zend_Registry::get('user')) {
 			$s = $photo->getTable()->select();
 			$s->join('individus',
 				 'commentaire.individu = individu.id',
@@ -254,7 +254,7 @@ class PhotosController extends Strass_Controller_Action
 			$annee = $this->_helper->Annee(false);
 			$debut = $annee ? $this->_helper->Annee->dateDebut($annee) : null;
 			$fin = $annee ? $this->_helper->Annee->dateFin($annee) : null;
-			$as = $this->_helper->Activite->pourIndividu(Zend_Registry::get('individu'), $debut, $fin);
+			$as = $this->_helper->Activite->pourIndividu(Zend_Registry::get('user'), $debut, $fin);
 			if (!$as)
 				throw new Strass_Controller_Action_Exception_Forbidden("Vous ne pouvez envoyer de photos dans aucune activités.");
 			foreach($as as $a)
@@ -299,7 +299,7 @@ class PhotosController extends Strass_Controller_Action
 	{
 		list($a, $p) = $this->_helper->Photo();
 
-		$i = Zend_Registry::get('individu');
+		$i = Zend_Registry::get('user');
 		$this->assert(null, $p, 'commenter',
 			      "Vous n'avez pas le droit de commenter cette photos.");
 

@@ -32,7 +32,7 @@ class Formation extends Strass_Db_Table_Abstract
 									 'refColumns'	=> array('id', 'branche')),
 						'Individu'	=> array('columns'	=> 'individu',
 									 'refTableClass'=> 'Individus',
-									 'refColumns'	=> array('id'),
+									 'refColumns'	=> array('slug'),
 									 'onUpdate' => self::CASCADE,
 									 'onDelete' => self::CASCADE));
 }

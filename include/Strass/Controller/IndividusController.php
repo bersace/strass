@@ -64,7 +64,7 @@ class IndividusController extends Strass_Controller_Action
 					     'action'		=> 'administrer'),
 				       array(null, null, 'admin'));
 
-		$moi = Zend_Registry::get('individu');
+		$moi = Zend_Registry::get('user');
 		if ($moi->id != $individu->id) {
 			$this->actions->append("Prendre l'identité",
 					       array('controller'	=> 'membres',

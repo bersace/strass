@@ -43,7 +43,6 @@ try {
 	$fc->registerPlugin(new Strass_Controller_Plugin_Error);
 	$fc->registerPlugin(new Strass_Controller_Plugin_Db);
 	$fc->registerPlugin(new Strass_Controller_Plugin_Auth);
-	$fc->registerPlugin(new Strass_Controller_Plugin_Individu);
 	//$fc->registerPlugin(new Strass_Controller_Plugin_Alias);
 	$fc->registerPlugin(new Strass_Controller_Plugin_Page);
 

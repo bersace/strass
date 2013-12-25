@@ -22,7 +22,7 @@ class UnitesController extends Strass_Controller_Action
 			    array('controller' => 'photos',
 				  'action' => 'index'));
     $this->liensEffectifs($u, $a);
-    $this->view->profils = (bool) Zend_Registry::get('individu');
+    $this->view->profils = (bool) Zend_Registry::get('user');
     
     $this->connexes->append("Nouveaux",
 			    array('action' => 'nouveaux'),
@@ -81,7 +81,7 @@ class UnitesController extends Strass_Controller_Action
 			$this->getRequest()->setParam('format', $m->get('format'));
 			$this->view->model = null;
 			$acl = Zend_Registry::get('acl');
-			$i = Zend_Registry::get('individu');
+			$i = Zend_Registry::get('user');
 			$this->view->terminale = $unite->isTerminale();
 			$this->view->supplementaires = $m->get('supplementaires');
 
@@ -123,7 +123,7 @@ class UnitesController extends Strass_Controller_Action
 			      "Vous n'avez pas le droit de voir les contacts de l'unité");
 		$this->view->model = new Strass_Pages_Model_Contacts($unite, $annee);
 
-		$i = Zend_Registry::get('individu');
+		$i = Zend_Registry::get('user');
 		// si l'individu est connecté, on propose le lien.
 		$this->view->profils = (bool) $i;
 
@@ -520,7 +520,7 @@ class UnitesController extends Strass_Controller_Action
 					     'action' => 'nouveau',
 					     'unite' => $u->id,
 					     'annee' => $a),
-				       array(Zend_Registry::get('individu'), $u));
+				       array(Zend_Registry::get('user'), $u));
 
 
 		$ti = new Individus;
@@ -690,7 +690,7 @@ class UnitesController extends Strass_Controller_Action
 		$p = $this->_getParam('page');
 		$p = $p ? $p : 1;
 		$this->view->individus = new Wtk_Pages_Model_Iterator($is, 20, $p);
-		$this->view->profils = (bool) Zend_Registry::get('individu');
+		$this->view->profils = (bool) Zend_Registry::get('user');
 		$this->branche->append('Nouveaux');
 	}
 
@@ -727,7 +727,7 @@ class UnitesController extends Strass_Controller_Action
 		$p = $this->_getParam('page');
 		$p = $p ? $p : 1;
 		$this->view->individus = new Wtk_Pages_Model_Iterator($is, 20, $p);
-		$this->view->profils = (bool) Zend_Registry::get('individu');
+		$this->view->profils = (bool) Zend_Registry::get('user');
 	}
 
 

@@ -6,7 +6,7 @@ class Strass_Pages_Renderer_Livredor extends Strass_Pages_Renderer
   {
     $s = $cont->addSection()->addFlags('message');
     $s->addText($message->message);
-    $auteur = Zend_Registry::get('individu') && $message->adelec ?
+    $auteur = Zend_Registry::get('user') && $message->adelec ?
       "[mailto:".$message->adelec." ".$message->auteur."]" :
       $message->auteur;
     $s->addParagraph(new Wtk_Inline('posté par **'.$auteur.'** '.
@@ -14,7 +14,7 @@ class Strass_Pages_Renderer_Livredor extends Strass_Pages_Renderer
       ->addFlags('signature');
 
     $resource = $message->getTable();
-    if (Zend_Registry::get('acl')->isAllowed(Zend_Registry::get('individu'), $resource, 'admin')) {
+    if (Zend_Registry::get('acl')->isAllowed(Zend_Registry::get('user'), $resource, 'admin')) {
       $l = $s->addList()->addFlags('adminlinks');
       $l->addItem()->addChild($this->view->lien(array('controller' => 'livredor',
 						      'action' => 'accepter',

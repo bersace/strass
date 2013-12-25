@@ -16,7 +16,7 @@ class Strass_View_Helper_LienUnite {
 					  (array) $urlOptions);
 		$label = $label ? $label : wtk_ucfirst($unite->getName());
 		$acl = Zend_Registry::get('acl');
-		if ($acl->isAllowed(Zend_Registry::get('individu'),
+		if ($acl->isAllowed(Zend_Registry::get('user'),
 				    $unite, $urlOptions['action']))
 		  return $this->view->lien($urlOptions, $label, $reset)->addFlags('unite', $unite->type);
 		else

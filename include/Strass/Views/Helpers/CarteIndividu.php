@@ -13,7 +13,7 @@ class Strass_View_Helper_CarteIndividu
 	{
 		$v = new vCard();
 		$acl = Zend_Registry::get('acl');
-		$ind = Zend_Registry::get('individu');
+		$ind = Zend_Registry::get('user');
 		if ($acl->isAllowed($ind, $individu, 'voir')) {
 			$v->setName($individu->nom, $individu->prenom);
 			$v->setBirthday($individu->naissance);
