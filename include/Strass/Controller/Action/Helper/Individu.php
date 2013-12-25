@@ -14,7 +14,7 @@ class Strass_Controller_Action_Helper_Individu extends Zend_Controller_Action_He
 	{
 		$id = $this->getRequest()->getParam('individu');
 		$ti = new Individus;
-		$individu = $ti->find($id)->current();
+		$individu = $ti->findBySlug($id);
 
 		if (!$individu && $throw)
 			throw new Strass_Controller_Action_Exception_Notice("Individu ".$id." inconnu.");

@@ -22,7 +22,7 @@ class Strass_View_Helper_LienIndividu
 		if ($acl->isAllowed(Zend_Registry::get('user'),
 				    $individu, $action)) {
 			$lien =  $this->view->lien(array('action' => $action,
-							 'individu' => $individu->id,
+							 'individu' => $individu->slug,
 							 'controller' => $controller),
 						   $label ? $label : wtk_nbsp($individu->getFullName()),
 						   true);

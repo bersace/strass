@@ -37,5 +37,5 @@ class Strass_Views_PagesRenderer_Unites_Contacts extends Strass_Views_PagesRende
 }
 
 $s = $this->document->addFlags($this->unite->type);
-$s->addPages(null, $this->model,
-	     new Strass_Views_PagesRenderer_Unites_Contacts($this));
+$renderer = new Strass_Views_PagesRenderer_Unites_Contacts($this);
+$s->addPages(null, $this->model, $renderer);

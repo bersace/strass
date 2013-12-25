@@ -56,10 +56,7 @@ class Strass_Addon_Console extends Strass_Addon_Liens
 					       true),
 			   'label' => 'Votre calendrier');
 			}
-      $actions[] = array('url'	=> $view->url(array('controller' => 'individus',
-						    'action'	 => 'voir',
-						    'individu'	=> $view->individu->slug),
-					      null, true),
+      $actions[] = array('url'	=> $view->urlIndividu($view->individu),
 			 'label'	=> 'Votre fiche');
     }
 

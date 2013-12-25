@@ -13,7 +13,7 @@ class Strass_View_Helper_UrlIndividu
 	{
 		return $this->view->url(array('controller'	=> $controller,
 					      'action'		=> $action,
-					      'individu'	=> $individu->id),
+					      'individu'	=> $individu->slug),
 					$reset, $prefix);
 					      
 	}
