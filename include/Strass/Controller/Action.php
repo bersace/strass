@@ -1,7 +1,5 @@
 <?php
 
-require_once 'Strass/Users.php';
-
 abstract class Strass_Controller_Action extends Zend_Controller_Action implements Zend_Acl_Resource_Interface
 {
 	protected $_titreBranche = '';

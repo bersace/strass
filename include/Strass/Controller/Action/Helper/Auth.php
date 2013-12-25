@@ -1,8 +1,5 @@
 <?php
 
-require_once 'Strass/Users.php';
-
-/* nobody,nogroup = inconnu; */
 class Strass_Controller_Action_Helper_Auth extends Zend_Controller_Action_Helper_Abstract
 {
 	protected $plugin;
