@@ -14,33 +14,31 @@ class LiensController extends Strass_Controller_Action
 
 		$this->actions->append("Éditer les liens",
 				       array('action'	=> 'editer'),
-				       array(Zend_Registry::get('individu'),
-					     $liens, 'editer'));
+				       array(null, $liens, 'editer'));
 		$this->view->liens = $liens->fetchAll();
 	}
 
 	function editerAction()
 	{
-		$liens = new Liens();
-		$this->assert(Zend_Registry::get('individu'), $liens, 'editer',
+		$t = new Liens();
+		$this->assert(null, $t, 'editer',
 			      "Vous n'avez pas le droit d'éditer de liens");
 
-		$this->metas(array('DC.Title' => 'Éditer les liens',
-				   'DC.Subject' => 'liens,externes'));
+		$this->metas(array('DC.Title' => 'Éditer les liens'));
 
-		$m = new Wtk_Form_Model('liens');
-		$i = $m->addInstance('Table', 'liens', "Liens", array('url'		=> array('String', "URL"),
-								      'nom'		=> array('String', 'Nom'),
-								      'description'	=> array('String', 'Description')));
-		$lns = $liens->fetchAll();
+		$this->view->model = $m = new Wtk_Form_Model('liens');
+		$i = $m->addTable('liens', "Liens", array('url'		=> array('String', "URL"),
+							  'nom'		=> array('String', 'Nom'),
+							  'description'	=> array('String', 'Description')));
+		$lns = $t->fetchAll();
 		foreach($lns as $lien) {
 			$i->addRow($lien->toArray());
 		}
 		$i->addRow();
-		$m->addNewSubmission('ajouter', "Ajouter");
+		$m->addNewSubmission('enregistrer', "Enregistrer");
 
 		if ($m->validate()) {
-			$db = $liens->getAdapter();
+			$db = $t->getAdapter();
 			$db->beginTransaction();
 			try {
 				$listes = $m->get('liens');
@@ -48,7 +46,7 @@ class LiensController extends Strass_Controller_Action
 
 				foreach($listes as $data)
 					if ($data['url'])
-						$liens->insert($data);
+						$t->insert($data);
 
 				$this->_helper->Log("Liens édités", array(),
 						    $this->_helper->Url('index', 'liens'),
@@ -61,8 +59,6 @@ class LiensController extends Strass_Controller_Action
 				throw $e;
 			}
 		}
-
-		$this->view->model = $m;
 	}
 }
 

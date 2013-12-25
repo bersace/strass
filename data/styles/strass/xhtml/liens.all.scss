@@ -1,6 +1,14 @@
-#liens p
+/*-*- css -*-*/
+
+#document.liens p
 {
-    margin: 0 0 1ex 1ex;
-    font-size: .9em;
-    color: #222;
+    margin: 0;
+
+    &.description
+    {
+	font-style: italic;
+	margin: .5ex 0 1ex 1em;
+	font-size: .9em;
+	color: #444;
+    }
 }
