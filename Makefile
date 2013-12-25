@@ -16,13 +16,17 @@ setup:
 serve:
 	php -S localhost:8000
 
-# Pour le moment, on restaure un site en version 1
+# Restaure les données uniquement. Pour tester la migration.
 restore:
-	if ! test -n "$(ORIG)" ; then echo "ORIG manquant"; exit 1; fi
-	git add include/ Makefile migrate
-	git commit -m "pre-restore" || true
-	git reset --hard
-	git clean --force -d
+	git checkout data/ private/
+	git clean --force -d data/ private/
+
+ifdef ORIG
+# Restaure un site en version 1
+restore1: restore
 	cp --archive --link $(ORIG)/config/ $(ORIG)/data $(ORIG)/resources ./
+endif
+
+
 
 .PHONY: all clean serve setup
