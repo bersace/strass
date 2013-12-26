@@ -1,6 +1,5 @@
 <?php
 
-
 class Strass_Addon_Console extends Strass_Addon_Liens
 {
   protected $login;
@@ -20,26 +19,26 @@ class Strass_Addon_Console extends Strass_Addon_Liens
 
     $view->auth_login_model = $this->login;
     $view->auth_logout_model = $this->logout;
-    $view->individu = Zend_Registry::get('user');
+    $view->individu = Zend_Registry::get('individu');
 
     $actions = array();
     $acl = Zend_Registry::get('acl');
-    $user = Zend_Registry::get('user');
+    $view->user = $user = Zend_Registry::get('user');
     $actual = Zend_Registry::get('actual_user');
 
     if ($acl->isAllowed($view->individu, 'membres')) {
       $t = new Inscriptions();
       $is = $t->fetchAll();
       if ($is->count()) {
-	$actions[] = array('url'	=> $view->url(array('controller' => 'membres',
-							    'action'	 => 'inscriptions')),
-			   'label'	=> 'Nouvelles inscriptions');
+	$actions[] = array('url' => $view->url(array('controller' => 'membres',
+						     'action'	 => 'inscriptions')),
+			   'label' => 'Nouvelles inscriptions');
       }
-      $actions[] = array('url'	=> $view->url(array('controller' => 'membres',
+      $actions[] = array('url'  => $view->url(array('controller' => 'membres',
 						    'action'	 => 'lister')),
-			 'label'	=> 'Membres');
-      $actions[] = array('url'	=> $view->url(array('controller' => 'log'), true),
-			 'label' 	=> 'Journaux système');
+			 'label' => 'Membres');
+      $actions[] = array('url'   => $view->url(array('controller' => 'log'), true),
+			 'label' => 'Journaux système');
     }
 
     if ($view->individu) {
@@ -64,9 +63,9 @@ class Strass_Addon_Console extends Strass_Addon_Liens
 						    'action'	 => 'profil'),
 					      true, true),
 		       'label'	=> 'Éditer votre compte');
-    
 
-    if ($actual && $user->getIdentity() != $actual->getIdentity()) {
+
+    if ($actual && $user->username != $actual->username) {
       $actions[] = array('url'	=> $view->url(array('controller' => 'membres',
 						    'action'	=> 'unsudo'),
 					      null, true),

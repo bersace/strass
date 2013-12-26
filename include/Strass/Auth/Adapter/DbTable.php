@@ -6,7 +6,7 @@ class Strass_Auth_Adapter_DbTable extends Zend_Auth_Adapter_DbTable implements Z
   public function setCredential($credential)
   {
     extract($this->_identity);
-    $this->_credential = Individu::hashPassword($username, $credential);
+    $this->_credential = Users::hashPassword($username, $credential);
     return $this;
   }
 
