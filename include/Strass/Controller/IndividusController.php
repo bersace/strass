@@ -74,7 +74,7 @@ class IndividusController extends Strass_Controller_Action
 			     array(null, null, 'admin'));
     }
 
-    if ($user->username) {
+    if ($user->username != 'nobody') {
       $this->actions->append("Compte utilisateur",
 			     array('controller'	=> 'membres',
 				   'action' => 'profil',
