@@ -4,22 +4,18 @@ require_once 'Zend/Auth/Result.php';
 
 class Strass_Auth_Adapter_Sudo implements Zend_Auth_Adapter_Interface
 {
-	protected $current;
-	protected $actual;
-	protected $target;
+	public $current;
+	public $actual;
+	public $target;
 
 	function __construct($current)
 	{
 		$this->actual = $current;
 		$session = new Zend_Session_Namespace;
-		$this->actual = isset($session->actual_user) ? $session->actual_user : $current;
+		$t = new Individus;
+		$this->actual = isset($session->actual_user) ? $t->findBySlug($session->actual_user) : $current;
 		$this->current = $current;
 		$this->target = null;
-	}
-
-	function setTarget($target)
-	{
-		$this->target = $target;
 	}
 
 	function authenticate()
@@ -32,10 +28,9 @@ class Strass_Auth_Adapter_Sudo implements Zend_Auth_Adapter_Interface
 
 		$this->current = $this->target;
 		$session = new Zend_Session_Namespace;
-		$session->actual_user = $this->actual;
+		$session->actual_user = $this->actual->slug;
 
-		return new Zend_Auth_Result(Zend_Auth_Result::SUCCESS,
-					    $this->current);
+		return new Zend_Auth_Result(Zend_Auth_Result::SUCCESS, $this->current->getIdentity());
 	}
 
 	function unsudo()
@@ -45,28 +40,8 @@ class Strass_Auth_Adapter_Sudo implements Zend_Auth_Adapter_Interface
 		$this->current = $this->actual;
 		$this->target = null;
 		$session = new Zend_Session_Namespace;
-		$session->actual_user = $this->actual;
+		$session->actual_user = $this->actual->slug;
 
 		return $unsudo;
-	}
-
-	function __set($name, $value)
-	{
-		switch($name) {
-		case 'target':
-			$this->$name = $value;
-			break;
-		}
-	}
-
-	function __get($name)
-	{
-		switch($name) {
-		case 'current':
-		case 'actual':
-		case 'target':
-			return $this->$name;
-			break;
-		}
 	}
 }

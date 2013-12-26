@@ -576,37 +576,24 @@ class MembresController extends Strass_Controller_Action implements Zend_Acl_Res
 
 	function sudoAction()
 	{
-		$i = $this->_helper->Individu();
+	  $i = $this->_helper->Individu();
 
-		$moi = Zend_Registry::get('user');
-		$acl = Zend_Registry::get('acl');
-		$this->assert(null, null, null,
-			      "Vous n'avez pas le droit de prendre".
-			      " l'identité de cet individu.");
+	  $moi = Zend_Registry::get('user');
+	  $acl = Zend_Registry::get('acl');
+	  $this->assert(null, null, null,
+			"Vous n'avez pas le droit de prendre l'identité de cet individu.");
 
+	  $this->_helper->Auth->sudo($i);
 
-		if ($i->username)
-			$u = $i->findParentUsers();
-		else
-			$u = new FakeUser($i);
-
-		$this->_helper->Auth->sudo($u);
-
-		$this->redirectSimple('voir', 'individus', null,
-				      array('individu' => $i->id),
-				      true);
+	  $this->redirectSimple('voir', 'individus', null,
+				array('individu' => $i->slug), true);
 	}
 
 	function unsudoAction()
 	{
-		$user = Zend_Registry::get('actual_user');
-		$tu = new Users;
-		$u = $tu->find($user->username)->current();
-		$this->_helper->Auth->sudo($u);
-
-		$this->redirectSimple('index', 'index', null,
-				      array(),
-				      true);
+	  $user = Zend_Registry::get('actual_user');
+	  $this->_helper->Auth->sudo($user);
+	  $this->redirectSimple('index', 'index', null, array(), true);
 	}
 
 	// ENVOI DES COURRIELS

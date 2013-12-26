@@ -24,6 +24,7 @@ class Strass_Controller_Plugin_Auth extends Zend_Controller_Plugin_Abstract
 		  $acl->addRole(new Zend_Acl_Role('sachem'));
 		  $acl->allow('sachem', null, 'totem');
 		  $acl->addRole(new Zend_Acl_Role('members'));
+		  new Nobody;
 		}
 
 		$config = new Strass_Config_Php('strass');
@@ -54,7 +55,6 @@ class Strass_Controller_Plugin_Auth extends Zend_Controller_Plugin_Abstract
 
 		// initialise la session.
 		$auth = Zend_Auth::getInstance();
-		$auth->getStorage();
 
 		// DB AUTH
 		$this->db = new Zend_Auth_Adapter_DbTable($db, 'individu', 'adelec', 'password');
@@ -127,7 +127,7 @@ class Strass_Controller_Plugin_Auth extends Zend_Controller_Plugin_Abstract
 	function sudo($target)
 	{
 		$auth = Zend_Auth::getInstance();
-		$this->sudo->setTarget($target);
+		$this->sudo->target = $target;
 
 		$result = $auth->authenticate($this->sudo);
 
@@ -135,51 +135,44 @@ class Strass_Controller_Plugin_Auth extends Zend_Controller_Plugin_Abstract
 		Zend_Registry::set('actual_user', $this->sudo->actual);
 	}
 
-	/* Authentification via HTTP.
+	/* Authentification via HTTP Digest.
 	 */
 	function http()
 	{
-		$m = Zend_Registry::get('logout_model');
-		if (!$m->validate()) {
-			$auth = Zend_Auth::getInstance();
-			$this->http->setRequest($this->getRequest());
-			$this->http->setResponse($this->getResponse());
-			$result = $auth->authenticate($this->http);
-		}
+	  $m = Zend_Registry::get('logout_model');
+	  if (!$m->validate()) { // Tenir compte de la déconnexion
+	    $auth = Zend_Auth::getInstance();
+	    $this->http->setRequest($this->getRequest());
+	    $this->http->setResponse($this->getResponse());
+	    $result = $auth->authenticate($this->http);
+	  }
 
-		return $this->getUser();
+	  return $this->getUser();
 	}
 
 	function getUser()
 	{
-		// authentification
-		$auth = Zend_Auth::getInstance();
-		$user = null;
-		$username = null;
+	  $auth = Zend_Auth::getInstance();
+	  $user = null;
+	  $username = null;
 
-		if ($auth->hasIdentity()) {
-			$id = $auth->getIdentity();
-			if ($id instanceof Individu) {
-				$user = $id;
-			}
-			else
-				$username = is_array($id) ? $id['adelec'] : $id;
-		}
-		else {
-			$auth->clearIdentity();
-		}
+	  if ($auth->hasIdentity()) {
+	    $username = $auth->getIdentity();
+	  }
+	  else {
+	    $auth->clearIdentity();
+	  }
 
-		if ($username) {
-		  $t = new Individus();
-		  $user = $t->findByIdentity($username);
-		}
+	  if ($username) {
+	    $t = new Individus();
+	    $user = $t->findByIdentity($username);
+	  }
 
-		if (!$user) {
-		  $user = new Nobody();
-		}
+	  if (!$user) {
+	    $user = new Nobody();
+	  }
 
-		Zend_Registry::set('user', $user);
-
-		return $user;
+	  Zend_Registry::set('user', $user);
+	  return $user;
 	}
 }
