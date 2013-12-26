@@ -577,6 +577,13 @@ class MembresController extends Strass_Controller_Action implements Zend_Acl_Res
 	  $this->redirectSimple('index', 'index', null, array(), true);
 	}
 
+	function logoutAction()
+	{
+	  $auth = Zend_Auth::getInstance();
+	  $auth->clearIdentity();
+	  $this->redirectSimple('index', 'index', null, array(), true);
+	}
+
 	// ENVOI DES COURRIELS
 
 
