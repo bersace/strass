@@ -516,6 +516,7 @@ class Nobody implements Zend_Acl_Resource_Interface, Zend_Acl_Role_Interface {
     $this->id = null;
     $this->username = 'nobody';
     $this->admin = false;
+    $this->last_login = null;
   }
 
   public function getIdentity() {
