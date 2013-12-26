@@ -534,4 +534,8 @@ class Nobody implements Zend_Acl_Resource_Interface, Zend_Acl_Role_Interface {
   function getUnites() {
     return array();
   }
+
+  function findParentIndividus() {
+    return null;
+  }
 }

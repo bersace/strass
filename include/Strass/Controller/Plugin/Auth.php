@@ -144,13 +144,12 @@ class Strass_Controller_Plugin_Auth extends Zend_Controller_Plugin_Abstract
   function getUser()
   {
     $auth = Zend_Auth::getInstance();
+    $username = null;
+    $user = null;
 
     if ($auth->hasIdentity()) {
       $identity = $auth->getIdentity();
       $username = $identity['username'];
-    }
-    else {
-      $auth->clearIdentity();
     }
 
     if ($username) {
