@@ -6,6 +6,9 @@ RÉGRESSIONS
 
  - Changement de la structure HTML. Les styles CSS sont cassés.
 
+ - Il faut redéfinir son mot de passe pour utiliser l'authentification
+   Digest avec son adélec.
+
 NOUVEAUTÉS UTILISATEUR
 
  - La page d'accueil est remplacée par la page d'accueil de l'unité

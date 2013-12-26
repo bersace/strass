@@ -1,6 +1,6 @@
 <?php
 
-class Scout_Pages_Renderer_EditerHistorique extends Wtk_Pages_Renderer_Form
+class Strass_Pages_Renderer_EditerHistorique extends Wtk_Pages_Renderer_Form
 {
   function renderUnite($group, $f)
   {
@@ -17,11 +17,8 @@ class Scout_Pages_Renderer_EditerHistorique extends Wtk_Pages_Renderer_Form
 }
 
 
-$s = $this->document->addSection('historique',
-				new Wtk_Container("Compléter l'historique du scoutisme de ",
-						  $this->lienIndividu($this->individu)));
+$this->document->setTitle(new Wtk_Container("Compléter l'historique du scoutisme de ",
+					    $this->lienIndividu($this->individu)));
 
-$s->addPages(null,
-	     $this->model,
-	     new Scout_Pages_Renderer_EditerHistorique($this->model->getFormModel()),
-	     false);
+$renderer = new Strass_Pages_Renderer_EditerHistorique($this->model->getFormModel());
+$this->document->addPages(null, $this->model, $renderer, false);

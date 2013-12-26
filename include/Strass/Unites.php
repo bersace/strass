@@ -130,9 +130,7 @@ class Unite extends Strass_Db_Table_Row_Abstract implements Zend_Acl_Resource_In
     
 	function _initResourceAcl(&$acl)
 	{
-		$acl->allow(null, $this, array('index',
-					       'trombi', 'sousunites',
-					       'rapport', 'rapports'));
+		$acl->allow(null, $this, array('index'));
 
 		switch($this->type) {
 		case 'hp':
