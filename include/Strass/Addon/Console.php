@@ -62,7 +62,7 @@ class Strass_Addon_Console extends Strass_Addon_Liens
 
     $actions[] = array('url'	=> $view->url(array('controller' => 'membres',
 						    'action'	 => 'profil'),
-					      null, true),
+					      true, true),
 		       'label'	=> 'Éditer votre compte');
     
 

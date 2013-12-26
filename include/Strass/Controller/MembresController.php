@@ -433,125 +433,106 @@ class MembresController extends Strass_Controller_Action implements Zend_Acl_Res
 
 	function profilAction()
 	{
-		$moi = Zend_Registry::get('user');
-		$id = $this->_getParam('membre');
+	  $moi = Zend_Registry::get('user');
+	  $id = $this->_getParam('individu');
 
+	  if ($id) {
+	    $t = new Individus();
+	    $ind = $t->findBySlug($id);
+	  }
+	  else
+	    $ind = $moi;
 
-		if ($id) {
-			$is = new Individus();
-			$ind = $is->fetchAll(array('username = ?' => $id))->current();
-		}
-		else
-			$ind = $moi;
+	  if (!$moi)
+	    throw new Strass_Controller_Action_Exception_Notice("Vous n'être pas identifié.");
 
-		if (!$moi)
-			throw new Strass_Controller_Action_Exception_Notice("Vous n'être pas identifié.");
+	  if (!$ind)
+	    throw new Strass_Controller_Action_Exception
+	      ("Aucun individu ne correspond à //".$id."//.");
 
-		if (!$ind)
-			throw new Strass_Controller_Action_Exception
-				("Aucun individu ne correspond à //".$id."//.");
+	  $this->assert($moi, $ind, 'profil',
+			"Vous n'avez pas le droit de modifier le profils de cet utilisateurs.");
 
-		$this->assert($moi, $ind, 'profil',
-			      "Vous n'avez pas le droit de modifier le profils de cet utilisateurs.");
+	  $this->metas(array('DC.Title' => "Éditer l'utilisateur ".$ind->username));
 
-		$this->metas(array('DC.Title' => "Éditer l'utilisateur ".$ind->username,
-				   'DC.Subject' => 'livre,or'));
+	  $m = new Wtk_Form_Model('profil');
+	  $g = $m->addGroup('mdp', "Change le mot de passe");
+	  if (!$this->assert(null) || $moi->username == $ind->username)
+	    $m->addConstraintRequired($g->addString('ancien', 'Ancien'));
 
+	  $m->addConstraintRequired($g->addString('nouveau', 'Nouveau'));
+	  $m->addConstraintRequired($g->addString('confirmation', "Confirmation"));
+	  $m->addNewSubmission('valider', 'Valider');
 
+	  $a = new Wtk_Form_Model('admin');
+	  if ($this->assert($moi, $ind, 'admin') && $moi->username != $ind->username) {
+	    $a->addBool('admin',
+			"Accorder tout les privilèges sur le site à ".$ind->getFullName(),
+			$ind->isAdmin());
+	  }
+	  $a->addNewSubmission('valider', 'Valider');
 
-		$m = new Wtk_Form_Model('profil');
-		$g = $m->addGroup('mdp', "Change le mot de passe");
-		if (!$this->assert(null) || $moi->username == $ind->username)
-			$m->addConstraintRequired($g->addString('ancien', 'Ancien'));
+	  if ($m->validate()) {
+	    $db = $ind->getTable()->getAdapter();
+	    $db->beginTransaction();
+	    try {
+	      $mdp = $m->get('mdp');
+	      $old = Individu::hashPassword($ind->username, $mdp['ancien']);
+	      if (!$this->assert($moi, $ind, 'admin') || $ind->password != $old){
+		throw new Wtk_Form_Model_Exception("Ancien mot de passe erroné.",
+						   $m->getInstance('mdp/ancien'));
+	      }
 
-		$m->addConstraintRequired($g->addString('nouveau', 'Nouveau'));
-		$m->addConstraintRequired($g->addString('confirmation', "Confirmation"));
-		$m->addNewSubmission('valider', 'Valider');
+	      if ($mdp['nouveau'] != $mdp['confirmation']) {
+		throw new
+		  Wtk_Form_Model_Exception("Le mot de passe de confirmation n'est pas identique au nouveau proposé");
+	      }
 
+	      $config = $this->_helper->Config('strass')->site;
+	      $ind->username = $ind->adelec;
+	      $ind->password = Individu::hashPassword($ind->username, $mdp['nouveau']);
+	      $ind->save();
 
-		$a = new Wtk_Form_Model('admin');
-		if ($this->assert($moi, $ind, 'admin') && $moi->username != $ind->username) {
-			$admin = (bool) $ind->findParentUsers()->findMemberships("groupname = 'admins'")->count();
-			$a->addBool('admin',
-				    "Accorder tout les privilèges sur le site à ".$ind->getFullName(),
-				    $admin);
-		}
-		$a->addNewSubmission('valider', 'Valider');
+	      $this->_helper->Log("Profil mis-à-jour", array($ind),
+				  $this->_helper->Url('voir', 'individus', null,
+						      array('individu' => $ind->id)),
+				  (string) $ind);
 
-
-		$u = $ind->findParentUsers();
-		if ($m->validate()) {
-			$db = $ind->getTable()->getAdapter();
-			$db->beginTransaction();
-			try {
-				$mdp = $m->get('mdp');
-				if ($moi->username == $ind->username
-				    && $u->password != md5($mdp['ancien'])) {
-					throw new
-						Wtk_Form_Model_Exception
-						("Ancien mot de passe erroné.",
-						 $m->getInstance('mdp/ancien'));
-				}
-
-				if ($mdp['nouveau'] != $mdp['confirmation']) {
-					throw new
-						Wtk_Form_Model_Exception
-						("Le mot de passe de confirmation n'est pas identique au nouveau proposé");
-				}
-
-				$config = $this->_helper->Config('strass')->site;
-				$realm = (string) $config->realm;
-				$u->setPassword($mdp['nouveau'], $realm);
-				$u->save();
-
-				$this->_helper->Log("Profil mis-à-jour", array($ind),
-						    $this->_helper->Url('voir', 'individus', null,
-									array('individu' => $ind->id)),
-						    (string) $ind);
-
-				$db->commit();
-				$this->redirectSimple('voir', 'individus', null,
-						      array('individu' => $ind->id),
-						      true);
-			}
-			catch(Wtk_Form_Model_Exception $e) {
-				$db->rollBack();
-				$m->errors[] = $e;
-			}
-			catch(Exception $e) {
-				$db->rollBack();
+	      $db->commit();
+	      $this->redirectSimple('voir', 'individus', null,
+				    array('individu' => $ind->slug),
+				    true);
+	    }
+	    catch(Wtk_Form_Model_Exception $e) {
+	      $db->rollBack();
+	      $m->errors[] = $e;
+	    }
+	    catch(Exception $e) {
+	      $db->rollBack();
 				throw $e;
-			}
-		}
+	    }
+	  }
 
-		if ($a->validate()) {
-			if ($admin != $a->get('admin')) {
-				$ts = new Memberships();
-				$db = $ts->getAdapter();
-				$db->beginTransaction();
-				try {
-					if ($a->get('admin'))
-						$ts->insert(array('username' => $ind->username,
-								  'groupname' => 'admins'));
-					else {
-						$ms = $u->findMemberships("groupname = 'admins'")->current();
-						$ms->delete();
-					}
-					$db->commit();
-				}
-				catch(Exception $e) {
-					$db->rollBack();
-					throw $e;
-				}
-			}
+	  if ($a->validate()) {
+	    $db = $t->getAdapter();
+	    $db->beginTransaction();
+	    try {
+	      $ind->admin = $a->get('admin');
+	      $ind->save();
+	      $db->commit();
+	    }
+	    catch(Exception $e) {
+	      $db->rollBack();
+	      throw $e;
+	    }
+ 
+	    $this->redirectSimple('voir', 'individus', null,
+				  array('individu' => $ind->id),
+				  true);
+	  }
 
-			$this->redirectSimple('voir', 'individus', null,
-					      array('individu' => $ind->id),
-					      true);
-		}
-
-		$this->view->model = $m;
-		$this->view->admin = $a;
+	  $this->view->model = $m;
+	  $this->view->admin = $a;
 	}
 
 	function listerAction()
