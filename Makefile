@@ -14,7 +14,7 @@ setup:
 	pip install libsass
 
 serve:
-	php -S localhost:8000
+	php -S localhost:8000 index.php
 
 # Restaure les données uniquement. Pour tester la migration.
 restore:
