@@ -34,13 +34,4 @@ class Strass_Controller_Action_Helper_Individu extends Zend_Controller_Action_He
 
 		return $individu;
 	}
-
-	function auth()
-	{
-		$fc = Zend_Controller_Front::getInstance();
-		$plugin = $fc->getPlugin('Strass_Controller_Plugin_Individu');
-		$individu = $plugin->findIndividu();
-		Zend_Registry::set('individu', $individu);
-		return $individu;
-	}
 }

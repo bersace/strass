@@ -3,7 +3,6 @@
 require_once 'Wtk.php';
 require_once 'Strass/Individus.php';
 
-/* nobody,nogroup = inconnu; */
 class Strass_Controller_Plugin_Auth extends Zend_Controller_Plugin_Abstract
 {
 	protected	$http;
@@ -57,7 +56,7 @@ class Strass_Controller_Plugin_Auth extends Zend_Controller_Plugin_Abstract
 		$auth = Zend_Auth::getInstance();
 
 		// DB AUTH
-		$this->db = new Zend_Auth_Adapter_DbTable($db, 'individu', 'adelec', 'password');
+		$this->db = new Strass_Auth_Adapter_DbTable($db, 'individu', 'adelec', 'password');
 
 		// HTTP_AUTH
 		// Gestion du safe_mode avec realm modifié.
@@ -92,10 +91,9 @@ class Strass_Controller_Plugin_Auth extends Zend_Controller_Plugin_Abstract
 	    if ($im->validate()) {
 	      $username = $im->adelec;
 	      // Regénérer le digest à partir du username original
-	      $credential = Individu::hashPassword(Individu::getRealUsername($im->adelec), $im->password);
-
-	      $this->db->setIdentity($username);
-	      $this->db->setCredential($credential);
+	      $config = new Strass_Config_Php('strass');
+	      $this->db->setIdentity(array('username' => $username, 'realm' => $config->site->realm));
+	      $this->db->setCredential($im->password);
 	      $result = $auth->authenticate($this->db);
 
 	      if (!$result->isValid()) {
@@ -157,7 +155,8 @@ class Strass_Controller_Plugin_Auth extends Zend_Controller_Plugin_Abstract
 	  $username = null;
 
 	  if ($auth->hasIdentity()) {
-	    $username = $auth->getIdentity();
+	    $identity = $auth->getIdentity();
+	    $username = $identity['username'];
 	  }
 	  else {
 	    $auth->clearIdentity();

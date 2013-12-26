@@ -430,21 +430,22 @@ class Individu extends Strass_Db_Table_Row_Abstract implements Zend_Acl_Role_Int
 class Nobody implements Zend_Acl_Resource_Interface, Zend_Acl_Role_Interface {
   function __construct() {
     $this->id = null;
-    $this->slug = null;
+    $this->slug = 'nobody';
+    $this->username = 'nobody';
   }
 
   public function getIdentity() {
-    return 'nobody';
+    return $this->username;
   }
 
   public function getRoleId()
   {
-    return 'nobody';
+    return $this->slug;
   }
  
   public function getResourceId()
   {
-    return 'nobody';
+    return $this->slug;
   }
 
   function isAdmin()
