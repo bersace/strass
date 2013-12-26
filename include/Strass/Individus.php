@@ -108,6 +108,11 @@ class Individu extends Strass_Db_Table_Row_Abstract implements Zend_Acl_Role_Int
     return 'individu-'.$this->slug;
   }
 
+  function findUser() {
+    $user = $this->findUsers()->current();
+    return $user ? $user : new Nobody;
+  }
+
   function __toString()
   {
     return $this->getFullName();
@@ -510,6 +515,7 @@ class Nobody implements Zend_Acl_Resource_Interface, Zend_Acl_Role_Interface {
   function __construct() {
     $this->id = null;
     $this->username = 'nobody';
+    $this->admin = false;
   }
 
   public function getIdentity() {
@@ -524,11 +530,6 @@ class Nobody implements Zend_Acl_Resource_Interface, Zend_Acl_Role_Interface {
   public function getResourceId()
   {
     return $this->username;
-  }
-
-  function isAdmin()
-  {
-    return false;
   }
 
   function getUnites() {
