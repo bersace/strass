@@ -37,7 +37,6 @@ class IndividusController extends Strass_Controller_Action
     $this->view->commentaires = $individu->findCommentaires(clone $s);
     $this->view->articles = $individu->findArticles(clone $s);
     $this->view->user = $user = $individu->findUser();
-    $this->view->isadmin = $user->admin;
 
     $this->actions->append("Éditer la fiche",
 			   array('action'	=> 'editer'),
@@ -74,7 +73,7 @@ class IndividusController extends Strass_Controller_Action
 			     array(null, null, 'admin'));
     }
 
-    if ($user->username != 'nobody') {
+    if ($individu->isMember()) {
       $this->actions->append("Compte utilisateur",
 			     array('controller'	=> 'membres',
 				   'action' => 'profil',
@@ -111,7 +110,8 @@ class IndividusController extends Strass_Controller_Action
     $m->addInteger('numero', "Numéro adhérent", $individu->numero, 1, 999999);
 
     // contacts;
-    $m->addString('adelec', "Adélec", $individu->adelec);
+    if (!$individu->isMember())
+      $m->addString('adelec', "Adélec", $individu->adelec);
     $m->addString('portable', "Téléphone portable", $individu->portable);
     $m->addString('fixe', "Téléphone fixe", $individu->fixe);
     $m->addString('adresse', "Adresse", $individu->adresse);

@@ -113,6 +113,10 @@ class Individu extends Strass_Db_Table_Row_Abstract implements Zend_Acl_Role_Int
     return $user ? $user : new Nobody;
   }
 
+  function isMember() {
+    return $this->findUser()->username != 'nobody';
+  }
+
   function __toString()
   {
     return $this->getFullName();

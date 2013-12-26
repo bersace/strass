@@ -31,9 +31,9 @@ foreach($info as $k => $f) {
 					   $f)))->addFlags($k);
 }
 
-if ($this->chef && $this->isadmin)
+if ($this->chef && $this->user->admin)
   $l->addItem()->addFlags('admin')->addStrong("Administrateur du site");
-else if ($this->user->username != 'nobody') {
+else if ($this->individu->isMember()) {
   $l->addItem()->addFlags('member')->addStrong("Membre");
 }
 if ($this->user->last_login)
