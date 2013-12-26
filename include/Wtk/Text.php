@@ -44,7 +44,7 @@ class Wtk_Text extends Wtk_Element
 			//$tw->setFormatConf('Xhtml', 'charset', 'utf-8');
 			$tw->setFormatConf('Xhtml', 'translate', HTML_SPECIALCHARS);
 			$tw->setRenderConf('Xhtml', 'image', 'base', './');
-		}	
+		}
 
 		$this->tw = self::$tw;
 	}

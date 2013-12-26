@@ -36,7 +36,18 @@ $g = $f->addForm_Fieldset('Contacts');
 $g->addEntry('adresse', 48, 2);
 $g->addEntry('fixe', 14);
 $g->addEntry('portable', 14);
-$g->addEntry('adelec', 24);
+if ($this->individu->isMember()) {
+  $url = $this->url(array('controller' => 'membres',
+			  'action' => 'profil',
+			  'membre' => $this->individu->findUser()->username), true);
+  /* Simuler un champ de formulaire, mais c'est un lien */
+  $g->addSection()->addFlags('control', 'entry')
+    ->addSpan()->addFlags('control', 'entry', 'input')
+    ->addInline("[./".$url." Éditer l'adresse électronique]");
+}
+else {
+  $g->addEntry('adelec', 24);
+}
 
 $g = $f->addForm_Fieldset('Notes');
 $g->addEntry('notes', 64, 8)->useLabel(false);
