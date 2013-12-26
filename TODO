@@ -1,0 +1,42 @@
+ * Pièces jointes privées
+
+ * Photo non supprimée du RSS.
+
+ * À l'inscription d'un nouveau, ne pas recréer si existant.
+
+ * Profiler les requêtes SQL avec Zend_Db_Profiler
+
+ * Écrire un manuel pour utilisateur ?
+
+ * Cohérence des dates d'activités.
+
+ * Début et fin de role via les activités
+
+ * Refactoriser le schémas BD : clef primaires entier, clef secondaire
+   "slug". Avant le site du clan St Raphaël archange !
+
+ * Thème CSS des courriels, avec composant *par* courriel, fichiers
+   embarqués, (cid:, etc.)
+
+ * Présenter une vue par année des informations. Une sorte de trombi
+   des années : chef, équipes, routes, photos, progression ?
+
+ * Administrer les unités
+
+ * Aperçu éditeur pour article, rapport, etc.
+
+ * Recherche interne (Lucene)
+
+ * Installateur
+
+  * format des URL, .htaccess, etc.
+
+  * Profils ACL (Strassique, Scout, Yéyé)
+
+  * Profils mouvement (progression, formation)
+
+ * Export photo avec conduit.
+
+ * Publipostage (PDF, enveloppe DL/?)
+
+ * Intégration Céphée
