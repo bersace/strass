@@ -923,7 +923,8 @@ abstract class Zend_Db_Table_Row_Abstract implements ArrayAccess
             $dependentColumn = $dependentDb->quoteIdentifier($dependentColumnName, true);
             $dependentInfo = $dependentTable->info();
             $type = $dependentInfo[Zend_Db_Table_Abstract::METADATA][$dependentColumnName]['DATA_TYPE'];
-            $select->where("$dependentColumn = ?", $value, $type);
+	    $dependentTableName = $dependentInfo[Zend_Db_Table_Abstract::NAME];
+            $select->where("$dependentTableName.$dependentColumn = ?", $value, $type);
         }
 
         return $dependentTable->fetchAll($select);
