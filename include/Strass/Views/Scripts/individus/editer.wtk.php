@@ -39,11 +39,11 @@ $g->addEntry('portable', 14);
 if ($this->individu->isMember()) {
   $url = $this->url(array('controller' => 'membres',
 			  'action' => 'profil',
-			  'membre' => $this->individu->findUser()->username), true);
+			  'membre' => $this->individu->findUser()->username), true, true);
   /* Simuler un champ de formulaire, mais c'est un lien */
   $g->addSection()->addFlags('control', 'entry')
     ->addSpan()->addFlags('control', 'entry', 'input')
-    ->addInline("[./".$url." Éditer l'adresse électronique]");
+    ->addInline("[".$url." Éditer l'adresse électronique]");
 }
 else {
   $g->addEntry('adelec', 24);
