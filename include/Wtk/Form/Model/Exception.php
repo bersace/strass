@@ -7,8 +7,11 @@ class Wtk_Form_Model_Exception extends Exception
 
   function __construct ($format, Wtk_Form_Model_Instance $instance = null)
   {
-    parent::__construct ($instance ? sprintf ($format, $instance->label) : $format);
-    $instance->valid = FALSE;
+    if ($instance) {
+      $instance->valid = FALSE;
+      $format = sprintf($format, $instance->label);
+    }
+    parent::__construct($format);
     $this->format = $format;
     $this->instance = $instance;
   }
