@@ -23,7 +23,6 @@ class Strass_Controller_Plugin_Auth extends Zend_Controller_Plugin_Abstract
       $acl->allow('sachem', null, 'totem');
       $acl->addRole(new Zend_Acl_Role('members'));
       $nobody = new Nobody;
-      $acl->addRole($nobody);
     }
 
     $config = new Strass_Config_Php('strass');

@@ -506,6 +506,11 @@ class User extends Strass_Db_Table_Row_Abstract implements Zend_Acl_Role_Interfa
     return $roles;
   }
 
+  function isMember()
+  {
+    return true;
+  }
+
   public function getRoleId()
   {
     return 'user-'.$this->username;
@@ -534,10 +539,14 @@ class Nobody implements Zend_Acl_Resource_Interface, Zend_Acl_Role_Interface {
     $this->username = 'nobody';
     $this->admin = false;
     $this->last_login = null;
-  }
 
-  public function getIdentity() {
-    return $this->username;
+    $acl = Zend_Registry::get('acl');
+    if (!$acl->has($this)) {
+      $acl->add($this);
+    }
+    if (!$acl->hasRole($this)) {
+      $acl->addRole($this);
+    }
   }
 
   public function getRoleId()
@@ -548,6 +557,11 @@ class Nobody implements Zend_Acl_Resource_Interface, Zend_Acl_Role_Interface {
   public function getResourceId()
   {
     return $this->username;
+  }
+
+  function isMember()
+  {
+    return false;
   }
 
   function getUnites() {
