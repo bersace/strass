@@ -11,7 +11,7 @@ class Strass_View_Helper_LienIndividu
 
 	public function lienIndividu($individu,
 				     $label = null,
-				     $action = 'voir',
+				     $action = 'fiche',
 				     $controller = 'individus')
 	{
 		if (!$individu) {

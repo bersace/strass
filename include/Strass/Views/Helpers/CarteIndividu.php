@@ -14,7 +14,7 @@ class Strass_View_Helper_CarteIndividu
 		$v = new vCard();
 		$acl = Zend_Registry::get('acl');
 		$ind = Zend_Registry::get('user');
-		if ($acl->isAllowed($ind, $individu, 'voir')) {
+		if ($acl->isAllowed($ind, $individu, 'fiche')) {
 			$v->setName($individu->nom, $individu->prenom);
 			$v->setBirthday($individu->naissance);
 
@@ -32,7 +32,7 @@ class Strass_View_Helper_CarteIndividu
 
 			$v->setEmail($individu->adelec);
 			$v->setJabber($individu->jabberid);
-			$v->setURL($this->view->urlIndividu($individu, 'voir', 'individus', true, true));
+			$v->setURL($this->view->urlIndividu($individu, 'fiche', 'individus', true, true));
 		}
 		else {
 			$v->setName($individu->getName());

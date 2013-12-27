@@ -24,10 +24,10 @@ if ($this->apps->count() || count($this->sousunites)) {
 	else {
 		$sss = $ss;
 	}
-  
+
 	if ($this->apps->count()) {
 		$t = $sss->addChild($this->tableEffectifs($this->appsTableModel($this->apps),
-							  $this->profils, 'liste', $this->existantes, $this->supplementaires));
+							  $this->fiches, 'liste', $this->existantes, $this->supplementaires));
 		$t->addFlags($this->unite->type);
 	}
 
@@ -37,7 +37,7 @@ if ($this->apps->count() || count($this->sousunites)) {
 			$sss = $ss->addSection($unite->id,
 					       $this->lienUnite($unite, null, null, false));
 			$t = $sss->addChild($this->tableEffectifs($this->appsTableModel($apps),
-								  $this->profils, 'liste', $this->existantes, $this->supplementaires));
+								  $this->fiches, 'liste', $this->existantes, $this->supplementaires));
 			$t->addFlags($unite->type);
 			$t->show_header = false;
 		}

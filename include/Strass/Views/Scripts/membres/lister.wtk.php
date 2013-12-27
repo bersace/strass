@@ -3,25 +3,25 @@
 class Scout_Page_RendererIndividu extends Wtk_Pages_Renderer
 {
 	protected	$view;
-	protected	$profils;
+	protected	$fiches;
 
-	function __construct($view, $profils)
+	function __construct($view, $fiches)
 	{
 		parent::__construct($view->url(array('page' => '%i')),
 				    true,
 				    array('previous'	=> "Précédents",
 					  'next'		=> "Suivants"));
 		$this->view = $view;
-		$this->profils = $profils;
+		$this->fiches = $fiches;
 	}
 
 	function renderContainer()
 	{
-		$m = new Wtk_Table_Model('id', 'prenom-nom', 'username', 'adelec', 'telephone', 'profil');
+		$m = new Wtk_Table_Model('id', 'prenom-nom', 'username', 'adelec', 'telephone', 'fiche');
 		$t = new Wtk_Table($m);
-		if ($this->profils) {
+		if ($this->fiches) {
 			$t->addColumn(new Wtk_Table_Column("Nom",
-							   new Wtk_Table_CellRenderer_Link('href', 'profil',
+							   new Wtk_Table_CellRenderer_Link('href', 'fiche',
 											   'label', 'prenom-nom')));
 			$t->addColumn(new Wtk_Table_Column("Identifiant",
 							   new Wtk_Table_CellRenderer_Text('text', 'username')));
@@ -36,7 +36,7 @@ class Scout_Page_RendererIndividu extends Wtk_Pages_Renderer
 			$t->addColumn(new Wtk_Table_Column("Nom",
 							   new Wtk_Table_CellRenderer_Text('text', 'prenom-nom')));
 		}
-    
+
 		return $t;
 	}
 
@@ -51,7 +51,7 @@ class Scout_Page_RendererIndividu extends Wtk_Pages_Renderer
 			   $i->adelec,
 			   $telephone,
 			   $this->view->url(array('controller' => 'individus',
-						  'action' => 'voir',
+						  'action' => 'fiche',
 						  'individu' => $i->id,
 						  'page' => null)));
 	}
@@ -60,4 +60,4 @@ class Scout_Page_RendererIndividu extends Wtk_Pages_Renderer
 $s = $this->document->addSection('membres', "Les membres inscrits sur le site");
 $s->addParagraph("Voici la liste des individus pouvant s'identifier sur le site.");
 $s->addChild(new Wtk_Pages(null, $this->individus,
-			   new Scout_Page_RendererIndividu($this, $this->profils)));
+			   new Scout_Page_RendererIndividu($this, $this->fiches)));

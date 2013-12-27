@@ -17,13 +17,13 @@ class UnitesController extends Strass_Controller_Action
 							     $this->assert(null, $u, 'calendrier'));
 
     $this->metas(array('DC.Title' => wtk_ucfirst($u->getFullname()).' '.$a));
-    
+
     $this->connexes->append("Photos",
 			    array('controller' => 'photos',
 				  'action' => 'index'));
     $this->liensEffectifs($u, $a);
-    $this->view->profils = (bool) Zend_Registry::get('user');
-    
+    $this->view->fiches = (bool) Zend_Registry::get('user');
+
     $this->connexes->append("Nouveaux",
 			    array('action' => 'nouveaux'),
 			    array(null, $u, 'nouveaux'));
@@ -101,7 +101,7 @@ class UnitesController extends Strass_Controller_Action
 					   wtk_ucfirst($unite->getFullname())));
 
 			// si l'individu est connecté, on propose le lien.
-			$this->view->profils = (bool) $i;
+			$this->view->fiches = (bool) $i;
 			$this->view->apps = $apps = $unite->getApps($annee);
 
 			// de même pour les sous-unités
@@ -125,7 +125,7 @@ class UnitesController extends Strass_Controller_Action
 
 		$i = Zend_Registry::get('user');
 		// si l'individu est connecté, on propose le lien.
-		$this->view->profils = (bool) $i;
+		$this->view->fiches = (bool) $i;
 
 		// critère de sélection par année
 		$this->metas(array('DC.Title' => 'Effectifs '.$annee,
@@ -690,7 +690,7 @@ class UnitesController extends Strass_Controller_Action
 		$p = $this->_getParam('page');
 		$p = $p ? $p : 1;
 		$this->view->individus = new Wtk_Pages_Model_Iterator($is, 20, $p);
-		$this->view->profils = (bool) Zend_Registry::get('user');
+		$this->view->fiches = (bool) Zend_Registry::get('user');
 		$this->branche->append('Nouveaux');
 	}
 
@@ -727,7 +727,7 @@ class UnitesController extends Strass_Controller_Action
 		$p = $this->_getParam('page');
 		$p = $p ? $p : 1;
 		$this->view->individus = new Wtk_Pages_Model_Iterator($is, 20, $p);
-		$this->view->profils = (bool) Zend_Registry::get('user');
+		$this->view->fiches = (bool) Zend_Registry::get('user');
 	}
 
 
@@ -743,7 +743,7 @@ class UnitesController extends Strass_Controller_Action
 				);
 
 		// BRANCHES
-		$a = $this->_getParam('action'); 
+		$a = $this->_getParam('action');
 		if ($a != 'index' and array_key_exists($a, $listes))
 			$this->branche->insert(-1, $listes[$a],
 					       array('annee' => null));

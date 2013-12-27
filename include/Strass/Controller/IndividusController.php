@@ -13,14 +13,14 @@ class IndividusController extends Strass_Controller_Action
     $this->redirectSimple('index', 'unites');
   }
 
-  function voirAction()
+  function ficheAction()
   {
     $individu = $this->_helper->Individu->param();
 
     $this->metas(array('DC.Title' => $individu->getFullname(false, false)));
 
-    $this->assert(null, $individu, 'voir',
-		  "Vous n'avez pas le droit de voir les détails pour ".$individu->getName().". ");
+    $this->assert(null, $individu, 'fiche',
+		  "Vous n'avez pas le droit de voir la fiche de ".$individu->getName().". ");
 
     $this->formats('vcf', 'csv');
 
@@ -74,9 +74,9 @@ class IndividusController extends Strass_Controller_Action
     }
 
     if ($individu->isMember()) {
-      $this->actions->append("Compte utilisateur",
+      $this->actions->append("Paramètres utilisateur",
 			     array('controller'	=> 'membres',
-				   'action' => 'profil',
+				   'action' => 'parametres',
 				   'membre' => $user->username,
 				   'individu' => null),
 			     array(null, null, 'admin'));
@@ -174,11 +174,11 @@ class IndividusController extends Strass_Controller_Action
 	}
 
 	$this->_helper->Log("Fiche individu mis-à-jour", array($individu),
-			    $this->_helper->Url('voir', 'individus', null, array('individu' => $individu->slug)),
+			    $this->_helper->Url('fiche', 'individus', null, array('individu' => $individu->slug)),
 			    (string) $individu);
 
 	$db->commit();
-	$this->redirectSimple('voir', 'individus', null,
+	$this->redirectSimple('fiche', 'individus', null,
 			      array('individu' => $individu->slug));
 
       }
@@ -249,11 +249,11 @@ class IndividusController extends Strass_Controller_Action
 	$tp->insert($data);
 
 	$this->_helper->Log("Progression enregistrée", array($i),
-			    $this->_helper->Url('voir', 'individus', null, array($i->id)),
+			    $this->_helper->Url('fiche', 'individus', null, array($i->id)),
 			    (string) $i);
 
 	$db->commit();
-	$this->redirectSimple('voir');
+	$this->redirectSimple('fiche');
       }
       catch (Exception $e) {
 	$db->rollback();
@@ -304,11 +304,11 @@ class IndividusController extends Strass_Controller_Action
 	$tf->insert($data);
 
 	$this->_helper->Log("Formation enregistrée", array($i),
-			    $this->_helper->Url('voir', 'individus', null, array($i->slug)),
+			    $this->_helper->Url('fiche', 'individus', null, array($i->slug)),
 			    (string) $i);
 
 	$db->commit();
-	$this->redirectSimple('voir');
+	$this->redirectSimple('fiche');
       }
       catch (Exception $e) {
 	$db->rollback();

@@ -15,7 +15,7 @@ class Strass_View_Helper_ItemIndividu
     $acl = Zend_Registry::get('acl');
     $self = Zend_Registry::get('user');
     $tf = $individu->findParentFamilles()->telephone;
-    $telephone = $acl->isAllowed($self, $individu, 'voir') ?
+    $telephone = $acl->isAllowed($self, $individu, 'fiche') ?
       $tf ? $tf : $individu->telephone : NULL;
     return $telephone ? new Wtk_Container($lien, new Wtk_Inline(" //".$telephone."//")) : $lien;
   }

@@ -18,7 +18,7 @@ class Strass_Views_PagesRenderer_Unites_Contacts extends Strass_Views_PagesRende
 
     if ($apps->count()) {
       $t = $sss->addChild($this->view->tableEffectifs($this->view->appsTableModel($apps),
-						       $this->view->profils, 'contacts'));
+						       $this->view->fiches, 'contacts'));
       $t->addFlags($unite->type);
     }
 
@@ -28,7 +28,7 @@ class Strass_Views_PagesRenderer_Unites_Contacts extends Strass_Views_PagesRende
 	$sss = $ss->addSection($unite->id,
 			       $this->view->lienUnite($unite, null, null, false));
 	$t = $sss->addChild($this->view->tableEffectifs($this->view->appsTableModel($apps),
-							 $this->view->profils, 'contacts'));
+							 $this->view->fiches, 'contacts'));
 	$t->addFlags($unite->type);
 	$t->show_header = false;
       }

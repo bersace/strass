@@ -60,9 +60,9 @@ class Strass_Addon_Console extends Strass_Addon_Liens
     }
 
     $actions[] = array('url'	=> $view->url(array('controller' => 'membres',
-						    'action'	 => 'profil'),
+						    'action'	 => 'parametres'),
 					      true, true),
-		       'label'	=> 'Éditer votre compte');
+		       'label'	=> 'Vos paramètres');
 
 
     if ($actual && $user->username != $actual->username) {

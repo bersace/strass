@@ -21,7 +21,7 @@ class Individu extends Strass_Db_Table_Row_Abstract implements Zend_Acl_Role_Int
 {
   protected $_privileges = array(array('chef',	NULL),
 				 array('assistant', 'editer'),
-				 array(NULL,	'voir'));
+				 array(NULL,	'fiche'));
 
   protected $nj = null;		// nom de jungle.
   protected $apps = array();
@@ -40,9 +40,9 @@ class Individu extends Strass_Db_Table_Row_Abstract implements Zend_Acl_Role_Int
 
   function _initResourceAcl($acl)
   {
-    $acl->allow($this, $this, array('editer', 'desinscrire', 'profil'));
+    $acl->allow($this, $this, array('editer', 'desinscrire'));
     $acl->deny($this->getRoleId(), $this, 'sudo');
-    $acl->allow('individus', $this, 'voir');
+    $acl->allow('individus', $this, 'fiche');
   }
 
   protected function _parentRoles()
@@ -490,9 +490,7 @@ class User extends Strass_Db_Table_Row_Abstract implements Zend_Acl_Role_Interfa
 
   function _initResourceAcl($acl)
   {
-    $acl->allow('individus', $this, 'voir');
-    $acl->allow($this, $this, array('editer', 'desinscrire', 'profil'));
-    $acl->deny($this, $this, 'sudo');
+    $acl->allow($this, $this, 'parametres');
   }
 
   protected function _parentRoles()

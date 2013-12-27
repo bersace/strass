@@ -127,7 +127,7 @@ class Unite extends Strass_Db_Table_Row_Abstract implements Zend_Acl_Resource_In
 		Zend_Registry::set($this->id, $this);
 		$this->abstraite = in_array($this->type, array('hp','aines'));
 	}
-    
+
 	function _initResourceAcl(&$acl)
 	{
 		$acl->allow(null, $this, array('index'));
@@ -163,7 +163,7 @@ class Unite extends Strass_Db_Table_Row_Abstract implements Zend_Acl_Resource_In
 						// refuser aux sizaines de voir le nom des cheftaines
 						foreach($siz as $s) {
 							$acl->deny($s, $r, 'voir-nom');
-							$acl->deny($s, $r, 'voir');
+							$acl->deny($s, $r, 'fiche');
 						}
 					}
 				}
@@ -352,10 +352,10 @@ class Unite extends Strass_Db_Table_Row_Abstract implements Zend_Acl_Resource_In
 		$ir = intval($recursif);
 		if (!isset(self::$ssu[$this->id]))
 			self::$ssu[$this->id] = array();
-        
+
 		if (!isset(self::$ssu[$this->id][$ia]))
 			self::$ssu[$this->id][$ia] = array();
-            
+
 		if (!isset(self::$ssu[$this->id][$ia][$ir])) {
 			$unites = array();
 			$db = $this->getTable()->getAdapter();
@@ -421,7 +421,7 @@ class Unite extends Strass_Db_Table_Row_Abstract implements Zend_Acl_Resource_In
 			->join('roles',
 			       'roles.type = appartient.type AND roles.id = appartient.role',
 			       array());
-		
+
 		switch($this->type) {
 		case 'hp':
 			$where[]= 'appartient.role = "chef" OR appartient.role = "assistant"';
@@ -474,7 +474,7 @@ class Unite extends Strass_Db_Table_Row_Abstract implements Zend_Acl_Resource_In
 	}
 
 	function fermer($fin, $recursif = true) {
-		
+
 		$ta = new Appartenances;
 		$s = $ta->select()->where('fin IS NULL');
 		$apps = $this->findAppartenances($s);
@@ -551,7 +551,7 @@ class Unite extends Strass_Db_Table_Row_Abstract implements Zend_Acl_Resource_In
 			->join('individu',
 			       'individu.slug = appartient.individu')
 			->order('debut ASC');
-        
+
 		switch($this->type) {
 		case 'hp':
 		case 'aines':
@@ -682,4 +682,3 @@ class Role extends Zend_Db_Table_Row_Abstract
 		return $this->titre;
 	}
 }
-

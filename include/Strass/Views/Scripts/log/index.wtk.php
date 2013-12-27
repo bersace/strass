@@ -20,7 +20,7 @@ class Strass_Pages_Renderer_Log extends Wtk_Pages_Renderer
 		$r = new Wtk_Table_CellRenderer_Link('href', 'utilisateur',
 						     'label', 'utilisateur');
 		$r->setUrlFormat($this->view->url(array('controller' => 'membres',
-							'action' => 'profil',
+							'action' => 'parametres',
 							'membre' => '%s'),
 						  true));
 		$t->addColumn(new Wtk_Table_Column("Utilistateur", $r));

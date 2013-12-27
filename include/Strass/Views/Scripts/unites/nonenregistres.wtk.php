@@ -40,10 +40,10 @@ class Scout_Page_RendererIndividu extends Wtk_Pages_Renderer
 
 	function renderContainer()
 	{
-		$m = new Wtk_Table_Model('id', 'prenom-nom', 'adelec', 'telephone', 'profil', 'app', 'role', 'annee');
+		$m = new Wtk_Table_Model('id', 'prenom-nom', 'adelec', 'telephone', 'fiche', 'app', 'role', 'annee');
 		$t = new Wtk_Table($m);
 		$t->addColumn(new Wtk_Table_Column("Nom",
-						   new Wtk_Table_CellRenderer_Link('href', 'profil',
+						   new Wtk_Table_CellRenderer_Link('href', 'fiche',
 										   'label', 'prenom-nom')));
 		$r = new Wtk_Table_CellRenderer_Link('href', 'adelec',
 						     'label', 'adelec');
@@ -56,7 +56,7 @@ class Scout_Page_RendererIndividu extends Wtk_Pages_Renderer
 		$r = new Scout_Table_CellRenderer_Role('app', 'app', 'annee', 'annee');
 		$r->setView($this->view);
 		$t->addColumn(new Wtk_Table_Column("Unité", $r));
-    
+
 		return $t;
 	}
 
@@ -71,7 +71,7 @@ class Scout_Page_RendererIndividu extends Wtk_Pages_Renderer
 			   $i->adelec,
 			   $telephone,
 			   $this->view->url(array('controller' => 'individus',
-						  'action' => 'voir',
+						  'action' => 'fiche',
 						  'individu' => $i->id,
 						  'page' => null)),
 			   $app,
@@ -83,4 +83,4 @@ class Scout_Page_RendererIndividu extends Wtk_Pages_Renderer
 $s = $this->document->addSection('nonenregistres', "Les non enregistrés");
 $s->addParagraph("Voici la liste des personnes inscrit dans cette unité, mais ne s'étant pas enregistré sur le site.");
 $s->addChild(new Wtk_Pages(null, $this->individus,
-			   new Scout_Page_RendererIndividu($this, $this->profils)));
+			   new Scout_Page_RendererIndividu($this, $this->fiches)));

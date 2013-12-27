@@ -38,7 +38,7 @@ $g->addEntry('fixe', 14);
 $g->addEntry('portable', 14);
 if ($this->individu->isMember()) {
   $url = $this->url(array('controller' => 'membres',
-			  'action' => 'profil',
+			  'action' => 'parametres',
 			  'membre' => $this->individu->findUser()->username), true, true);
   /* Simuler un champ de formulaire, mais c'est un lien */
   $g->addSection()->addFlags('control', 'entry')

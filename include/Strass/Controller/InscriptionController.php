@@ -35,8 +35,8 @@ class InscriptionController extends Strass_Controller_Action
 			unset($sexes['h']);
 			break;
 		}
-    
-    
+
+
 		if ($annee) {
 			// Lister les poste uniques occupés
 			$s = $u->getTable()->select()
@@ -72,12 +72,12 @@ class InscriptionController extends Strass_Controller_Action
 		}
 		if (!$preselected_role)
 			$preselected_role = key($roles);
-    
+
 		$values = $roles;
 		foreach($as as $app) {
 			unset($values[$app->role]);
 		}
-    
+
 
 		if (!count($values)
 		    && in_array($t->id,
@@ -87,7 +87,7 @@ class InscriptionController extends Strass_Controller_Action
 				Strass_Controller_Action_Exception("L'unité est complète pour l'année ".$annee." !");
 		}
 
-    
+
 
 		$min = $u->findParentTypesUnite()->age_min;
 
@@ -150,7 +150,7 @@ class InscriptionController extends Strass_Controller_Action
 				$appartenances->insert($data);
 
 				$this->_helper->Log("Nouvelle inscription", array($ind, $u),
-						    $this->_helper->Url('voir', 'individus', null, array('individu' => $indid)),
+						    $this->_helper->Url('fiche', 'individus', null, array('individu' => $indid)),
 						    (string) $ind);
 
 				$db->commit();
@@ -164,7 +164,7 @@ class InscriptionController extends Strass_Controller_Action
 				throw $e;
 			}
 		}
-    
+
 		$this->branche->append('Nouveau membre');
 	}
 
@@ -200,7 +200,7 @@ class InscriptionController extends Strass_Controller_Action
 				}
 			}
 			else {
-				$this->redirectSimple('voir', 'individus', null,
+				$this->redirectSimple('fiche', 'individus', null,
 						      array('individu' => $i->id));
 			}
 		}
@@ -263,17 +263,17 @@ class InscriptionController extends Strass_Controller_Action
 						      'debut'		=> $app->debut);
 					if ($app->get('clore'))
 						$data['fin'] = $app->fin;
-					else 
+					else
 						$data['fin'] = null;
 					$as->getTable()->insert($data);
 				}
 
 				$this->_helper->Log("Inscription édité par un admin", array($individu),
-						    $this->_helper->Url('voir', 'individus', null, array('individu' => $individu->id)),
+						    $this->_helper->Url('fiche', 'individus', null, array('individu' => $individu->id)),
 						    (string) $individu);
 
 				$db->commit();
-				$this->redirectSimple('voir', 'individus', null, array('individu' => $individu->id));
+				$this->redirectSimple('fiche', 'individus', null, array('individu' => $individu->id));
 			}
 			catch (Exception $e) {
 				$db->rollBack();
@@ -308,7 +308,7 @@ class InscriptionController extends Strass_Controller_Action
 			try {
 				foreach($ps as $p)
 					$p->delete();
-				
+
 				$te = new Etape;
 				$tp = new Progression;
 				foreach($t as $p) {
@@ -322,11 +322,11 @@ class InscriptionController extends Strass_Controller_Action
 				}
 
 				$this->_helper->Log("Progression édité par un admin", array($individu),
-						    $this->_helper->Url('voir', 'individus', null, array('individu' => $individu->id)),
+						    $this->_helper->Url('fiche', 'individus', null, array('individu' => $individu->id)),
 						    (string) $individu);
 
 				$db->commit();
-				$this->redirectSimple('voir', 'individus', null, array('individu' => $individu->id));
+				$this->redirectSimple('fiche', 'individus', null, array('individu' => $individu->id));
 			}
 			catch (Exception $e) {
 				$db->rollBack();
@@ -370,11 +370,11 @@ class InscriptionController extends Strass_Controller_Action
 				}
 
 				$this->_helper->Log("Formation édité par un admin", array($individu),
-						    $this->_helper->Url('voir', 'individus', null, array('individu' => $individu->id)),
+						    $this->_helper->Url('fiche', 'individus', null, array('individu' => $individu->id)),
 						    (string) $individu);
 
 				$db->commit();
-				$this->redirectSimple('voir', 'individus', null, array('individu' => $individu->id));
+				$this->redirectSimple('fiche', 'individus', null, array('individu' => $individu->id));
 			}
 			catch (Exception $e) {
 				$db->rollBack();
@@ -390,7 +390,7 @@ class InscriptionController extends Strass_Controller_Action
 			"Vous n'avez pas le droit d'éditer l'inscription de cet individu");
 
 	  $this->metas(array('DC.Title' => "Évoluer l'inscription de ".$individu->getFullname()));
-		
+
 	  $this->view->model = $m = new Wtk_Form_Model('editer');
 	  $m->addNewSubmission('valider', 'Valider');
 
@@ -499,12 +499,12 @@ class InscriptionController extends Strass_Controller_Action
 	      }
 
 	      $this->_helper->Log("Inscription modifiée", array($individu),
-				  $this->_helper->Url('voir', 'individus', null, array('individu' => $individu->slug)),
+				  $this->_helper->Url('fiche', 'individus', null, array('individu' => $individu->slug)),
 				  (string) $individu);
- 
+
 	      $db->commit();
 	      $this->redirectUrl(array('controller' => 'individus',
-				       'action'	=> 'voir',
+				       'action'	=> 'fiche',
 				       'individu' => $individu->slug),
 				 null, false);
 	    }
@@ -601,14 +601,14 @@ class InscriptionController extends Strass_Controller_Action
 					       'debut'	=> $data['appartenance']['debut'],
 					       'fin'	=> $data['appartenance']['fin']);
 				$ta->insert($tuple);
-				$action = $m->get('appartenance/continuer') ? 'historique' : 'voir';
+				$action = $m->get('appartenance/continuer') ? 'historique' : 'fiche';
 
 				$this->_helper->Log("Historique complété", array($ind, $unite),
-						    $this->_helper->Url('voir', 'individus', null, array('individu' => $ind->id)),
+						    $this->_helper->Url('fiche', 'individus', null, array('individu' => $ind->id)),
 						    (string) $ind);
 
 				$db->commit();
-				$this->redirectUrl(array('controller'	=> $action == 'voir' ? 'individus' : 'inscription',
+				$this->redirectUrl(array('controller'	=> $action == 'fiche' ? 'individus' : 'inscription',
 							 'action'	=> $action,
 							 'individu'	=> $ind->id));
 			}
@@ -622,7 +622,7 @@ class InscriptionController extends Strass_Controller_Action
 		$this->view->individu = $ind;
 
 		$this->metas(array('DC.Title' => "Compléter l'historique de ".$ind->getFullname()));
-		
+
 		$this->actions->append("Administrer",
 				       array('controller'	=> 'inscription',
 					     'action'		=> 'administrer'),

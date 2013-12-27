@@ -14,7 +14,7 @@ class Scout_Pages_RendererInscription extends Wtk_Pages_Renderer_Form
 	{
 		$f->addParagraph()
 			->addFlags('warn')
-			->addInline("Un compte utilisateur vous permettra d'accéder au profil des membres, ".
+			->addInline("Un compte utilisateur vous permettra d'accéder aux contacts, ".
 				    "au calendrier de votre unité, ".
 				    "d'envoyer des photos, de gérer votre unité, etc. ".
 				    "**Seuls les membres et anciens membres du groupe sont acceptés.** ".

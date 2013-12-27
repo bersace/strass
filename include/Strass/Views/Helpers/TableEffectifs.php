@@ -10,15 +10,15 @@ class Strass_View_Helper_TableEffectifs
 		$this->view->document->addStyleComponents('effectifs');
 	}
 
-	function tableEffectifs($model, $profils = true, $type = 'contacts', $colonnes = array(), $supplementaires = array())
+	function tableEffectifs($model, $fiches = true, $type = 'contacts', $colonnes = array(), $supplementaires = array())
 	{
 		$t = new Wtk_Table($model, true, array('role', 'progression'));
 
-		if ($profils) {
+		if ($fiches) {
 			$acl = Zend_Registry::get('acl');
 			$moi = Zend_Registry::get('user');
 
-			if ($type == 'participants') 
+			if ($type == 'participants')
 				$colonnes['numero'] = "N°";
 			else
 				$colonnes = array_merge(array('accr' => '',
@@ -63,9 +63,9 @@ class Strass_View_Helper_TableEffectifs
 				$t->addColumn(new Wtk_Table_Column($titre, $l));
 				break;
 			case 'prenom-nom':
-				if ($profils) {
+				if ($fiches) {
 					$t->addColumn(new Wtk_Table_Column($titre,
-									   new Wtk_Table_CellRenderer_Link('href', 'profil',
+									   new Wtk_Table_CellRenderer_Link('href', 'fiche',
 														     'label', 'prenom-nom')));
 					break;
 				}

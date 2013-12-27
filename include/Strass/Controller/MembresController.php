@@ -14,7 +14,7 @@ class MembresController extends Strass_Controller_Action implements Zend_Acl_Res
       $acl->add($this);
     $racine = $this->_helper->UniteRacine();
     $acl->allow($racine->getRoleRoleId('chef'), $this);
-    $acl->allow('individus', $this, 'voir');
+    $acl->allow('individus', $this, 'fiche');
   }
 
   function getResourceID()
@@ -24,7 +24,7 @@ class MembresController extends Strass_Controller_Action implements Zend_Acl_Res
 
   function indexAction()
   {
-    $this->assert(null, $this, 'voir', "Vous devez être identifié.");
+    $this->assert(null, $this, 'fiche', "Vous devez être identifié.");
     $this->redirectSimple('index', 'index');
   }
 
@@ -245,7 +245,7 @@ class MembresController extends Strass_Controller_Action implements Zend_Acl_Res
   function inscriptionsAction()
   {
     $t = new Inscriptions();
-    $this->assert(null, $t, 'voir',
+    $this->assert(null, $t, 'fiche',
 		  "Vous n'avez pas le droit de voir les inscriptions en attente.");
     $this->metas(array('DC.Title' => "Inscriptions en attente",
 		       'DC.Subject' => 'livre,or'));
@@ -376,7 +376,7 @@ class MembresController extends Strass_Controller_Action implements Zend_Acl_Res
 	  }
 
 	  $this->_helper->Log("Inscription acceptée", array($ind),
-			      $this->_helper->Url('voir', 'individus', null,
+			      $this->_helper->Url('fiche', 'individus', null,
 						  array('individu' => $ind->id)),
 			      (string) $ind);
 
@@ -430,14 +430,14 @@ class MembresController extends Strass_Controller_Action implements Zend_Acl_Res
     $this->view->model = $m;
   }
 
-  function profilAction()
+  function parametresAction()
   {
     $moi = Zend_Registry::get('user');
     $this->view->user = $user = $this->_helper->Membre($moi);
     $this->view->individu = $individu = $user->findParentIndividus();
 
-    $this->assert($moi, $user, 'profil',
-		  "Vous n'avez pas le droit de modifier le profils de cet utilisateurs.");
+    $this->assert($moi, $user, 'parametres',
+		  "Vous n'avez pas le droit de modifier les paramètres de cet utilisateur.");
 
     $this->metas(array('DC.Title' => "Éditer l'utilisateur ".$user->username));
 
@@ -461,7 +461,7 @@ class MembresController extends Strass_Controller_Action implements Zend_Acl_Res
 	  $user->save();
 
 	  $this->_helper->Log("Migration du compte", array($individu),
-			      $this->_helper->Url('voir', 'individus', null,
+			      $this->_helper->Url('fiche', 'individus', null,
 						  array('individu' => $individu->slug)),
 			      (string) $individu);
 	  $db->commit();
@@ -471,7 +471,7 @@ class MembresController extends Strass_Controller_Action implements Zend_Acl_Res
 	  $id['username'] = $user->username;
 	  $auth->getStorage()->write($id);
 
-	  $this->redirectSimple('voir', 'individus', null,
+	  $this->redirectSimple('fiche', 'individus', null,
 				array('individu' => $individu->slug),
 				true);
 	} catch(Wtk_Form_Model_Exception $e) {
@@ -514,12 +514,12 @@ class MembresController extends Strass_Controller_Action implements Zend_Acl_Res
 	  $individu->save();
 
 	  $this->_helper->Log("Changement d'adélec", array($individu),
-			      $this->_helper->Url('voir', 'individus', null,
+			      $this->_helper->Url('fiche', 'individus', null,
 						  array('individu' => $individu->slug)),
 			      (string) $individu);
 	  $db->commit();
 
-	  $this->redirectSimple('voir', 'individus', null,
+	  $this->redirectSimple('fiche', 'individus', null,
 	  			array('individu' => $individu->slug),
 	  			true);
 	} catch(Wtk_Form_Model_Exception $e) {
@@ -561,12 +561,12 @@ class MembresController extends Strass_Controller_Action implements Zend_Acl_Res
 	$user->save();
 
 	$this->_helper->Log("Mot de passe changé", array($individu),
-			    $this->_helper->Url('voir', 'individus', null,
+			    $this->_helper->Url('fiche', 'individus', null,
 						array('individu' => $individu->slug)),
 			    (string) $individu);
 
 	$db->commit();
-	$this->redirectSimple('voir', 'individus', null,
+	$this->redirectSimple('fiche', 'individus', null,
 			      array('individu' => $individu->slug),
 			      true);
       }
@@ -598,11 +598,11 @@ class MembresController extends Strass_Controller_Action implements Zend_Acl_Res
 
 	$msg = $user->admin ? "Privilèges accordés" : "Privilèges refusés";
 	$this->_helper->Log($msg, array($individu),
-			    $this->_helper->Url('voir', 'individus', null,
+			    $this->_helper->Url('fiche', 'individus', null,
 						array('individu' => $individu->slug)),
 			    (string) $individu);
 
-	$this->redirectSimple('voir', 'individus', null,
+	$this->redirectSimple('fiche', 'individus', null,
 			      array('individu' => $individu->slug),
 			      true);
       }
@@ -629,7 +629,7 @@ class MembresController extends Strass_Controller_Action implements Zend_Acl_Res
     $p = $this->_getParam('page');
     $p = $p ? $p : 1;
     $this->view->individus = new Wtk_Pages_Model_Iterator($is, 20, $p);
-    $this->view->profils = (bool) Zend_Registry::get('user');
+    $this->view->fiches = (bool) Zend_Registry::get('user');
     $this->branche->append('Membres');
   }
 
@@ -644,7 +644,7 @@ class MembresController extends Strass_Controller_Action implements Zend_Acl_Res
 
     $this->_helper->Auth->sudo($i);
 
-    $this->redirectSimple('voir', 'individus', null,
+    $this->redirectSimple('fiche', 'individus', null,
 			  array('individu' => $i->slug), true);
   }
 
@@ -764,9 +764,9 @@ class MembresController extends Strass_Controller_Action implements Zend_Acl_Res
     $l = $d->addList();
     $l->addItem(new Wtk_Link($this->_helper->Url->full('index', 'index'),
 			     "Accéder au site web"));
-    $l->addItem(new Wtk_Link($this->_helper->Url->full('voir', 'individus', null,
+    $l->addItem(new Wtk_Link($this->_helper->Url->full('fiche', 'individus', null,
 						       array('individu' => $tuple['id'])),
-			     "Accéder à votre profil"));
+			     "Accéder à votre fiche"));
     $mail->send();
   }
 

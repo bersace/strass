@@ -16,7 +16,7 @@ class Strass_View_Helper_AppsTableModel
 				     'role'		=> 'Rôle',
 				     'accr'		=> null,
 				     'progression'	=> 'Progression',
-				     'profil'		=> null,
+				     'fiche'		=> null,
 				     // contact
 				     'adelec'		=> 'Adélec',
 				     'fixe'		=> 'Fixe',
@@ -80,10 +80,10 @@ class Strass_View_Helper_AppsTableModel
 	$formations['autre'] = implode('',$formations['autre']);
       }
 
-      if ($acl->isAllowed($ind, $individu, 'voir'))
-	$url_profil = $this->view->urlIndividu($individu, 'voir', 'individus', true);
+      if ($acl->isAllowed($ind, $individu, 'fiche'))
+	$url_fiche = $this->view->urlIndividu($individu, 'fiche', 'individus', true);
       else {
-	$url_profil = null;
+	$url_fiche = null;
       }
 
       // insertion du tuple
@@ -91,7 +91,7 @@ class Strass_View_Helper_AppsTableModel
 		 $role->id,
 		 $role->getAccronyme(),
 		 $prog ? $prog->etape : null,
-		 $url_profil,
+		 $url_fiche,
 		 // contact
 		 $individu->adelec,
 		 wtk_nbsp($individu->fixe),

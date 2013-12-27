@@ -23,12 +23,12 @@ class Strass_Controller_Action_Helper_Individu extends Zend_Controller_Action_He
 			if ($reset) {
 				$this->_actionController->branche->append(wtk_ucfirst($individu->getFullname()),
 									  array('controller'	=> 'individus',
-										'action'	=> 'voir',
+										'action'	=> 'fiche',
 										'individu'	=> $id),
 									  array(),
 									  true);
 			}
-			else 
+			else
 				$this->_actionController->branche->append(wtk_ucfirst($individu->getFullname()));
 		}
 

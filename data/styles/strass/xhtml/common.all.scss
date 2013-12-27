@@ -87,13 +87,13 @@ ul.adminlinks {
     display: block;
     text-align: right;
     visibility: hidden;
-    
+
     li {
 	display: inline-block;
 	box-shadow: 2pt 4pt 1ex rgba(4, 4, 4, 0.5);
 	border-radius: 1ex;
 	margin: 0 .5ex;
-	
+
 	a {
 	    display: block;
 	    background: #d6d2c1;
@@ -340,8 +340,8 @@ ul.adminlinks {
 	background-image: url("icones/inscription.png");
     }
 
-    #console li.voir,
-    #actions li.voir
+    #console li.fiche,
+    #actions li.fiche
     {
 	background-image: url("icones/individu.png");
     }
@@ -361,7 +361,7 @@ ul.adminlinks {
 	background-image: url("icones/diplome.png");
     }
 
-    #console li.profil
+    #console li.parametres
     {
 	background-image: url("icones/editer.png");
     }

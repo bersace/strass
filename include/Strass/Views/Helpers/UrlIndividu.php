@@ -8,13 +8,13 @@ class Strass_View_Helper_UrlIndividu
 		$this->view = $view;
 	}
 
-	function urlIndividu($individu, $action = 'voir', $controller = 'individus',
+	function urlIndividu($individu, $action = 'fiche', $controller = 'individus',
 			     $reset = false, $prefix = false)
 	{
 		return $this->view->url(array('controller'	=> $controller,
 					      'action'		=> $action,
 					      'individu'	=> $individu->slug),
 					$reset, $prefix);
-					      
+
 	}
 }
