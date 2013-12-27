@@ -14,10 +14,13 @@ class Strass_Controller_Action_Helper_Membre extends Zend_Controller_Action_Help
   {
     $username = $this->getRequest()->getParam('membre');
     $t = new Users;
-    $user = $t->findByUsername($username);
 
-    if (!$username)
+    try {
+      $user = $t->findByUsername($username);
+    }
+    catch (Zend_Db_Table_Exception $e) {
       $user = $default;
+    }
 
     if (!$user) {
       if ($throw) {

@@ -433,60 +433,134 @@ class MembresController extends Strass_Controller_Action implements Zend_Acl_Res
   function profilAction()
   {
     $moi = Zend_Registry::get('user');
-    $user = $this->_helper->Membre($moi);
-    $individu = $user->findParentIndividus();
+    $this->view->user = $user = $this->_helper->Membre($moi);
+    $this->view->individu = $individu = $user->findParentIndividus();
 
     $this->assert($moi, $user, 'profil',
 		  "Vous n'avez pas le droit de modifier le profils de cet utilisateurs.");
 
     $this->metas(array('DC.Title' => "Éditer l'utilisateur ".$user->username));
 
-    $m = new Wtk_Form_Model('profil');
-    /* on fait exprès d'ignorer $user->username, ce n'est qu'une copie. */
-    $m->addConstraintRequired($m->addString('adelec', 'Adelec', $individu->adelec));
+    $autoedit = $moi->id == $user->id;
+    $db = Zend_Registry::get('db');
+
+    /* Migration de l'identifiant */
+    if ($autoedit && $user->username != $individu->adelec) {
+      $this->view->migrate = $m = new Wtk_Form_Model('migrate');
+      $m->addConstraintRequired($m->addString('motdepasse', 'Mot de passe'));
+      $m->addNewSubmission('migrer', 'Migrer');
+
+      if ($m->validate()) {
+	$db->beginTransaction();
+	try {
+	  if (!$user->testPassword($m->get('motdepasse')))
+	    throw new Wtk_Form_Model_Exception('Mot de passe erroné', $m->getInstance('motdepasse'));
+
+	  $user->username = $individu->adelec;
+	  $user->setPassword($m->get('motdepasse'));
+	  $user->save();
+
+	  $this->_helper->Log("Migration du compte", array($individu),
+			      $this->_helper->Url('voir', 'individus', null,
+						  array('individu' => $individu->slug)),
+			      (string) $individu);
+	  $db->commit();
+
+	  $auth = Zend_Auth::getInstance();
+	  $id = $auth->getIdentity();
+	  $id['username'] = $user->username;
+	  $auth->getStorage()->write($id);
+
+	  $this->redirectSimple('voir', 'individus', null,
+				array('individu' => $individu->slug),
+				true);
+	} catch(Wtk_Form_Model_Exception $e) {
+	  $db->rollBack();
+	  $m->errors[] = $e;
+	} catch (Exception $e) {
+	  $db->rollBack();
+	  throw $e;
+	}
+      }
+    }
+
+    /* Changement d'adélec */
+    if ($autoedit) {
+      $this->view->adelec = $m = new Wtk_Form_Model('adelec');
+      $i = $m->addString('adelec', 'Adelec', $individu->adelec);
+      $m->addConstraintRequired($i);
+      $m->addConstraintEMail($i);
+      $m->addConstraintRequired($m->addString('motdepasse', 'Mot de passe'));
+      $m->addNewSubmission('enregistrer', 'Enregistrer');
+
+      if ($m->validate()) {
+	$db->beginTransaction();
+	try {
+	  if (!$user->testPassword($m->get('motdepasse')))
+	    throw new Wtk_Form_Model_Exception('Mot de passe erroné', $m->getInstance('motdepasse'));
+
+	  if ($user->username == $individu->adelec) {
+	    $user->username = $m->get('adelec');
+	    $user->setPassword($m->get('motdepasse'));
+	    $user->save();
+
+	    $auth = Zend_Auth::getInstance();
+	    $id = $auth->getIdentity();
+	    $id['username'] = $user->username;
+	    $auth->getStorage()->write($id);
+	  }
+
+	  $individu->adelec = $m->get('adelec');
+	  $individu->save();
+
+	  $this->_helper->Log("Changement d'adélec", array($individu),
+			      $this->_helper->Url('voir', 'individus', null,
+						  array('individu' => $individu->slug)),
+			      (string) $individu);
+	  $db->commit();
+
+	  $this->redirectSimple('voir', 'individus', null,
+	  			array('individu' => $individu->slug),
+	  			true);
+	} catch(Wtk_Form_Model_Exception $e) {
+	  $db->rollBack();
+	  $m->errors[] = $e;
+	} catch (Exception $e) {
+	  $db->rollBack();
+	  throw $e;
+	}
+      }
+    }
+
+    /* Changement de mot de passe */
+    $this->view->change = $m = new Wtk_Form_Model('chpass');
     $g = $m->addGroup('mdp', "Change le mot de passe");
-    if (!$this->assert(null) || $moi->id == $user->id)
+    if (!$this->assert(null) || $autoedit)
       $m->addConstraintRequired($g->addString('ancien', 'Ancien'));
     $m->addConstraintRequired($g->addString('nouveau', 'Nouveau'));
     $m->addConstraintRequired($g->addString('confirmation', "Confirmation"));
     $m->addNewSubmission('valider', 'Valider');
 
-    $a = new Wtk_Form_Model('admin');
-    if ($this->assert($moi, $user, 'admin') && $moi->id != $user->id) {
-      $a->addBool('admin',
-		  "Accorder tout les privilèges sur le site à ".$user->findParentIndividus()->getFullName(),
-		  $user->admin);
-    }
-    $a->addNewSubmission('valider', 'Valider');
-
     if ($m->validate()) {
-      $db = Zend_Registry::get('db');
       $db->beginTransaction();
       try {
 	$mdp = $m->get('mdp');
 	if (array_key_exists('ancien', $mdp)) {
-	    $old = Users::hashPassword($user->username, $mdp['ancien']);
-	    if ($user->password != $old) {
-	      throw new Wtk_Form_Model_Exception("Ancien mot de passe erroné.",
-						 $m->getInstance('mdp/ancien'));
+	  if (!$user->testPassword($mdp['ancien'])) {
+		throw new Wtk_Form_Model_Exception("Ancien mot de passe erroné.",
+						   $m->getInstance('mdp/ancien'));
 	    }
 	}
 
 	if ($mdp['nouveau'] != $mdp['confirmation']) {
 	  throw new
-	    Wtk_Form_Model_Exception("Le mot de passe de confirmation n'est pas identique au nouveau proposé");
+	    Wtk_Form_Model_Exception("Le mot de passe de confirmation n'est pas identique au nouveau.");
 	}
 
-	$config = $this->_helper->Config('strass')->site;
-
-	$individu->adelec = $m->get('adelec');
-	$individu->save();
-
-	$user->username = $individu->adelec;
-	$user->password = Users::hashPassword($user->username, $mdp['nouveau']);
+	$user->setPassword($mdp['nouveau']);
 	$user->save();
 
-	$this->_helper->Log("Profil mis-à-jour", array($individu),
+	$this->_helper->Log("Mot de passe changé", array($individu),
 			    $this->_helper->Url('voir', 'individus', null,
 						array('individu' => $individu->slug)),
 			    (string) $individu);
@@ -506,26 +580,37 @@ class MembresController extends Strass_Controller_Action implements Zend_Acl_Res
       }
     }
 
-    if ($a->validate()) {
-      $db = $t->getAdapter();
+    /* Promotion à l'administration */
+    $this->view->admin = $m = new Wtk_Form_Model('admin');
+    if ($this->assert($moi, $user, 'admin') && !$autoedit) {
+      $m->addBool('admin',
+		  "Accorder tout les privilèges sur le site à ".$user->findParentIndividus()->getFullName(),
+		  $user->admin);
+    }
+    $m->addNewSubmission('valider', 'Valider');
+
+    if ($m->validate()) {
       $db->beginTransaction();
       try {
-	$ind->admin = $a->get('admin');
-	$ind->save();
+	$user->admin = $m->get('admin');
+	$user->save();
 	$db->commit();
+
+	$msg = $user->admin ? "Privilèges accordés" : "Privilèges refusés";
+	$this->_helper->Log($msg, array($individu),
+			    $this->_helper->Url('voir', 'individus', null,
+						array('individu' => $individu->slug)),
+			    (string) $individu);
+
+	$this->redirectSimple('voir', 'individus', null,
+			      array('individu' => $individu->slug),
+			      true);
       }
       catch(Exception $e) {
 	$db->rollBack();
 	throw $e;
       }
-
-      $this->redirectSimple('voir', 'individus', null,
-			    array('individu' => $ind->id),
-			    true);
     }
-
-    $this->view->model = $m;
-    $this->view->admin = $a;
   }
 
   function listerAction()

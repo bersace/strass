@@ -470,7 +470,11 @@ class Users extends Strass_Db_Table_Abstract
 
   function findByUsername($username) {
     $s = $this->select()->where('username = ?', $username);
-    return $this->fetchSelect($s)->current();
+    $user = $this->fetchSelect($s)->current();
+    if ($user)
+      return $user;
+    else
+      throw new Zend_Db_Table_Exception("Pas d'utilisateur ".$username);
   }
 }
 
@@ -512,6 +516,17 @@ class User extends Strass_Db_Table_Row_Abstract implements Zend_Acl_Role_Interfa
   public function getResourceId()
   {
     return 'user-'.$this->username;
+  }
+
+  function testPassword($password) {
+    $digest = Users::hashPassword($this->username, $password);
+    return $digest == $this->password;
+  }
+
+  function setPassword($password) {
+    $digest = Users::hashPassword($this->username, $password);
+    $this->password = $digest;
+    return $this;
   }
 }
 
