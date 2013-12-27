@@ -488,7 +488,7 @@ class User extends Strass_Db_Table_Row_Abstract implements Zend_Acl_Role_Interfa
   {
     $acl = Zend_Registry::get('acl');
 
-    $roles = array('members');
+    $roles = array('membres');
     // hériter des privilèges de l'utilisateur
     if ($this->admin)
       $roles[] = 'admins';

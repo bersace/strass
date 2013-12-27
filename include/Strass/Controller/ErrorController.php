@@ -5,13 +5,6 @@ class ErrorController extends Strass_Controller_Action implements Strass_Control
 {
 	protected $_titreBranche = 'Erreur';
 
-	public function initAcl($acl)
-	{
-		// Permettre à tout le monde d'exécuter les actions de ce
-		// controlleur.
-		$acl->allow(null, $this);
-	}
-
 	public function init()
 	{
 		$this->_request->setParam('format', 'xhtml');
@@ -31,4 +24,3 @@ class ErrorController extends Strass_Controller_Action implements Strass_Control
 		// http://framework.zend.com/manual/fr/zend.controller.plugins.html ErrorHandler
 	}
 }
-
