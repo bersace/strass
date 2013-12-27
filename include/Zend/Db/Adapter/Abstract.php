@@ -839,7 +839,7 @@ abstract class Zend_Db_Adapter_Abstract
             foreach ($value as &$val) {
                 $val = $this->quote($val, $type);
             }
-            return implode(', ', $value);
+            return '('.implode(', ', $value).')';
         }
 
         if ($type !== null && array_key_exists($type = strtoupper($type), $this->_numericDataTypes)) {
