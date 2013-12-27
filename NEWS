@@ -8,6 +8,8 @@ RÉGRESSIONS
 
 NOUVEAUTÉS UTILISATEUR
 
+ - Possibilité de réinitialiser son mot de passe sans passer par
+   l'admin :-)
 
  - Il faut renseigner son mot de passe pour changer d'adresse électronique.
 

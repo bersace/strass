@@ -100,7 +100,10 @@ class Strass_Controller_Plugin_Auth extends Zend_Controller_Plugin_Abstract
 					       $im->getInstance('username'));
 	    break;
 	  case Zend_Auth_Result::FAILURE_CREDENTIAL_INVALID:
-	    throw new Wtk_Form_Model_Exception("Mot de passe invalide.",
+	    $router = Zend_Controller_Front::getInstance()->getRouter();
+	    $url = $router->assemble(array('controller' => 'membres', 'action' => 'recouvrir'));
+	    $url = "http://".$this->getRequest()->getServer('HTTP_HOST').$url;
+	    throw new Wtk_Form_Model_Exception("Mot de passe invalide. [".$url." Oublié ?]",
 					       $im->getInstance('password'));
 	    break;
 	  default:

@@ -430,6 +430,67 @@ class MembresController extends Strass_Controller_Action implements Zend_Acl_Res
     $this->view->model = $m;
   }
 
+  function recouvrirAction()
+  {
+    $this->metas(array('DC.Title' => "Recouvrir l'accès à votre compte"));
+
+    $token = $this->_getParam('confirmer');
+    if ($token) {
+      $t = new Users;
+      try {
+	$user = $t->findByRecoverToken($token);
+      }
+      catch (Strass_Db_Table_NotFound $e) {
+	throw new Zend_Controller_Action_Exception("Jeton inconnu ou expiré", 404);
+      }
+
+      $this->view->set = $m = new Wtk_Form_Model('recouvrir');
+      $i0 = $m->addString('nouveau', "Nouveau mot de passe");
+      $i1 = $m->addString('confirmation', "Confirmer");
+      $m->addConstraintRequired($i0);
+      $m->addConstraintEqual($i1, $i0);
+      $m->addNewSubmission('enregistrer', 'Enregistrer');
+
+      if ($m->validate()) {
+	$individu = $user->findParentIndividus();
+	$user->username = $individu->adelec;
+	$user->setPassword($m->get('nouveau'));
+	$user->recover_token = null;
+	$user->save();
+
+	$this->_helper->Log("Recouvrement du compte", array($individu),
+			    $this->_helper->Url('fiche', 'individus', null,
+						array('individu' => $individu->slug)),
+			    (string) $individu);
+	$this->redirectSimple('index', 'index', null, array(), true);
+      }
+    }
+    else {
+      $this->view->send = $m = new Wtk_Form_Model('recouvrir');
+      $m->addConstraintEMail($m->addString('adelec', "Votre adresse"));
+      $m->addNewSubmission('envoyer', "Envoyer");
+
+      if ($m->validate()) {
+	$t = new Users;
+	try {
+	  $user = $t->findByEMail($m->get('adelec'));
+	}
+	catch (Zend_Db_Table_Exception $e) {
+	  $m->errors[] = new Wtk_Form_Model_Exception('Adresse inconnue', $m->getInstance('adelec'));
+	  return;
+	}
+
+	$user->recover_token = uniqid();
+	/* Laisser une demi heure pour délivrer le message */
+	$user->recover_deadline = time() + 30 * 60;
+	$user->save();
+
+	$this->view->mail = $mail = new Strass_Mail_Recover($user);
+	$mail->send();
+      }
+    }
+  }
+
   function parametresAction()
   {
     $moi = Zend_Registry::get('user');
