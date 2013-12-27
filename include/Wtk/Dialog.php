@@ -6,7 +6,7 @@ class Wtk_Dialog extends Wtk_Container
 
 	function __construct ($title = NULL)
 	{
-		parent::__construct ($title);
+		parent::__construct ();
 		$this->data['title'] = $title;
 	}
 
