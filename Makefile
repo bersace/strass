@@ -20,6 +20,7 @@ serve:
 restore:
 	git checkout data/ private/
 	git clean --force -d data/ private/
+	rm private/cache/*
 
 ifdef ORIG
 # Restaure un site en version 1
