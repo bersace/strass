@@ -40,3 +40,30 @@
  * Publipostage (PDF, enveloppe DL/?)
 
  * Intégration Céphée
+
+ * faire une alerte propre en cas de nom ou fonction (CT, CC...) déjà existant pour un membre
+
+ * gérer plusieurs personnes ayant le même nom
+
+ * bandes jaunes pour les cheftaines de meute (à vérifier pour la
+   ronde aussi).  Akéla n'a pas sa bande jaune dans les effectifs de
+   la meute. Par contre, les assistantes les ont.
+
+ * bandes pour les groupes transversaux : HP, communauté d'ainés
+
+ * vérifier que les bandes de sizainier, sizainière, CE et seconds
+   s'affichent bien (mais pour le moment toutes ces unités sont
+   inactives)
+
+ * en non-connecté, Joséphine apparait comme "Akéla bagheera"
+
+ * Les photos trop lourdes ne sont pas acceptées. (les compresser, ou
+   indiquer une limitation de taille ?)
+
+ * Dans les journaux, les catégories se partagent entre les
+   différentes unités. Ex : la catégorie "chant" regroupe les chants
+   louveteaux et éclaireurs. Est-ce un comportement normal ?
+
+ * Les vidéos sont elles supportées ? les diapos ?
+
+ * Espace admin : stats, log, paramètres, etc.
