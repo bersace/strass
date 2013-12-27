@@ -19,7 +19,8 @@ class Photos extends Strass_Db_Table_Abstract
 		// Une photos aléatoire d'une activité où l'unité à
 		// participé et où les autres unités sont des
 		// sous-unités
-		$s = $db->select()
+		$s = $this->select()
+		  ->setIntegrityCheck(false)
 			->from('photos')
 			->join('participe',
 			       'participe.activite = photos.activite'.

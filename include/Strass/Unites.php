@@ -47,12 +47,11 @@ class Unites extends Strass_Db_Table_Abstract
 	/*
 	 * Liste les unités dans l'ordre.
 	 */
-	function find($ids)
+	function findMany($ids)
 	{
-		$db = $this->getAdapter();
-		$select = $db->select()
+		$select = $this->select()
 			->from('unites')
-		  ->where('unites.id = IN ?', $ids);
+		  ->where('unites.id IN ?', $ids);
 
 		return $this->fetchAll($select);
 	}
@@ -73,13 +72,12 @@ class Unites extends Strass_Db_Table_Abstract
 	}
 
 	protected function _getStatut($ouverte, $where = null) {
-		$select = $this->_db->select()->distinct()
-			->from('unites');
+	  $select = $this->select()->distinct();
 
 		if ($ouverte) {
 			// appartenances à l'unité parente. C'est
 			// incomplet car on pourrait avoir les
-			// effectifs des patrouilles sans la mâitrise
+			// effectifs des patrouilles sans la maîtrise
 			// (PL) et donc avoir une HP.
 			$select->join('appartient',
 				      "appartient.unite = unites.id".
@@ -359,7 +357,8 @@ class Unite extends Strass_Db_Table_Row_Abstract implements Zend_Acl_Resource_In
 		if (!isset(self::$ssu[$this->id][$ia][$ir])) {
 			$unites = array();
 			$db = $this->getTable()->getAdapter();
-			$select = $db->select()
+			$select = $this->getTable()->select()
+			  ->setIntegrityCheck(false)
 				->from('unites')
 				->where('unites.parent = ?', $this->id);
 
@@ -415,7 +414,8 @@ class Unite extends Strass_Db_Table_Row_Abstract implements Zend_Acl_Resource_In
 			$where[]= $db->quoteInto('fin IS NULL OR STRFTIME("%Y-%m-%d", fin) >= ?', ($annee+1).'-01-01');
 		}
 
-		$select = $db->select()
+		$select = $this->getTable()->select()
+		  ->setIntegrityCheck(false)
 			->distinct()
 			->from('appartient')
 			->join('roles',
@@ -542,14 +542,15 @@ class Unite extends Strass_Db_Table_Row_Abstract implements Zend_Acl_Resource_In
 		// sélectionner les années où l'unité à eut au moins un membre
 		$db = $this->getTable()->getAdapter();
 		$ti = new Individus();
-		$select = $ti->getAdapter()->select()
+		$select = $ti->select()
+		  ->setIntegrityCheck(false)
 			->distinct()
-			->from('appartient',
+		  ->from('individu')
+			->join('appartient',
+			       'individu.slug = appartient.individu',
 			       array('poste' => 'role',
 				     'debut' => "strftime('%Y', debut, '-8 months')",
 				     'fin' => "strftime('%Y', fin, '-7 months')"))
-			->join('individu',
-			       'individu.slug = appartient.individu')
 			->order('debut ASC');
 
 		switch($this->type) {

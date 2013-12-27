@@ -243,7 +243,8 @@ class Individu extends Strass_Db_Table_Row_Abstract implements Zend_Acl_Role_Int
   function getProgression($annee = null)
   {
     $db = $this->getTable()->getAdapter();
-    $select = $db->select()
+    $select = $this->getTable()->select()
+      ->setIntegrityCheck(false)
       ->distinct()
       ->from('progression')
       ->join('individu',
@@ -465,6 +466,22 @@ class Users extends Strass_Db_Table_Abstract
 
   function findByUsername($username) {
     $s = $this->select()->where('username = ?', $username);
+    return $this->fetchOne($s);
+  }
+
+  function findByRecoverToken($token) {
+    $s = $this->select()
+      ->where('recover_token = ?', $token)
+      ->where("recover_deadline > strftime('%s', 'now')");
+    return $this->fetchOne($s);
+  }
+
+  function findByEMail($email)
+  {
+    $s = $this->select()
+      ->from('user')
+      ->join('individu', 'individu.id = user.individu', array())
+      ->where('individu.adelec = ?', $email);
     return $this->fetchOne($s);
   }
 }

@@ -12,7 +12,7 @@ class Strass_Pages_Model_Calendrier extends Strass_Pages_Model_Historique
     $db = $ta->getAdapter();
     $min = $this->dateDebut($annee).' 00:00';
     $max = $this->dateFin($annee).' 23:59';
-    $select = $db->select()
+    $select = $ta->select()
       ->from('activites')
       ->join('participe',
 	     'participe.activite = activites.id'.
@@ -27,7 +27,7 @@ class Strass_Pages_Model_Calendrier extends Strass_Pages_Model_Historique
     $as = $ta->fetchAll($select);
 
     $future = $annee >= date('Y', time()-243*24*60*60);
-      
+
     return array('activites' => $as,
 		 'annee' => $annee,
 		 'unite' => $u,
