@@ -1,6 +1,6 @@
 <?php /*-*- php -*-*/
 umask(0022);
-date_default_timezone_set('Europe/Paris'); // config/knema/site ?
+date_default_timezone_set('Europe/Paris');
 
 $paths = explode(':', get_include_path());
 array_shift($paths);
@@ -12,11 +12,6 @@ $loader = Zend_Loader_Autoloader::getInstance();
 $loader->registerNamespace('Dio_');
 $loader->registerNamespace('Wtk_');
 $loader->registerNamespace('Strass_');
-
-// Contournement de bug dans le serveur embarqué de PHP
-$_SERVER['SCRIPT_NAME'] = substr($_SERVER['SCRIPT_FILENAME'], strlen($_SERVER['DOCUMENT_ROOT']));
-// Ne pas servir les fichiers
-if ($_SERVER['SCRIPT_FILENAME'] != __FILE__) return false;
 
 try {
   $fc = Zend_Controller_Front::getInstance();

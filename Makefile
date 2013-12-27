@@ -14,7 +14,7 @@ setup:
 	pip install libsass
 
 serve:
-	php -S localhost:8000 index.php
+	php -S localhost:8000 devel.php
 
 # Restaure les données uniquement. Pour tester la migration.
 restore:
@@ -26,7 +26,5 @@ ifdef ORIG
 restore1: restore
 	cp --archive --link $(ORIG)/config/ $(ORIG)/data $(ORIG)/resources ./
 endif
-
-
 
 .PHONY: all clean serve setup
