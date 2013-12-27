@@ -85,7 +85,7 @@ class MembresController extends Strass_Controller_Action implements Zend_Acl_Res
 	     'unites.type = types_unite.id',
 	     array());
     $default = null;
-    $tuples = $ttu->fetchSelect($s);
+    $tuples = $ttu->fetchAll($s);
     $sexes = array();
     foreach($tuples as $tuple) {
       $sexe = $tuple->sex;
@@ -293,7 +293,7 @@ class MembresController extends Strass_Controller_Action implements Zend_Acl_Res
       $tu = new Unites();
       $s = $tu->select()
 	->where("sexe = ? OR sexe = 'm'", $ins->sexe);
-      $us = $tu->fetchSelect($s);
+      $us = $tu->fetchAll($s);
       $enum = array();
       foreach ($us as $u)
 	$enum[$u->id] = wtk_ucfirst($u->getFullname());
@@ -366,7 +366,7 @@ class MembresController extends Strass_Controller_Action implements Zend_Acl_Res
 	    $s = $td->select()
 	      ->where("id = ?", $diplome)
 	      ->where("sexe = 'm' OR sexe = ?", $ind->sexe);
-	    $d = $td->fetchSelect($s);
+	    $d = $td->fetchAll($s);
 	    try {
 	      // Il arrive que la formation ai déjà été enregistrée.
 	      $tf->insert(array('individu' => $private['id'],
@@ -625,7 +625,7 @@ class MembresController extends Strass_Controller_Action implements Zend_Acl_Res
 		 array())
       ->where('users.username IS NOT NULL')
       ->order('id');
-    $is = $ti->fetchSelect($s);
+    $is = $ti->fetchAll($s);
     $p = $this->_getParam('page');
     $p = $p ? $p : 1;
     $this->view->individus = new Wtk_Pages_Model_Iterator($is, 20, $p);

@@ -24,7 +24,7 @@ class Strass_Pages_Model_Calendrier extends Strass_Pages_Model_Historique
       ->where("fin >= ?", $min)
       ->where("fin <= ?", $max)
       ->order('activites.debut');
-    $as = $ta->fetchSelect($select);
+    $as = $ta->fetchAll($select);
 
     $future = $annee >= date('Y', time()-243*24*60*60);
       

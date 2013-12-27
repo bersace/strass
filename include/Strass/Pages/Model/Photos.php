@@ -16,6 +16,6 @@ class Strass_Pages_Model_Photos extends Strass_Pages_Model_Historique
       ->where("activites.debut < ?", $this->dateFin($annee))
       ->where("activites.debut < STRFTIME('%Y-%m-%d %H:%M', CURRENT_TIMESTAMP)")
       ->order('fin');
-    return array('activites' => $activites->fetchSelect($select));
+    return array('activites' => $activites->fetchAll($select));
   }
 }

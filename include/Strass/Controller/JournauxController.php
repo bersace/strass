@@ -435,7 +435,7 @@ class JournauxController extends Strass_Controller_Action
 				       "membership.groupname = 'admins'",
 				       array());
 			$ti = new Individus();
-			$is = $ti->fetchSelect($select);
+			$is = $ti->fetchAll($select);
 			foreach($is as $i)
 				$enum[$i->id] = $i->getFullname(true, false);
 			ksort($enum);

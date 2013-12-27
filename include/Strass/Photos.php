@@ -37,7 +37,7 @@ class Photos extends Strass_Db_Table_Abstract
 			->where('parent_participe.unite IS NULL')
 			->order('RANDOM()')
 			->limit(1);
-		return $this->fetchSelect($s)->current();
+		return $this->fetchAll($s)->current();
 	}
 }
 

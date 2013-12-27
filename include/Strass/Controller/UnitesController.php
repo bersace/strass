@@ -186,7 +186,7 @@ class UnitesController extends Strass_Controller_Action
 		else
 			$s->where('sexe = ?', $ptu->sexe);
 
-		$etapes = $te->fetchSelect($s);
+		$etapes = $te->fetchAll($s);
 		if (!count($etapes))
 			throw new Strass_Controller_Action_Exception("Aucune étape de progression disponible pour cette unité.");
 
@@ -240,7 +240,7 @@ class UnitesController extends Strass_Controller_Action
 					$s->where('appartient.debut < ?', $activite->debut);
 					$s->where('appartient.fin > ? OR appartient.fin IS NULL', $activite->fin);
 				}
-				$individus = $ti->fetchSelect($s);
+				$individus = $ti->fetchAll($s);
 				foreach($individus as $individu)
 					$enum[$individu->id] = $individu->getFullname(false);
 			}
@@ -524,7 +524,7 @@ class UnitesController extends Strass_Controller_Action
 
 
 		$ti = new Individus;
-		$is = $ti->fetchSelect($select);
+		$is = $ti->fetchAll($select);
 		if (!$is->count())
 			throw new Strass_Controller_Action_Exception("Aucun individu n'est disponible ".
 								    "pour cette unité pour l'année ".
@@ -686,7 +686,7 @@ class UnitesController extends Strass_Controller_Action
 				   'appartient.individu = individus.id',
 				   array())
 			->where('appartient.individu IS NULL');
-		$is = $t->fetchSelect($s);
+		$is = $t->fetchAll($s);
 		$p = $this->_getParam('page');
 		$p = $p ? $p : 1;
 		$this->view->individus = new Wtk_Pages_Model_Iterator($is, 20, $p);
@@ -723,7 +723,7 @@ class UnitesController extends Strass_Controller_Action
 			       array())
 			->where("individus.username IS NULL or individus.username = ''")
 			->order('individus.id');
-		$is = $ti->fetchSelect($s);
+		$is = $ti->fetchAll($s);
 		$p = $this->_getParam('page');
 		$p = $p ? $p : 1;
 		$this->view->individus = new Wtk_Pages_Model_Iterator($is, 20, $p);

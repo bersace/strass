@@ -225,7 +225,7 @@ class IndividusController extends Strass_Controller_Action
 	      "EXISTS (?)",
 	      new Zend_Db_Expr($exists->__toString()))
       ->where("NOT EXISTS (?)", new Zend_Db_Expr($notexists->__toString()));
-    $etapes = $te->fetchSelect($select);
+    $etapes = $te->fetchAll($select);
     $enum = array();
     $sexes = array();
     foreach($etapes as $etape) {
@@ -282,7 +282,7 @@ class IndividusController extends Strass_Controller_Action
       ->where("NOT EXISTS (?)", new Zend_Db_Expr($notexists->__toString()))
       ->where("sexe = 'm' OR sexe = ?", $i->sexe)
       ->where("? >= age_min", $i->getAge());
-    $etapes = $td->fetchSelect($select);
+    $etapes = $td->fetchAll($select);
 
     $enum = array();
     foreach($etapes as $etape)

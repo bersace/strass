@@ -12,7 +12,7 @@ class Strass_Pages_Model_Rowset extends Wtk_Pages_Model
 
 	  // selection les tuples de cette pages.
 	  $select->limitPage($current, $count);
-	  $rowset = $table->fetchSelect($select);
+	  $rowset = $table->fetchAll($select);
 
 	  parent::__construct($rowset, $count, $current);
 

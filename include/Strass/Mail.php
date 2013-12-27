@@ -100,7 +100,7 @@ class Strass_Mail extends Zend_Mail
 			       "membership.groupname = 'admins'",
 			       array());
 
-		$admins = $ti->fetchSelect($select);
+		$admins = $ti->fetchAll($select);
 		$tos = array();
 		foreach($admins as $admin)
 			$this->addBcc($admin->adelec, $admin->getFullName(true));
@@ -123,7 +123,7 @@ class Strass_Mail extends Zend_Mail
 			       'appartient.fin IS NULL',
 			       array())
 			->where('individus.id = appartient.individu');
-		$chefs = $ti->fetchSelect($s);
+		$chefs = $ti->fetchAll($s);
 
 		$tos = array();
 		foreach($chefs as $chef)

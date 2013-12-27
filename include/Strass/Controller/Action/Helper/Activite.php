@@ -33,7 +33,7 @@ class Strass_Controller_Action_Helper_Activite extends Zend_Controller_Action_He
 			$s->where("activites.fin < '".$fin."'");
 		}
 
-		return $ta->fetchSelect($s);
+		return $ta->fetchAll($s);
 	}
 
 	function direct($id = null, $throw = true, $reset = true,

@@ -52,16 +52,17 @@ class Unites extends Strass_Db_Table_Abstract
 		$db = $this->getAdapter();
 		$select = $db->select()
 			->from('unites')
-			->where('unites.id = "'.
-				implode('" OR unites.id = "', (array) $ids).'"');
+		  ->where('unites.id = IN ?', $ids);
 
-		return $this->fetchSelect($select);
+		return $this->fetchAll($select);
 	}
 
-	function fetchSelect($select)
+	function fetchAll($select)
 	{
-		$this->_ordonner($select);
-		return parent::fetchSelect($select);
+	  $args = func_get_args();
+	  if ($args[0] instanceof Zend_Db_Table_Select)
+	    $this->_ordonner($args[0]);
+	  return call_user_func_array(array('parent', 'fetchAll'), $args);
 	}
 
 	protected function _ordonner($select)
@@ -101,7 +102,7 @@ class Unites extends Strass_Db_Table_Abstract
 		if ($where)
 			$select->where($where);
 
-		return $this->fetchSelect($select);
+		return $this->fetchAll($select);
 	}
 }
 
@@ -188,11 +189,10 @@ class Unite extends Strass_Db_Table_Row_Abstract implements Zend_Acl_Resource_In
 			// unité
 			$tu = $this->getTable();
 			$db = $tu->getAdapter();
-			$select = $db->select()
-				->from("unites")
+			$select = $tu->select()
 				->where("unites.parent = ?", $this->parent)
 				->where("unites.type = 'hp' OR unites.type = 'aines'");
-			$soeur = $tu->fetchSelect($select)->current();
+			$soeur = $tu->fetchAll($select)->current();
 			$soeurroles = $soeur ? array($soeur, $soeur->getRoleRoleId('assistant')) : array();
 
 			$roles = $this->findParentTypesUnite()->findRoles();
@@ -381,7 +381,7 @@ class Unite extends Strass_Db_Table_Row_Abstract implements Zend_Acl_Resource_In
 				}
 			}
 
-			$su = $this->getTable()->fetchSelect($select);
+			$su = $this->getTable()->fetchAll($select);
 			foreach($su as $u) {
 				$unites[] = $u;
 				if ($recursif) {
@@ -460,7 +460,7 @@ class Unite extends Strass_Db_Table_Row_Abstract implements Zend_Acl_Resource_In
 				$select->where($clause);
 
 		$ta = new Appartenances();
-		return $ta->fetchSelect($select);
+		return $ta->fetchAll($select);
 	}
 
 	function isFermee()
@@ -524,7 +524,7 @@ class Unite extends Strass_Db_Table_Row_Abstract implements Zend_Acl_Resource_In
 			$select->where('NOT EXISTS (?)',
 				       new Zend_Db_Expr($notexists->__toString()));
 		}
-		return $tp->fetchSelect($select);
+		return $tp->fetchAll($select);
 	}
 
 	function isTerminale()
@@ -565,7 +565,7 @@ class Unite extends Strass_Db_Table_Row_Abstract implements Zend_Acl_Resource_In
 			break;
 		}
 
-		$is = $ti->fetchSelect($select);
+		$is = $ti->fetchAll($select);
 		$annees = array();
 		$cette_annee = intval(strftime('%Y', time()-243*24*60*60));
 		foreach($is as $individu) {
@@ -616,7 +616,7 @@ class TypesUnite extends Strass_Db_Table_Abstract
 	{
 		$select = $this->getAdapter()->select()
 			->where('parent IS NULL');
-		return $this->fetchSelect($select);
+		return $this->fetchAll($select);
 	}
 }
 

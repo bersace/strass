@@ -262,7 +262,7 @@ class Individu extends Strass_Db_Table_Row_Abstract implements Zend_Acl_Role_Int
 		     "progression.date = ? - 10", ($annee+1));
 
     $tp = new Progression();
-    return $tp->fetchSelect($select)->current();
+    return $tp->fetchAll($select)->current();
   }
 
   function getEtapesDisponibles($toutes = false)
@@ -278,7 +278,7 @@ class Individu extends Strass_Db_Table_Row_Abstract implements Zend_Acl_Role_Int
 		   "etape = etapes.id", array());
       $s->where('progression.individu IS NULL');
     }
-    return $te->fetchSelect($s);
+    return $te->fetchAll($s);
   }
 
   function getDiplomesDisponibles($tous = false)
@@ -294,7 +294,7 @@ class Individu extends Strass_Db_Table_Row_Abstract implements Zend_Acl_Role_Int
 		   array());
       $s->where('formation.diplome IS NULL');
     }
-    return $td->fetchSelect($s);
+    return $td->fetchAll($s);
   }
 
   /*
@@ -356,7 +356,7 @@ class Individu extends Strass_Db_Table_Row_Abstract implements Zend_Acl_Role_Int
     }
 
     $activites = new Activites();
-    return $activites->fetchSelect($select);
+    return $activites->fetchAll($select);
   }
 
   function _postDelete()
@@ -396,11 +396,6 @@ class Appartient extends Strass_Db_Table_Row_Abstract implements Zend_Acl_Role_I
   {
     parent::__construct($config);
     $this->initRoleAcl();
-  }
-
-  public function findParentUnites()
-  {
-    return Unite::getInstance($this->unite);
   }
 
   public function getRoleId()
@@ -470,11 +465,7 @@ class Users extends Strass_Db_Table_Abstract
 
   function findByUsername($username) {
     $s = $this->select()->where('username = ?', $username);
-    $user = $this->fetchSelect($s)->current();
-    if ($user)
-      return $user;
-    else
-      throw new Zend_Db_Table_Exception("Pas d'utilisateur ".$username);
+    return $this->fetchOne($s);
   }
 }
 
