@@ -30,6 +30,18 @@
     {
 	display: none;
     }
+
+    #document.parametres #parametres {
+	display: flex;
+	flex-direction: row;
+	flex-wrap: wrap;
+
+	& > .section {
+	    width: 50%;
+	    margin: 0;
+	    padding: 0;
+	}
+    }
 }
 
 @media print {

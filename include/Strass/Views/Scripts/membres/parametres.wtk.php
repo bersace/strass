@@ -1,7 +1,9 @@
 <?php
 
+$p = $this->document->addSection('parametres');
+
 if ($this->migrate) {
-  $s = $this->document->addSection('migrate', "Utiliser ".$this->individu->adelec." pour s'identifier");
+  $s = $p->addSection('migrate', "S'identifier avec ".$this->individu->adelec);
   $f = $s->addForm($this->migrate);
   $f->addSection()->addFlags('warn')
     ->addText("Pour plus de simplicité, utilisez votre adresse ".
@@ -13,14 +15,14 @@ if ($this->migrate) {
 }
 
 if ($this->adelec) {
-  $s = $this->document->addSection('chpass', "Changer d'adresse électronique");
+  $s = $p->addSection('chmail', "Changer d'adresse électronique");
   $f = $s->addForm($this->adelec);
   $f->addEntry('adelec', 24);
   $f->addPassword('motdepasse', 12);
   $f->addForm_ButtonBox()->addForm_Submit($this->adelec->getSubmission('enregistrer'));
 }
 
-$s = $this->document->addSection('chpass', "Changer le mot de passe");
+$s = $p->addSection('chpass', "Changer le mot de passe");
 $f = $s->addForm($this->change);
 try {
   $f->addPassword('mdp/ancien', 12);
@@ -30,7 +32,7 @@ $f->addPassword('mdp/confirmation', 12);
 $f->addForm_ButtonBox()->addForm_Submit($this->change->getSubmission('valider'));
 
 if ($this->admin) {
-  $s = $this->document->addSection('admin', "Établir les privilèges");
+  $s = $p->addSection('admin', "Établir les privilèges");
   $f = $s->addForm($this->admin);
   $f->addCheck('admin');
   $b = $f->addForm_ButtonBox();
