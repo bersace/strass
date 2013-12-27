@@ -29,10 +29,10 @@ $f->addPassword('mdp/nouveau', 12);
 $f->addPassword('mdp/confirmation', 12);
 $f->addForm_ButtonBox()->addForm_Submit($this->change->getSubmission('valider'));
 
-try {
+if ($this->admin) {
   $s = $this->document->addSection('admin', "Établir les privilèges");
   $f = $s->addForm($this->admin);
   $f->addCheck('admin');
   $b = $f->addForm_ButtonBox();
   $b->addForm_Submit($this->admin->getSubmission('valider'));
-} catch (Exception $e) {}
+}

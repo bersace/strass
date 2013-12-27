@@ -6,10 +6,13 @@ RÉGRESSIONS
 
  - Changement de la structure HTML. Les styles CSS sont cassés.
 
- - Il faut redéfinir son mot de passe pour utiliser l'authentification
-   Digest avec son adélec.
-
 NOUVEAUTÉS UTILISATEUR
+
+
+ - Il faut renseigner son mot de passe pour changer d'adresse électronique.
+
+ - Par défaut, c'est l'adélec qui est utilisée pour s'identifier. Les
+   anciens comptes doivent migrer dans les paramètres de comptes.
 
  - La page d'accueil est remplacée par la page d'accueil de l'unité
    racine.

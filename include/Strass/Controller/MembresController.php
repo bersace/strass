@@ -581,34 +581,34 @@ class MembresController extends Strass_Controller_Action implements Zend_Acl_Res
     }
 
     /* Promotion à l'administration */
-    $this->view->admin = $m = new Wtk_Form_Model('admin');
     if ($this->assert($moi, $user, 'admin') && !$autoedit) {
+      $this->view->admin = $m = new Wtk_Form_Model('admin');
       $m->addBool('admin',
 		  "Accorder tout les privilèges sur le site à ".$user->findParentIndividus()->getFullName(),
 		  $user->admin);
-    }
-    $m->addNewSubmission('valider', 'Valider');
+      $m->addNewSubmission('valider', 'Valider');
 
-    if ($m->validate()) {
-      $db->beginTransaction();
-      try {
-	$user->admin = $m->get('admin');
-	$user->save();
-	$db->commit();
+      if ($m->validate()) {
+	$db->beginTransaction();
+	try {
+	  $user->admin = $m->get('admin');
+	  $user->save();
+	  $db->commit();
 
-	$msg = $user->admin ? "Privilèges accordés" : "Privilèges refusés";
-	$this->_helper->Log($msg, array($individu),
-			    $this->_helper->Url('fiche', 'individus', null,
-						array('individu' => $individu->slug)),
-			    (string) $individu);
+	  $msg = $user->admin ? "Privilèges accordés" : "Privilèges refusés";
+	  $this->_helper->Log($msg, array($individu),
+			      $this->_helper->Url('fiche', 'individus', null,
+						  array('individu' => $individu->slug)),
+			      (string) $individu);
 
-	$this->redirectSimple('fiche', 'individus', null,
-			      array('individu' => $individu->slug),
-			      true);
-      }
-      catch(Exception $e) {
-	$db->rollBack();
-	throw $e;
+	  $this->redirectSimple('fiche', 'individus', null,
+				array('individu' => $individu->slug),
+				true);
+	}
+	catch(Exception $e) {
+	  $db->rollBack();
+	  throw $e;
+	}
       }
     }
   }
