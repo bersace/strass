@@ -20,7 +20,9 @@ class ErrorController extends Strass_Controller_Action implements Strass_Control
 	break;
       }
       if ($error instanceof Zend_Controller_Action_Exception) {
-	$this->getResponse()->setHttpResponseCode($error->getCode());
+	try {
+	  $this->getResponse()->setHttpResponseCode($error->getCode());
+	} catch (Zend_Controller_Response_Exception $e) {}
 	break;
       }
     }
