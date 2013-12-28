@@ -106,7 +106,7 @@ ul.adminlinks {
 @media screen {
     body
     {
-	background: #d6c996;
+	background: $page_background;
     }
 
     a:hover, a:visited
@@ -154,10 +154,53 @@ ul.adminlinks {
 
     #document
     {
-	background-color: #FAFBF8;
+	background-color: $content_background;
 	border-style: solid;
 	border-color: #615230;
 	border-radius: 1ex;
+
+	div.dialog {
+	    width: 40ex;
+	    margin: 5em auto;
+	    padding: 1ex;
+	    background: lighten($page_background, 22%);
+
+	    box-shadow: 2pt 4pt 1ex rgba(4, 4, 4, 0.5);
+	    border-radius: 1ex;
+
+	    .h {
+		margin: 1ex;
+	    }
+
+	    &.error {
+		.details {
+		    display: none;
+		}
+
+		&.showtrace {
+		    width: 80%;
+
+		    .details {
+			display: block;
+
+			> .h {
+			    font-size: 1em;
+			    text-align: right;
+			    cursor: pointer;
+			    color: lighten($highlight_color, 10%);
+			}
+
+			> * + * {
+			    display: none;
+			}
+
+			&:hover > * {
+			    display: block;
+			}
+		    }
+		}
+	    }
+	}
     }
 
     #footer
