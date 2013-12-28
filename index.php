@@ -51,10 +51,10 @@ try {
 }
 catch (Exception $e) {
   // affichage complet des exceptions non intercepté par le controlleur. À améliorer.
-  $msg = ":(<br/>\n";
-  $msg.= $e->getMessage()."<br/>\n";
-  $msg.= " à ".$e->getFile().":".$e->getLine()."<br/>\n";
-  $msg.= str_replace ('#', '<br/>#', $e->getTraceAsString())."<br/>\n";
+  $msg = ":(\n\n";
+  $msg.= $e->getMessage()."\n\n";
+  $msg.= " à ".$e->getFile().":".$e->getLine()."\n\n";
+  $msg.= str_replace ('#', '<br/>#', $e->getTraceAsString())."\n";
   Orror::kill(strip_tags($msg));
 }
 
