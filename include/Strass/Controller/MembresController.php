@@ -452,7 +452,7 @@ class MembresController extends Strass_Controller_Action implements Zend_Acl_Res
       $m->addNewSubmission('enregistrer', 'Enregistrer');
 
       if ($m->validate()) {
-	$individu = $user->findParentIndividus();
+	$this->view->individu = $individu = $user->findParentIndividus();
 	$user->username = $individu->adelec;
 	$user->setPassword($m->get('nouveau'));
 	$user->recover_token = null;
@@ -462,7 +462,7 @@ class MembresController extends Strass_Controller_Action implements Zend_Acl_Res
 			    $this->_helper->Url('fiche', 'individus', null,
 						array('individu' => $individu->slug)),
 			    (string) $individu);
-	$this->redirectSimple('index', 'index', null, array(), true);
+	$this->view->finish = true;
       }
     }
     else {
@@ -480,12 +480,15 @@ class MembresController extends Strass_Controller_Action implements Zend_Acl_Res
 	  return;
 	}
 
-	$user->recover_token = uniqid();
+	$individu = $user->findParentIndividus();
+
+	$user->recover_token = md5(uniqid() . '-' . mt_rand(10000, 99999));
 	/* Laisser une demi heure pour délivrer le message */
 	$user->recover_deadline = time() + 30 * 60;
 	$user->save();
 
 	$this->view->mail = $mail = new Strass_Mail_Recover($user);
+	$mail->addTo($individu->adelec, $individu->getFullname(false));
 	$mail->send();
       }
     }

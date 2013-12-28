@@ -25,6 +25,7 @@ class Strass_Mail extends Zend_Mail
     $d->addStyleComponents('mail');
     $d->setStyle(new Wtk_Document_Style($site->style));
     $d->embedStyle();
+    $d->addFlags('mail');
 
     // :P
     $this->addHeader('X-Mailer', 'Strass');
@@ -61,7 +62,6 @@ class Strass_Mail extends Zend_Mail
     $r = Wtk_Render::factory($this->_doc, 'Txt');
     $this->setBodyText($r->render());
     $r = Wtk_Render::factory($this->_doc, 'Xhtml');
-    /* Orror::kill($r->render()); */
     $this->setBodyHTML($r->render());
 
     // assure que le courriel est bien envoyé à l'admin,

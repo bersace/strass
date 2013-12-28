@@ -1,6 +1,18 @@
 <?php
 
-if ($this->mail) {
+if ($this->finish) {
+  $this->document->setTitle(null);
+  $d = $this->document->addDialog("Nouveau mot de passe défini");
+  $d->addText(<<<EOS
+
+Votre nouveau mot de passe est défini. Vous pouvez vous identifier avec \
+votre adresse {$this->individu->adelec} et ce mot de passe.
+
+Bonne visite !
+EOS
+);
+}
+else if ($this->mail) {
   $this->document->addText("Un courriel vous a été envoyé avec un lien vers la page pour définir un nouveau mot de passe. Le lien expirera dans une demi heure.");
 }
 else if ($this->set) {
