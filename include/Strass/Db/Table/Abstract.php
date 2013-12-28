@@ -69,6 +69,7 @@ abstract class Strass_Db_Table_Abstract extends Zend_Db_Table_Abstract
   }
 
   function fetchOne($select) {
+    $select->limit(2);
     $all = $this->fetchAll($select);
 
     if ($all->count() > 1) {
