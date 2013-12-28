@@ -2,6 +2,8 @@
 <?php
 echo "<".$tag."l";
 wtk_id_classes ($id, $flags);
+
+if ($reversed) echo ' reversed="reversed"';
 echo ">\n";
 ?>
 <?php foreach($this as $item): ?>
