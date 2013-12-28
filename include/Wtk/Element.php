@@ -117,6 +117,7 @@ abstract class Wtk_Element
 	function setId($id)
 	{
 		$this->id = $id;
+		return $this;
 	}
 
 	function addFlags($flag)
