@@ -13,7 +13,7 @@ class Strass_Controller_Action_Helper_Unite extends Zend_Controller_Action_Helpe
 		  $unite = Unite::getInstance($id);
 		else {
 		  $unites = new Unites();
-		  $unite = $unites->getOuvertes("unites.parent IS NULL")->current();
+		  $unite = $unites->getOuvertes("unite.parent IS NULL")->current();
 		}
 
 		if (!$unite)

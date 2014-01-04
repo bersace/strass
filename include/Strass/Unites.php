@@ -5,7 +5,7 @@ require_once 'Strass/Documents.php';
 
 class Unites extends Strass_Db_Table_Abstract
 {
-	protected $_name = 'unites';
+	protected $_name = 'unite';
 	protected $_rowClass = 'Unite';
 	protected $_dependentTables = array('Unites',
 					    'Appartenances',
@@ -50,8 +50,8 @@ class Unites extends Strass_Db_Table_Abstract
 	function findMany($ids)
 	{
 		$select = $this->select()
-			->from('unites')
-		  ->where('unites.id IN ?', $ids);
+			->from('unite')
+		  ->where('unite.id IN ?', $ids);
 
 		return $this->fetchAll($select);
 	}
@@ -67,8 +67,8 @@ class Unites extends Strass_Db_Table_Abstract
 	protected function _ordonner($select)
 	{
 		$select->distinct()
-			->join('types_unite', 'unites.type = types_unite.id', array())
-			->order('types_unite.ordre');
+			->join('unite_type', 'unite.type = unite_type.id', array())
+			->order('unite_type.ordre');
 	}
 
 	protected function _getStatut($ouverte, $where = null) {
@@ -79,22 +79,22 @@ class Unites extends Strass_Db_Table_Abstract
 			// incomplet car on pourrait avoir les
 			// effectifs des patrouilles sans la maîtrise
 			// (PL) et donc avoir une HP.
-			$select->join('appartient',
-				      "appartient.unite = unites.id".
+			$select->join('appartenance',
+				      "appartenance.unite = unite.id".
 				      " OR ".
-				      ("((unites.type = 'hp' OR unites.type = 'aines')".
+				      ("((unite.type = 'hp' OR unite.type = 'aines')".
 				       " AND ".
-				       "appartient.unite = unites.parent)"),
+				       "appartenance.unite = unite.parent)"),
 				      array())
 				->where('fin IS NULL');
 		}
 		else {
-			$select->joinLeft('appartient',
-					  'appartient.unite = unites.id'.
+			$select->joinLeft('appartenance',
+					  'appartenance.unite = unite.id'.
 					  ' AND '.
-					  'appartient.fin IS NULL', array());
-			$select->where("appartient.unite IS NULL");
-			$select->where("unites.type <> 'hp' AND unites.type <> 'aines'");
+					  'appartenance.fin IS NULL', array());
+			$select->where("appartenance.unite IS NULL");
+			$select->where("unite.type <> 'hp' AND unite.type <> 'aines'");
 		}
 
 		if ($where)
@@ -131,91 +131,51 @@ class Unite extends Strass_Db_Table_Row_Abstract implements Zend_Acl_Resource_In
 	{
 		$acl->allow(null, $this, array('index'));
 
-		switch($this->type) {
-		case 'hp':
-		case 'aines':
-			// TODO : gérer ça proprement ?
-			$acl->addRole(new Zend_Acl_Role($this->getRoleRoleId('chef')));
-			$acl->addRole(new Zend_Acl_Role($this->getRoleRoleId('assistant')));
-			break;
-		default:
-			// GESTION DES NOM DE JUNGLE
-			if ($this->type == 'meute') {
-				// par défaut, permettre de voir les nom
-				$acl->allow(null, $this, 'voir-nom');
-				$siz =
-					$this->getTable()->fetchAll("type = 'sizloup' OR type = 'sizjeannette'");
+		/* En dur, car systématique et pour en base pour les unités virtuelles et les sizaines */
+		$acl->addRole(new Zend_Acl_Role($this->getRoleRoleId('chef')));
+		$acl->addRole(new Zend_Acl_Role($this->getRoleRoleId('assistant')));
 
-				$acl->addRole($a = new Zend_Acl_Role($this->getRoleRoleId('assistant')));
-				$t = new Roles();
-				$rs = $t->fetchAll("type = 'meute' OR type = 'ronde'");
-				foreach($rs as $role) {
-					// ON AJOUTE CHAQUE NOM DE JUNGLE COMME ASSISTANT
-					$r = new Zend_Acl_Role($this->getRoleRoleId($role->id));
-					if (!$acl->hasRole($r))
-						$acl->addRole($r, $a);
+		// Donner aux assistante tout les pouvoirs sur
+		// l'unité. Oui c'est du machisme, mais c'est plus
+		// rare les cheftaines qui se soucient de
+		// l'informatique …
+		if ($this->findParentTypesUnite()->sexe == 'f') {
+		  // CORRECTIF à l'arrache du 15 juin 2012 : il faut tester la création des
+		  // rôle pour les unités féminines.
+		  $r = new Zend_Acl_Role($this->getRoleRoleId('assistant'));
+		  if (!$acl->hasRole($r))
+		    $acl->addRole($r);
+		  $acl->allow($r, $this);
+		}
 
-					// ON INTERDIT AUX LOUP DE VOIR LES NOM DE JUNGLE.
-					$r = new Zend_Acl_Resource($this->getRoleRoleId($role->id));
-					if (!$acl->has($r)) {
-						$acl->add($r);
-						// refuser aux sizaines de voir le nom des cheftaines
-						foreach($siz as $s) {
-							$acl->deny($s, $r, 'voir-nom');
-							$acl->deny($s, $r, 'fiche');
-						}
-					}
-				}
-			}
+		// Considérer les chef et assistants des unités sœur
+		// comme chef et assistant de cette unité. Ex: les CP
+		// et SP sont chefs et assistants de la HP.
+		$tu = $this->getTable();
+		$select = $tu->select()
+		  ->setIntegrityCheck(false)
+		  ->from('unite')
+		  ->where("unite.parent = ?", $this->parent)
+		  ->join('unite_type', 'unite_type.id = unite.type')
+		  ->where("unite_type.virtuelle");
+		$soeur = $tu->fetchAll($select)->current();
+		$soeurroles = $soeur ? array($soeur, $soeur->getRoleRoleId('assistant')) : array();
 
-			// Donner aux assistante tout les pouvoirs sur
-			// l'unité. Oui c'est du machisme, mais c'est
-			// plus rare les cheftaines qui se soucient de
-			// l'informatique …
-			if ($this->findParentTypesUnite()->sexe == 'f') {
-                                // CORRECTIF à l'arrache du 15 juin 2012 : il faut tester la création des
-                                // rôle pour les unités féminines.
-			        $r = new Zend_Acl_Role($this->getRoleRoleId('assistant'));
-				if (!$acl->hasRole($r))
-					$acl->addRole($r);
-				$acl->allow($r, $this);
-                        }
-
-
-			// considérer les chef et assistants des
-			// unités sœur comme chef et assistant cette
-			// unité
-			$tu = $this->getTable();
-			$db = $tu->getAdapter();
-			$select = $tu->select()
-				->where("unites.parent = ?", $this->parent)
-				->where("unites.type = 'hp' OR unites.type = 'aines'");
-			$soeur = $tu->fetchAll($select)->current();
-			$soeurroles = $soeur ? array($soeur, $soeur->getRoleRoleId('assistant')) : array();
-
-			$roles = $this->findParentTypesUnite()->findRoles();
-			// Pour chaque roles des unités sœur
-			foreach($roles as $role) {
-				$rid = $this->getRoleRoleId($role->id);
-				if (!$acl->hasRole($rid)) {
-					// ajouter le role des
-					// maîtrise comme étant
-					// assistant dans cette unité.
-					// TODO: gérér globalement car
-					// il y a ici une course, dans
-					// le cas de page web sans
-					// état, c'est peu gênant.
-					$parent = in_array($role->id, array('chef', 'assistant')) ? $soeurroles : array();
-					$acl->addRole(new Zend_Acl_Role($rid), $parent);
-				}
-			}
+		$roles = $this->findParentTypesUnite()->findRoles();
+		foreach($roles as $role) {
+		  $rid = $this->getRoleRoleId($role->acl_role);
+		  if (!$acl->hasRole($rid)) {
+		    // ajouter le role des maîtrise comme étant
+		    // assistant dans cette unité.  TODO: gérér
+		    // globalement car il y a ici une course, dans le
+		    // cas de page web sans état, c'est peu gênant.
+		    $parent = in_array($role->acl_role, array('chef', 'assistant')) ? $soeurroles : array();
+		    $acl->addRole(new Zend_Acl_Role($rid), $parent);
+		  }
 		}
 
 		// permettre au chef d'unités racine de valider les inscriptions.
 		if (!$this->parent) {
-			if (!$acl->has('membres'))
-				$acl->add(new Zend_Acl_Resource('membres'));
-
 			if (!$acl->has('inscriptions'))
 				$acl->add(new Zend_Acl_Resource('inscriptions'));
 			$acl->allow($this->getRoleRoleId('chef'), array('membres', 'inscriptions'));
@@ -237,43 +197,17 @@ class Unite extends Strass_Db_Table_Row_Abstract implements Zend_Acl_Resource_In
 
 	public function getResourceId()
 	{
-		return $this->id;
+		return 'unite-'.$this->slug;
 	}
 
 	public function getRoleId()
 	{
-		return $this->id;
+		return 'unite-'.$this->slug;
 	}
 
 	public function getRoleRoleId($role, $annee = null)
 	{
-		$r = $role;
-		switch ($role) {
-		case 'aumonier':
-		case 'akela':
-                case 'guillemette':
-			$role = 'chef';
-			break;
-		case 'tresorier':
-		case 'secretaire';
-		case 'baloo':
-		case 'bagheera':
-		case 'raksha':
-		case 'chil':
-		case 'kaa':
-		case 'hathi':
-		case 'wontolla':
-		case 'rama':
-		case 'rikki':
-		case 'chuchundra':
-		case 'gris':
-		case 'fauvette':
-		case 'sahi':
-			$role = 'assistant';
-			break;
-		}
-
-		return ($role ? $role.'-' : '').$this->id.($annee ? '-'.$annee : '');
+	  return $role.'-'.$this->getRoleId();
 	}
 
 	public function getTypeName()
@@ -295,17 +229,17 @@ class Unite extends Strass_Db_Table_Row_Abstract implements Zend_Acl_Resource_In
 		return trim($this->getTypeName()." ".$this->nom);
 	}
 
-	function getImage($id = null, $test = true)
+	function getImage($slug = null, $test = true)
 	{
-		$id = $id ? $id : $this->id;
-		$image = 'data/unites/'.$id.'.png';
+		$slug = $slug ? $slug : $this->slug;
+		$image = 'data/unites/'.$slug.'.png';
 		return !$test || is_readable($image) ? $image : null;
 	}
 
-	function getWiki($id = null, $test = true)
+	function getWiki($slug = null, $test = true)
 	{
-		$id = $id ? $id : $this->id;
-		$image = 'private/unites/'.$id.'.wiki';
+		$slug = $slug ? $slug : $this->slug;
+		$image = 'private/unites/'.$slug.'.wiki';
 		return !$test || is_readable($image) ? $image : null;
 	}
 
@@ -327,7 +261,7 @@ class Unite extends Strass_Db_Table_Row_Abstract implements Zend_Acl_Resource_In
 		$sts = $this->getSousTypes();
 		$soustype = '';
 		foreach($sts as $st) {
-			if ($st->id == 'hp')
+			if ($st->slug == 'hp')
 				continue;
 
 			if (!$soustype)
@@ -359,21 +293,23 @@ class Unite extends Strass_Db_Table_Row_Abstract implements Zend_Acl_Resource_In
 			$db = $this->getTable()->getAdapter();
 			$select = $this->getTable()->select()
 			  ->setIntegrityCheck(false)
-				->from('unites')
-				->where('unites.parent = ?', $this->id);
+				->from('unite')
+				->where('unite.parent = ?', $this->id);
 
 			if (!is_null($annee)) {
-				$select->join('appartient',
-					      'appartient.unite = unites.id'.
-					      ' OR '.
-					      ("((unites.type = 'hp' OR unites.type = 'aines')".
-					       " AND ".
-					       " appartient.unite = unites.parent)"),
-					      array());
+				$select
+				  ->join('unite_type', 'unite_type.id = unite.type', array())
+				  ->join('appartenance',
+					 'appartenance.unite = unite.id'.
+					 ' OR '.
+					 ("(unite_type.virtuelle".
+					  " AND ".
+					  " appartenance.unite = unite.parent)"),
+					 array());
 				if ($annee === false)
-					$select->where('appartient.fin IS NULL');
+					$select->where('appartenance.fin IS NULL');
 				else if ($annee === true)
-					$select->where('appartient.fin IS NOT NULL');
+					$select->where('appartenance.fin IS NOT NULL');
 				else {
 					$date = ($annee+1).'-06';
 					$select->where("debut < ? AND (fin IS NULL OR fin >= ?)", $date);
@@ -416,23 +352,24 @@ class Unite extends Strass_Db_Table_Row_Abstract implements Zend_Acl_Resource_In
 
 		$select = $this->getTable()->select()
 		  ->setIntegrityCheck(false)
-			->distinct()
-			->from('appartient')
-			->join('roles',
-			       'roles.type = appartient.type AND roles.id = appartient.role',
-			       array());
+		  ->distinct()
+		  ->from('appartenance')
+		  ->join('unite', 'unite.id = appartenance.unite')
+		  ->join('unite_role',
+			 'unite_role.type = unite.type AND unite_role.id = appartenance.role',
+			 array());
 
 		switch($this->type) {
 		case 'hp':
-			$where[]= 'appartient.role = "chef" OR appartient.role = "assistant"';
+			$where[]= 'appartenance.role = "chef" OR appartenance.role = "assistant"';
 		case 'aines':
-			$select->join('unites',
-				      'appartient.unite = unites.id'.
+			$select->join('unite',
+				      'appartenance.unite = unite.id'.
 				      ' AND '.
-				      '('.($db->quoteInto('unites.parent = ?',
+				      '('.($db->quoteInto('unite.parent = ?',
 							  $this->parent).
 					   ' OR '.
-					   $db->quoteInto('unites.id = ?',
+					   $db->quoteInto('unite.id = ?',
 							  $this->parent)).
 				      ')',
 				      array());
@@ -441,7 +378,7 @@ class Unite extends Strass_Db_Table_Row_Abstract implements Zend_Acl_Resource_In
 			$select->where($db->quoteInto('unite = ?', $this->id));
 			if ($recursive) {
 				$in = $db->select()
-					->from(array('filles' => 'unites'), 'id')
+					->from(array('filles' => 'unite'), 'id')
 					->where("filles.parent = '".$this->id."'");
 				$select->orWhere($db->quoteInto('unite IN (?)',
 								new Zend_Db_Expr($in->__toString())));
@@ -450,9 +387,9 @@ class Unite extends Strass_Db_Table_Row_Abstract implements Zend_Acl_Resource_In
 		}
 
 		$select->join('individu',
-			      "individu.slug = appartient.individu\n",
+			      "individu.id = appartenance.individu\n",
 			      array())
-			->order('roles.ordre')
+			->order('unite_role.ordre')
 			->order('naissance');
 		$where = array_filter($where);
 		foreach($where as $clause)
@@ -546,24 +483,22 @@ class Unite extends Strass_Db_Table_Row_Abstract implements Zend_Acl_Resource_In
 		  ->setIntegrityCheck(false)
 			->distinct()
 		  ->from('individu')
-			->join('appartient',
-			       'individu.slug = appartient.individu',
-			       array('poste' => 'role',
-				     'debut' => "strftime('%Y', debut, '-8 months')",
-				     'fin' => "strftime('%Y', fin, '-7 months')"))
-			->order('debut ASC');
+		  ->join('appartenance',
+			 'individu.id = appartenance.individu',
+			 array('debut' => "strftime('%Y', debut, '-8 months')",
+			       'fin' => "strftime('%Y', fin, '-7 months')"))
+		  ->join('unite_role', 'unite_role.id = appartenance.role',
+			 array('role' => 'unite_role.acl_role'))
+		  ->order('debut ASC');
 
-		switch($this->type) {
-		case 'hp':
-		case 'aines':
-			$select->join('unites',
-				      'unites.id = appartient.unite',
+		if ($this->findParentTypesUnite()->virtuelle) {
+			$select->join('unite',
+				      'unite.id = appartenance.unite',
 				      array());
-			$select->where("unites.id = ?", $this->parent);
-			break;
-		default:
-			$select->where("appartient.unite = ?", $this->id);
-			break;
+			$select->where("unite.id = ?", $this->parent);
+		}
+		else {
+		  $select->where("appartenance.unite = ?", $this->id);
 		}
 
 		$is = $ti->fetchAll($select);
@@ -576,7 +511,7 @@ class Unite extends Strass_Db_Table_Row_Abstract implements Zend_Acl_Resource_In
 				 if (!array_key_exists($annee, $annees))
 					 $annees[$annee] = null;
 
-				if ($individu->poste == 'chef') {
+				if ($individu->role == 'chef') {
 					$annees[$annee] = $individu;
 				}
 			}
@@ -606,7 +541,7 @@ class Unite extends Strass_Db_Table_Row_Abstract implements Zend_Acl_Resource_In
 
 class TypesUnite extends Strass_Db_Table_Abstract
 {
-	protected $_name = 'types_unite';
+	protected $_name = 'unite_type';
 	protected $_rowClass = 'TypeUnite';
 	protected $_dependentTables = array('Unites', 'TypesUnite', 'Roles');
 	protected $_referenceMap = array('Parent' => array('columns' => 'parent',
@@ -635,14 +570,16 @@ class TypeUnite extends Zend_Db_Table_Row_Abstract
 	{
 		switch ($this->id) {
 		case 'groupe':
-		case 'clan':
-		case 'feu':
-		case 'meute':
-		case 'ronde':
 		case 'sizaine':
 			return null;
+		case 'clan':
+		case 'eqclan':
+		case 'feu':
+		case 'eqfeu':
 		case 'troupe':
 		case 'compagnie':
+		case 'meute':
+		case 'ronde':
 			return 'Patronage';
 		case 'patrouille':
 		case 'equipage':
@@ -663,9 +600,9 @@ class TypeUnite extends Zend_Db_Table_Row_Abstract
 
 class Roles extends Zend_Db_Table_Abstract
 {
-	protected $_name = 'roles';
+	protected $_name = 'unite_role';
 	protected $_rowClass = 'Role';
-	protected $_dependentTables = array('Appartenances', 'Privileges');
+	protected $_dependentTables = array('Appartenances');
 	protected $_referenceMap = array('TypeUnite' => array('columns' => 'type',
 							      'refTableClass' => 'TypesUnite',
 							      'refColumns' => 'id'));

@@ -708,7 +708,7 @@ class UnitesController extends Strass_Controller_Action
 			->join('unites',
 			       "unites.id = '".$unite->id."'".
 			       " OR ".
-			       "unites.parent = '".$unite->id."'",
+			       "unite.parent = '".$unite->id."'",
 			       array())
 			->join('appartient',
 			       'appartient.individu = individus.id'.

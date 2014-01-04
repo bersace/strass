@@ -23,7 +23,6 @@ class Individu extends Strass_Db_Table_Row_Abstract implements Zend_Acl_Role_Int
 				 array('assistant', 'editer'),
 				 array(NULL,	'fiche'));
 
-  protected $nj = null;		// nom de jungle.
   protected $apps = array();
 
   public function __construct(array $config = array())
@@ -34,8 +33,6 @@ class Individu extends Strass_Db_Table_Row_Abstract implements Zend_Acl_Role_Int
     $this->initResourceAcl($this->getUnites(NULL));
 
     $t = new Appartenances();
-    $s = $t->select()->where("type = 'meute'");
-    $this->nj = $this->findAppartenances($s)->count() != 0;
   }
 
   function _initResourceAcl($acl)
@@ -58,18 +55,16 @@ class Individu extends Strass_Db_Table_Row_Abstract implements Zend_Acl_Role_Int
 
     foreach($apps as $app) {
       $u = $app->findParentUnites();
-
       // retourne siz pour les sizaine, chef sinon
       $roles[] = $app->getRoleId();
-      $roles[] = $app->unite;
-      $unite = $app->findParentUnites();
-      $parente = $unite->findParentUnites();
+      $roles[] = $u->getRoleId();
+      $parente = $u->findParentUnites();
       // récursif ?
       if ($parente) {
 	$roles[] = $parente;
-	$grandparente = $parente->findParentUnites();
-	if ($grandparente)
-	  $roles[] = $grandparente;
+	$grandmere = $parente->findParentUnites();
+	if ($grandmere)
+	  $roles[] = $grandmere;
       }
       // Un membre d'une unité est l'équivalent d'un chef d'une
       // sous-unité. Dans les faits, les membres d'une unités
@@ -90,7 +85,7 @@ class Individu extends Strass_Db_Table_Row_Abstract implements Zend_Acl_Role_Int
     $roles = array();
     foreach($su as $u) {
       $role = $u->type == 'sizloup' || $u->type == 'sizjeannette' ? 'siz' : 'chef';
-      $roles[] = $u->id;
+      $roles[] = $u->getRoleId();
       $roles[] = $u->getRoleRoleId($role);
       $roles = array_merge($roles,
 			   $this->getSousRoles($acl, $u));
@@ -128,7 +123,7 @@ class Individu extends Strass_Db_Table_Row_Abstract implements Zend_Acl_Role_Int
   public function voirNom($i = null)
   {
     $ind = Zend_Registry::get('individu');
-    return !$this->nj || ($ind && $ind->getAge() > 11);
+    return $ind && $ind->getAge() > 11;
   }
 
   function getFullName($compute = true, $totem = true)
@@ -375,20 +370,20 @@ class Individu extends Strass_Db_Table_Row_Abstract implements Zend_Acl_Role_Int
 
 class Appartenances extends Strass_Db_Table_Abstract
 {
-  protected	$_name		= 'appartient';
+  protected	$_name		= 'appartenance';
   protected	$_rowClass	= 'Appartient';
   protected	$_referenceMap	= array('Individu'	=> array('columns'		=> 'individu',
 								 'refTableClass'	=> 'Individus',
-								 'refColumns'		=> 'slug',
+								 'refColumns'		=> 'id',
 								 'onUpdate'		=> self::CASCADE,
 								 'onDelete'		=> self::CASCADE),
 					'Unite'		=> array('columns'		=> 'unite',
 								 'refTableClass'	=> 'Unites',
 								 'refColumns'		=> 'id',
 								 'onUpdate'		=> self::CASCADE),
-					'Role'		=> array('columns'		=> array('role', 'type'),
+					'Role'		=> array('columns'		=> 'role',
 								 'refTableClass'	=> 'Roles',
-								 'refColumns'		=> array('id', 'type')));
+								 'refColumns'		=> 'id'));
 }
 
 class Appartient extends Strass_Db_Table_Row_Abstract implements Zend_Acl_Role_Interface, Zend_Acl_Resource_Interface
@@ -401,7 +396,7 @@ class Appartient extends Strass_Db_Table_Row_Abstract implements Zend_Acl_Role_I
 
   public function getRoleId()
   {
-    return $this->findParentUnites()->getRoleRoleId($this->role);
+    return $this->findParentUnites()->getRoleRoleId($this->findParentRoles()->acl_role);
   }
 
   public function getResourceId()

@@ -25,15 +25,15 @@ class Photos extends Strass_Db_Table_Abstract
 			->join('participe',
 			       'participe.activite = photos.activite'.
 			       ' AND '.
-			       $db->quoteInto('participe.unite = ?', $unite->id),
+			       $db->quoteInto('participe.unite = ?', $unite->slug),
 			       array())
-			->join('unites',
-			       'unites.id = participe.unite',
+			->join('unite',
+			       'unite.slug = participe.unite',
 			       array())
 			->joinLeft(array('parent_participe' => 'participe'),
 				   'parent_participe.activite = photos.activite'.
 				   ' AND '.
-				   'parent_participe.unite = unites.parent',
+				   'parent_participe.unite = unite.parent',
 				   array())
 			->where('parent_participe.unite IS NULL')
 			->order('RANDOM()')
@@ -54,7 +54,7 @@ class Photo extends Strass_Db_Table_Row_Abstract implements Zend_Acl_Resource_In
 		parent::__construct($config);
 		$this->initResourceAcl($this->findParentActivites()->findUnitesViaParticipations());
 	}
-  
+
 	function findParentActivites()
 	{
 		if (is_null($this->a)) {
