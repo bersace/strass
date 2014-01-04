@@ -45,6 +45,7 @@ class Strass_MigrateHandler {
     }
     catch (Exception $e) {
       $db->rollBack();
+      error_log("Restauration de la version précédentee.");
       throw $e;
     }
   }
