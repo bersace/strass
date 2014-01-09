@@ -14,7 +14,7 @@ class PhotosController extends Strass_Controller_Action
 				   'DC.Subject' => 'photos,albums,'.$annee));
 
 		$this->view->model = new Strass_Pages_Model_Photos($this->view->unite, $annee);
-            
+
 		$this->actions->append("Envoyer une photo",
 				       array('action' => 'envoyer',
 					     'annee' => null));
@@ -51,11 +51,11 @@ class PhotosController extends Strass_Controller_Action
 			$annee = $this->_helper->Annee(false);
 			$debut = $annee ? $this->_helper->Annee->dateDebut($annee) : null;
 			$fin = $annee ? $this->_helper->Annee->dateFin($annee) : null;
-			$as = $this->_helper->Activite->pourIndividu(Zend_Registry::get('user'), $debut, $fin);
+			$as = $this->_helper->Activite->pourIndividu(Zend_Registry::get('individu'), $debut, $fin);
 			if (!$as)
 				throw new Strass_Controller_Action_Exception_Forbidden("Vous ne pouvez envoyer de photos dans aucune activités.");
 			foreach($as as $a)
-				if ($this->assert(null, $a, 'envoyer-photo')) 
+				if ($this->assert(null, $a, 'envoyer-photo'))
 					$enum[$a->id] = wtk_ucfirst($a->getIntitule());
 		}
 		else {
@@ -258,7 +258,7 @@ class PhotosController extends Strass_Controller_Action
 			if (!$as)
 				throw new Strass_Controller_Action_Exception_Forbidden("Vous ne pouvez envoyer de photos dans aucune activités.");
 			foreach($as as $a)
-				if ($this->assert(null, $a, 'envoyer-photo')) 
+				if ($this->assert(null, $a, 'envoyer-photo'))
 					$enum[$a->id] = wtk_ucfirst($a->getIntitule());
 
 		$m = new Wtk_Form_Model('photo');
@@ -368,8 +368,8 @@ class PhotosController extends Strass_Controller_Action
 				   'DC.Subject' => 'photo',
 				   'DC.Date.created' => $p->date));
 
-		
-		
+
+
 	}
 
 	function supprimerAction()
@@ -395,7 +395,7 @@ class PhotosController extends Strass_Controller_Action
 				$db->beginTransaction();
 				try {
 					$p->delete();
-					$this->_helper->Log("Photo supprimée", array($a), 
+					$this->_helper->Log("Photo supprimée", array($a),
 							    $this->_helper->Url->url(array('action' => 'consulter',
 											   'photo' => null)),
 							    (string) $a);
@@ -419,4 +419,3 @@ class PhotosController extends Strass_Controller_Action
 		$this->view->model = $m;
 	}
 }
-

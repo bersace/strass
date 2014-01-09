@@ -47,7 +47,7 @@ class Strass_Addon_Console extends Strass_Addon_Liens
 	$u = current($us);
 	$actions[] = array('url' => $view->url(array('controller' => 'unites',
 						     'action' => 'index',
-						     'unite' => $u->id),
+						     'unite' => $u->slug),
 					       true),
 			   'label' => wtk_ucfirst($u->getFullName()));
 	$actions[] = array('url' => $view->url(array('controller' => 'activites',

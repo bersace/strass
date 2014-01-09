@@ -138,8 +138,7 @@ class ActivitesController extends Strass_Controller_Action
 				$tu = new Unites();
 				$data = $m->get();
 				$unites = $data['unites'];
-				$apporter = $data['apporter'];
-				$keys = array('debut', 'fin', 'lieu', 'cotisation', 'depart', 'retour','message');
+				$keys = array('debut', 'fin', 'lieu','message');
 				$tuple = array();
 				foreach($keys as $k)
 					$tuple[$k] = $m->$k;
@@ -161,7 +160,7 @@ class ActivitesController extends Strass_Controller_Action
 										       $tuple['fin']),
 								    strtotime($tuple['debut']),
 								    strtotime($tuple['fin']));
-				$tuple['id'] = $id = wtk_strtoid($tuple['intitule']);
+				$tuple['id'] = $id = wtk_strtoid($intitule);
 
 				// enregistrement de l'activité
 				$activites = new Activites();
@@ -169,10 +168,6 @@ class ActivitesController extends Strass_Controller_Action
 				$a = $activites->find($id)->current();
 
 				$this->updateParticipations($a, $participantes);
-
-				// Stocker les item à apporter
-				$this->updateApports($a, $apporter);
-
 
 				// Pièces-jointes
 				$tda = new DocsActivite;
@@ -211,12 +206,13 @@ class ActivitesController extends Strass_Controller_Action
 					$tda->insert($data);
 				}
 
-				$this->_helper->Log("Nouvelle activité", array_merge(array($a), $unites),
+				$db->commit();
+
+				$this->_helper->Log("Nouvelle activité", array(),
 						    $this->_helper->Url->url(array('action' => 'consulter',
 										   'activite' => $a->id)),
-						    (string) $a);
+						    $intitule);
 
-				$db->commit();
 				if ($m->get('prevoir')) {
 					$this->redirectSimple('prevoir', null, null, null, false);
 				}
@@ -579,7 +575,7 @@ class ActivitesController extends Strass_Controller_Action
 		$ps = new Participations();
 		$p = $a && $u ? $ps->find($a->id, $u->id)->current() : null;
 		if (!$p && $throw)
-			throw new Strass_Controller_Action_Exception_Notice(wtk_ucfirst($u->getFullname()).	
+			throw new Strass_Controller_Action_Exception_Notice(wtk_ucfirst($u->getFullname()).
 									   " ne participe pas à l'activité ".
 									   $a->getIntitule());
 		return array($u, $p, $a);
@@ -616,17 +612,17 @@ class ActivitesController extends Strass_Controller_Action
 	{
 		$participations = new Participations();
 		$table = new Unites();
-		$rows = $table->fetchAll();
 
 		// boucler sur *toutes* les unités existantes pour ajout ou
 		// suppression de la participation.
+		$rows = $table->fetchAll();
 		foreach($rows as $unite) {
-			$p = $participations->find($activite->id, $unite->id)->current();
+			$p = $participations->find($activite->id, $unite->slug)->current();
 			if (in_array($unite->id, $participantes)) {
 				// ajouter un unités nouvellement participante
 				if (!$p)
 					$id = $participations->insert(array ('activite' => $activite->id,
-									     'unite' => $unite->id));
+									     'unite' => $unite->slug));
 			}
 			// supprimer une unité anciennement participante
 			else if ($p)

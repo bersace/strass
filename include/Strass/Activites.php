@@ -147,7 +147,7 @@ class Activite extends Strass_Db_Table_Row_Abstract implements Zend_Acl_Resource
 
 	public function getIntitule($date = true, $lieu = true, $compact = false)
 	{
-		// Si l'intitulé est généré, alors le regénérer.
+	  // Si l'intitulé est défini, alors ne pas le regénérer.
 	  if ($this->intitule) {
 	    $intitule = $this->intitule;
 	  }
@@ -189,6 +189,7 @@ class Activite extends Strass_Db_Table_Row_Abstract implements Zend_Acl_Resource
 
 		$tu = new Unites();
 		$eids = Activites::getUnitesParticipantesExplicites($unites);
+
 		$explicites = count($eids) > 1 ? $tu->findMany($eids) : Unite::getInstance($eids[0]);
 
 		// on commence toujours par le type d'activité.
@@ -210,7 +211,6 @@ class Activite extends Strass_Db_Table_Row_Abstract implements Zend_Acl_Resource
 		else
 			$i = self::$types[$type];
 
-
 		// type des unités participante
 		if ($explicites instanceof Countable) {   // inter unités
 			$types = array();
@@ -224,10 +224,17 @@ class Activite extends Strass_Db_Table_Row_Abstract implements Zend_Acl_Resource
 		}
 		else {                  // unité unique
 			$unite = $explicites;
+
 			if ($compact && $type == 'we') {
 			  switch ($unite->type) {
-			  case 'hp':
-			    $i.= 'HP';
+			  case 'groupe':
+			    $i.= "G";
+			    break;
+			  case 'clan':
+			    $i.= 'C';
+			    break;
+			  case 'feu':
+			    $i.= 'F';
 			    break;
 			  case 'aines':
 			    $i.= 'CA';
@@ -235,11 +242,14 @@ class Activite extends Strass_Db_Table_Row_Abstract implements Zend_Acl_Resource
 			  case 'troupe':
 			    $i.= "T ".$unite->nom;
 			    break;
-			  case 'groupe':
-			    $i.= "G";
+			  case 'hp':
+			    $i.= 'HP';
 			    break;
 			  case 'patrouille':
 			    $i.= "P ".$unite->getName();
+			    break;
+			  case 'compagnie':
+			    $i.= 'Cie';
 			    break;
 			  case 'equipe':
 			  case 'eqclan':
