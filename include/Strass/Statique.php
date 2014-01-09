@@ -1,11 +1,14 @@
 <?php
 
+require_once 'Wtk.php';
+
+
 class Statique implements Zend_Acl_Resource_Interface
 {
 	protected $id;
 	protected $title;
 
-    
+
 	function __construct($id)
 	{
 		$this->id = $id;
@@ -14,17 +17,17 @@ class Statique implements Zend_Acl_Resource_Interface
 
 		$this->title = preg_match("`^\+\+ (.*)$`m", $this->read(), $res) ? $res[1] : wtk_ucfirst($this->id);
 	}
-    
+
 	function getId()
 	{
 		return $this->id;
 	}
-    
+
 	function getFilename()
 	{
 		return $this->path;
 	}
-    
+
 	function getResourceId()
 	{
 		return 'page-statique-'.$this->id;
@@ -34,20 +37,24 @@ class Statique implements Zend_Acl_Resource_Interface
 	{
 		return $this->title;
 	}
-    
+
 	function readable()
 	{
 		return is_readable($this->getFilename());
 	}
-    
+
 	function read()
 	{
 		return @file_get_contents($this->getFilename());
 	}
-    
+
 	function write($contents)
 	{
 		file_put_contents($this->getFilename(), $contents);
 	}
-    
+
+	function delete()
+	{
+	  unlink($this->getFilename());
+	}
 }

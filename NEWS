@@ -6,6 +6,8 @@ RÉGRESSIONS
 
  - Changement de la structure HTML. Les styles CSS sont cassés.
 
+ - Fusion de la page Contacts dans la page Mentions légales
+
 NOUVEAUTÉS UTILISATEUR
 
  - Possibilité de réinitialiser son mot de passe sans passer par

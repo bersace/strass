@@ -3,6 +3,8 @@
 class Strass_Migrate {
   function __construct() {
     $this->db = Strass_Db::setup();
+    $acl = new Zend_Acl();
+    Zend_Registry::set('acl', $acl);
   }
 
   function migrate() {
