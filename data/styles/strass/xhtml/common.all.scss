@@ -563,6 +563,13 @@ ul.adminlinks {
 	height: 16em;
 	line-height: 16em;
 	color: #7f7d73;
+
+	&.image {
+	    outline: 1px solid black;
+	    border-radius: .1ex;
+	    padding: 1ex;
+	    margin: 1ex;
+	}
     }
 }
 

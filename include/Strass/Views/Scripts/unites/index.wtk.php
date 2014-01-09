@@ -25,7 +25,7 @@ class Strass_Views_PagesRenderer_Unites_Accueil extends Strass_Views_PagesRender
 	}
       }
 
-      $url = $this->view->url(array('unite' => $unite->id));
+      $url = $this->view->url(array('unite' => $unite->slug));
       $link = new Wtk_Link($url, $label,
 			   new Wtk_Container($image, new Wtk_Paragraph($label)));
       $link->addFlags($unite->type);
@@ -53,9 +53,17 @@ class Strass_Views_PagesRenderer_Unites_Accueil extends Strass_Views_PagesRender
     if ($src) {
       $ss->addImage($src, "Photos d'unité", wtk_ucfirst($unite->getFullname()));
     }
+    else {
+      $ss->addParagraph()->addFlags('image', 'empty')
+	->addInline("Pas d'image !");
+    }
 
     if ($texte)
       $ss->addText($texte);
+    else {
+      $ss->addParagraph()->addFlags('text', 'empty')
+	->addInline("Pas de présentation !");
+    }
 
     // Section les unités
     if ($sousunites) {

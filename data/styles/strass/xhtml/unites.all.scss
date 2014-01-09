@@ -1,7 +1,7 @@
 /*-*- css -*-*/
 
 /* ACCUEIL */
-#presentation img
+#presentation .image
 {
     float: left;
     margin: 0 1ex 1ex 0;
@@ -109,7 +109,7 @@ td.numero
 	background-position: left center;
 	background-repeat: no-repeat;
     }
-    
+
     table.groupe tr.chef td.accr
     {
 	background-image: url("postes/cg.png");
@@ -119,45 +119,45 @@ td.numero
     {
 	background-image: url("postes/aumonier.png");
     }
-    
+
     table.groupe tr.assistant td.accr,
     table.groupe tr.tresorier td.accr,
     table.groupe tr.secretaire td.accr
     {
 	background-image: url("postes/acg.png");
     }
-    
+
     table.clan tr.chef td.accr
     {
 	background-image: url("postes/cc.png");
     }
-    
+
     table.troupe tr.chef td.accr,
     table.compagnie tr.chef td.accr
     {
 	background-image: url("postes/ct.png");
     }
-    
+
     table.troupe tr.assistant td.accr,
     table.compagnie tr.assistant td.accr
     {
 	background-image: url("postes/act.png");
     }
-    
-    
+
+
     table.patrouille tr.chef td.accr,
     table.equipe tr.chef td.accr
     {
 	background-image: url("postes/cp.png");
     }
-    
+
     table.patrouille tr.assistant td.accr,
     table.equipe tr.assistant td.accr
     {
 	background-image: url("postes/sp.png");
     }
 
-    
+
     table.meute tr.chef td.accr,
     table.ronde tr.chef td.accr
     {
@@ -191,7 +191,7 @@ td.numero
     {
 	background-image: url("postes/sec.png");
     }
-    
+
     .maitrise table .formation + *
     {
 	display: none;

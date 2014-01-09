@@ -1,7 +1,10 @@
+/*-*- css -*-*/
+
 .vignettes
 {
     display: flex;
     flex-wrap: wrap;
+    padding: 0;
 }
 
 .vignettes > li

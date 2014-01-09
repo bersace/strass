@@ -5,8 +5,11 @@ class Strass_Views_PagesRenderer_Calendrier extends Strass_Views_PagesRenderer_H
   function render($annee = NULL, $data, $s) {
     extract($data);
 
-    if (!$activites->count())
-      return new Wtk_Text("Aucune activité prévue en ".$annee);
+    if (!$activites->count()) {
+      $s->addParagraph()->addFlags('empty')
+	->addInline("Aucune activité prévue en ".$annee);
+      return $s;
+    }
 
     $ss = $s->addSection('calendrier');
     $tam = new Wtk_Table_Model('id', 'type', 'lieu', 'date', 'intitule');
@@ -20,7 +23,7 @@ class Strass_Views_PagesRenderer_Calendrier extends Strass_Views_PagesRenderer_H
 
     $t->addColumn(new Wtk_Table_Column("Date",
 				       new Wtk_Table_CellRenderer_Text('text', 'date')));
-                                       
+
     $c = new Wtk_Table_CellRenderer_Link('href', 'id',
 					 'label', 'intitule');
     $t->addColumn(new Wtk_Table_Column("Activité", $c));
@@ -29,7 +32,7 @@ class Strass_Views_PagesRenderer_Calendrier extends Strass_Views_PagesRenderer_H
     $url = $this->view->url(array('action' => $future ? 'consulter' : 'rapport',
 				  'activite' => '%s'));
     $c->setUrlFormat(urldecode($url));
-                           
+
     if($future)
       $ss->addText("**La présence de chacun est primordiale** pour le bon déroulement ".
 		   "des activités et pour la progression de tous.");
