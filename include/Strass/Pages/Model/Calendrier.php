@@ -17,7 +17,7 @@ class Strass_Pages_Model_Calendrier extends Strass_Pages_Model_Historique
       ->join('participe',
 	     'participe.activite = activites.id'.
 	     ' AND '.
-	     $db->quoteInto('participe.unite = ?', $u->id),
+	     $db->quoteInto('participe.unite = ?', $u->slug),
 	     array())
       ->where("debut >= ?", $min)
       ->where("debut <= ?", $max)

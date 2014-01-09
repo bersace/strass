@@ -8,7 +8,8 @@ class Strass_Pages_Model_Photos extends Strass_Pages_Model_Historique
   function fetch($annee = NULL) {
     $activites = new Activites();
     $db = $activites->getAdapter();
-    $select = $db->select()
+    $select = $activites->select()
+      ->setIntegrityCheck(false)
       ->distinct()
       ->from('activites')
       ->join('photos', 'photos.activite = activites.id', array())

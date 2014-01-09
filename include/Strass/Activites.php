@@ -40,7 +40,7 @@ class Activite extends Strass_Db_Table_Row_Abstract implements Zend_Acl_Resource
 {
 	static protected $us = array();
 	protected $gi;
-    
+
 	static protected $types = array('diner' => 'Dîner',
 					'sortie' => 'Sortie',
 					'we' => 'Week-end',
@@ -168,7 +168,7 @@ class Activite extends Strass_Db_Table_Row_Abstract implements Zend_Acl_Resource
 
 	  return $intitule;
 	}
-    
+
 	protected function getGeneratedIntitule()
 	{
 		if (is_null($this->gi)) {
@@ -249,7 +249,7 @@ class Activite extends Strass_Db_Table_Row_Abstract implements Zend_Acl_Resource
 			    $i.= " de ".$unite->getTypeName();
 			    break;
 			  }
-			  
+
 			}
 			else {
 			  switch ($type) {
@@ -466,11 +466,13 @@ class Participations extends Strass_Db_Table_Abstract
 	protected $_rowClass = 'Participe';
 	protected $_referenceMap = array('Unite' => array('columns' => 'unite',
 							  'refTableClass' => 'Unites',
-							  'refColumns' => 'id', 'onUpdate' => self::CASCADE,
+							  'refColumns' => 'slug',
+							  'onUpdate' => self::CASCADE,
 							  'onDelete' => self::CASCADE),
 					 'Activite' => array('columns' => 'activite',
 							     'refTableClass' => 'Activites',
-							     'refColumns' => 'id', 'onUpdate' => self::CASCADE,
+							     'refColumns' => 'id',
+							     'onUpdate' => self::CASCADE,
 							     'onDelete' => self::CASCADE));
 
 }
@@ -491,4 +493,3 @@ class Participe extends Strass_Db_Table_Row_Abstract implements Zend_Acl_Resourc
 		return 'participation-'.$this->activite.'-'.$this->unite;
 	}
 }
-

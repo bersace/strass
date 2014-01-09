@@ -1,9 +1,8 @@
 <?php
-$section = $this->document->addSection(null,
-				      new Wtk_Container(new Wtk_RawText("Modifier "),
-							$this->lienUnite($this->unite)));
+$this->document->setTitle(new Wtk_Container(new Wtk_RawText("Modifier "),
+					    $this->lienUnite($this->unite)));
 
-$f = $section->addChild(new Wtk_Form($this->model));
+$f = $this->document->addChild(new Wtk_Form($this->model));
 
 $f->addEntry('nom', 24);
 $i = $this->model->getInstance('extra');
