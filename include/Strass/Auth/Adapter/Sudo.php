@@ -12,8 +12,8 @@ class Strass_Auth_Adapter_Sudo implements Zend_Auth_Adapter_Interface
 	{
 		$this->actual = $current;
 		$session = new Zend_Session_Namespace;
-		$t = new Individus;
-		$this->actual = isset($session->actual_user) ? $t->findBySlug($session->actual_user) : $current;
+		$t = new Users;
+		$this->actual = isset($session->actual_user) ? $t->findByUsername($session->actual_user) : $current;
 		$this->current = $current;
 		$this->target = null;
 	}
@@ -28,7 +28,7 @@ class Strass_Auth_Adapter_Sudo implements Zend_Auth_Adapter_Interface
 
 		$this->current = $this->target;
 		$session = new Zend_Session_Namespace;
-		$session->actual_user = $this->actual->slug;
+		$session->actual_user = $this->actual->username;
 
 		return new Zend_Auth_Result(Zend_Auth_Result::SUCCESS, $this->current->getIdentity());
 	}
@@ -40,7 +40,7 @@ class Strass_Auth_Adapter_Sudo implements Zend_Auth_Adapter_Interface
 		$this->current = $this->actual;
 		$this->target = null;
 		$session = new Zend_Session_Namespace;
-		$session->actual_user = $this->actual->slug;
+		$session->actual_user = $this->actual->username;
 
 		return $unsudo;
 	}

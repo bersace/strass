@@ -13,7 +13,7 @@ class ActivitesController extends Strass_Controller_Action
 	 */
 	function indexAction()
 	{
-		$i = Zend_Registry::get('user');
+		$i = Zend_Registry::get('individu');
 		if (!$i)
 			throw new Strass_Controller_Action_Exception_Notice("Vous devez être identifié pour voir ".
 									   "le calendrier des activités.");
@@ -61,7 +61,7 @@ class ActivitesController extends Strass_Controller_Action
 	/* prévoir une nouvelle activité pour une ou plusieurs unités */
 	function prevoirAction()
 	{
-		$individu = Zend_Registry::get('user');
+		$individu = Zend_Registry::get('individu');
 		if (!$individu)
 			throw new Strass_Controller_Action_Exception_Notice("Vous devez être inscrit et identifié ".
 									   "pour prévoir une nouvelle activité");
@@ -75,7 +75,7 @@ class ActivitesController extends Strass_Controller_Action
 		if (count($unites) == 1) {
 		  $uid = array_shift(array_keys($unites));
 		  $unite = $this->_helper->Unite($uid);
-		  
+
 		  $urlOptions = array('controller'=> 'activites',
 				      'action'	=> 'calendrier',
 				      'unite'	=> $unite->id);
@@ -83,7 +83,7 @@ class ActivitesController extends Strass_Controller_Action
 					 $urlOptions,
 					 array(),
 					 true);
-		  
+
 		  if ($annee) {
 		    $urlOptions = array('controller'=> 'activites',
 					'action'	=> 'calendrier',
@@ -241,7 +241,7 @@ class ActivitesController extends Strass_Controller_Action
 		$this->metas(array('DC.Title' => wtk_ucfirst($a->getIntitule())));
 
 		$this->view->documents = $a->findDocsActivite();
-		$i = Zend_Registry::get('user');
+		$i = Zend_Registry::get('individu');
 
 		if (!$a->isFuture()) {
 			$this->connexes->append('Photos',
@@ -549,7 +549,7 @@ class ActivitesController extends Strass_Controller_Action
 							    $this->_helper->url->Url(array('action' => 'calendrier',
 											   'unite' => $unite->id)),
 							    $intitule);
-							    
+
 					$db->commit();
 					$this->redirectSimple('index', 'activites');
 				}
@@ -588,13 +588,13 @@ class ActivitesController extends Strass_Controller_Action
 	// HELPER
 	function getUnitesProgrammable($assert = TRUE) {
 		$unites = array();
-		$individu = Zend_Registry::get('user');
-		if (!$this->assert($individu)) {
+		$individu = Zend_Registry::get('individu');
+		if (!$this->assert()) {
 			// Sélectionner les unité où l'individu est ou a été inscrit
 			// et dont il a le droit de prévoir une activité.
-			$us = $individu->getUnites(false, true);
+			$us = $individu->getUnites(null, true);
 			foreach($us as $u)
-				if ($this->assert($individu, $u, 'prevoir-activite'))
+				if ($this->assert(null, $u, 'prevoir-activite'))
 					$unites[$u->id] = wtk_ucfirst($u->getFullname());
 		}
 		else {

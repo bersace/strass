@@ -534,6 +534,11 @@ class User extends Strass_Db_Table_Row_Abstract implements Zend_Acl_Role_Interfa
     $this->password = $digest;
     return $this;
   }
+
+  function getIdentity() {
+    $config = new Strass_Config_Php('strass');
+    return array('username' => $this->username, 'realm' => $config->realm);
+  }
 }
 
 class Nobody implements Zend_Acl_Resource_Interface, Zend_Acl_Role_Interface {

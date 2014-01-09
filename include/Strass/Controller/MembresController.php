@@ -706,7 +706,7 @@ class MembresController extends Strass_Controller_Action implements Zend_Acl_Res
     $this->assert(null, null, null,
 		  "Vous n'avez pas le droit de prendre l'identité de cet individu.");
 
-    $this->_helper->Auth->sudo($i);
+    $this->_helper->Auth->sudo($i->findUser());
 
     $this->redirectSimple('fiche', 'individus', null,
 			  array('individu' => $i->slug), true);
