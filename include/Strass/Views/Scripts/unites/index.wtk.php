@@ -66,12 +66,39 @@ class Strass_Views_PagesRenderer_Unites_Accueil extends Strass_Views_PagesRender
     }
 
     // Section les unités
-    if ($sousunites) {
+    if (!$unite->isTerminale()) {
       $this->view->document->addStyleComponents('vignette');
       $ss = $s->addSection('unites', 'Les '.$unite->getSousTypeName(true));
+      if ($sousunites) {
+	$l = $ss->addList();
+	$l->addFlags('vignettes');
+	$this->renderUnites($l, $sousunites, $annee);
+      }
+      else {
+	$ss->addParagraph()->addFlags('empty')
+	  ->addInline("Pas d'unités actives !");
+      }
+    }
+
+    // Photos
+    $this->view->document->addStyleComponents('vignette');
+    $ss = $s->addSection('photos',
+			 $this->view->lien(array('controller' => 'photos',
+						 'action' => null,
+						 'unite' => $unite->slug,
+						 'annee' => $annee),
+					   'Les photos', true));
+    if ($photos->count()) {
       $l = $ss->addList();
       $l->addFlags('vignettes');
-      $this->renderUnites($l, $sousunites, $annee);
+      foreach($photos as $photo) {
+	$i = $l->addItem($this->view->vignettePhoto($photo));
+	$i->addFlags('vignette');
+      }
+    }
+    else {
+      $ss->addParagraph()->addFlags('empty')
+	->addInline("Pas de photos d'activités !");
     }
   }
 }

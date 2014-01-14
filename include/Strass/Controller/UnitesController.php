@@ -17,10 +17,6 @@ class UnitesController extends Strass_Controller_Action
 
     $this->metas(array('DC.Title' => wtk_ucfirst($u->getFullname()).' '.$a));
 
-    $this->connexes->append("Photos",
-			    array('controller' => 'photos',
-				  'action' => 'index'));
-    $this->liensEffectifs($u, $a);
     $this->view->fiches = (bool) Zend_Registry::get('user');
 
     $this->connexes->append("Nouveaux",
@@ -110,8 +106,6 @@ class UnitesController extends Strass_Controller_Action
     else {
       $this->view->model = $m;
     }
-
-    $this->liensEffectifs($unite, $annee);
   }
 
   function contactsAction()
@@ -132,7 +126,6 @@ class UnitesController extends Strass_Controller_Action
 		       wtk_ucfirst($unite->getFullname())));
 
     $this->formats('vcf', 'ods', 'csv');
-    $this->liensEffectifs($unite, $annee);
   }
 
   function progressionAction()
@@ -693,97 +686,5 @@ class UnitesController extends Strass_Controller_Action
     $p = $p ? $p : 1;
     $this->view->individus = new Wtk_Pages_Model_Iterator($is, 20, $p);
     $this->view->fiches = (bool) Zend_Registry::get('user');
-  }
-
-
-
-  // FACTORISATION POUR TROMBI ET EFFECTIFS
-
-  // helper ?
-  protected function liensEffectifs($unite, $annee)
-  {
-    $listes = array('index'	=> wtk_ucfirst($unite->getFullName()),
-		    'contacts'	=> 'Contacts',
-		    // 'progressions'	=> 'Progressions individuelles'
-		    );
-
-    // BRANCHES
-    $a = $this->_getParam('action');
-    if ($a != 'index' and array_key_exists($a, $listes))
-      $this->branche->insert(-1, $listes[$a],
-			     array('annee' => null));
-
-    // CONNEXES
-    foreach($listes as $action => $etiquette)
-      if ($this->_getParam('action') != $action)
-	$this->connexes->append($etiquette,
-				array('action'  => $action),
-				array(null, $unite, $action));
-
-    $this->connexes->append("Calendrier",
-			    array('controller' => 'activites',
-				  'action' => 'calendrier',
-				  'annee' => $annee));
-
-    // ACTIONS
-    $this->actions->append("Modifier",
-			   array('unite' => $unite->slug,
-				 'action' => 'modifier'),
-			   array(null, $unite));
-
-    $this->actions->append("Détruire",
-			   array('unite' => $unite->slug,
-				 'action' => 'detruire'),
-			   array(null, $unite));
-
-
-    $soustypename = $unite->getSousTypeName();
-    if (!$this->view->terminale && $soustypename)
-      $this->actions->append(array('label' => "Fonder une ".$soustypename),
-			     array('action' => 'fonder',
-				   'parente' => $unite->slug),
-			     array(null, $unite));
-
-    if ($unite->findParentTypesUnite()->findRoles()->count() != 0) {
-      $this->actions->append(array('label' => "Compléter l'effectif"),
-			     array('controller' => 'unites',
-				   'action' => 'historique',
-				   'unite' => $unite->slug,
-				   'annee' => $annee),
-			     array(null, $unite));
-
-      $this->actions->append(array('label' => "Inscrire un nouveau"),
-			     array('controller' => 'inscription',
-				   'action' => 'nouveau',
-				   'unite' => $unite->slug,
-				   'annee' => $annee),
-			     array(null, $unite));
-    }
-
-    $this->actions->append("Enregistrer la progression",
-			   array('action' => 'progression',
-				 'unite' => $unite->slug),
-			   array(null, $unite));
-
-    if (!$unite->isFermee())
-      $this->actions->append("Fermer l'unité",
-			     array('action' => 'fermer'),
-			     array(null, $unite));
-
-    // journal d'unité
-    $journal = $unite->findJournaux()->current();
-    if ($journal)
-      $this->connexes->append(wtk_ucfirst($journal->__toString()),
-			      array('controller' => 'journaux',
-				    'action' => 'lire',
-				    'journal' => $journal->slug),
-			      array(), true);
-
-    else if (!$this->view->terminale)
-      $this->actions->append("Fonder le journal d'unité",
-			     array('controller' => 'journaux',
-				   'action' => 'fonder'),
-			     array(null, $unite, 'fonder-journal'));
-
   }
 }
