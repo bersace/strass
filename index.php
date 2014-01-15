@@ -26,12 +26,14 @@ try {
   $f = '(xhtml|ics|vcf|rss|atom|pdf|tex|txt|od[ts]|csv)';
   $vars = array('controller' => array($p, 'index'),
 		'action'     => array($p, 'index'),
-		'format'     => array($f, 'xhtml'));
+		'format'     => array($f, 'xhtml'),
+		'annee'      => array('([[:digit:]]{4})', null));
 
-  $pattern = '[%controller%[/%action%][.%format%]*]';
+  $pattern = '[%controller%[/%action%][.%format%][/%annee%]*]';
   $opattern = null;
   $route = new Strass_Controller_Router_Route_Uri($vars, $pattern, $opattern);
   $routeur->addRoute('default', $route);
+
   $fc->setParam('noViewRenderer', true);
 
   $fc->setModuleControllerDirectoryName('Controller');
