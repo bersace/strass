@@ -61,12 +61,6 @@ class Photos extends Strass_Db_Table_Abstract
       ->join('unite',
 	     'unite.slug = participe.unite',
 	     array())
-      ->joinLeft(array('parent_participe' => 'participe'),
-		 'parent_participe.activite = photos.activite'.
-		 ' AND '.
-		 'parent_participe.unite = unite.parent',
-		 array())
-      ->where('parent_participe.unite IS NULL')
       ->order('RANDOM()');
 
     return $this->fetchAll($select);
