@@ -19,18 +19,77 @@ class UnitesController extends Strass_Controller_Action
 
     $this->view->fiches = (bool) Zend_Registry::get('user');
 
-    $this->connexes->append("Nouveaux",
-			    array('action' => 'nouveaux'),
-			    array(null, $u, 'nouveaux'));
-    $this->connexes->append("Liste personnalisée",
-			    array('action' => 'liste'),
-			    array(null, $u, 'lister'));
-    $this->connexes->append("Non enregistré",
-			    array('action'  => 'nonenregistres'),
-			    array(null, $u, 'nonenregistres'));
+    $this->actions->append("Modifier",
+			   array('controller' => 'unites',
+				 'action' => 'modifier',
+				 'unite' => $u->slug),
+			   array(null, $u));
+
+    $soustypename = $u->getSousTypeName();
+    if (!$u->isTerminale() && $soustypename)
+      $this->actions->append(array('label' => "Fonder une ".$soustypename),
+			     array('action' => 'fonder',
+				   'parente' => $u->slug),
+			     array(null, $u));
+
+    if (!$u->isFermee())
+      $this->actions->append("Fermer l'unité",
+			     array('action' => 'fermer'),
+			     array(null, $u));
+
+    $this->actions->append("Détruire",
+			   array('controller' => 'action',
+				 'action' => 'detruire',
+				 'unite' => $u->slug),
+			   array(null, $u));
+
+    // journal d'unité
+    $journal = $u->findJournaux()->current();
+    if (!$journal)
+      $this->actions->append("Fonder le journal d'unité",
+			     array('controller' => 'journaux',
+				   'action' => 'fonder'),
+			     array(null, $u, 'fonder-journal'));
   }
 
-  // LES VUES DES EFFECTIFS
+  function contactsAction()
+  {
+    $this->view->unite = $unite = $this->_helper->Unite();
+    $this->view->annee = $annee = $this->_helper->Annee();
+    $this->assert(null, $unite, null,
+		  "Vous n'avez pas le droit de voir les contacts de l'unité");
+    $this->view->model = new Strass_Pages_Model_Contacts($unite, $annee);
+
+    $i = Zend_Registry::get('user');
+    // si l'individu est connecté, on propose le lien.
+    $this->view->fiches = (bool) $i;
+
+    $this->metas(array('DC.Title' => 'Effectifs '.$annee,
+		       'DC.Title.alternate' => 'Effectifs '.$annee.' – '.
+		       wtk_ucfirst($unite->getFullname())));
+
+    if (!$unite->findParentTypesUnite()->virtuelle) {
+      $this->actions->append(array('label' => "Compléter l'effectif"),
+			     array('controller' => 'unites',
+				   'action' => 'historique',
+				   'unite' => $unite->slug),
+			     array(null, $unite));
+
+      $this->actions->append(array('label' => "Inscrire un nouveau"),
+			     array('controller' => 'inscription',
+				   'action' => 'nouveau',
+				   'unite' => $unite->slug),
+			     array(null, $unite));
+    }
+
+    $this->actions->append("Enregistrer la progression",
+			   array('action' => 'progression',
+				 'unite' => $unite->slug),
+			   array(null, $unite));
+
+    $this->formats('vcf', 'ods', 'csv');
+  }
+
   function listeAction()
   {
     $this->view->unite = $unite = $this->_helper->Unite();
@@ -106,26 +165,6 @@ class UnitesController extends Strass_Controller_Action
     else {
       $this->view->model = $m;
     }
-  }
-
-  function contactsAction()
-  {
-    $this->view->unite = $unite = $this->_helper->Unite();
-    $this->view->annee = $annee = $this->_helper->Annee();
-    $this->assert(null, $unite, null,
-		  "Vous n'avez pas le droit de voir les contacts de l'unité");
-    $this->view->model = new Strass_Pages_Model_Contacts($unite, $annee);
-
-    $i = Zend_Registry::get('user');
-    // si l'individu est connecté, on propose le lien.
-    $this->view->fiches = (bool) $i;
-
-    // critère de sélection par année
-    $this->metas(array('DC.Title' => 'Effectifs '.$annee,
-		       'DC.Title.alternate' => 'Effectifs '.$annee.' – '.
-		       wtk_ucfirst($unite->getFullname())));
-
-    $this->formats('vcf', 'ods', 'csv');
   }
 
   function progressionAction()

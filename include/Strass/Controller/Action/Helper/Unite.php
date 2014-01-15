@@ -32,8 +32,6 @@ class Strass_Controller_Action_Helper_Unite extends Zend_Controller_Action_Helpe
     return $unite;
   }
 
-
-  // helper ?
   protected function liensConnexes($unite)
   {
     /* hiérarchie des unités */
@@ -62,7 +60,7 @@ class Strass_Controller_Action_Helper_Unite extends Zend_Controller_Action_Helpe
 			    'action' => 'index'));
 
     $connexes->append('Contacts',
-		      array('controller' => 'unite',
+		      array('controller' => 'unites',
 			    'action' => 'contacts'),
 		      array(null, $unite, 'contacts'));
 
@@ -71,51 +69,6 @@ class Strass_Controller_Action_Helper_Unite extends Zend_Controller_Action_Helpe
 			    'action' => 'calendrier'),
 		      array(null, $unite, 'calendrier'));
 
-    // ACTIONS
-    $actions = $this->_actionController->actions;
-    $actions->append("Modifier",
-		     array('unite' => $unite->slug,
-			   'action' => 'modifier'),
-		     array(null, $unite));
-
-    $actions->append("Détruire",
-		     array('unite' => $unite->slug,
-			   'action' => 'detruire'),
-		     array(null, $unite));
-
-
-    $soustypename = $unite->getSousTypeName();
-    if (!$unite->isTerminale() && $soustypename)
-      $actions->append(array('label' => "Fonder une ".$soustypename),
-			     array('action' => 'fonder',
-				   'parente' => $unite->slug),
-			     array(null, $unite));
-
-    if ($unite->findParentTypesUnite()->findRoles()->count() != 0) {
-      $actions->append(array('label' => "Compléter l'effectif"),
-			     array('controller' => 'unites',
-				   'action' => 'historique',
-				   'unite' => $unite->slug),
-			     array(null, $unite));
-
-      $actions->append(array('label' => "Inscrire un nouveau"),
-		       array('controller' => 'inscription',
-			     'action' => 'nouveau',
-			     'unite' => $unite->slug),
-		       array(null, $unite));
-    }
-
-    $actions->append("Enregistrer la progression",
-		     array('action' => 'progression',
-			   'unite' => $unite->slug),
-		     array(null, $unite));
-
-    if (!$unite->isFermee())
-      $actions->append("Fermer l'unité",
-		       array('action' => 'fermer'),
-		       array(null, $unite));
-
-    // journal d'unité
     $journal = $unite->findJournaux()->current();
     if ($journal)
       $connexes->append(wtk_ucfirst($journal->__toString()),
@@ -123,12 +76,5 @@ class Strass_Controller_Action_Helper_Unite extends Zend_Controller_Action_Helpe
 			      'action' => 'lire',
 			      'journal' => $journal->id),
 			array(), true);
-
-    else if (!$unite->isTerminale())
-      $actions->append("Fonder le journal d'unité",
-		       array('controller' => 'journaux',
-			     'action' => 'fonder'),
-		       array(null, $unite, 'fonder-journal'));
-
   }
 }
