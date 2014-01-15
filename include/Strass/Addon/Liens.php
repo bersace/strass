@@ -5,9 +5,9 @@
  */
 class Strass_Addon_Liens extends Strass_Addon implements Iterator, Countable
 {
-  protected $liens;
-  protected $id;
-  protected $titre;
+  public $liens;
+  public $id;
+  public $titre;
 
   function __construct($id, $titre)
   {

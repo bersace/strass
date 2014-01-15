@@ -53,9 +53,9 @@ class Strass_Controller_Action_Helper_Unite extends Zend_Controller_Action_Helpe
 
     // CONNEXES
     $connexes = $this->_actionController->connexes;
-    $connexes->append('Accueil',
-		      array('controller' => 'unites',
-			    'action' => 'index'));
+    $connexes->titre = $this->_actionController->view->lien(array('controller' => 'unites',
+								  'action' => 'index'),
+							    wtk_ucfirst($unite->getName()), true);
 
     $connexes->append("Photos",
 		      array('controller' => 'photos',
@@ -99,21 +99,21 @@ class Strass_Controller_Action_Helper_Unite extends Zend_Controller_Action_Helpe
 			     array(null, $unite));
 
       $actions->append(array('label' => "Inscrire un nouveau"),
-			     array('controller' => 'inscription',
-				   'action' => 'nouveau',
-				   'unite' => $unite->slug),
-			     array(null, $unite));
+		       array('controller' => 'inscription',
+			     'action' => 'nouveau',
+			     'unite' => $unite->slug),
+		       array(null, $unite));
     }
 
     $actions->append("Enregistrer la progression",
-			   array('action' => 'progression',
-				 'unite' => $unite->slug),
-			   array(null, $unite));
+		     array('action' => 'progression',
+			   'unite' => $unite->slug),
+		     array(null, $unite));
 
     if (!$unite->isFermee())
       $actions->append("Fermer l'unité",
-			     array('action' => 'fermer'),
-			     array(null, $unite));
+		       array('action' => 'fermer'),
+		       array(null, $unite));
 
     // journal d'unité
     $journal = $unite->findJournaux()->current();
