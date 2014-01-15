@@ -98,7 +98,7 @@ class Strass_Views_PagesRenderer_Unites_Accueil extends Strass_Views_PagesRender
     }
     else {
       $ss->addParagraph()->addFlags('empty')
-	->addInline("Pas de photos d'activités !");
+	->addInline("Pas de photos d'activités ".$annee." !");
     }
   }
 }
