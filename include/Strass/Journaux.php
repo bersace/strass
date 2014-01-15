@@ -6,7 +6,7 @@ class Journaux extends Zend_Db_Table_Abstract {
 	protected $_dependentTables = array('Rubriques', 'Articles');
 	protected $_referenceMap = array('Unite' => array('columns' => 'unite',
 							  'refTableClass' => 'Unites',
-							  'refColumns' => 'id',
+							  'refColumns' => 'slug',
 							  'onUpdate' => self::CASCADE,
 							  'onDelete' => self::CASCADE));
   }
@@ -166,4 +166,3 @@ class Article extends Strass_Db_Table_Row_Abstract implements Zend_Acl_Resource_
 		}
 	}
 }
-
