@@ -44,7 +44,8 @@ abstract class Strass_Views_PagesRenderer_Historique extends Wtk_Pages_Renderer
   function titreChef($chef, $intitule) {
     if (is_object($chef)) {
       $lien = $this->view->lienIndividu($chef, $intitule);
-      $lien->metas->title = $chef->getFullName();
+      if ($lien->metas)
+	$lien->metas->title = $chef->getFullName();
       return $lien;
     }
     else
