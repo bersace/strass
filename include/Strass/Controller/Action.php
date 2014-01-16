@@ -30,7 +30,11 @@ abstract class Strass_Controller_Action extends Zend_Controller_Action implement
     $page->addon(new Strass_Addon_Menu);
     $this->branche = $page->addon(new Strass_Addon_Branche);
     $page->addon(new Strass_Addon_Navigateurs);
+    $this->connexes = $page->addon(new Strass_Addon_Liens('connexes', 'Pages connexes'));
     $page->addon(new Strass_Addon_Formats);
+    $this->actions = $page->addon(new Strass_Addon_Liens('admin', 'Administrer'));
+    $page->addon(new Strass_Addon_Console($this->_helper->Auth));
+    $page->addon(new Strass_Addon_Citation);
 
     $this->branche->append($config->short_title, array(), array(), true);
 
@@ -40,9 +44,6 @@ abstract class Strass_Controller_Action extends Zend_Controller_Action implement
 			     array(),
 			     true);
 
-    $this->connexes = $page->addon(new Strass_Addon_Connexes);
-    $this->actions = $page->addon(new Strass_Addon_Console($this->_helper->Auth));
-    $page->addon(new Strass_Addon_Citation);
   }
 
   protected function redirectUrl($urlOptions = array(), $route = null, $reset = false)

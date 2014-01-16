@@ -24,24 +24,16 @@ if ($user->username == 'nobody') {
 }
 else {
   // console
-  $s = $this->addons->addSection('console', "Console");
+  $s = $this->addons->addSection('console', "Mon compte");
 
   if (count($this->liens)) {
-    $ss = $s->addSection('actions', 'Actions');
-    $l = $ss->addList();
+    $l = $s->addList();
     foreach ($this->liens as $lien) {
       $i = $l->addItem($this->lien($lien['urlOptions'],
 				   new Wtk_Metas($lien['metas']),
-				   $lien['reset']));
+				   true));
       $i->addFlags($lien['urlOptions']);
     }
-  }
-
-  $ss = $s->addSection('compte', 'Votre compte');
-  $l = $ss->addList();
-  foreach($this->actions as $action) {
-    $l->addItem(new Wtk_Link($action['url'], $action['label']))
-      ->addFlags(explode('/', $action['url']));
   }
 
   $f = $s->addForm($this->auth_logout_model);

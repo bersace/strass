@@ -15,13 +15,10 @@ class Strass_Addon_Console extends Strass_Addon_Liens
 
   function initView($view)
   {
-    parent::initView($view);
-
     $view->auth_login_model = $this->login;
     $view->auth_logout_model = $this->logout;
     $view->individu = Zend_Registry::get('individu');
 
-    $actions = array();
     $acl = Zend_Registry::get('acl');
     $view->user = $user = Zend_Registry::get('user');
     $actual = Zend_Registry::get('actual_user');
@@ -30,49 +27,47 @@ class Strass_Addon_Console extends Strass_Addon_Liens
       $t = new Inscriptions();
       $is = $t->fetchAll();
       if ($is->count()) {
-	$actions[] = array('url' => $view->url(array('controller' => 'membres',
-						     'action'	 => 'inscriptions')),
-			   'label' => 'Nouvelles inscriptions');
+	$this->append('Nouvelles inscriptions',
+		      array('controller' => 'membres',
+			    'action'	 => 'inscriptions'));
       }
-      $actions[] = array('url'  => $view->url(array('controller' => 'membres',
-						    'action'	 => 'lister')),
-			 'label' => 'Membres');
-      $actions[] = array('url'   => $view->url(array('controller' => 'log'), true),
-			 'label' => 'Journaux système');
+      $this->append('Membres',
+		    array('controller' => 'membres',
+			  'action'	 => 'lister'));
+      $this->append('Journaux système',
+		    array('controller' => 'log'));
     }
 
     if ($view->individu) {
       $us = $view->individu->getUnites();
       if (count($us) == 1) {
 	$u = current($us);
-	$actions[] = array('url' => $view->url(array('controller' => 'unites',
-						     'action' => 'index',
-						     'unite' => $u->slug),
-					       true),
-			   'label' => wtk_ucfirst($u->getFullName()));
-	$actions[] = array('url' => $view->url(array('controller' => 'activites',
-						     'action'	=> 'index'),
-					       true),
-			   'label' => 'Votre calendrier');
-			}
-      $actions[] = array('url'	=> $view->urlIndividu($view->individu),
-			 'label'	=> 'Votre fiche');
-    }
+	$this->append(wtk_ucfirst($u->getFullName()),
+		      array('controller' => 'unites',
+			    'action' => 'index',
+			    'unite' => $u->slug));
+	$this->append('Votre calendrier',
+		      array('controller' => 'activites',
+			    'action'	=> 'index'));
+      }
 
-    $actions[] = array('url'	=> $view->url(array('controller' => 'membres',
-						    'action'	 => 'parametres'),
-					      true, true),
-		       'label'	=> 'Vos paramètres');
+      $this->append('Votre fiche',
+		    array('controller' => 'individus',
+			  'action' => 'profil',
+			  'individu' => $view->individu->slug));
+      $this->append('Vos paramètres',
+		    array('controller' => 'membres',
+			  'action'	 => 'parametres'));
+    }
 
 
     if ($actual && $user->username != $actual->username) {
-      $actions[] = array('url'	=> $view->url(array('controller' => 'membres',
-						    'action'	=> 'unsudo'),
-					      null, true),
-			 'label'	=> 'Redevenir '.$actual->username);
+      $this->append('Redevenir '.$actual->username,
+		    array('controller' => 'membres',
+			  'action'	=> 'unsudo'));
     }
 
-    $view->actions = $actions;
+    parent::initView($view);
   }
 
   public function viewScript()
