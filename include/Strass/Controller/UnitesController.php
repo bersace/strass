@@ -87,7 +87,7 @@ class UnitesController extends Strass_Controller_Action
 				 'unite' => $unite->slug),
 			   array(null, $unite));
 
-    $this->formats('vcf', 'ods', 'csv');
+    /* $this->formats('vcf', 'ods', 'csv'); */
   }
 
   function listeAction()
