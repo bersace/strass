@@ -409,13 +409,16 @@ class Unite extends Strass_Db_Table_Row_Abstract implements Zend_Acl_Resource_In
 		    array());
       break;
     default:
-      $select->where($db->quoteInto('unite = ?', $this->id));
       if ($recursive) {
 	$in = $db->select()
 	  ->from(array('filles' => 'unite'), 'id')
-	  ->where("filles.parent = '".$this->id."'");
-	$select->orWhere($db->quoteInto('unite IN (?)',
-					new Zend_Db_Expr($in->__toString())));
+	  ->where("filles.parent = ?", $this->id)
+	  ->orWhere("filles.id = ?", $this->id);
+	$select->where('unite IN (?)',
+		       new Zend_Db_Expr($in->__toString()));
+      }
+      else {
+	$select->where('unite = ?', $this->id);
       }
       break;
     }
@@ -423,6 +426,7 @@ class Unite extends Strass_Db_Table_Row_Abstract implements Zend_Acl_Resource_In
     $select->join('individu',
 		  "individu.id = appartenance.individu\n",
 		  array())
+      ->order('unite.id')
       ->order('unite_role.ordre')
       ->order('naissance');
     $where = array_filter($where);

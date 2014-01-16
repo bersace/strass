@@ -8,8 +8,20 @@
 </tr>
 </thead>
    <?php endif; ?>
-<tbody>
+ <?php $cat_opened = false; ?>
 <?php for($i = 0; $i < $rows; $i++): ?>
+ <?php $cat_id = 'category-'.$i; ?>
+ <?php if (property_exists($this, $cat_id)): ?>
+ <?php if ($cat_opened): ?>
+</tbody>
+ <?php endif; ?>
+<tbody<?php wtk_classes($cat_classes[$i]); ?>>
+	 <tr class="category">
+   <td colspan="<?php echo count($columns); ?>"<?php wtk_classes($cat_classes[$i]); ?>><?php $this->$cat_id->output(); ?></td>
+   </tr>
+</tr>
+ <?php $cat_opened = true; ?>
+ <?php endif; ?>
    <tr<?php wtk_classes (array((($i+1)%2 ? 'odd' : 'even'),
 			       $rclasses[$i]));
 wtk_djt($rowDojoType);
@@ -20,5 +32,7 @@ wtk_djt($rowDojoType);
 <?php endfor; ?>
 </tr>
 <?php endfor; ?>
+ <?php if ($cat_opened): ?>
 </tbody>
+ <?php endif; ?>
 </table>

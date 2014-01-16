@@ -4,38 +4,20 @@ class Strass_Views_PagesRenderer_Unites_Contacts extends Strass_Views_PagesRende
   function render($annee, $data, $s) {
     extract($data);
 
-    if (!$apps->count() && !count($sousunites))
-      return;
-
-
-    $ss = $s->addSection("effectifs")->addFlags('effectifs');
-    if (!$unite->isTerminale()) {
-      $sss = $ss->addSection('maitrise', "Maîtrise");
+    if ($apps->count()) {
+      $type = $unite->findParentTypesUnite();
+      $t = $s->addChild($this->view->tableEffectifs($unite,
+						    $this->view->appsTableModel($apps),
+						    $this->view->fiches,
+						    array('adelec', 'portable', 'fixe')));
     }
     else {
-      $sss = $ss;
-    }
-
-    if ($apps->count()) {
-      $t = $sss->addChild($this->view->tableEffectifs($this->view->appsTableModel($apps),
-						       $this->view->fiches, 'contacts'));
-      $t->addFlags($unite->type);
-    }
-
-    foreach($sousunites as $unite) {
-      $apps = $sousapps[$unite->id];
-      if ($apps instanceof Iterator) {
-	$sss = $ss->addSection($unite->id,
-			       $this->view->lienUnite($unite, null, null, false));
-	$t = $sss->addChild($this->view->tableEffectifs($this->view->appsTableModel($apps),
-							 $this->view->fiches, 'contacts'));
-	$t->addFlags($unite->type);
-	$t->show_header = false;
-      }
+      $s->addParagraph()->addFlags('empty')
+	->addInline("Aucun inscrit en ".$annee." !");
     }
   }
 }
 
-$s = $this->document->addFlags($this->unite->type);
+$s = $this->document->addFlags($this->unite->findParentTypesUnite()->slug);
 $renderer = new Strass_Views_PagesRenderer_Unites_Contacts($this);
 $s->addPages(null, $this->model, $renderer);
