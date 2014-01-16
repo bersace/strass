@@ -2,7 +2,6 @@
 
 require_once 'Strass/Unites.php';
 require_once 'Strass/Activites.php';
-require_once 'Strass/Progression.php';
 
 
 class UnitesController extends Strass_Controller_Action
@@ -82,11 +81,6 @@ class UnitesController extends Strass_Controller_Action
 			     array(null, $unite));
     }
 
-    $this->actions->append("Enregistrer la progression",
-			   array('action' => 'progression',
-				 'unite' => $unite->slug),
-			   array(null, $unite));
-
     /* $this->formats('vcf', 'ods', 'csv'); */
   }
 
@@ -99,27 +93,17 @@ class UnitesController extends Strass_Controller_Action
 		  "Vous n'avez pas le droit de voir les contacts de l'unité");
 
     $m = new Wtk_Form_Model('liste');
-    $enum = array(// contact
-		  'adelec'		=> 'Adélec',
-		  'fixe'		=> 'Fixe',
+    $enum = array('adelec'	=> 'Adélec',
+		  'fixe'	=> 'Fixe',
 		  'portable'	=> 'Portable',
 		  'telephone'	=> 'Téléphone',
-		  'adresse'		=> 'Adresse',
-		  // infos perso
+		  'adresse'	=> 'Adresse',
 		  'naissance'	=> 'Naissance',
 		  'age'		=> 'Âge',
 		  'situation'	=> 'Situation',
-		  'origine'		=> 'Unité d\'origine',
-		  // progression,
-		  'perespi'		=> 'Père spi',
-		  'parrain'		=> 'Parrain',
-		  'totem'		=> 'Totem',
-		  'etape'		=> 'Étape',
-		  'numero'		=> 'N°adh',
-		  // formation
-		  'cep1'		=> 'CEP1', // branche ????
-		  'cep2'		=> 'CEP2',
-		  'formation'	=> 'Formation');
+		  'origine'	=> 'Unité d\'origine',
+		  'totem'	=> 'Totem',
+		  'numero'	=> 'N°adh');
     $m->addEnum('existantes', "Colonnes préremplis", array('telephone'), $enum, TRUE);
     $t = $m->addTable('supplementaires', "Colonnes supplémentaires",
 		      array('nom' => array('String', 'Nom')));
@@ -164,168 +148,6 @@ class UnitesController extends Strass_Controller_Action
     }
     else {
       $this->view->model = $m;
-    }
-  }
-
-  function progressionAction()
-  {
-    // on sélectionne soit les unites participant à une
-    // activité, soit une unité spécifique.
-    $activite = $this->_helper->Activite(null, false);
-    if ($activite) {
-      $unites = array();
-      $participantes = $activite->getUnitesParticipantes();
-      foreach($participantes as $unite)
-	$unites[] = $unite;
-    }
-    else
-      $unites = array($this->_helper->Unite());
-
-    $this->assert(null, $unites, 'progression',
-		  "Vous n'avez pas le droit d'enregistrer ".
-		  "la progression des membres de cette unité.");
-
-    $this->metas(array('DC.Title' => 'Enregistrer la progression'));
-
-    $m = new Wtk_Form_Model('progression');
-    $m->addNewSubmission('valider', "Valider");
-
-    // ÉTAPE 1: sélectionner l'étape de progression
-    $g = $m->addGroup('etape');
-
-    // sélection des étapes disponibles
-    $te = new Etape();
-    $ptu = current($unites)->findParentTypesUnite();
-
-    // extraire l'age min et l'âge max de l'unité et des sous-unités.
-    $s = $te->getAdapter()->select()
-      ->from('types_unite',
-	     new Zend_Db_Expr('MIN(age_min) AS age_min, MAX(age_max) AS age_max'))
-      ->where('age_min > 0');
-    if ($ptu->parent)
-      $s->where('id = ? OR parent = ?', $ptu->id);
-
-    extract(current($te->getAdapter()->fetchAll($s)));
-
-    // sélection des étapes valide pour cette unité et ses sous-unités.
-    $s = $te->select()
-      ->where("age_min >= ?", (int)$age_min)
-      ->order('ordre');
-
-    if ($ptu->sexe != 'm')
-      $s->where("sexe = ? OR sexe = 'm'", $ptu->sexe);
-    else
-      $s->where('sexe = ?', $ptu->sexe);
-
-    $etapes = $te->fetchAll($s);
-    if (!count($etapes))
-      throw new Strass_Controller_Action_Exception("Aucune étape de progression disponible pour cette unité.");
-
-    // création des valeurs possibles.
-    $enum = array();
-    foreach($etapes as $etape)
-      $enum[$etape->id] = $etape->titre;
-    $g->addEnum('etape', "Étape", key($enum), $enum);
-
-    // date de la progression (du rasso),
-    $date = $activite ? $activite->fin : strftime('%Y-%m-%d');
-    $g->addDate('date', "Date", $date);
-
-    // lieu
-    $lieu = $activite ? $activite->lieu : "";
-    $g->addString('lieu', "Lieu", $lieu);
-
-    // ÉTAPE 2 : sélectionner les individus ayant progressé
-    $g = $m->addGroup('individus');
-    if ($m->validate()) {
-      $s = $te->select()->where('id = ?', $m->get('etape/etape'));
-      $etape = $te->fetchAll($s)->current();
-
-      $enum = array();
-      foreach($unites as $unite) {
-	$ti = new Individus();
-	$s = $ti->select()
-	  ->distinct()
-	  ->from('individus')
-	  // individu de cette unité
-	  ->join('appartient',
-		 'appartient.individu = individus.id'.
-		 ' AND '.
-		 "appartient.unite = '".$unite->id."'",
-		 array())
-	  // n'ayant pas déjà fait cette progression
-	  ->joinLeft('progression',
-		     'progression.individu = individus.id'.
-		     ' AND '.
-		     "progression.etape = '".$etape->id."'",
-		     array())
-	  ->where('progression.etape IS NULL');
-	if ($etape->depend)
-	  // ayant passé l'étape précédente.
-	  $s->join('progression',
-		   'progression_2.individu = individus.id'.
-		   ' AND '.
-		   "progression_2.etape = '".$etape->depend."'",
-		   array());
-	if ($activite) {
-	  $s->where('appartient.debut < ?', $activite->debut);
-	  $s->where('appartient.fin > ? OR appartient.fin IS NULL', $activite->fin);
-	}
-	$individus = $ti->fetchAll($s);
-	foreach($individus as $individu)
-	  $enum[$individu->id] = $individu->getFullname(false);
-      }
-
-      if (!count($enum)) {
-	$dep = $etape->findParentEtape();
-	throw new Strass_Controller_Action_Exception("Aucun individus ne peut avoir ".
-						     $etape->participe_passe." ".$etape->titre.", ".
-						     "assurez-vous d'avoir bien enregistrer chaque individu ayant ".
-						     $dep->participe_passe." ".$dep->titre.".");
-      }
-      ksort($enum);
-      $g->addEnum('individus', "Individus", null, $enum, true);
-    }
-
-    $this->view->model = new Wtk_Pages_Model_Form($m);
-
-    if ($m->validate()) {
-      $db = $te->getAdapter();
-      $db->beginTransaction();
-      try {
-	// construction du tuple par défaut
-	$tuple = $m->get('etape');
-	$s = $te->select()->where('id = ?', $tuple['etape']);
-	$tuple['sexe'] = $te->fetchAll($s)->current()->sexe;
-
-	// insertion pour chaque individu d'un tuple
-	$tp = new Progression();
-	$is = $m->get('individus/individus');
-	foreach ($is as $i) {
-	  $tuple['individu'] = $i;
-	  $tp->insert($tuple);
-	}
-
-	$db->commit();
-
-	if ($activite) {
-	  $this->_helper->Log("Progression enregistrée", array_merge($unites, array($activite)),
-			      $this->_helper->Url('consulter', 'activites', null, array('activite' => $activite->id)),
-			      (string) $activite);
-	  $this->redirectSimple('consulter', 'activites');
-	}
-	else {
-	  $u = reset($unites);
-	  $this->_helper->Log("Progression enregistrée", array($u),
-			      $this->_helper->Url('index', 'unites', null, array('unite' => $u->slug)),
-			      (string) $u);
-	  $this->redirectSimple('index', 'unites');
-	}
-      }
-      catch(Exception $e) {
-	$db->rollback();
-	throw $e;
-      }
     }
   }
 

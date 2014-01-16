@@ -156,7 +156,9 @@ class Commentaire extends Strass_Db_Table_Row_Abstract implements Zend_Acl_Resou
     $acl = Zend_Registry::get('acl');
     if (!$acl->has($this)) {
       $acl->add($this);
-      $acl->allow($this->findParentIndividus(), $this, 'editer');
+      $auteur = $this->findParentIndividus();
+      if ($acl->hasRole($auteur))
+	$acl->allow($auteur, $this, 'editer');
     }
   }
 

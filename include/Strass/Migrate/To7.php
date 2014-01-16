@@ -1,4 +1,4 @@
-<?php
+<?php /*-*- sql -*-*/
 
 class Strass_Migrate_To7 extends Strass_MigrateHandler {
   function online($db) {

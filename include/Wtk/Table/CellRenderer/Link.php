@@ -3,7 +3,8 @@
 class Wtk_Table_CellRenderer_Link extends Wtk_Table_CellRenderer
 {
   protected $properties = array ('href' => '',
-				 'label' => '');
+				 'label' => '',
+				 'flags' => '');
   protected	$urlFormat = '%s';
 
   function setUrlFormat($format)
@@ -13,6 +14,8 @@ class Wtk_Table_CellRenderer_Link extends Wtk_Table_CellRenderer
 
   function element($data)
   {
-    return new Wtk_Link (sprintf($this->urlFormat, $data['href']), $data['label']);
+    $link = new Wtk_Link (sprintf($this->urlFormat, $data['href']), $data['label']);
+    $link->addFlags($data['flags']);
+    return $link;
   }
 }

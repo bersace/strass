@@ -1,8 +1,6 @@
 <?php
 
 require_once 'Unites.php';
-require_once 'Progression.php';
-require_once 'Formation.php';
 require_once 'Photos.php';
 
 class Individus extends Strass_Db_Table_Abstract
@@ -12,9 +10,13 @@ class Individus extends Strass_Db_Table_Abstract
   protected $_dependentTables = array('Users',
 				      'Appartenances',
 				      'Articles',
-				      'Progression',
-				      'Formation',
 				      'Commentaires');
+  protected $_referenceMap = array('Etape'	=> array('columns'		=> 'etape',
+							 'refTableClass'	=> 'Etapes',
+							 'refColumns'		=> 'id',
+							 'onUpdate'		=> self::CASCADE,
+							 'onDelete'		=> self::CASCADE),
+				   );
 }
 
 class Individu extends Strass_Db_Table_Row_Abstract implements Zend_Acl_Role_Interface, Zend_Acl_Resource_Interface
@@ -237,65 +239,6 @@ class Individu extends Strass_Db_Table_Row_Abstract implements Zend_Acl_Role_Int
     return !$test || is_readable($image) ? $image : null;
   }
 
-  // retourne l'étape de progression actuelle
-  function getProgression($annee = null)
-  {
-    $db = $this->getTable()->getAdapter();
-    $select = $this->getTable()->select()
-      ->setIntegrityCheck(false)
-      ->distinct()
-      ->from('progression')
-      ->join('individu',
-	     $db->quoteInto('progression.individu = ?', $this->id),
-	     array())
-      ->join('etapes',
-	     'etape = etapes.id AND progression.sexe = etapes.sexe',
-	     array())
-      ->order('etapes.ordre DESC');
-
-    if ($annee)
-      $select->where("STRFTIME('%Y-%m', progression.date) <= ?".
-		     " OR ".
-		     "progression.date IS NULL".
-		     " OR ".
-		     "progression.date = ? - 10", ($annee+1));
-
-    $tp = new Progression();
-    return $tp->fetchAll($select)->current();
-  }
-
-  function getEtapesDisponibles($toutes = false)
-  {
-    $te = new Etape;
-    $s = $te->select()
-      ->from('etapes')
-      ->where("etapes.sexe = 'm' OR etapes.sexe = ?", $this->sexe);
-    if (!$toutes) {
-      $s->joinLeft('progression',
-		   "individu = '".$this->id."'".
-		   " AND ".
-		   "etape = etapes.id", array());
-      $s->where('progression.individu IS NULL');
-    }
-    return $te->fetchAll($s);
-  }
-
-  function getDiplomesDisponibles($tous = false)
-  {
-    $td = new Diplomes;
-    $s = $td->select()->from('diplomes')
-      ->where("sexe = 'm' OR sexe = ?", $this->sexe);
-    if (!$tous) {
-      $s->joinLeft('formation',
-		   "individu = '".$this->id."'".
-		   " AND ".
-		   "diplome = diplomes.id",
-		   array());
-      $s->where('formation.diplome IS NULL');
-    }
-    return $td->fetchAll($s);
-  }
-
   /*
    * Retourne la liste de toutes les unités où l'individu a un rôle,
    * récursivement.
@@ -370,6 +313,13 @@ class Individu extends Strass_Db_Table_Row_Abstract implements Zend_Acl_Role_Int
       rename($i, $this->getImage());
   }
 }
+
+class Etapes extends Strass_Db_Table_Abstract
+{
+  protected $_name =  'etape';
+  protected $_dependentTables = 'Individus';
+}
+
 
 class Appartenances extends Strass_Db_Table_Abstract
 {

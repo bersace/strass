@@ -20,7 +20,7 @@ class Strass_View_Helper_TableEffectifs
 
   function tableEffectifs($unite, $model, $fiches=true, $colonnes=array())
   {
-    $t = new Wtk_Table($model, true, array('role', 'progression'));
+    $t = new Wtk_Table($model, true, array('role', 'etape'));
 
     $type = $unite->findParentTypesUnite();
     $t->addFlags('contacts', $type->slug);
@@ -61,7 +61,8 @@ class Strass_View_Helper_TableEffectifs
 	if ($fiches) {
 	  $t->addColumn(new Wtk_Table_Column($titre,
 					     new Wtk_Table_CellRenderer_Link('href', 'fiche',
-									     'label', 'prenom-nom')));
+									     'label', 'prenom-nom',
+									     'flags', array('role', 'etape'))));
 	}
 	break;
       default:

@@ -3,8 +3,6 @@
 require_once 'Image/Transform.php';
 require_once 'Strass/Individus.php';
 require_once 'Strass/Unites.php';
-require_once 'Strass/Progression.php';
-require_once 'Strass/Formation.php';
 
 class IndividusController extends Strass_Controller_Action
 {
@@ -26,13 +24,12 @@ class IndividusController extends Strass_Controller_Action
 
     $this->view->chef = $this->assert(null, $individu, 'progression');
     $this->view->individu = $individu;
+    $this->view->etape = $individu->findParentEtapes();
     $select = $individu->getTable()->select()->where('fin IS NULL');
     $this->view->appactives = $individu->findAppartenances($select);
     $select = $individu->getTable()->select()->where('fin IS NOT NULL')->order('debut DESC');
     $this->view->historique = $individu->findAppartenances($select);
     $s = $individu->getTable()->select()->order('date DESC');
-    $this->view->progression = $individu->findProgression(clone $s);
-    $this->view->formation = $individu->findFormation(clone $s);
     $s->order(array('date DESC', 'heure DESC'))->limit(5);
     $this->view->commentaires = $individu->findCommentaires(clone $s);
     $this->view->articles = $individu->findArticles(clone $s);
@@ -45,12 +42,6 @@ class IndividusController extends Strass_Controller_Action
 			   array('controller'	=> 'inscription',
 				 'action'		=> 'editer'),
 			   array(null, $individu, 'inscrire'));
-    $this->actions->append("Compléter la progression",
-			   array('action'	=> 'progression'),
-			   array(null, $individu, 'progresser'));
-    $this->actions->append("Compléter la formation",
-			   array('action'	=> 'formation'),
-			   array(null, $individu, 'former'));
     $this->actions->append("Compléter l'historique",
 			   array('controller'	=> 'inscription',
 				 'action'		=> 'historique'),
@@ -250,61 +241,6 @@ class IndividusController extends Strass_Controller_Action
 
 	$this->_helper->Log("Progression enregistrée", array($i),
 			    $this->_helper->Url('fiche', 'individus', null, array($i->id)),
-			    (string) $i);
-
-	$db->commit();
-	$this->redirectSimple('fiche');
-      }
-      catch (Exception $e) {
-	$db->rollback();
-	throw $e;
-      }
-    }
-  }
-
-  // compléter la formation d'un individu
-  function formationAction()
-  {
-    $this->view->individu = $i = $this->_helper->Individu();
-    $this->assert(null, $i, 'former',
-		  "Vous n'avez pas le droit d'éditer la formation de cet individu");
-    $this->metas(array('DC.Title' => 'Éditer la formation de '.$i->getFullname()));
-    $this->view->model = $m = new Wtk_Form_Model('formation');
-
-    $td = new Diplomes();
-    $db = $td->getAdapter();
-    $notexists = $db->select()
-      ->distinct()
-      ->from('formation')
-      ->where("individu = ?", $i->slug)
-      ->where('diplome = id');
-    $select = $db->select()
-      ->where("NOT EXISTS (?)", new Zend_Db_Expr($notexists->__toString()))
-      ->where("sexe = 'm' OR sexe = ?", $i->sexe)
-      ->where("? >= age_min", $i->getAge());
-    $etapes = $td->fetchAll($select);
-
-    $enum = array();
-    foreach($etapes as $etape)
-      $enum[$etape->id."#".$etape->branche] = $etape->accr." ".$etape->getBranche();
-    $m->addEnum('diplome', 'Diplôme', key($enum),$enum);
-    $m->addDate('date', 'Date', strftime("%Y-%m-%d %H:%M:%S"), '%Y-%m-%d');
-    $m->addNewSubmission('enregistrer', 'Enregistrer');
-
-    if ($m->validate()) {
-      $db->beginTransaction();
-      try {
-	$data = $m->get();
-	$data['individu'] = $i->slug;
-	$tf = new Formation();
-	$did = explode('#', $data['diplome']);
-	$data['diplome'] = (string)$did[0];
-	if ($did[1] != 'NULL')
-	  $data['branche'] = $did[1];
-	$tf->insert($data);
-
-	$this->_helper->Log("Formation enregistrée", array($i),
-			    $this->_helper->Url('fiche', 'individus', null, array($i->slug)),
 			    (string) $i);
 
 	$db->commit();

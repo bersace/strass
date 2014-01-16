@@ -1,7 +1,11 @@
 <?php
 
-$s = $this->document->addSection('informations', "Informations personnelles");
+if ($this->etape)
+  $this->document->addFlags($this->etape->slug);
 
+$this->document->addFlags('sexe-'.$this->individu->sexe);
+
+$s = $this->document->addSection('informations', "Informations personnelles");
 
 if ($i = $this->individu->getImage())
   $s->addParagraph()->addFlags('avatar')->addImage($i, "Photo", $this->individu->getFullname());
@@ -23,6 +27,9 @@ if ($this->chef) {
   $info['numero']	 = "**Numéro adhérent :** %s";
 }
 
+if ($this->etape)
+  $info['etape'] = "**{$this->etape->titre}**";
+
 
 foreach($info as $k => $f) {
   if ($this->individu->$k)
@@ -43,33 +50,6 @@ if ($this->user->last_login)
 if ($this->individu->notes) {
   $ss = $s->addSection('notes', "Notes");
   $ss->addText($this->individu->notes);
-}
-
-// progression
-if ($this->progression->count()) {
-  $s = $this->document->addSection('progression', 'Progression');
-  $l = $s->addList();
-
-  foreach($this->progression as $progression) {
-    $etape = $progression->findParentEtape();
-    $l->addItem('A '.$etape->participe_passe.' '.ucfirst($etape->titre).
-		($progression->date ? ' le '.strftime('%e-%m-%Y', strtotime($progression->date)) : '').
-		($progression->lieu ? ' à '.$progression->lieu : null).
-		'.')->addFlags('progression', $progression->etape);
-  }
-}
-
-// formation
-if ($this->formation->count()) {
-  $s = $this->document->addSection('formation', 'Formation');
-  $l = $s->addList();
-  foreach($this->formation as $formation) {
-    $diplome = $formation->findParentDiplomes();
-    $l->addItem(wtk_ucfirst($diplome->titre).
-		' '.$diplome->getBranche().
-		($formation->date ? ' le '.strftime('%e-%m-%Y', strtotime($formation->date)) : '').
-		'.');
-  }
 }
 
 // activité

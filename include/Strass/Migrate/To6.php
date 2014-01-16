@@ -1,4 +1,4 @@
-<?php
+<?php /*-*- sql -*-*/
 
 class Strass_Migrate_To6 extends Strass_MigrateHandler {
   function online($db) {
@@ -33,6 +33,7 @@ CREATE TABLE `individu` (
   FOREIGN KEY (pere) REFERENCES individu(id),
   FOREIGN KEY (mere) REFERENCES individu(id)
 );");
+
     $db->exec("
 INSERT INTO individu
 (slug, username, password, admin,
