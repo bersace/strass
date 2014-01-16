@@ -3,6 +3,8 @@
   // blabla … GPL v3 … blabla
   // Implement http://tools.ietf.org/html/rfc2445
 
+require_once 'Text/Wiki.php';
+
 class ICS
 {
 	protected	$_method;
@@ -79,8 +81,8 @@ class ICS
 		foreach($this->_events as $event) {
 			extract($event);
 			echo "BEGIN:VEVENT\r\n";
-			$this->_d('DTSTART',	strftime('%Y%m%dT%H%M%SZ', $start)); 
-			$this->_d('DTEND',	strftime('%Y%m%dT%H%M%SZ', $end)); 
+			$this->_d('DTSTART',	strftime('%Y%m%dT%H%M%SZ', $start));
+			$this->_d('DTEND',	strftime('%Y%m%dT%H%M%SZ', $end));
 			$this->_p('LOCATION',	$location);
 			$this->_p('SUMMARY',	$summary);
 			$this->_p('DESCRIPTION',$description);
