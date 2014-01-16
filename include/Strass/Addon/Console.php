@@ -53,7 +53,7 @@ class Strass_Addon_Console extends Strass_Addon_Liens
 
       $this->append('Votre fiche',
 		    array('controller' => 'individus',
-			  'action' => 'profil',
+			  'action' => 'fiche',
 			  'individu' => $view->individu->slug));
       $this->append('Vos paramètres',
 		    array('controller' => 'membres',
