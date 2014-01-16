@@ -517,40 +517,51 @@ class Unite extends Strass_Db_Table_Row_Abstract implements Zend_Acl_Resource_In
     // sélectionner les années où l'unité à eut au moins un membre
     $db = $this->getTable()->getAdapter();
     $ti = new Individus();
+    // DISTINCT ON dans SQLite est fait avec MIN() hors group by.
     $select = $ti->select()
       ->setIntegrityCheck(false)
       ->distinct()
-      ->from('individu')
-      ->join('appartenance',
-	     'individu.id = appartenance.individu',
-	     array('debut' => "strftime('%Y', debut, '-8 months')",
-		   'fin' => "strftime('%Y', fin, '-7 months')"))
+      ->from('appartenance',
+	     array('debut' => "strftime('%Y', debut)",
+		   'fin' => "strftime('%Y', fin)",
+		   'unite' => 'appartenance.unite'))
       ->join('unite_role', 'unite_role.id = appartenance.role',
-	     array('role' => 'unite_role.acl_role'))
+	     array('role' => 'unite_role.acl_role',
+		   'ordre' => 'MIN(unite_role.ordre)'))
+      ->join('individu',
+	     'individu.id = appartenance.individu')
+      ->join('unite',
+	     'unite.id = appartenance.unite',
+	     array())
+      ->group('debut')
       ->order('debut ASC');
 
     if ($this->findParentTypesUnite()->virtuelle) {
-      $select->join('unite',
-		    'unite.id = appartenance.unite',
-		    array());
       $select->where("unite.id = ?", $this->parent);
     }
     else {
-      $select->where("appartenance.unite = ?", $this->id);
+      $select->where('unite.id = ? OR unite.parent = ?', intval($this->id));
     }
 
     $is = $ti->fetchAll($select);
     $annees = array();
     $cette_annee = intval(strftime('%Y', time()-243*24*60*60));
     foreach($is as $individu) {
-      $fin = $individu->fin ? $individu->fin : $cette_annee;
-      $fin = ($fin == $cette_annee) ? $fin+1 : $fin;
+      /* pour le dernier chef en cours, inclure l'anne courante *incluse* */
+      $fin = $individu->fin ? $individu->fin : $cette_annee + 1;
       for($annee = $individu->debut; $annee < $fin; $annee++) {
 	if (!array_key_exists($annee, $annees))
 	  $annees[$annee] = null;
 
-	if ($individu->role == 'chef') {
-	  $annees[$annee] = $individu;
+	if (is_object($annees[$annee])) {
+	  continue;
+	}
+
+	if ($individu->unite == $this->id) {
+	  if ($individu->role == 'chef')
+	    $annees[$annee] = $individu;
+	  else // on a des assistant, mais pas de chef
+	    $annees[$annee] = '##INCONNU##';
 	}
       }
     }

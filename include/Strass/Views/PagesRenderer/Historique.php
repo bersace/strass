@@ -10,6 +10,46 @@ abstract class Strass_Views_PagesRenderer_Historique extends Wtk_Pages_Renderer
 			true, null);
   }
 
+  function intituleChef($chef, $unite) {
+    $type = $unite->findParentTypesUnite();
+    if ($chef == '##INCONNU##')
+      return '//chef inconnu//';
+    else if (is_null($chef)) {
+      switch($type->slug) {
+      case 'troupe':
+	return 'foulard noir';
+	break;
+      default:
+	return '//chef inconnu//';
+	break;
+      }
+    }
+    else {
+      switch($type->slug) {
+      case 'groupe':
+      case 'aines':
+	return $chef->nom;
+	break;
+      case 'meute':
+      case 'ronde':
+	return $chef->voirNom() ? $chef->prenom : $chef->getName();
+	break;
+      default:
+	return $chef->prenom;
+	break;
+      }
+    }
+  }
+
+  function titreChef($chef, $intitule) {
+    if (is_object($chef)) {
+      $lien = $this->view->lienIndividu($chef, $intitule);
+      $lien->metas->title = $chef->getFullName();
+      return $lien;
+    }
+    else
+      return new Wtk_Inline($intitule);
+  }
 
   function renderLinks($pages, $model)
   {
@@ -19,37 +59,24 @@ abstract class Strass_Views_PagesRenderer_Historique extends Wtk_Pages_Renderer
 
     $ss = $pages->addSection('historique', "Historique");
     $ss->addFlags('pagelinks');
+    $sss = null;
     $pre = null;
-    foreach($model->data as $annee => $chef) {
-      switch($model->unite->type) {
-      case 'groupe':
-      case 'aines':
-	$intitule = $chef ? $chef->nom : null;
-	break;
-      case 'troupe':
-	$intitule = $chef ? $chef->prenom : 'foulard noir';
-	break;
-      case 'meute':
-      case 'ronde':
-	if ($chef)
-	  $intitule = $chef->voirNom() ? $chef->prenom : null;
-	break;
-      default:
-	$intitule = $chef ? $chef->prenom : null;
-	break;
-      }
 
-      if ($pre == null || $pre != $chef) {
-	$sss = $ss->addSection(null, $intitule ? "L'année ".$intitule : null);
+    foreach($model->data as $annee => $chef) {
+      $intitule = $this->intituleChef($chef, $model->unite);
+      if (!$sss || $pre != $chef) {
+	$titre = new Wtk_Container("L'annee ", $this->titreChef($chef, $intitule));
+	$sss = $ss->addSection(null, $intitule ? $titre : null);
 	$l = $sss->addList();
 	$pre = $chef;
       }
       else {
-	$sss->setTitle($intitule ? "Les années ".$intitule : null);
+	$titre = new Wtk_Container("Les annees ", $this->titreChef($chef, $intitule));
+	$sss->setTitle($titre);
       }
       $etiq = $annee."-".($annee+1);
       $i = $l->addItem($this->view->lien(array('annee' => $annee),
-				   $etiq));
+					 $etiq));
       if ($annee == $model->current) {
 	$i->addFlags('selectionnee');
       }
