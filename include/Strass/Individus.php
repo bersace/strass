@@ -29,17 +29,20 @@ class Individu extends Strass_Db_Table_Row_Abstract implements Zend_Acl_Role_Int
   {
     parent::__construct($config);
 
-    $this->initRoleAcl();
     $this->initResourceAcl($this->getUnites(NULL));
 
     $t = new Appartenances();
   }
 
-  function _initResourceAcl($acl)
+  function _initResourcesAcl($acl)
+  {
+    $acl->allow('individus', $this, 'fiche');
+  }
+
+  function _initRoleAcl($acl)
   {
     $acl->allow($this, $this, array('editer', 'desinscrire'));
-    $acl->deny($this->getRoleId(), $this, 'sudo');
-    $acl->allow('individus', $this, 'fiche');
+    $acl->deny($this, $this, 'sudo');
   }
 
   protected function _parentRoles()
@@ -487,11 +490,10 @@ class User extends Strass_Db_Table_Row_Abstract implements Zend_Acl_Role_Interfa
   {
     parent::__construct($config);
 
-    $this->initRoleAcl();
     $this->initResourceAcl();
   }
 
-  function _initResourceAcl($acl)
+  function _initRoleAcl($acl)
   {
     $acl->allow($this, $this, 'parametres');
   }
@@ -555,6 +557,12 @@ class Nobody implements Zend_Acl_Resource_Interface, Zend_Acl_Role_Interface {
     if (!$acl->hasRole($this)) {
       $acl->addRole($this);
     }
+  }
+
+  function initResourceAcl() {
+  }
+
+  function initRoleAcl() {
   }
 
   public function getRoleId()

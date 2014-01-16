@@ -163,11 +163,17 @@ class Strass_Controller_Plugin_Auth extends Zend_Controller_Plugin_Abstract
     }
 
     if (!$user) {
-      $user = new Nobody();
+      $user = new Nobody;
     }
 
+    $individu = $user->findParentIndividus();
+    if ($individu) {
+      $individu->initRoleAcl();
+    }
+    Zend_Registry::set('individu', $individu);
+
+    $user->initRoleAcl();
     Zend_Registry::set('user', $user);
-    Zend_Registry::set('individu', $user->findParentIndividus());
 
     return $user;
   }
