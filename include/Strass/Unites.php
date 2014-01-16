@@ -369,7 +369,8 @@ class Unite extends Strass_Db_Table_Row_Abstract implements Zend_Acl_Resource_In
    * Retrouve les appartenances à l'unité en fonction de l'année en
    * tenant compte du type (ex: HP).
    */
-  public function getApps($annee = null, $recursive = false, $where = '') {
+  public function getApps($annee = null, $recursive = false, $where = '')
+  {
     $db = $this->getTable()->getAdapter();
 
     $where = (array) $where;
@@ -536,7 +537,8 @@ class Unite extends Strass_Db_Table_Row_Abstract implements Zend_Acl_Resource_In
       ->group('debut')
       ->order('debut ASC');
 
-    if ($this->findParentTypesUnite()->virtuelle) {
+    $virtuelle = $this->findParentTypesUnite()->virtuelle;
+    if ($virtuelle) {
       $select->where("unite.id = ?", $this->parent);
     }
     else {
@@ -557,7 +559,7 @@ class Unite extends Strass_Db_Table_Row_Abstract implements Zend_Acl_Resource_In
 	  continue;
 	}
 
-	if ($individu->unite == $this->id) {
+	if ($individu->unite == $this->id || ($virtuelle && $individu->unite == $this->parent)) {
 	  if ($individu->role == 'chef')
 	    $annees[$annee] = $individu;
 	  else // on a des assistant, mais pas de chef
