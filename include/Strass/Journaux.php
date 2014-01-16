@@ -93,8 +93,10 @@ class Article extends Strass_Db_Table_Row_Abstract implements Zend_Acl_Resource_
 		// permettre à l'auteur d'éditer ou de supprimer son
 		// article (pas de le publier, ça relève du poste dans
 		// l'unité).
-		$acl->allow($this->findParentIndividus(), $this,
-			    array('editer', 'supprimer'));
+	  $auteur = $this->findParentIndividus();
+	  if ($acl->hasRole($auteur))
+	    $acl->allow($auteur, $this,
+			array('editer', 'supprimer'));
 	}
 
 	function getResourceId()
