@@ -29,33 +29,29 @@
 
  * Installateur
 
-  * format des URL, .htaccess, etc.
+  * Profils mouvement (structures, progression)
 
-  * Profils ACL (Strassique, Scout, Yéyé)
-
-  * Profils mouvement (progression, formation)
-
- * Export photo avec conduit.
+ * Export contact, calendrier et photos avec webdav
 
  * Publipostage (PDF, enveloppe DL/?)
 
- * Intégration Céphée
+ * Intégration Céphée : import du CSV des effectifs.
 
- * faire une alerte propre en cas de nom ou fonction (CT, CC...) déjà existant pour un membre
+ * Faire une alerte propre en cas de nom ou fonction (CT, CC...) déjà existant pour un membre
 
- * gérer plusieurs personnes ayant le même nom
+ * Gérer plusieurs personnes ayant le même nom
 
- * bandes jaunes pour les cheftaines de meute (à vérifier pour la
+ * Bandes jaunes pour les cheftaines de meute (à vérifier pour la
    ronde aussi).  Akéla n'a pas sa bande jaune dans les effectifs de
    la meute. Par contre, les assistantes les ont.
 
- * bandes pour les groupes transversaux : HP, communauté d'ainés
+ * Bandes pour les groupes transversaux : HP, communauté d'ainés
 
- * vérifier que les bandes de sizainier, sizainière, CE et seconds
+ * Vérifier que les bandes de sizainier, sizainière, CE et seconds
    s'affichent bien (mais pour le moment toutes ces unités sont
    inactives)
 
- * en non-connecté, Joséphine apparait comme "Akéla bagheera"
+ * En non-connecté, Joséphine apparait comme "Akéla bagheera"
 
  * Les photos trop lourdes ne sont pas acceptées. (les compresser, ou
    indiquer une limitation de taille ?)
@@ -66,4 +62,6 @@
 
  * Les vidéos sont elles supportées ? les diapos ?
 
- * Espace admin : stats, log, paramètres, etc.
+ * Espace admin : stats, log, paramètres, inscriptions, etc.
+
+ * Passer à ZF 1.12 et jQuery
