@@ -8,12 +8,12 @@
    * it under the terms of the GNU General Public License as published by
    * the Free Software Foundation; either version 2 of the License, or
    * (at your option) any later version.
-   * 
+   *
    * This program is distributed in the hope that it will be useful,
    * but WITHOUT ANY WARRANTY; without even the implied warranty of
    * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
    * GNU General Public License for more details.
-   * 
+   *
    * You should have received a copy of the GNU General Public License
    * along with this program; if not, write to the Free Software
    * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
@@ -43,12 +43,13 @@ class Orror {
    */
   static function init($level = E_ALL,
 		       $output_handler = array('Orror', 'output'),
-		       $sink_handler = 'die',
+		       $sink_handler = null,
 		       $handle_exceptions = TRUE)
   {
     error_reporting($level);
     $_ENV['ORROR_HANDLER'] = $output_handler;
-    $_ENV['ORROR_SINK'] = $sink_handler;
+    if ($sink_handler)
+      $_ENV['ORROR_SINK'] = $sink_handler;
     set_error_handler(array('Orror', 'error_handler'));
     if ($handle_exceptions) {
       set_exception_handler(array('Orror', 'exception_handler'));
@@ -159,7 +160,10 @@ class Orror {
 	$msg.= "\n";
 	break;
       default:
-	$msg.= htmlspecialchars(print_r($data, true))."\n";
+	$data = print_r($data, true);
+	if (Orror::$html)
+	  $data = htmlspecialchars($data);
+	$msg.= $data."\n";
 	break;
       }
     }
@@ -212,7 +216,6 @@ class Orror {
     }
   }
 
-
   /**
    * Dump des variables. Tout les variables passés en paramètres
    * sont dumpé et une erreurs est déclenchée, de niveau
@@ -225,7 +228,7 @@ class Orror {
 
     // Recherche du fichier et de la ligne de l'erreur.
     $dbg = debug_backtrace();
-    
+
     $error['file']      = isset($dbg[0]) ? $dbg[0]['file'] : '';
     $error['line']      = isset($dbg[0]) ? $dbg[0]['line'] : '';
     $error['class']     = isset($dbg[0]['class']) ? $dbg[0]['class'] : null;
@@ -265,7 +268,8 @@ class Orror {
 		    E_USER_WARNING  => __("Warning"),
 		    E_USER_ERROR    => __("Error"),
 		    E_STRICT	    => __("Strict"),
-		    E_EXCEPTION	    => $exception." ".__("Exception"));
+		    E_EXCEPTION	    => $exception." ".__("Exception"),
+		    E_DEPRECATED    => __("Deprecated"));
 
     if (defined('E_RECOVERABLE_ERROR')) {
       $errors[E_RECOVERABLE_ERROR] = __("Recoverable error");
@@ -274,19 +278,19 @@ class Orror {
     if (ini_get('html_errors')) {
       echo '<div class="error">';
       if ($level) {
-	echo 
+	echo
 	  "<p><b>".
 	  $errors[$level].
 	  "</b>: ".
 	  ($function || ($class && $function) ? "<span>".($class ? $class."::" : "").$function."()</span>: " : "");
 	echo $msg."<br/>\n";
-	echo 
+	echo
 	  "<span>".
 	  S_("in %s on line %s.",
 	     "<b>".str_replace(dirname($_SERVER['SCRIPT_FILENAME']).'/', '', $file)."</b>",
 	     "<b>".$line."</b>").
 	  "</span><br/>\n";
-	
+
 	if (count($backtrace)) {
 	  echo "<b>".__("Backtrace:")."</b><br/>\n";
 	  foreach ($backtrace as $i => $step) {
@@ -296,7 +300,7 @@ class Orror {
 	    }
 	  }
 	}
-	
+
 	echo "<p>\n";
 	echo "</div>\n";
       }
@@ -305,14 +309,14 @@ class Orror {
       }
     }
     else {
-      echo 
+      echo
 	$errors[$level].": ".
 	($function || ($class && $function) ? ($class ? $class."::" : "").$function."(): " : "");
       echo $msg."\n";
       echo sprintf("in %s on line %s.\n",
 		   str_replace(dirname($_SERVER['SCRIPT_FILENAME']).'/', '', $file),
 		   $line);
-      
+
       if (count($backtrace)) {
 	echo "Backtrace:\n";
 	foreach ($backtrace as $i => $step) {
@@ -322,7 +326,7 @@ class Orror {
 	  }
 	}
       }
-      
+
       echo "\n";
     }
   }
