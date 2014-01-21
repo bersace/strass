@@ -12,10 +12,10 @@ class Strass_Views_PagesRenderer_Calendrier extends Strass_Views_PagesRenderer_H
     }
 
     $ss = $s->addSection('calendrier');
-    $tam = new Wtk_Table_Model('id', 'type', 'lieu', 'date', 'intitule');
+    $tam = new Wtk_Table_Model('id', 'slug', 'type', 'lieu', 'date', 'intitule');
 
     foreach($activites as $a) {
-      $tam->append($a->id, wtk_ucfirst($a->getTypeName()), $a->lieu,
+      $tam->append($a->id, $a->slug,  wtk_ucfirst($a->getTypeName()), $a->lieu,
 		   wtk_ucfirst($a->getDate(false, true)),
 		   wtk_ucfirst($a->getIntitule(false)));
     }
@@ -24,7 +24,7 @@ class Strass_Views_PagesRenderer_Calendrier extends Strass_Views_PagesRenderer_H
     $t->addColumn(new Wtk_Table_Column("Date",
 				       new Wtk_Table_CellRenderer_Text('text', 'date')));
 
-    $c = new Wtk_Table_CellRenderer_Link('href', 'id',
+    $c = new Wtk_Table_CellRenderer_Link('href', 'slug',
 					 'label', 'intitule');
     $t->addColumn(new Wtk_Table_Column("Activité", $c));
     // TODO: déterminer par activité si c'est future. Un

@@ -2,28 +2,24 @@
 
 class Strass_Pages_Model_Calendrier extends Strass_Pages_Model_Historique
 {
-  /* On devrait initialiser la liste des années à partir des activités
-     et nos des inscriptions. Actuellement, on génère des liens vers
-     des pages vides… */
-
-  function fetch($annee = NULL) {
+  function fetch($annee = NULL)
+  {
     $u = $this->unite;
     $ta = new Activites();
     $db = $ta->getAdapter();
     $min = $this->dateDebut($annee).' 00:00';
     $max = $this->dateFin($annee).' 23:59';
     $select = $ta->select()
-      ->from('activites')
-      ->join('participe',
-	     'participe.activite = activites.id'.
+      ->setIntegrityCheck(false)
+      ->from('activite')
+      ->join('participation',
+	     'participation.activite = activite.id'.
 	     ' AND '.
-	     $db->quoteInto('participe.unite = ?', $u->slug),
+	     $db->quoteInto("participation.unite = ?\n", $u->id),
 	     array())
       ->where("debut >= ?", $min)
       ->where("debut <= ?", $max)
-      ->where("fin >= ?", $min)
-      ->where("fin <= ?", $max)
-      ->order('activites.debut');
+      ->order('activite.debut');
     $as = $ta->fetchAll($select);
 
     $future = $annee >= date('Y', time()-243*24*60*60);

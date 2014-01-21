@@ -1,13 +1,16 @@
 <?php
 
-class Strass_Migrate {
-  function __construct() {
+class Strass_Migrate
+{
+  function __construct()
+  {
     $this->db = Strass_Db::setup();
     $acl = new Zend_Acl();
     Zend_Registry::set('acl', $acl);
   }
 
-  function migrate() {
+  function migrate()
+  {
     $current = Strass_Version::current();
     $strass = Strass_Version::VERSION;
 
@@ -34,8 +37,10 @@ class Strass_Migrate {
   }
 }
 
-class Strass_MigrateHandler {
-  function run($db) {
+class Strass_MigrateHandler
+{
+  function run($db)
+  {
     if (!ini_get('html_errors')) {
       $this->offline();
     }
@@ -53,15 +58,18 @@ class Strass_MigrateHandler {
   }
 
   /* À exécuter si on a un accès shell */
-  function offline() {
+  function offline()
+  {
   }
 
   /* exécutable en ligne, par l'assistant */
-  function online($db) {
+  function online($db)
+  {
   }
 
   /* assistants */
-  static function rrmdir($dir) {
+  static function rrmdir($dir)
+  {
     foreach(glob($dir . '/*') as $file) {
       if(is_dir($file))
 	self::rrmdir($file);

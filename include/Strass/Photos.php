@@ -9,7 +9,7 @@ class Photos extends Strass_Db_Table_Abstract
   protected	$_dependentTables	= array('Commentaires');
   protected	$_referenceMap		= array('Activite'	=> array('columns'		=> 'activite',
 									 'refTableClass'	=> 'Activites',
-									 'refColumns'		=> 'id',
+									 'refColumns'		=> 'slug',
 									 'onUpdate'		=> self::CASCADE,
 									 'onDelete'		=> self::CASCADE));
 
@@ -22,20 +22,22 @@ class Photos extends Strass_Db_Table_Abstract
     $s = $this->select()
       ->setIntegrityCheck(false)
       ->from('photos')
-      ->join('participe',
-	     'participe.activite = photos.activite'.
+      ->join('activite',
+	     'activite.slug = photos.activite', array())
+      ->join('participation',
+	     'participation.activite = activite.id'.
 	     ' AND '.
-	     $db->quoteInto('participe.unite = ?', $unite->slug),
+	     $db->quoteInto('participation.unite = ?', intval($unite->id)),
 	     array())
       ->join('unite',
-	     'unite.slug = participe.unite',
+	     'unite.id = participation.unite',
 	     array())
-      ->joinLeft(array('parent_participe' => 'participe'),
-		 'parent_participe.activite = photos.activite'.
+      ->joinLeft(array('parent_participation' => 'participation'),
+		 "parent_participation.activite = activite.id\n".
 		 ' AND '.
-		 'parent_participe.unite = unite.parent',
+		 "parent_participation.unite = unite.parent\n",
 		 array())
-      ->where('parent_participe.unite IS NULL')
+      ->where('parent_participation.unite IS NULL')
       ->order('RANDOM()')
       ->limit(1);
     return $this->fetchAll($s)->current();
@@ -53,16 +55,14 @@ class Photos extends Strass_Db_Table_Abstract
 	->from('photos');
 
     $select->setIntegrityCheck(false)
-      ->join('participe',
-	     'participe.activite = photos.activite'.
+      ->join('activite',
+	     'activite.slug = photos.activite', array())
+      ->join('participation',
+	     'participation.activite = activite.id'.
 	     ' AND '.
-	     $db->quoteInto('participe.unite = ?', $unite->slug),
+	     $db->quoteInto('participation.unite = ?', intval($unite->id))."\n",
 	     array())
-      ->join('unite',
-	     'unite.slug = participe.unite',
-	     array())
-      ->order('RANDOM()');
-
+      ->order("RANDOM()\n");
     return $this->fetchAll($select);
   }
 }

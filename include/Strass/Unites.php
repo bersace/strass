@@ -58,7 +58,7 @@ class Unites extends Strass_Db_Table_Abstract
     return $this->fetchAll($select);
   }
 
-  function fetchAll($select = null)
+  function fetchAll($where = NULL, $order = NULL, $count = NULL, $offset = NULL)
   {
     $args = func_get_args();
     if ($args && $args[0] instanceof Zend_Db_Table_Select)

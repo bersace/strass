@@ -9,7 +9,7 @@ class Journaux extends Zend_Db_Table_Abstract {
 							  'refColumns' => 'slug',
 							  'onUpdate' => self::CASCADE,
 							  'onDelete' => self::CASCADE));
-  }
+}
 
 class Journal extends Strass_Db_Table_Row_Abstract implements Zend_Acl_Resource_Interface
 {
@@ -21,7 +21,7 @@ class Journal extends Strass_Db_Table_Row_Abstract implements Zend_Acl_Resource_
 		$this->initResourceAcl();
 	}
 
-	protected function _initResourceAcl($acl)
+	protected function _initResourceAcl(&$acl)
 	{
 		$u = $this->findParentUnites();
 		$acl->allow($u, $this, 'ecrire');       // permettre à toute l'unité de poster
@@ -88,7 +88,7 @@ class Article extends Strass_Db_Table_Row_Abstract implements Zend_Acl_Resource_
 		$this->initResourceAcl(array($this->findParentJournaux()->findParentUnites()));
 	}
 
-	function _initResourceAcl($acl)
+	function _initResourceAcl(&$acl)
 	{
 		// permettre à l'auteur d'éditer ou de supprimer son
 		// article (pas de le publier, ça relève du poste dans

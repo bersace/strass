@@ -3,7 +3,7 @@
 class Documents extends Zend_Db_Table_Abstract {
 	protected $_name = 'documents';
 	protected $_rowClass = 'Document';
-	protected $_dependentTables = array('DocsUnite', 'DocsActivite');
+	protected $_dependentTables = array('DocsUnite', 'PiecesJointes');
 
 	function getDependentTablesName()
 	{
@@ -27,12 +27,12 @@ class Document extends Strass_Db_Table_Row_Abstract implements Zend_Acl_Resource
 	{
 		return '/'.$this->getFichier();
 	}
-    
+
 	function getFichier($data = null)
 	{
 		return 'data/documents/'.($data ? $data['id'] : $this->id).'.'.($data ? $data['suffixe'] : $this->suffixe);
 	}
-    
+
 	function _postDelete()
 	{
 		unlink($this->getFichier());
@@ -66,12 +66,12 @@ class DocsUnite extends Zend_Db_Table_Abstract
 	protected $_name = 'doc_unite';
 	protected $_rowClass = 'DocUnite';
 	protected $_referenceMap = array('Document' => array('columns' => 'document',
-							     'refTableClass' => 'Documents', 
+							     'refTableClass' => 'Documents',
 							     'refColumns' => 'id',
 							     'onUpdate' => self::CASCADE,
 							     'onDelete'  => self::CASCADE),
 					 'Unite' => array('columns' => 'unite',
-							  'refTableClass' => 'Unites', 
+							  'refTableClass' => 'Unites',
 							  'refColumns' => 'id',
 							  'onUpdate' => self::CASCADE,
 							  'onDelete' => self::CASCADE));
@@ -80,26 +80,3 @@ class DocsUnite extends Zend_Db_Table_Abstract
 class DocUnite extends Zend_Db_Table_Row_Abstract
 {
 }
-
-
-
-class DocsActivite extends Zend_Db_Table_Abstract
-{
-	protected $_name = 'doc_activite';
-	protected $_rowClass = 'DocActivite';
-	protected $_referenceMap = array('Document' => array('columns' => 'document',
-							     'refTableClass' => 'Documents', 
-							     'refColumns' => 'id',
-							     'onUpdate' => self::CASCADE,
-							     'onDelete'  => self::CASCADE),
-					 'Activite' => array('columns' => 'activite',
-							     'refTableClass' => 'Activites', 
-							     'refColumns' => 'id',
-							     'onUpdate' => self::CASCADE,
-							     'onDelete' => self::CASCADE));
-}
-
-class DocActivite extends Zend_Db_Table_Row_Abstract
-{
-}
-
