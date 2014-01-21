@@ -28,4 +28,7 @@ restore1: restore
 	cp --archive --link $(ORIG)/config/ $(ORIG)/data $(ORIG)/resources ./
 endif
 
-.PHONY: all clean serve setup
+test:
+	phpunit --bootstrap tests/bootstrap.php tests
+
+.PHONY: all clean serve setup test
