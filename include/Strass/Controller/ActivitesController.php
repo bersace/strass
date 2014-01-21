@@ -34,6 +34,10 @@ class ActivitesController extends Strass_Controller_Action
   function calendrierAction()
   {
     $u = $this->_helper->Unite();
+    $this->branche->append('Calendrier',
+			   array('controller' => 'activites',
+				 'action' => 'calendrier'),
+			   array(), true);
     $annee = $this->_helper->Annee();
     $future = $annee >= date('Y', time()-243*24*60*60);
 
@@ -167,7 +171,8 @@ class ActivitesController extends Strass_Controller_Action
 	$id = $activites->insert($tuple);
 	$a = $activites->find($id)->current();
 
-	$this->updateParticipations($a, $participantes);
+	$tp = new Participations;
+	$tp->updateActivite($a, $participantes);
 
 	// Pièces-jointes
 	$tda = new PiecesJointes;
@@ -249,11 +254,11 @@ class ActivitesController extends Strass_Controller_Action
 
     $this->actions->append('Modifier',
 			   array('action' => 'modifier',
-				 'activite' => $a->id),
+				 'activite' => $a->slug),
 			   array(null, $a));
     $this->actions->append('Annuler',
 			   array('action' => 'annuler',
-				 'activite' => $a->id),
+				 'activite' => $a->slug),
 			   array(null, $a));
 
     /* $this->formats('ics'); */
@@ -384,13 +389,14 @@ class ActivitesController extends Strass_Controller_Action
 	$intitule = $m->get('intitule');
 	$annee = intval(date('Y', strtotime($data['debut']) - 243 * 24 * 60 * 60));
 	$a->intitule = $intitule;
-	$a->id = wtk_strtoid($a->getIntitule());
+	$a->slug = wtk_strtoid($a->getIntitule());
 	$a->save();
 
 	// mettre à jour les participations
 	$unites = $tu->getIdSousUnites((array) $m->get('unites'),
 				       $a->getAnnee());
-	$this->updateParticipations($a, $unites);
+	$tp = new Participations;
+	$tp->updateActivite($a, $unites);
 
 	// PIÈCES-JOINTES
 	$td = new Documents;
@@ -459,13 +465,13 @@ class ActivitesController extends Strass_Controller_Action
 
 	$this->_helper->Log("Activité mise-à-jour", array($a),
 			    $this->_helper->Url('consulter', 'activites', null,
-						array('activite' => $a->id)),
+						array('activite' => $a->slug)),
 			    (string) $a);
 
 	$db->commit();
 
 	$this->redirectSimple('consulter', null, null,
-			      array('activite' => $a->id));
+			      array('activite' => $a->slug));
       }
       catch(Exception $e) {
 	$db->rollBack();
@@ -524,7 +530,7 @@ class ActivitesController extends Strass_Controller_Action
 	  $a->delete();
 	  $this->_helper->Log("Activité annulé", array(),
 			      $this->_helper->url->Url(array('action' => 'calendrier',
-							     'unite' => $unite->id)),
+							     'unite' => $unite->slug)),
 			      $intitule);
 
 	  $db->commit();
@@ -537,7 +543,7 @@ class ActivitesController extends Strass_Controller_Action
       }
       else {
 	$this->redirectSimple('consulter', 'activites', null,
-			      array('activite' => $a->id));
+			      array('activite' => $a->slug));
       }
     }
 
@@ -546,20 +552,6 @@ class ActivitesController extends Strass_Controller_Action
 
     $this->view->activite = $a;
     $this->view->model = $m;
-  }
-
-
-  function getParticipation($reset = true)
-  {
-    $u = $this->_helper->Unite();
-    $a = $this->_helper->Activite(null, true, $reset);
-    $ps = new Participations();
-    $p = $a && $u ? $ps->find($a->id, $u->id)->current() : null;
-    if (!$p && $throw)
-      throw new Strass_Controller_Action_Exception_Notice(wtk_ucfirst($u->getFullname()).
-							  " ne participe pas à l'activité ".
-							  $a->getIntitule());
-    return array($u, $p, $a);
   }
 
   // HELPER
@@ -587,27 +579,5 @@ class ActivitesController extends Strass_Controller_Action
 	("Vous n'avez le droit de prévoir d'activité pour aucune unités !");
     }
     return $unites;
-  }
-
-  function updateParticipations($activite, $participantes)
-  {
-    $participations = new Participations();
-    $table = new Unites();
-
-    // boucler sur *toutes* les unités existantes pour ajout ou
-    // suppression de la participation.
-    $rows = $table->fetchAll();
-    foreach($rows as $unite) {
-      $p = $participations->find($activite->id, $unite->slug)->current();
-      if (in_array($unite->id, $participantes)) {
-	// ajouter un unités nouvellement participante
-	if (!$p)
-	  $id = $participations->insert(array ('activite' => $activite->id,
-					       'unite' => $unite->slug));
-      }
-      // supprimer une unité anciennement participante
-      else if ($p)
-	$p->delete();
-    }
   }
 }

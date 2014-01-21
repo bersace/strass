@@ -395,9 +395,9 @@ class Activite extends Strass_Db_Table_Row_Abstract implements Zend_Acl_Resource
     return strtotime($this->debut) > time();
   }
 
-  function getDossierPhoto($id = NULL)
+  function getDossierPhoto($slug = NULL)
   {
-    return 'data/photos/'.($id ? $id : $this->id);
+    return 'data/photos/'.($slug ? $slug : $this->slug);
   }
 
   function getPhotoAleatoire()
@@ -413,15 +413,15 @@ class Activite extends Strass_Db_Table_Row_Abstract implements Zend_Acl_Resource
     $db = $this->getTable()->getAdapter();
     $select = $db->select()
       ->from('photos', 'COUNT(*)')
-      ->where($db->quoteInto('photos.activite = ?', $this->id));
+      ->where($db->quoteInto('photos.activite = ?', $this->slug));
     $stmt = $db->query($select);
     return count($stmt->fetchAll());
   }
 
   protected function _postUpdate()
   {
-    rename($this->getDossierPhoto($this->_cleanData['id']),
-	   $this->getDossierPhoto());
+    @rename($this->getDossierPhoto($this->_cleanData['slug']),
+	    $this->getDossierPhoto());
   }
 
   protected function _postDelete()
@@ -485,6 +485,40 @@ class Participations extends Strass_Db_Table_Abstract
 						       'refColumns' => 'id',
 						       'onUpdate' => self::CASCADE,
 						       'onDelete' => self::CASCADE));
+
+
+  function updateActivite($activite, $participantes)
+  {
+    $tu = new Unites();
+
+    // boucler sur *toutes* les unités existantes pour ajout ou
+    // suppression de la participation.
+    $rows = $tu->fetchAll();
+    foreach($rows as $unite) {
+      $s = $this->select()
+	->setIntegrityCheck(false)
+	->where('activite = ?', $activite->id)
+	->where('unite = ?', $unite->id);
+
+      if (in_array($unite->id, $participantes)) {
+	// ajouter un unités nouvellement participante
+	try {
+	  $p = $this->fetchOne($s);
+	} catch (Strass_Db_Table_NotFound $e) {
+	  $id = $this->insert(array ('activite' => $activite->id,
+				     'unite' => $unite->id));
+	}
+      }
+      // supprimer une unité anciennement participante
+      else {
+	try {
+	  $p = $this->fetchOne($s);
+	  $p->delete();
+	} catch (Strass_Db_Table_NotFound $e) {}
+      }
+    }
+  }
+
 }
 
 class PiecesJointes extends Zend_Db_Table_Abstract

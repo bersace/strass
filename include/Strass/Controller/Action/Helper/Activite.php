@@ -52,7 +52,7 @@ class Strass_Controller_Action_Helper_Activite extends Zend_Controller_Action_He
     $unites = $activite->getUnitesParticipantesExplicites();
     if ($unites->count() == 1) {
       $unite = $unites->current();
-      $urlOptions+= array('controller'=> 'unites',
+      $urlOptions = array('controller'=> 'unites',
 			  'action'	=> 'index',
 			  'unite'	=> $unite->slug);
       $this->_actionController->branche->append(wtk_ucfirst($unite->getName()),
@@ -60,7 +60,7 @@ class Strass_Controller_Action_Helper_Activite extends Zend_Controller_Action_He
 						array(),
 						true);
 
-      $urlOptions+= array('controller'=> 'activites',
+      $urlOptions = array('controller'=> 'activites',
 			  'action'	=> 'calendrier',
 			  'unite'	=> $unite->slug);
       $this->_actionController->branche->append('Calendrier',
@@ -68,7 +68,7 @@ class Strass_Controller_Action_Helper_Activite extends Zend_Controller_Action_He
 						array(),
 						true);
 
-      $urlOptions+= array('controller'=> 'activites',
+      $urlOptions = array('controller'=> 'activites',
 			  'action'	=> 'calendrier',
 			  'unite'	=> $unite->slug,
 			  'annee' => $activite->getAnnee());
@@ -78,7 +78,7 @@ class Strass_Controller_Action_Helper_Activite extends Zend_Controller_Action_He
 						true);
     }
 
-    $urlOptions+= array('controller'=> 'activites',
+    $urlOptions = array('controller'=> 'activites',
 			'action'	=> 'consulter',
 			'activite'	=> $slug);
     $this->_actionController->branche->append(wtk_ucfirst($activite->getIntitule(false)),

@@ -2,10 +2,7 @@
 $a = $this->activite;
 $s = $this->document;
 
-// INFORMATIONS GÉNÉRALES
-$ss = $s->addSection('informations', 'Informations générales');
-$intro = $ss->addText("Cette activité ".
-		      " se déroul".($a->isFuture()? 'er' : '')."a ".$a->getDate().($a->lieu ? " à ".$a->lieu : "").". ");
+$intro = $s->addText($a->description);
 
 // PIÈCES JOINTES
 if ($this->documents->count()) {
