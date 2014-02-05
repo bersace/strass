@@ -12,7 +12,7 @@ class Scout_Pages_Renderer_Albums extends Strass_Views_PagesRenderer_Historique
 					$activite->getIntitule(false, true, true),
 					array('action'		=> 'consulter',
 					      'controller'	=> 'photos',
-					      'activite'	=> $activite->id,
+					      'activite'	=> $activite->slug,
 					      'photo'		=> null),
 					true);
 	$l->addItem($v)->addFlags('vignette');
@@ -27,4 +27,3 @@ class Scout_Pages_Renderer_Albums extends Strass_Views_PagesRenderer_Historique
 $this->document->addStyleComponents('vignette');
 
 $s = $this->document->addPages('albums', $this->model, new Scout_Pages_Renderer_Albums($this));
-

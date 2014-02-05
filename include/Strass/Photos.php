@@ -4,14 +4,29 @@ require_once 'Strass/Activites.php';
 
 class Photos extends Strass_Db_Table_Abstract
 {
-  protected	$_name			= 'photos';
-  protected	$_rowClass		= 'Photo';
-  protected	$_dependentTables	= array('Commentaires');
-  protected	$_referenceMap		= array('Activite'	=> array('columns'		=> 'activite',
-									 'refTableClass'	=> 'Activites',
-									 'refColumns'		=> 'slug',
-									 'onUpdate'		=> self::CASCADE,
-									 'onDelete'		=> self::CASCADE));
+  protected $_name		= 'photo';
+  protected $_rowClass		= 'Photo';
+  protected $_referenceMap	= array('Activite' => array('columns'		=> 'activite',
+							    'refTableClass'	=> 'Activites',
+							    'refColumns'	=> 'id',
+							    'onUpdate'		=> self::CASCADE,
+							    'onDelete'		=> self::CASCADE),
+					'Description' => array('columns' => 'commentaires',
+							       'refTableClass' => 'Commentaires',
+							       'refColumns' => 'id',
+							       'onUpdate' => self::CASCADE,
+							       'onDelete' => self::CASCADE));
+
+  function findBySlugs($activite, $photo) {
+    $s = $this->select()
+      ->setIntegrityCheck(false)
+      ->from('photo')
+      ->join('activite', 'activite.id = photo.activite', array())
+      ->where('activite.slug = ?', $activite)
+      ->where('photo.slug = ?', $photo);
+
+    return $this->fetchOne($s);
+  }
 
   function findPhotoAleatoireUnite(Unite $unite)
   {
@@ -21,9 +36,9 @@ class Photos extends Strass_Db_Table_Abstract
     // sous-unités
     $s = $this->select()
       ->setIntegrityCheck(false)
-      ->from('photos')
+      ->from('photo')
       ->join('activite',
-	     'activite.slug = photos.activite', array())
+	     'activite.id = photo.activite', array())
       ->join('participation',
 	     'participation.activite = activite.id'.
 	     ' AND '.
@@ -52,11 +67,11 @@ class Photos extends Strass_Db_Table_Abstract
     $db = $this->getAdapter();
     if (!$select)
       $select = $this->select()
-	->from('photos');
+	->from('photo');
 
     $select->setIntegrityCheck(false)
       ->join('activite',
-	     'activite.slug = photos.activite', array())
+	     'activite.id = photo.activite', array())
       ->join('participation',
 	     'participation.activite = activite.id'.
 	     ' AND '.
@@ -69,7 +84,6 @@ class Photos extends Strass_Db_Table_Abstract
 
 class Photo extends Strass_Db_Table_Row_Abstract implements Zend_Acl_Resource_Interface
 {
-  protected $a = null;
   protected $_privileges	= array(array('chef',		NULL),
 					array('assistant',	NULL),
 					array(NULL,		'commenter'));
@@ -80,22 +94,23 @@ class Photo extends Strass_Db_Table_Row_Abstract implements Zend_Acl_Resource_In
     $this->initResourceAcl($this->findParentActivites()->findUnitesViaParticipations());
   }
 
-  function findParentActivites()
-  {
-    if (is_null($this->a)) {
-      $this->a = $this->findParentRow('Activites');
-    }
-    return $this->a;
-  }
-
   function getResourceId()
   {
-    return 'photo-'.$this->id;
+    return 'photo-'.$this->slug;
   }
 
   protected function getChemin($data = null)
   {
-    return $this->findParentActivites()->getDossierPhoto($data ? $data['activite'] : $this->activite).'/'.($data ? $data['id'] : $this->id);
+    if (is_null($data)) {
+      $a = $this->findParentActivites();
+    }
+    else {
+      $ta = new Activites;
+      $a = $ta->find($data['activite']);
+    }
+    $d = $a->getDossierPhoto();
+
+    return $d.'/'.($data ? $data['slug'] : $this->slug);
   }
 
   function getCheminImage($data = null)
@@ -106,6 +121,12 @@ class Photo extends Strass_Db_Table_Row_Abstract implements Zend_Acl_Resource_In
   function getCheminVignette($data = null)
   {
     return $this->getChemin($data).'-vignette.jpeg';
+  }
+
+  function findCommentaires() {
+    $t = new Commentaires;
+    $parent = $t->findOne($this->commentaires);
+    return $parent->findCommentaires();
   }
 
   function __toString()
@@ -129,31 +150,24 @@ class Photo extends Strass_Db_Table_Row_Abstract implements Zend_Acl_Resource_In
 
 class Commentaires extends Strass_Db_Table_Abstract
 {
-  protected	$_name			= 'commentaires';
-  protected	$_rowClass		= 'Commentaire';
-  protected	$_referenceMap		= array('Activite'	=> array('columns'		=> 'activite',
-									 'refTableClass'	=> 'Activites',
-									 'refColumns'		=> 'id',
-									 'onUpdate'		=> self::CASCADE,
-									 'onDelete'		=> self::CASCADE),
-						'Photo'		=> array('columns'		=> array('photo', 'activite'),
-									 'refTableClass'	=> 'Photos',
-									 'refColumns'		=> array('id', 'activite'),
-									 'onUpdate'		=> self::CASCADE,
-									 'onDelete'		=> self::CASCADE),
-						'Auteur'	=> array('columns'		=> 'individu',
-									 'refTableClass'	=> 'Individus',
-									 'refColumns'		=> 'slug',
-									 'onUpdate'		=> self::CASCADE,
-									 'onDelete'		=> self::CASCADE));
+  protected $_name		= 'commentaire';
+  protected $_rowClass		= 'Commentaire';
+  protected $_dependentTables	= array('Photos', 'Commentaires');
+  protected $_referenceMap	= array('Parent'	=> array('columns'		=> 'parent',
+								 'refTableClass'	=> 'Commentaires',
+								 'refColumns'		=> 'id',
+								 'onUpdate'		=> self::CASCADE,
+								 'onDelete'		=> self::CASCADE),
+					'Auteur'	=> array('columns'		=> 'auteur',
+								 'refTableClass'	=> 'Individus',
+								 'refColumns'		=> 'id',
+								 'onUpdate'		=> self::CASCADE,
+								 'onDelete'		=> self::CASCADE));
 }
 
 class Commentaire extends Strass_Db_Table_Row_Abstract implements Zend_Acl_Resource_Interface
 {
-  function __construct(array $config)
-  {
-    parent::__construct($config);
-    $acl = Zend_Registry::get('acl');
+  function initResourceAcl($acl) {
     if (!$acl->has($this)) {
       $acl->add($this);
       $auteur = $this->findParentIndividus();
@@ -164,6 +178,6 @@ class Commentaire extends Strass_Db_Table_Row_Abstract implements Zend_Acl_Resou
 
   function getResourceId()
   {
-    return 'commentaire-'.$this->activite.'-'.$this->photo.'-'.$this->individu;
+    return 'commentaire-'.$this->photo.'-'.$this->individu;
   }
 }

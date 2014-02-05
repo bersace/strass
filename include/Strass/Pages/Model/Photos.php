@@ -11,11 +11,11 @@ class Strass_Pages_Model_Photos extends Strass_Pages_Model_Historique
     $select = $activites->select()
       ->setIntegrityCheck(false)
       ->distinct()
-      ->from('activites')
-      ->join('photos', 'photos.activite = activites.id', array())
-      ->where("activites.debut > ?", $this->dateDebut($annee))
-      ->where("activites.debut < ?", $this->dateFin($annee))
-      ->where("activites.debut < STRFTIME('%Y-%m-%d %H:%M', CURRENT_TIMESTAMP)")
+      ->from('activite')
+      ->join('photo', 'photo.activite = activite.id', array())
+      ->where("activite.debut > ?", $this->dateDebut($annee))
+      ->where("activite.debut < ?", $this->dateFin($annee))
+      ->where("activite.debut < STRFTIME('%Y-%m-%d %H:%M', CURRENT_TIMESTAMP)")
       ->order('fin');
     return array('activites' => $activites->fetchAll($select));
   }

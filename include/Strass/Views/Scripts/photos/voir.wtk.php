@@ -16,7 +16,7 @@ class Scout_Pages_Renderer_Photo extends Wtk_Pages_Renderer
     return $c;
   }
 }
-
+
 $this->document->addStyleComponents('signature');
 $s = $this->document;
 $s->addPages(null, $this->model,
@@ -24,15 +24,16 @@ $s->addPages(null, $this->model,
 							  false,
 							  array('previous'	=> "Précédente",
 								'next'		=> "Suivante")));
-$s->addText("Prise le ".strftime('%d/%m/%Y à %Hh%M', strtotime($this->photo->date)).
-	    " lors de ".$this->activite->intitule.".\n\n".
-	    $this->photo->desc);
+$description = $this->photo->findParentCommentaires()->message;
+if ($description) {
+  $s->addText($description);
+}
 
 if ($this->commentaires->count()) {
 	$ss = $s->addSection('commentaires', "Commentaires");
 	foreach($this->commentaires as $i => $c) {
 		$sss = $s->addSection(null)->addFlags('commentaire', $i%2 ? 'even' : 'odd');
-		$sss->addText($c->commentaire);
+		$sss->addText($c->message);
 		$sss->addParagraph($this->signature($c))->addFlags('signature');
 	}
  }

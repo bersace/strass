@@ -10,6 +10,18 @@ abstract class Strass_Db_Table_Abstract extends Zend_Db_Table_Abstract
     return $this->fetchAll($s)->current();
   }
 
+  function findOne() {
+    $key = func_get_args();
+    $res = call_user_func_array(array($this, 'find'), $key);
+    $row = $res->current();
+
+    if (!$row) {
+      throw new Strass_Db_Table_NotFound;
+    }
+
+    return $row;
+  }
+
   function countRows($select = null)
   {
     $db = $this->getAdapter();

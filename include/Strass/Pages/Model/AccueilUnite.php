@@ -11,7 +11,7 @@ class Strass_Pages_Model_AccueilUnite extends Strass_Pages_Model_Historique
     $photos = new Photos;
 
     $select = $photos->select()
-      ->from('photos')
+      ->from('photo')
       ->where("strftime('%Y', activite.debut, '-8 months') = ?", strval($annee))
       ->limit(4);
     return array('unite' => $u,
