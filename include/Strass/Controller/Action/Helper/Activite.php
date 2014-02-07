@@ -52,18 +52,10 @@ class Strass_Controller_Action_Helper_Activite extends Zend_Controller_Action_He
     $unites = $activite->getUnitesParticipantesExplicites();
     if ($unites->count() == 1) {
       $unite = $unites->current();
-      $urlOptions = array('controller'=> 'unites',
-			  'action'	=> 'index',
-			  'unite'	=> $unite->slug);
-      $this->_actionController->branche->append(wtk_ucfirst($unite->getName()),
-						$urlOptions,
-						array(),
-						true);
-
       $urlOptions = array('controller'=> 'activites',
 			  'action'	=> 'calendrier',
 			  'unite'	=> $unite->slug);
-      $this->_actionController->branche->append('Calendrier',
+      $this->_actionController->branche->append(wtk_ucfirst($unite->getName()),
 						$urlOptions,
 						array(),
 						true);

@@ -4,13 +4,11 @@ class Scout_Pages_Renderer_Photo extends Wtk_Pages_Renderer
 {
   function render($id, $photo, $c)
   {
-    $a = $photo->findParentActivites();
-    $p = new Wtk_Image($photo->getCheminImage(),
-		       $photo->titre,
-		       $photo->titre);
-
-    // mieux un div ou un p ?
-    $c->addParagraph($p)
+    $c->addParagraph()
+      ->addFlags('photo')
+      ->addImage($photo->getCheminImage(),
+		 $photo->titre,
+		 $photo->titre)
       ->addFlags('photo');
 
     return $c;
@@ -20,10 +18,10 @@ class Scout_Pages_Renderer_Photo extends Wtk_Pages_Renderer
 $this->document->addStyleComponents('signature');
 $s = $this->document;
 $s->addPages(null, $this->model,
-	     new Scout_Pages_Renderer_Photo($this->url(array('photo' => '%i')).'#photo',
-							  false,
-							  array('previous'	=> "Précédente",
-								'next'		=> "Suivante")));
+	     new Scout_Pages_Renderer_Photo($this->url(array('photo' => '%i')).'#document',
+					    false,
+					    array('previous'	=> "Précédente",
+						  'next'		=> "Suivante")));
 $description = $this->photo->findParentCommentaires()->message;
 if ($description) {
   $s->addText($description);

@@ -34,10 +34,6 @@ class ActivitesController extends Strass_Controller_Action
   function calendrierAction()
   {
     $u = $this->_helper->Unite();
-    $this->branche->append('Calendrier',
-			   array('controller' => 'activites',
-				 'action' => 'calendrier'),
-			   array(), true);
     $annee = $this->_helper->Annee();
     $future = $annee >= date('Y', time()-243*24*60*60);
 

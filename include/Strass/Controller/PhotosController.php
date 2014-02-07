@@ -11,7 +11,7 @@ class PhotosController extends Strass_Controller_Action
     $annee = $this->_helper->Annee();
 
     $this->metas(array('DC.Title' => 'Albums photos '.$annee,
-		       'DC.Subject' => 'photos,albums,'.$annee));
+		       'DC.Subject' => 'albums,photos,'.$annee));
 
     $this->view->model = new Strass_Pages_Model_Photos($this->view->unite, $annee);
 
@@ -22,8 +22,8 @@ class PhotosController extends Strass_Controller_Action
 
   function consulterAction()
   {
-    $this->view->activite = $a = $this->_helper->Activite();
-    $this->metas(array('DC.Title' => 'Photos de '.$a->getIntitule(),
+    $this->view->activite = $a = $this->_helper->Album();
+    $this->metas(array('DC.Title' => $a->getIntitule(),
 		       'DC.Subject' => 'photos'));
     $photos = new Photos();
     $s = $photos->select()->order('date');
@@ -198,14 +198,15 @@ class PhotosController extends Strass_Controller_Action
 
   function voirAction()
   {
-    list($a, $photo) = $this->_helper->Photo();
+    $photo = $this->_helper->Photo();
     $s = $photo->getTable()->select()->order('date');
+    $a = $photo->findParentActivites();
     $ps = $a->findPhotos($s);
     $data = array();
     foreach($ps as $p)
-      $data[$p->id] = $p;
+      $data[$p->slug] = $p;
 
-    $m = new Wtk_Pages_Model_Assoc($data, $photo->id);
+    $m = new Wtk_Pages_Model_Assoc($data, $photo->slug);
 
     $this->metas(array('DC.Title' => wtk_ucfirst($photo->titre),
 		       'DC.Subject' => 'photo',

@@ -11,8 +11,7 @@ class Strass_View_Helper_VignettePhoto
 
   public function vignettePhoto($photo,
 				$label = null,
-				$urlOptions = array(),
-				$reset = true)
+				$urlOptions = array())
   {
     if (!$photo) {
       return;
@@ -20,7 +19,6 @@ class Strass_View_Helper_VignettePhoto
 
     $urlOptions = array_merge(array('controller'	=> 'photos',
 				    'action'		=> 'voir',
-				    'activite'		=> $photo->findParentActivites()->slug,
 				    'photo'		=> $photo->slug),
 			      $urlOptions);
 
@@ -31,7 +29,7 @@ class Strass_View_Helper_VignettePhoto
 					    $photo->titre.' '.$page->metas->get('DC.Subject'),
 					    $photo->titre),
 			      new Wtk_Paragraph($label));
-    return new Wtk_Link($this->view->url($urlOptions, null, true).'#photo',
+    return new Wtk_Link($this->view->url($urlOptions, true, true).'#document',
 			$label, $item);
   }
 }
