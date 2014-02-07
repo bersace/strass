@@ -1,7 +1,7 @@
 <?php
 
 final class Strass_Version {
-  const VERSION = 14;
+  const VERSION = 15;
 
   static $filename = 'private/STRASS_VERSION';
 
