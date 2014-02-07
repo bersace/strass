@@ -1,32 +1,50 @@
-#document.photos.voir img
-{
-  width: 100%;
-  height: auto;
-  padding: 0;
-  z-index: 0;
-  }
+/*-*- css -*-*/
+
+#document h1 {
+    text-align: center;
+    font-size: 200%;
+}
 
 #document.photos.voir p.photo
 {
   text-align: center;
+  vertical-align: middle;
+  height: 48em;
+  line-height: 48em;
   }
 
-#document.photos.voirs ul
+#document.photos .vignettes
+{
+    align-items: center;
+    justify-content: center;
+}
+
+#document.photos.consulter .vignette p
+{
+    display: none;
+}
+
+#document.photos.voir img
+{
+  display: inline-block;
+  vertical-align: middle;
+  max-width: 90%;
+  max-height: 90%;
+  width: auto;
+  height: auto;
+  z-index: 0;
+  border: 1px solid black;
+  border-radius: .5ex;
+  box-shadow: .5ex .5ex 1.5em rgba(35, 35, 30, .75);
+  margin: 0;
+  padding: 1em;
+  background: white;
+  }
+
+#document.photos.voir ul
 {
   margin: 1em;
   padding: 0;
-  }
-
-#albums .vignette p,
-#document.photos.voirs .vignette p
-{
-  height: 3em;
-  }
-
-#vignette
-{
-  float: none;
-  text-align: center;
   }
 
 #document.supprimer form
