@@ -16,8 +16,7 @@ class Strass_View_Helper_LienJournal
 			      $reset = true)
   {
     $label = $label ? $label : ucfirst($journal->nom);
-    $acl = Zend_Registry::get('acl');
-    return $this->view->lien(array('journal' => $journal->id,
+    return $this->view->lien(array('journal' => $journal->slug,
 				   'action' => $action,
 				   'controller' => $controller),
 			     $label,

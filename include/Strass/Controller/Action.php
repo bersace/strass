@@ -6,6 +6,7 @@ abstract class Strass_Controller_Action extends Zend_Controller_Action implement
   protected $_availableFormats = array();
   protected $_formats = array('xhtml');
   protected $resourceid;
+  public $_helper = null;
 
   public function getResourceId()
   {

@@ -11,8 +11,9 @@ class Strass_View_Helper_Signature
 
   public function signature($article)
   {
-    return new Wtk_Container(new Wtk_Inline("par "),
-			     $this->view->lienIndividu($article->findParentIndividus()),
-			     new Wtk_Inline(" le ".strftime('%d/%m/%Y', strtotime($article->date))));
+    return new Wtk_Container("par ",
+			     $this->view->lienIndividu($article->findAuteur()),
+			     " le ".strftime('%d/%m/%Y',
+					     strtotime($article->findParentCommentaires()->date)));
   }
 }

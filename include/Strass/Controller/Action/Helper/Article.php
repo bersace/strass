@@ -4,27 +4,34 @@ require_once 'Strass/Activites.php';
 
 class Strass_Controller_Action_Helper_Article extends Zend_Controller_Action_Helper_Abstract
 {
-	function direct($throw = true)
-	{
-		$articles = new Articles();
-		$id = $this->getRequest()->getParam('article');
-		$j = $this->getRequest()->getParam('journal');
-		$d = $this->getRequest()->getParam('date');
-		$article = $articles->find($id, $d, $j)->current();
+  function direct($throw = true)
+  {
+    $articles = new Articles();
+    $slug = $this->getRequest()->getParam('article');
+    try {
+      $article = $articles->findBySlug($slug);
+    }
+    catch (Strass_Db_Table_NotFound $e) {
+      if ($throw)
+	throw new Strass_Controller_Action_Exception_Notice("Article  inconnu");
+      else
+	return null;
+    }
 
-		if (!$article && $throw)
-			throw new Strass_Controller_Action_Exception_Notice("Article  inconnu");
+    $this->setBranche($article);
 
-		if ($article) {
-			$this->_actionController->branche->append($article->titre,
-								  array('controller'	=> 'journaux',
-									'action'	=> 'lire',
-									'journal'	=> $j,
-									'date'		=> $d,
-									'article'	=> $id),
-								  array(),
-								  true);
-		}
-		return $article;
-	}
+    return $article;
+  }
+
+  function setBranche($article)
+  {
+    $this->_actionController->_helper->Journal->setBranche($article->findParentJournaux());
+
+    $this->_actionController->branche->append($article->titre,
+					      array('controller'=> 'journaux',
+						    'action'	=> 'lire',
+						    'article'	=> $article->slug),
+						array(),
+						true);
+  }
 }

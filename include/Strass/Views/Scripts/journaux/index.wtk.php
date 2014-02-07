@@ -1,10 +1,10 @@
 <?php
 
-$s = $this->document->addSection('journaux', "Les journaux des unités");
-$l = $s->addChild(new Wtk_List());
+$s = $this->document;
+$l = $s->addList();
 foreach($this->journaux as $journal) {
-  $l->addItem(new Wtk_Paragraph($this->lienJournal($journal),
-				new Wtk_RawText(" ( "),
-				$this->lienUnite($journal->findParentUnites()),
-				new Wtk_RawText(" ).")));
+  $l->addItem()->addParagraph($this->lienJournal($journal),
+			      new Wtk_RawText(" ( "),
+			      $this->lienUnite($journal->findParentUnites()),
+			      new Wtk_RawText(" )."));
 }

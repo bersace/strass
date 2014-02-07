@@ -17,6 +17,7 @@ foreach ($this->errors as $i => $error) {
   $section = $this->document->addDialog($titre)
     ->setId("error".$i)
     ->addFlags('error');
+
   $section->addText("// ".$error->getMessage()." // \n");
 
   if ($error instanceof Strass_Controller_Action_Exception_Forbidden) {

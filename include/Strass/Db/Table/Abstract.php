@@ -85,7 +85,7 @@ abstract class Strass_Db_Table_Abstract extends Zend_Db_Table_Abstract
     $all = $this->fetchAll($select);
 
     if ($all->count() > 1) {
-      throw new Strass_Db_Table_Multiple;
+      throw new Strass_Db_Table_Multiple("Multiple row found for ". (string) $select);
     }
     else if ($all->count() == 0) {
       throw new Strass_Db_Table_NotFound();
