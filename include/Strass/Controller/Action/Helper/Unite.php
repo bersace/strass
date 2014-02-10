@@ -69,6 +69,10 @@ class Strass_Controller_Action_Helper_Unite extends Zend_Controller_Action_Helpe
 			    'action' => 'calendrier'),
 		      array(null, $unite, 'calendrier'));
 
+    $connexes->append("Documents",
+		      array('controller' => 'documents',
+			    'action' => 'index'));
+
     $journal = $unite->findJournaux()->current();
     if ($journal)
       $connexes->append(wtk_ucfirst($journal->__toString()),

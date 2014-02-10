@@ -571,6 +571,26 @@ class Unite extends Strass_Db_Table_Row_Abstract implements Zend_Acl_Resource_In
     return $annees;
   }
 
+  function findDocuments()
+  {
+    $uids = array($this->id, $this->parent);
+    $gp = $this->findParentUnites();
+    if ($gp)
+      array_push($uids, $gp->parent);
+    $uids = array_filter($uids);
+    $uids = array_map('intval', $uids);
+
+    $t = new Documents;
+    $s = $t->select()
+      ->setIntegrityCheck(false)
+      ->distinct()
+      ->from('document')
+      ->join('unite_document', 'unite_document.document = document.id', array())
+      ->where('unite_document.unite IN ?', $uids);
+
+    return $t->fetchAll($s);
+  }
+
   function _postDelete()
   {
     if ($i = $this->getImage())
@@ -670,4 +690,19 @@ class Role extends Zend_Db_Table_Row_Abstract
   {
     return $this->titre;
   }
+}
+
+class DocsUnite extends Zend_Db_Table_Abstract
+{
+  protected $_name = 'unite_document';
+  protected $_referenceMap = array('Document' => array('columns' => 'document',
+						       'refTableClass' => 'Documents',
+						       'refColumns' => 'id',
+						       'onUpdate' => self::CASCADE,
+						       'onDelete' => self::CASCADE),
+				   'Unite' => array('columns' => 'unite',
+						    'refTableClass' => 'Unites',
+						    'refColumns' => 'id',
+						    'onUpdate' => self::CASCADE,
+						    'onDelete' => self::CASCADE));
 }

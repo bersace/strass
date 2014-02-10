@@ -1,82 +1,65 @@
 <?php
 
 class Documents extends Zend_Db_Table_Abstract {
-	protected $_name = 'documents';
-	protected $_rowClass = 'Document';
-	protected $_dependentTables = array('DocsUnite', 'PiecesJointes');
+  protected $_name = 'document';
+  protected $_rowClass = 'Document';
+  protected $_dependentTables = array('DocsUnite', 'PiecesJointes');
+}
 
-	function getDependentTablesName()
-	{
-		return $this->_dependentTables;
-	}
-  }
 
 class Document extends Strass_Db_Table_Row_Abstract implements Zend_Acl_Resource_Interface
 {
-	public function __construct(array $config = array()) {
-		parent::__construct($config);
-		$this->initResourceAcl($this->findUnitesViaDocsUnite());
-	}
+  public function __construct(array $config = array()) {
+    parent::__construct($config);
+    $this->initResourceAcl($this->findUnitesViaDocsUnite());
+  }
 
-	public function getResourceId()
-	{
-		return $this->id;
-	}
+  public function getResourceId()
+  {
+    return 'document-'.$this->slug;
+  }
 
-	public function getUri()
-	{
-		return '/'.$this->getFichier();
-	}
+  public function getUri()
+  {
+    return '/'.$this->getFichier();
+  }
 
-	function getFichier($data = null)
-	{
-		return 'data/documents/'.($data ? $data['id'] : $this->id).'.'.($data ? $data['suffixe'] : $this->suffixe);
-	}
+  function getCheminVignette($data = null)
+  {
+    if (!$data) $data = $this->_cleanData;
+    return 'data/documents/'.$data['slug'].'-vignette.jpeg';
+  }
 
-	function _postDelete()
-	{
-		unlink($this->getFichier());
-	}
+  function getFichier($data = null)
+  {
+    if (!$data) $data = $this->_cleanData;
+    return 'data/documents/'.$data['slug'].'.'.$data['suffixe'];
+  }
 
-	function _postUpdate()
-	{
-		rename($this->getFichier($this->_cleanData),
-		       $this->getFichier());
-	}
+  function _postDelete()
+  {
+    unlink($this->getFichier());
+  }
 
-	function countLiaisons($tables = null)
-	{
-		$count = 0;
+  function _postUpdate()
+  {
+    rename($this->getFichier($this->_cleanData),
+	   $this->getFichier());
+  }
 
-		if (is_null($tables))
-			$tables = $this->getTable()->getDependentTablesName();
-		if (is_string($tables))
-			$tables = array($tables);
+  function countLiaisons($tables = null)
+  {
+    $count = 0;
 
-		foreach($tables as $tn) {
-			$func = 'find'.$tn;
-			$count+= call_user_func(array($this, $func))->count();
-		}
-		return $count;
-	}
-}
+    if (is_null($tables))
+      $tables = $this->getTable()->getDependentTablesName();
+    if (is_string($tables))
+      $tables = array($tables);
 
-class DocsUnite extends Zend_Db_Table_Abstract
-{
-	protected $_name = 'doc_unite';
-	protected $_rowClass = 'DocUnite';
-	protected $_referenceMap = array('Document' => array('columns' => 'document',
-							     'refTableClass' => 'Documents',
-							     'refColumns' => 'id',
-							     'onUpdate' => self::CASCADE,
-							     'onDelete'  => self::CASCADE),
-					 'Unite' => array('columns' => 'unite',
-							  'refTableClass' => 'Unites',
-							  'refColumns' => 'id',
-							  'onUpdate' => self::CASCADE,
-							  'onDelete' => self::CASCADE));
-}
-
-class DocUnite extends Zend_Db_Table_Row_Abstract
-{
+    foreach($tables as $tn) {
+      $func = 'find'.$tn;
+      $count+= call_user_func(array($this, $func))->count();
+    }
+    return $count;
+  }
 }

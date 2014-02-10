@@ -1,15 +1,9 @@
 <?php
 
-$s = $this->document->addSection('documents');
-$pre = NULL;
+$l = $this->document->addList()
+  ->addFlags('vignettes', 'documents');
+
 foreach($this->docs as $doc) {
-	$unite = $doc->findParentUnites();
-	if (!$pre || $unite->id != $pre->id) {
-		$ss = $s->addSection($unite->id, "Document pour ".$unite->getFullname());
-		$l = $ss->addChild(new Wtk_List());
-		$pre = $unite;
-	}
-	$d = $doc->findParentDocuments();
-	$l->addItem(new Wtk_Link($d->getUri(),
-				 $d->titre));
+  $l->addItem($this->vignetteDocument($doc))
+    ->addFlags('vignette', 'document');
 }
