@@ -10,7 +10,7 @@ clean:
 	rm -vf $(CSS)
 
 setup:
-	aptitude install php5-cli php5-sqlite php-pear php5-gd python-pip
+	aptitude install php5-cli php5-sqlite php-pear php5-gd php5-imagick python-pip
 	pip install libsass
 
 serve:
