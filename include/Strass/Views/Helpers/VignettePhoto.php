@@ -25,10 +25,13 @@ class Strass_View_Helper_VignettePhoto
     $this->view->document->addStyleComponents('vignette');
     $label = $label ? $label : ucfirst($photo->titre);
     $page = Zend_Registry::get('page');
-    $item = new Wtk_Container(new Wtk_Image($photo->getCheminVignette(),
-					    $photo->titre.' '.$page->metas->get('DC.Subject'),
-					    $photo->titre),
-			      new Wtk_Paragraph($label));
+    $item = new Wtk_Container;
+    $item->addSection()
+      ->addFlags('wrapper')
+      ->addImage($photo->getCheminVignette(),
+		 $photo->titre.' '.$page->metas->get('DC.Subject'),
+		 $photo->titre);
+    $item->addParagraph($label);
     return new Wtk_Link($this->view->url($urlOptions, true, true).'#document',
 			$label, $item);
   }

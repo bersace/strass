@@ -7,45 +7,34 @@
 
 #document.photos.voir p.photo
 {
-  text-align: center;
-  vertical-align: middle;
-  height: 48em;
-  line-height: 48em;
-  }
-
-#document.photos .vignettes
-{
-    align-items: center;
-    justify-content: center;
-}
-
-#document.photos.consulter .vignette p
-{
-    display: none;
+    text-align: center;
+    vertical-align: middle;
+    height: 48em;
+    line-height: 48em;
 }
 
 #document.photos.voir img
 {
-  display: inline-block;
-  vertical-align: middle;
-  max-width: 90%;
-  max-height: 90%;
-  width: auto;
-  height: auto;
-  z-index: 0;
-  border: 1px solid black;
-  border-radius: .5ex;
-  box-shadow: .5ex .5ex 1.5em rgba(35, 35, 30, .75);
-  margin: 0;
-  padding: 1em;
-  background: white;
-  }
+    display: inline-block;
+    vertical-align: middle;
+    max-width: 90%;
+    max-height: 90%;
+    width: auto;
+    height: auto;
+    z-index: 0;
+    border: 1px solid black;
+    border-radius: .5ex;
+    box-shadow: .5ex .5ex 1.5em rgba(35, 35, 30, .75);
+    margin: 0;
+    padding: 1em;
+    background: white;
+}
 
 #document.photos.voir ul
 {
-  margin: 1em;
-  padding: 0;
-  }
+    margin: 1em;
+    padding: 0;
+}
 
 #document.supprimer form
 {

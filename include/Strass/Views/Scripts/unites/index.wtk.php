@@ -21,16 +21,19 @@ class Strass_Views_PagesRenderer_Unites_Accueil extends Strass_Views_PagesRender
 				 $photo->titre);
 	else {
 	  $image = new Wtk_Paragraph("Pas d'image !");
-	  $image->addFlags('image');
+	  $image->addFlags('empty', 'image');
 	}
       }
 
       $url = $this->view->url(array('unite' => $unite->slug));
+      $type = $unite->findParentTypesUnite();
+      $w = new Wtk_Section;
+      $w->addFlags('wrapper')->addChild($image);
       $link = new Wtk_Link($url, $label,
-			   new Wtk_Container($image, new Wtk_Paragraph($label)));
-      $link->addFlags($unite->type);
+			   new Wtk_Container($w, new Wtk_Paragraph($label)));
+      $link->addFlags($type->slug);
       $item = $list->addItem($link);
-      $item->addFlags($unite->type);
+      $item->addFlags($type->slug);
       if ($src)
 	$item->addFlags('unite');
       else
@@ -71,7 +74,7 @@ class Strass_Views_PagesRenderer_Unites_Accueil extends Strass_Views_PagesRender
       $ss = $s->addSection('unites', 'Les '.$unite->getSousTypeName(true));
       if ($sousunites) {
 	$l = $ss->addList();
-	$l->addFlags('vignettes');
+	$l->addFlags('vignettes', 'unites');
 	$this->renderUnites($l, $sousunites, $annee);
       }
       else {
@@ -90,7 +93,7 @@ class Strass_Views_PagesRenderer_Unites_Accueil extends Strass_Views_PagesRender
 					   'Les photos', true));
     if ($photos->count()) {
       $l = $ss->addList();
-      $l->addFlags('vignettes');
+      $l->addFlags('vignettes', 'photos');
       foreach($photos as $photo) {
 	$i = $l->addItem($this->view->vignettePhoto($photo));
 	$i->addFlags('vignette');

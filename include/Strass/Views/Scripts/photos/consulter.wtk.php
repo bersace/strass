@@ -4,7 +4,7 @@ $s = $this->document;
 
 if ($this->photos->count()) {
   $l = $s->addList();
-  $l->addFlags('vignettes');
+  $l->addFlags('vignettes', 'photos');
   foreach($this->photos as $photo) {
     $i = $l->addItem($this->vignettePhoto($photo));
     $i->addFlags('vignette');

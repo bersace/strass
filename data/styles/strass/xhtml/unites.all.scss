@@ -3,23 +3,26 @@
 @import "common";
 
 /* ACCUEIL */
-#presentation .image
-{
-    float: left;
-    margin: 0 1ex 1ex 0;
-}
-
 #presentation
 {
     float: left;
     clear: both;
-}
-
-#presentation {
     text-align: left;
-    width: 40%;
+    width: 60%;
     margin: 0 2em 0 0;
-    padding: 0;
+    padding: .5ex;
+    background: #f3f0df;
+    border-radius: 1ex;
+
+
+    .image
+    {
+	float: left;
+	margin: 1ex;
+	&.empty {
+	    width: 200px;
+	}
+    }
 }
 
 #unites .vignettes {
