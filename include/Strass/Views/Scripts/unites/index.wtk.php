@@ -50,22 +50,17 @@ class Strass_Views_PagesRenderer_Unites_Accueil extends Strass_Views_PagesRender
     extract($data);
 
     // Présentation
-    $ss = $s->addSection('presentation');
-
     $src = $unite->getImage();
-    if ($src) {
-      $ss->addImage($src, "Photos d'unité", wtk_ucfirst($unite->getFullname()));
-    }
-    else {
-      $ss->addParagraph()->addFlags('image', 'empty')
-	->addInline("Pas d'image !");
-    }
+    if ($texte || $src) {
+      $ss = $s->addSection('presentation');
 
-    if ($texte)
-      $ss->addText($texte);
-    else {
-      $ss->addParagraph()->addFlags('text', 'empty')
-	->addInline("Pas de présentation !");
+      if ($src) {
+	$ss->addImage($src, "Photos d'unité", wtk_ucfirst($unite->getFullname()));
+      }
+
+      if ($texte) {
+	$ss->addText($texte);
+      }
     }
 
     // Section les unités
