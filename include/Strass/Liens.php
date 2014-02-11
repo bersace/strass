@@ -2,12 +2,12 @@
 
 class Liens extends Zend_Db_Table_Abstract implements Zend_Acl_Resource_Interface
 {
-  protected	$_name		= 'liens';
-  protected	$_rowClass	= 'Lien';
+  protected $_name = 'lien';
 
   function __construct()
   {
     parent::__construct();
+
     $acl = Zend_Registry::get('acl');
     if (!$acl->has($this)) {
       $acl->add($this);
@@ -20,8 +20,4 @@ class Liens extends Zend_Db_Table_Abstract implements Zend_Acl_Resource_Interfac
   {
     return 'liens';
   }
-}
-
-class Lien extends Zend_Db_Table_Row_Abstract
-{
 }
