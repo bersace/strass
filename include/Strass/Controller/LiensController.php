@@ -4,62 +4,60 @@ require_once 'Strass/Liens.php';
 
 class LiensController extends Strass_Controller_Action
 {
-	protected $_titreBranche = 'Liens';
-   
-	function indexAction()
-	{
-		$liens = new Liens();
-		$this->metas(array('DC.Title' => 'Liens',
-				   'DC.Subject' => 'liens,externes'));
+  protected $_titreBranche = 'Liens';
 
-		$this->actions->append("Éditer les liens",
-				       array('action'	=> 'editer'),
-				       array(null, $liens, 'editer'));
-		$this->view->liens = $liens->fetchAll();
-	}
+  function indexAction()
+  {
+    $liens = new Liens();
+    $this->metas(array('DC.Title' => 'Liens',
+		       'DC.Subject' => 'liens,externes'));
 
-	function editerAction()
-	{
-		$t = new Liens();
-		$this->assert(null, $t, 'editer',
-			      "Vous n'avez pas le droit d'éditer de liens");
+    $this->actions->append("Éditer les liens",
+			   array('action'	=> 'editer'),
+			   array(null, $liens, 'editer'));
+    $this->view->liens = $liens->fetchAll();
+  }
 
-		$this->metas(array('DC.Title' => 'Éditer les liens'));
+  function editerAction()
+  {
+    $t = new Liens();
+    $this->assert(null, $t, 'editer',
+		  "Vous n'avez pas le droit d'éditer de liens");
 
-		$this->view->model = $m = new Wtk_Form_Model('liens');
-		$i = $m->addTable('liens', "Liens", array('url'		=> array('String', "URL"),
-							  'nom'		=> array('String', 'Nom'),
-							  'description'	=> array('String', 'Description')));
-		$lns = $t->fetchAll();
-		foreach($lns as $lien) {
-			$i->addRow($lien->toArray());
-		}
-		$i->addRow();
-		$m->addNewSubmission('enregistrer', "Enregistrer");
+    $this->metas(array('DC.Title' => 'Éditer les liens'));
 
-		if ($m->validate()) {
-			$db = $t->getAdapter();
-			$db->beginTransaction();
-			try {
-				$listes = $m->get('liens');
-				$db->query('DELETE FROM `liens`;');
+    $this->view->model = $m = new Wtk_Form_Model('liens');
+    $i = $m->addTable('liens', "Liens", array('url'		=> array('String', "URL"),
+					      'nom'		=> array('String', 'Nom'),
+					      'description'	=> array('String', 'Description')));
+    $lns = $t->fetchAll();
+    foreach($lns as $lien) {
+      $i->addRow($lien->toArray());
+    }
+    $i->addRow();
+    $m->addNewSubmission('enregistrer', "Enregistrer");
 
-				foreach($listes as $data)
-					if ($data['url'])
-						$t->insert($data);
+    if ($m->validate()) {
+      $db = $t->getAdapter();
+      $db->beginTransaction();
+      try {
+	$listes = $m->get('liens');
+	$db->query('DELETE FROM `lien`;');
 
-				$this->_helper->Log("Liens édités", array(),
-						    $this->_helper->Url('index', 'liens'),
-						    "Liens");
-				$db->commit();
-				$this->redirectSimple('index', 'liens');
-			}
-			catch (Exception $e) {
-				$db->rollBack();
-				throw $e;
-			}
-		}
-	}
+	foreach($listes as $data)
+	  if ($data['url'])
+	    $t->insert($data);
+
+	$this->_helper->Log("Liens édités", array(),
+			    $this->_helper->Url('index', 'liens'),
+			    "Liens");
+	$db->commit();
+	$this->redirectSimple('index', 'liens');
+      }
+      catch (Exception $e) {
+	$db->rollBack();
+	throw $e;
+      }
+    }
+  }
 }
-
-
