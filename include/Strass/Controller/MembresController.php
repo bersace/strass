@@ -12,8 +12,11 @@ class MembresController extends Strass_Controller_Action implements Zend_Acl_Res
     $acl = Zend_Registry::get('acl');
     if (!$acl->has($this))
       $acl->add($this);
-    $racine = $this->_helper->UniteRacine();
-    $acl->allow($racine->getRoleRoleId('chef'), $this);
+    try {
+      $racine = $this->_helper->Unite->racine();
+      $acl->allow($racine->getRoleRoleId('chef'), $this);
+    }
+    catch (Strass_Db_Table_NotFound $e) {}
     $acl->allow('individus', $this, 'fiche');
   }
 
@@ -181,7 +184,7 @@ class MembresController extends Strass_Controller_Action implements Zend_Acl_Res
     $this->view->model = new Wtk_Pages_Model_Form($m);
 
     $this->view->cotisation = file_get_contents($this::$cotisation);
-    $racine = $this->_helper->UniteRacine();
+    $racine = $this->_helper->Unite->racine();
     $app = $racine->findAppartenances("role = 'chef' AND fin IS NULL")->current();
     $chef = $app->findParentIndividus();
     $this->view->envoi =
@@ -814,7 +817,7 @@ class MembresController extends Strass_Controller_Action implements Zend_Acl_Res
     if ($cotisation) {
       $cotisation = "Votre inscription sera validé à la réception de votre côtisation.\n\n".
 	file_get_contents($this::$cotisation);
-      $racine = $this->_helper->UniteRacine();
+      $racine = $this->_helper->Unite->racine();
       $app = $racine->findAppartenances("role = 'chef' AND fin IS NULL")->current();
       $chef = $app->findParentIndividus();
       $envoi ="À adresser rapidement au ".$app->findParentRoles()->titre." :\n\n".
