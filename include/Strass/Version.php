@@ -5,6 +5,11 @@ final class Strass_Version {
 
   static $filename = 'private/STRASS_VERSION';
 
+  static function isInstalled()
+  {
+    return file_exists('private/STRASS_VERSION');
+  }
+
   static function current() {
     if (file_exists(Strass_Version::$filename)) {
       return (int) trim(@file_get_contents('private/STRASS_VERSION'));

@@ -13,15 +13,14 @@ $loader->registerNamespace('Dio_');
 $loader->registerNamespace('Wtk_');
 $loader->registerNamespace('Strass_');
 
-$config = new Strass_Config_Php('strass');
-if (!$config->site) {
+if (!Strass_Version::isInstalled()) {
   require_once 'Strass/Install.php';
   return;
 }
-else
-  Zend_Registry::set('config', $config);
 
 try {
+  Zend_Registry::set('config', new Strass_Config_Php('strass'));
+
   $fc = Zend_Controller_Front::getInstance();
 
   $request = new Strass_Controller_Request_Http();
