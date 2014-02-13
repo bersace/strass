@@ -18,7 +18,8 @@ class Wtk_Form_Model_Constraint_Equal extends Wtk_Form_Model_Constraint
     $this->instance->valid = $this->instance->get() == $val;
 
     if (!$this->instance->valid && !$this->silent) {
-      throw new Wtk_Form_Model_Exception ("Le champ %s doit être égal à ".$val.".", $this->instance);
+      throw new Wtk_Form_Model_Exception("Le champ %s doit être égal à ".$this->ref->label.".",
+					 $this->instance);
     }
 
     return $this->instance->valid;
