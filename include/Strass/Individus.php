@@ -217,8 +217,11 @@ class Individu extends Strass_Db_Table_Row_Abstract implements Zend_Acl_Role_Int
       }
       return $this->prenom.' '.implode('', $nom);
     }
+    else if ($app = $this->findAppartenances()->current()) {
+      return $app->findParentRoles()->titre;
+    }
     else {
-      return $this->findAppartenances()->current()->findParentRoles()->titre;
+      return 'Nom masqué';
     }
   }
 
