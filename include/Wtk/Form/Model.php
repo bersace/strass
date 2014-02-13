@@ -39,7 +39,7 @@ class Wtk_Form_Model
     {
       $args = func_get_args();
       $instance = call_user_func_array(array($this->instance, 'addChild'), $args);
-      
+
       return $instance;
     }
 
@@ -114,8 +114,10 @@ class Wtk_Form_Model
       throw new Exception("No submissions set for model ".$this->id);
     }
 
+    $this->sent_submission = null;
     foreach ($this->submissions as $submission) {
-      if ($values = $submission->isSubmitted ($this)) {
+      if ($values = $submission->isSubmitted($this)) {
+	$this->sent_submission = $submission;
 	break;
       }
     }
@@ -131,7 +133,7 @@ class Wtk_Form_Model
     try {
       $this->instance->retrieve($values);
     }
-    catch (Wtk_Form_Model_Exception $e) { 
+    catch (Wtk_Form_Model_Exception $e) {
       array_push($this->errors, $e);
     }
 
@@ -146,7 +148,7 @@ class Wtk_Form_Model
     }
 
     $validated = $this->get('$$validated$$');
-    
+
     return !count($this->errors) && $valid && $validated;
   }
 

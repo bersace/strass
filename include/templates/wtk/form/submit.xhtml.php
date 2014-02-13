@@ -1,1 +1,1 @@
-<button<?php wtk_id_classes ($id, $flags); ?> type="submit"><?php $this->outputChildren(); ?></button>
+<button<?php wtk_id_classes ($id, $flags); ?> type="submit" name="$$submission$$" value="<?php echo $submission; ?>"><?php $this->outputChildren(); ?></button>
