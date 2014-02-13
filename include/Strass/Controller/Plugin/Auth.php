@@ -1,6 +1,5 @@
 <?php
 
-require_once 'Wtk.php';
 require_once 'Strass/Individus.php';
 
 class Strass_Controller_Plugin_Auth extends Zend_Controller_Plugin_Abstract
