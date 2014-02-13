@@ -55,9 +55,9 @@ class Strass_Addon_Console extends Strass_Addon_Liens
 		    array('controller' => 'individus',
 			  'action' => 'fiche',
 			  'individu' => $view->individu->slug));
-      $this->append('Vos paramètres',
+      $this->append('Votre compte',
 		    array('controller' => 'membres',
-			  'action'	 => 'parametres'));
+			  'action' => 'parametres'));
     }
 
 
