@@ -1,156 +1,178 @@
 <?php
 
-  /**
-   *
-   * Ce modèle permet de paginer un formulaire en utilisant un groupe
-   * de champs par page.
-   *
-   * Pour connaître si le formulaire a été complété, il faut utilise
-   * la méthode isValid() du modèle de la **pagination**.
-   *
-   * Pour la rendu, il faut étendre Wtk_Pages_Rendrer_Form et
-   * implémenter les fonction renderNomdegroupe($instance-groupe,
-   * $formulaire). Il est donc impératif de ne pas utiliser de tirer
-   * dans l'identifiant des groupes de champs du modèle de formulaire.
-   */
+/**
+ *
+ * Ce modèle permet de paginer un formulaire en utilisant un groupe
+ * de champs par page.
+ *
+ * Pour connaître si le formulaire a été complété, il faut utilise
+ * la méthode isValid() du modèle de la **pagination**.
+ *
+ * Pour la rendu, il faut étendre Wtk_Pages_Rendrer_Form et
+ * implémenter les fonction renderNomdegroupe($instance-groupe,
+ * $formulaire). Il est donc impératif de ne pas utiliser de tirer
+ * dans l'identifiant des groupes de champs du modèle de formulaire.
+ */
 
 class Wtk_Pages_Model_Form extends Wtk_Pages_Model
 {
-	protected	$root;
-	protected	$loop;
+  protected	$root;
+  protected	$loop;
 
-	function __construct(Wtk_Form_Model $model, $current = null)
-	{
-		parent::__construct($model, 1, $current); // un groupe par page
-		$this->root			= $model->getInstance();
-		$this->pages_count		= $this->root->count() - 1; // minus $$validated$$
+  function __construct(Wtk_Form_Model $model, $current = null)
+  {
+    parent::__construct($model, 1, $current); // un groupe par page
 
-		foreach($this->root as $group)
-			if ($group instanceof Wtk_Form_Model_Instance_Group)
-				array_push($this->pages_id, $group->id);
+    $model->addNewSubmission('precedent', 'Précédent');
+    $model->addNewSubmission('continuer', 'Continuer');
+    $model->addNewSubmission('terminer', 'Terminer');
 
-		// avancer d'un groupe.
-		$model->addString('$$current$$', 'Current group', null);
-		$model->validate();
-		$current = $this->root->get('$$current$$');
+    $this->root			= $model->getInstance();
+    $this->pages_count		= $this->root->count() - 1; // minus $$validated$$
 
-		if (!$current)
-			$current = reset($this->pages_id);
-		else {
-			// suppression des fausses erreurs 
-			foreach($model->errors as $i => $error) {
-				$p = $error->getInstance()->path;
-				if (strpos($p, $model->id."/".$current) === false)
-					unset($model->errors[$i]);
-			}
+    foreach($this->root as $group)
+      if ($group instanceof Wtk_Form_Model_Instance_Group)
+	array_push($this->pages_id, $group->id);
 
-			// s'il y a des erreurs dans la première
-			// étape, ne pas passer à la suivante.
-			if (!count($model->errors)) {
-				$pks = array_flip($this->pages_id);
-				$i = $pks[$current]+1;
-				if (isset($this->pages_id[$i]))
-					$current = $this->pages_id[$i];
-				else
-					$current = '';
-			}
-		}
+    $i = $model->addString('$$current$$', 'Current group', null);
+  }
 
-		$this->current = $current;
-		$i = $this->root->getChild('$$current$$');
-		$i->set($current);
-		// on a besoin de $$current$$ uniquement dans cette fonction.
-		if (isset($_POST[$model->id]))
-			$_POST[$model->id]['$$current$$'] = $current; // beuaark;
+  function getFormModel()
+  {
+    return $this->data;
+  }
 
-		// le formulaire n'est valide que si la dernière étape est passée
-		$model->addConstraintEqual($i, '', true); // silent
+  function validate()
+  {
+    $model = $this->data;
+    $model->validate();
+    $submission = $model->sent_submission;
+    $current = $this->root->get('$$current$$');
+
+    if (!$current)
+      $current = reset($this->pages_id);
+    else {
+      $pks = array_flip($this->pages_id);
+      if ($submission->id == 'precedent') {
+	$i = $pks[$current]-1;
+	if (isset($this->pages_id[$i]))
+	  $current = $this->pages_id[$i];
+	else
+	  $current = reset($this->pages_id);
+	$model->errors = array();
+	$completed = false;
+      }
+      else { // continuer, terminer
+	// suppression des erreurs ne concernant pas la page
+	// courante. Implémentation gruik de la validation partielle
+	// de formulaire.
+	foreach($model->errors as $j => $error) {
+	  $i = $error->getInstance();
+	  $p = $i->path;
+	  if (strpos($p, $model->id."/".$current) === false) {
+	    $i->valid = null;
+	    unset($model->errors[$j]);
+	  }
 	}
 
-	function getFormModel()
-	{
-		return $this->data;
+	// s'il y a des erreurs dans la première
+	// étape, ne pas passer à la suivante.
+	if (!count($model->errors)) {
+	  $i = $pks[$current]+1;
+	  if (isset($this->pages_id[$i]))
+	    $current = $this->pages_id[$i];
+	  else
+	    $current = '$$completed$$';
 	}
+      }
+    }
 
-	function isValid()
-	{
-		return $this->current == '';
-	}
+    $this->current = $current;
+    $i = $this->root->getChild('$$current$$');
+    $i->set($current);
 
-	function pagesCount()
-	{
-		return $this->pages_count;
-	}
+    $completed = $current == '$$completed$$';
+    return !count($model->errors) && $completed;
+  }
 
-	function getCurrentPageId()
-	{
-		return $this->current;
-	}
+  function isValid()
+  {
+    return $this->current == '';
+  }
 
-	function getPrevId($ref = null)
-	{
-		return $this->getRelId($ref, -1);
-	}
+  function pagesCount()
+  {
+    return $this->pages_count;
+  }
 
-	function getNextId($ref = null)
-	{
-		return $this->getRelId($ref, +1);
-	}
+  function getCurrentPageId()
+  {
+    return $this->current;
+  }
 
-	protected function getRelId($ref, $sens)
-	{
-		$ref = $ref ? $ref : $this->current;
-		$r = array_flip($this->pages_id);
-		$i = $r[$ref]+$sens;
-		return array_key_exists($i, $this->pages_id) ? $this->pages_id[$i] : null;
-	}
+  function getPrevId($ref = null)
+  {
+    return $this->getRelId($ref, -1);
+  }
 
-	function fetch($id = null)
-	{
-		$id = $id ? $id : $this->getCurrentPageId();
-		return $this->root->getInstance($id);
-	}
+  function getNextId($ref = null)
+  {
+    return $this->getRelId($ref, +1);
+  }
 
-	/*
-	 * Retourne le nombre d'item par page : un groupe = une page. Si
-	 * aucune page à afficher, aucun groupe.
-	 */
-	public function count()
-	{
-		return $this->current ? 1 : 0;
-	}
+  protected function getRelId($ref, $sens)
+  {
+    $ref = $ref ? $ref : $this->current;
+    $r = array_flip($this->pages_id);
+    $i = $r[$ref]+$sens;
+    return array_key_exists($i, $this->pages_id) ? $this->pages_id[$i] : null;
+  }
 
-	/*
-	 * réinitialise la boucle.
-	 */
-	public function rewind()
-	{
-		$this->loop = true;
-	}
-  
-	// retourne le groupe courant.
-	public function current()
-	{
-		return $this->root->getChild($this->current);
-	}
+  function fetch($id = null)
+  {
+    $id = $id ? $id : $this->getCurrentPageId();
+    return $this->root->getInstance($id);
+  }
 
-	/*
-	 * Retourne la clef relativement à la page courante
-	 */
-	public function key()
-	{
-		return $this->current;
-	}
+  /*
+   * Retourne le nombre d'item par page : un groupe = une page. Si
+   * aucune page à afficher, aucun groupe.
+   */
+  public function count()
+  {
+    return $this->current ? 1 : 0;
+  }
 
-	// on arrête la boucle dès la première itération.
-	public function next()
-	{
-		$this->loop = false;
-	}
+  /*
+   * réinitialise la boucle.
+   */
+  public function rewind()
+  {
+    $this->loop = true;
+  }
 
-	public function valid()
-	{
-		return $this->loop;
-	}
+  // retourne le groupe courant.
+  public function current()
+  {
+    return $this->root->getChild($this->current);
+  }
+
+  /*
+   * Retourne la clef relativement à la page courante
+   */
+  public function key()
+  {
+    return $this->current;
+  }
+
+  // on arrête la boucle dès la première itération.
+  public function next()
+  {
+    $this->loop = false;
+  }
+
+  public function valid()
+  {
+    return $this->loop;
+  }
 }
-

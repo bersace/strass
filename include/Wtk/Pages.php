@@ -15,10 +15,10 @@ class Wtk_Pages extends Wtk_Container
 		$this->model	= $model;
 		$this->stylecomponent ='pages';
 	}
-  
+
 	protected function _finalize()
 	{
-	  $cont = $this->addChild($this->renderer->renderContainer());
+	  $cont = $this->addChild($this->renderer->renderContainer($this->model));
 	  if ($this->model->count()) {
 	    foreach($this->model as $id => $data) {
 	      $child = $this->renderer->render($id, $data, $cont);
