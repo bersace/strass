@@ -49,7 +49,7 @@ class IndividusController extends Strass_Controller_Action
     $this->actions->append("Désinscrire",
 			   array('controller'	=> 'inscription',
 				 'action'		=> 'desinscrire'),
-			   array(null, $individu, 'inscrire'));
+			   array(null, $individu, 'desinscrire'));
     $this->actions->append("Administrer",
 			   array('controller'	=> 'inscription',
 				 'action'		=> 'administrer'),
