@@ -1,5 +1,7 @@
 /*-*- css -*-*/
 
+@import "common";
+
 form
 {
     clear: both;
@@ -11,7 +13,14 @@ form
 {
     clear: both;
     text-align: center;
-    padding: .5ex;
+    padding: 2em .5ex .5ex .5ex;
+    margin: 0;
+
+    display: flex;
+    flex-direction: row-reverse;
+    flex-wrap: nowrap;
+    justify-content: space-between;
+    align-items: center;
 }
 
 div.control
@@ -138,11 +147,16 @@ tr td .check label
     background-image: url("icones/erreur.png");
     background-repeat: no-repeat;
     background-position: 1ex .72ex;
-    border: 2px solid red;
-    -moz-border-radius: .75ex;
-    color: #400;
+    border: 2px solid $error;
+    border-radius: .75ex;
+    box-shadow: .4ex .4ex 1ex rgba(20, 20, 20, 0.5);
+    color: #750000;
     margin: .5ex 5%;
     padding: 1ex 1ex 1ex 48px;
+}
+
+.form .control.invalid > label {
+    color: $error;
 }
 
 .form .warn
@@ -233,8 +247,10 @@ legend
 @media screen {
     div.required > label:before
     {
+	font-family: mono;
 	content: "*";
 	color: red;
+	margin-left: -1ex;
     }
 
     fieldset

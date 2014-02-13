@@ -1,0 +1,26 @@
+/*-*- css -*-*/
+
+@media screen {
+    body {
+	display: inherit;
+    }
+
+    #aside {
+	display: none;
+    }
+
+    #document {
+	width: 45em;
+	margin: 1em auto;
+	padding: 3em;
+
+	h1 {
+	    text-align: center;
+	    margin-bottom: 2em;
+	}
+    }
+
+    .control.select label {
+	display: block;
+    }
+}

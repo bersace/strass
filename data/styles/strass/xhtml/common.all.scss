@@ -127,17 +127,17 @@ ul.adminlinks {
 
     #header.suf
     {
-	background-image: url("associations/suf.png");
+	background-image: url("mouvements/suf.png");
     }
 
     #header.fse
     {
-	background-image: url("associations/fse.png");
+	background-image: url("mouvements/fse.png");
     }
 
     #header.europa
     {
-	background-image: url("associations/europa.png");
+	background-image: url("mouvements/europa.png");
     }
 
     #header .h
@@ -161,7 +161,7 @@ ul.adminlinks {
 	border-color: #615230;
 	border-radius: 1ex;
 
-	div.dialog {
+	& > div.dialog {
 	    width: 40ex;
 	    margin: 5em auto;
 	    padding: 1ex;
