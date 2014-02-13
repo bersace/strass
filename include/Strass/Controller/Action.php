@@ -15,7 +15,7 @@ abstract class Strass_Controller_Action extends Zend_Controller_Action implement
 
   public function init()
   {
-    $config = Zend_Registry::get('site');
+    $config = Zend_Registry::get('config');
 
     // lister les formats disponibles
     $formats = require('include/Strass/formats.php');
@@ -179,7 +179,7 @@ abstract class Strass_Controller_Action extends Zend_Controller_Action implement
   protected function metas(array $metas)
   {
     $metas = new Wtk_Metas($metas);
-    $site = Zend_Registry::get('site');
+    $site = Zend_Registry::get('config');
     $page = Zend_Registry::get('page');
     /*
      * Fusionner certains champs plutôt que les écraser.
@@ -188,12 +188,12 @@ abstract class Strass_Controller_Action extends Zend_Controller_Action implement
     if ($metas->has('DC.Title.alternative')) {
       $metas->set('DC.Title.alternative',
 		  $metas->get('DC.Title.alternative').' – '.
-		  $append.$site->metas->title);
+		  $append.$config->site->metas->title);
     }
     elseif ($metas->has('DC.Title')) {
       $metas->set('DC.Title.alternative',
 		  $metas->get('DC.Title').' – '.
-		  $append.$site->metas->title);
+		  $append.$config->site->metas->title);
     }
     else {
       $metas->set('DC.Title.alternative', $append.$site->metas->title);
