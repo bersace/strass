@@ -37,7 +37,8 @@ abstract class Strass_Controller_Action extends Zend_Controller_Action implement
     $page->addon(new Strass_Addon_Console($this->_helper->Auth));
     $page->addon(new Strass_Addon_Citation);
 
-    $this->branche->append($config->short_title, array(), array(), true);
+    if ($config->short_title)
+      $this->branche->append($label, array(), array(), true);
 
     if (!$this instanceof Strass_Controller_ErrorController)
       $this->branche->append($this->_titreBranche,
@@ -180,24 +181,36 @@ abstract class Strass_Controller_Action extends Zend_Controller_Action implement
   {
     $metas = new Wtk_Metas($metas);
     $config = Zend_Registry::get('config');
-    $page = Zend_Registry::get('page');
+    $page = $this->view->page;
+
     /*
-     * Fusionner certains champs plutôt que les écraser.
+     * Concaténer certains champs plutôt que les écraser.
      */
-    $append = $metas->has('title.alternative.append') ? $metas->get('title.alternative.append').' – ' : '';
-    if ($metas->has('DC.Title.alternative')) {
-      $metas->set('DC.Title.alternative',
-		  $metas->get('DC.Title.alternative').' – '.
-		  $append.$config->site->metas->title);
-    }
-    elseif ($metas->has('DC.Title')) {
-      $metas->set('DC.Title.alternative',
-		  $metas->get('DC.Title').' – '.
-		  $append.$config->site->metas->title);
+    if ($config->site->metas->title) {
+      $site = $config->site->metas->title;
     }
     else {
-      $metas->set('DC.Title.alternative', $append.$site->metas->title);
+      try {
+	$racine = $this->_helper->Unite->racine();
+	$site = $racine->getName();
+      }
+      catch (Strass_Db_Table_NotFound $e) {
+	$site = null;
+      }
     }
+
+    $parts = array($site,
+		   $metas->get('title.alternative.append'),
+		   );
+
+    if ($metas->has('DC.Title.alternative')) {
+      $parts[] = $metas->get('(DC.Title.alternative');
+    }
+    elseif ($metas->has('DC.Title')) {
+      $parts[] = $metas->get('DC.Title');
+    }
+    $parts = array_filter($parts);
+    $metas->set('DC.Title.alternative', join(' − ', $parts));
 
     if ($metas->has('DC.Subject'))
       $metas->set('DC.Subject',

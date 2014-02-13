@@ -4,23 +4,25 @@ require_once 'Strass/Unites.php';
 
 class Strass_Controller_Action_Helper_Unite extends Zend_Controller_Action_Helper_Abstract
 {
-  protected	$controller;
-
   function direct($slug = null, $throw = true)
   {
     $slug = $slug ? $slug : $this->getRequest()->getParam('unite');
-    if ($slug)
-      $unite = Unite::getInstance($slug);
-    else {
-      $unites = new Unites();
-      $unite = $unites->getOuvertes("unite.parent IS NULL")->current();
+    $t = new Unites();
+    try {
+      if ($slug)
+	$unite = $t->findBySlug($slug);
+      else {
+	$unite = $this->racine();
+      }
     }
-
-    if (!$unite)
-      if ($throw)
-	throw new Strass_Controller_Action_Exception_Notice("Unité ".$slug." inconnue");
+    catch (Strass_Db_Table_NotFound $e) {
+      if ($throw) {
+	$message = $slug ? "Unité ".$slug." inconnue" : "Pas d'unité !";
+	throw new Strass_Controller_Action_Exception_Notice($message);
+      }
       else
 	return null;
+    }
 
     $this->liensConnexes($unite);
 
@@ -30,6 +32,13 @@ class Strass_Controller_Action_Helper_Unite extends Zend_Controller_Action_Helpe
     $page->metas->set('DC.Creator', $fn);
 
     return $unite;
+  }
+
+  function racine()
+  {
+    $t = new Unites();
+    $s = $t->select()->where('unite.parent IS NULL');
+    return $t->fetchOne($s);
   }
 
   protected function liensConnexes($unite)

@@ -16,7 +16,7 @@ abstract class Strass_Db_Table_Abstract extends Zend_Db_Table_Abstract
     $row = $res->current();
 
     if (!$row) {
-      throw new Strass_Db_Table_NotFound;
+      throw new Strass_Db_Table_NotFound("No row for ${key}");
     }
 
     return $row;
@@ -88,7 +88,7 @@ abstract class Strass_Db_Table_Abstract extends Zend_Db_Table_Abstract
       throw new Strass_Db_Table_Multiple("Multiple row found for ". (string) $select);
     }
     else if ($all->count() == 0) {
-      throw new Strass_Db_Table_NotFound();
+      throw new Strass_Db_Table_NotFound("No row for ".(string) $select);
     }
     else {
       return $all->current();
