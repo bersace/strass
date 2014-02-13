@@ -4,7 +4,11 @@ $config = new Strass_Config_Php('strass',
 			      array('site' => array('style' => 'strass',
 						    'metas' => array('title' => 'Strass'))));
 Zend_Registry::set('config', $config);
-Zend_Registry::set('acl', new Zend_Acl);
+$acl = new Zend_Acl;
+$acl->addRole(new Zend_Acl_Role('individus'));
+$acl->addRole(new Zend_Acl_Role('membres'));
+$acl->add(new Zend_Acl_Resource('membres'));
+Zend_Registry::set('acl', $acl);
 
 
 try {
