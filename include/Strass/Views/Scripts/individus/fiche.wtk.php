@@ -11,7 +11,12 @@ if ($i = $this->individu->getImage())
   $s->addParagraph()->addFlags('avatar')->addImage($i, "Photo", $this->individu->getFullname());
 
 $l = $s->addList();
-$l->addItem(new Wtk_RawText("Né en ".$this->individu->getDateNaissance('%Y')." (".$this->individu->getAge()." ans)"));
+if ($this->individu->naissance) {
+  $participe = $this->individu->sexe == 'h' ? 'Né' : 'Née';
+  $l->addItem()->addRawText($participe." en ".
+			    $this->individu->getDateNaissance('%Y').
+			    " (".$this->individu->getAge()." ans)");
+}
 $info = array('adelec'		=> "**Adélec :** [mailto:%s %s]",
 	      'portable'	=> "**Téléphone portable :** %s",
 	      'fixe'		=> "**Téléphone fixe :** %s",

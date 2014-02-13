@@ -9,7 +9,6 @@ class Individus extends Strass_Db_Table_Abstract
   protected $_rowClass = 'Individu';
   protected $_dependentTables = array('Users',
 				      'Appartenances',
-				      'Articles',
 				      'Commentaires');
   protected $_referenceMap = array('Etape'	=> array('columns'		=> 'etape',
 							 'refTableClass'	=> 'Etapes',
@@ -111,6 +110,17 @@ class Individu extends Strass_Db_Table_Row_Abstract implements Zend_Acl_Role_Int
   function findUser() {
     $user = $this->findUsers()->current();
     return $user ? $user : new Nobody;
+  }
+
+  function findArticles() {
+    $t = new Articles;
+    $s = $t->select()
+      ->setIntegrityCheck(false)
+      ->distinct()
+      ->from('article')
+      ->join('commentaire', 'commentaire.id = article.commentaires', array())
+      ->where('commentaire.auteur = ?', intval($this->id));
+    return $t->fetchAll($s);
   }
 
   function isMember() {
