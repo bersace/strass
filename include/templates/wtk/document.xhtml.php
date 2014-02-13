@@ -17,7 +17,9 @@ echo "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n";
 <title><?php echo $metas->get('DC.Title.alternative'); ?></title>
 
 <?php foreach($metas as $name => $content): ?>
+<?php if($content): ?>
 <meta name="<?php echo $name; ?>" content="<?php echo htmlspecialchars($content); ?>" />
+<?php endif; ?>
 <?php endforeach; ?>
 
 <base href="<?php echo $baseurl; ?>" />
