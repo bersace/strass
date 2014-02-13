@@ -6,7 +6,7 @@ $year = date('Y');
 $snkp = isset($_SERVER['ORIG_SCRIPT_NAME']) ? 'ORIG_' : '';
 $sn = $_SERVER[$snkp.'SCRIPT_NAME'];
 $baseurl = "http://".$_SERVER['HTTP_HOST'].dirname($sn).'/';
-$dojodbg = (strpos($_SERVER['HTTP_HOST'], 'localhost') === false) ? 'false' : 'true';
+$dojodbg = 'false';
 
 echo "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n";
 ?>
@@ -63,7 +63,7 @@ else {
 <?php endif; ?>
 <?php endif; ?>
 <?php endforeach; ?>
-<?php endforeach; ?>    
+<?php endforeach; ?>
 
 <?php foreach($embeded as $medium => $css): ?>
 <style type="text/css" media="<?php echo $medium; ?>" title="<?php echo $et; ?>">
