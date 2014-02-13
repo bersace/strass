@@ -4,11 +4,14 @@ $config = new Strass_Config_Php('strass',
 			      array('site' => array('style' => 'strass',
 						    'metas' => array('title' => 'Strass'))));
 Zend_Registry::set('config', $config);
+Zend_Registry::set('acl', new Zend_Acl);
+
 
 try {
   $fc = Zend_Controller_Front::getInstance();
 
   $fc->setRequest(new Strass_Controller_Request_Http);
+  $fc->setParam('useDefaultControllerAlways', true);
   $fc->setParam('noViewRenderer', true);
   $fc->setModuleControllerDirectoryName('Installer');
   $fc->addControllerDirectory('include/Strass/Installer/Controller', 'Strass');

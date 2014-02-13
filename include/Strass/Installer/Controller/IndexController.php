@@ -3,7 +3,7 @@
 class IndexController extends Strass_Installer_Controller_Action
 {
   static $mouvements = array('suf' => 'Scouts unitaires de France',
-			     'fse' => "Association guides et scouts d'Europe",
+			     /* 'fse' => "Association guides et scouts d'Europe", */
 			     );
 
   function indexAction()
@@ -33,7 +33,17 @@ class IndexController extends Strass_Installer_Controller_Action
     $this->view->model = $pm = new Wtk_Pages_Model_Form($m);
 
     if ($pm->validate()) {
-      Orror::kill($m->get());
+      $installer = new Strass_Installer($m->get());
+      $installer->run();
+
+      /* Autologin. Écrire dans la session l'identité de l'admin */
+      $t = new Users;
+      $admin = $t->findByUsername($m->get('admin/adelec'));
+      $auth = Zend_Auth::getInstance();
+      $auth->getStorage()->write($admin->getIdentity());
+
+      $this->_redirect('/', array('prependBase' => false,
+				  'exit' => true));
     }
   }
 }

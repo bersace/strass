@@ -1,13 +1,19 @@
 SCSS=$(shell find data/styles/ -name "*.scss")
 CSS=$(patsubst %.scss,%.css,$(SCSS))
+INSTDB=include/Strass/Installer/sql/strass.sqlite
 
-all: $(CSS)
+all: $(CSS) $(INSTDB)
 
 %.css: %.scss
 	sassc $^ > $@
 
+$(INSTDB): include/Strass/Installer/sql/schema.sql
+	rm -vf $@
+	sqlite3 -batch $@ ".read $^"
+
 clean:
 	rm -vf $(CSS)
+	rm -vf $(INSTDB)
 
 setup:
 	aptitude install php5-cli php5-sqlite php-pear php5-gd php5-imagick python-pip
