@@ -179,7 +179,7 @@ abstract class Strass_Controller_Action extends Zend_Controller_Action implement
   protected function metas(array $metas)
   {
     $metas = new Wtk_Metas($metas);
-    $site = Zend_Registry::get('config');
+    $config = Zend_Registry::get('config');
     $page = Zend_Registry::get('page');
     /*
      * Fusionner certains champs plutôt que les écraser.
