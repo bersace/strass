@@ -21,6 +21,7 @@ class Strass_Pages_RendererInstall extends Wtk_Pages_Renderer_Form
     $this->view->document->addFlags('admin');
     $f->addEntry('admin/prenom', 24);
     $f->addEntry('admin/nom', 24);
+    $f->addSelect('admin/sexe', false);
     $f->addEntry('admin/adelec', 32);
     $f->addPassword('admin/motdepasse', 12);
     $f->addPassword('admin/confirmation', 12);

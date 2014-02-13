@@ -78,7 +78,7 @@ class Strass_Installer
     $data = array('slug' => $slug,
 		  'prenom' => $this->data['admin']['prenom'],
 		  'nom' => $this->data['admin']['nom'],
-		  'sexe' => 'i',
+		  'sexe' => $this->data['admin']['sexe'],
 		  'naissance' => 0,
 		  'adelec' => $this->data['admin']['adelec'],
 		  );
