@@ -1,3 +1,5 @@
+/*-*- css -*-*/
+
 #informations p.avatar
 {
   float: right;
@@ -5,7 +7,7 @@
   padding: 1ex;
   border: 1px solid black;
   background: white;
-  -moz-border-radius: 1ex;
+  border-radius: 1ex;
   max-width: 15%;
   }
 
@@ -18,8 +20,9 @@
 
 #informations ul
 {
-  width: 30%;
-  }
+    /* Adapté à la ligne Dernière connexion */
+    width: 25em;
+}
 
 #informations #notes
 {
