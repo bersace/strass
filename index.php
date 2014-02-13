@@ -13,6 +13,12 @@ $loader->registerNamespace('Dio_');
 $loader->registerNamespace('Wtk_');
 $loader->registerNamespace('Strass_');
 
+$config = new Strass_Config_Php('strass');
+if (!$config->db) {
+  require_once 'Strass/Install.php';
+  return;
+}
+
 try {
   $fc = Zend_Controller_Front::getInstance();
 
@@ -58,19 +64,4 @@ catch (Exception $e) {
   $msg.= " à ".$e->getFile().":".$e->getLine()."\n\n";
   $msg.= str_replace ('#', '<br/>#', $e->getTraceAsString())."\n";
   Orror::kill(strip_tags($msg));
-}
-
-
-$conf = new Strass_Config_Php('strass');
-if ($conf->site->sauvegarder) {
-
-  // sauvegarde des modifications récente de la BD.
-  clearstatcache();
-  $db = 'private/strass.sqlite';
-  $time = time() - filemtime($db);
-
-  if ($time <= 2) {
-    $username = Zend_Registry::get('user')->username;
-    copy($db, $db.'~'.date('Y-m-d-H-i-s').'-'.$username);
-  }
 }
