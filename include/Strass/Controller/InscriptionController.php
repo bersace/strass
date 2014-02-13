@@ -2,8 +2,6 @@
 
 require_once 'Strass/Unites.php';
 require_once 'Strass/Activites.php';
-require_once 'Strass/Formation.php';
-require_once 'Strass/Progression.php';
 
 class InscriptionController extends Strass_Controller_Action
 {
@@ -472,7 +470,7 @@ class InscriptionController extends Strass_Controller_Action
 	  if (!$this->view->model->pagesCount())
 	    throw new Strass_Controller_Action_Exception_Notice("Impossible d'inscrire cet individu ".
 								"dans notre groupe. ".
-								"Aucune unité ne peut l'indexlir !");
+								"Aucune unité ne peut l'accueillir !");
 
 	  // VALIDATION
 	  if ($m->validate()) {
