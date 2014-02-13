@@ -13,6 +13,39 @@ abstract class Strass_Controller_Action extends Zend_Controller_Action implement
     return $this->resourceid;
   }
 
+  function initPage()
+  {
+    /* On préserve la page entre les appels à init, cela permet de
+       préserver les liens, branches, etc. en cas d'erreur. */
+    try {
+      return Zend_Registry::get('page');
+    }
+    catch (Exception $e) {
+      $config = Zend_Registry::get('config');
+      /* instanciation de la page courante */
+      $metas = $config->site->metas;
+      $this->page = $page = new Strass_Page(new Wtk_Metas(array('DC.Title'		=> $metas->title,
+								'DC.Title.alternative'	=> $metas->title,
+								'DC.Subject'		=> $metas->subject,
+								'DC.Language'		=> $metas->language,
+								'DC.Creator'		=> $metas->author,
+								'DC.Date.created'	=> $metas->creation,
+								'DC.Date.available'	=> strftime('%Y-%m-%d'),
+								'organization'	=> $metas->organization,)));
+      $page->addon(new Strass_Addon_Menu);
+      $this->branche = $page->addon(new Strass_Addon_Branche);
+      $page->addon(new Strass_Addon_Navigateurs);
+      $this->connexes = $page->addon(new Strass_Addon_Liens('connexes', 'Pages connexes'));
+      $page->addon(new Strass_Addon_Formats);
+      $this->actions = $page->addon(new Strass_Addon_Liens('admin', 'Administrer'));
+      $page->addon(new Strass_Addon_Console($this->_helper->Auth));
+      $page->addon(new Strass_Addon_Citation);
+
+      Zend_Registry::set('page', $page);
+      return $page;
+    }
+  }
+
   public function init()
   {
     $config = Zend_Registry::get('config');
@@ -26,16 +59,7 @@ abstract class Strass_Controller_Action extends Zend_Controller_Action implement
     if (!array_key_exists($this->_getParam('format'), $this->_availableFormats))
       throw new Strass_Controller_Action_Exception("Format inconnu");
 
-    /* instanciation de la page courante */
-    $page = Zend_Registry::get('page');
-    $page->addon(new Strass_Addon_Menu);
-    $this->branche = $page->addon(new Strass_Addon_Branche);
-    $page->addon(new Strass_Addon_Navigateurs);
-    $this->connexes = $page->addon(new Strass_Addon_Liens('connexes', 'Pages connexes'));
-    $page->addon(new Strass_Addon_Formats);
-    $this->actions = $page->addon(new Strass_Addon_Liens('admin', 'Administrer'));
-    $page->addon(new Strass_Addon_Console($this->_helper->Auth));
-    $page->addon(new Strass_Addon_Citation);
+    $this->initPage();
 
     if ($config->short_title)
       $this->branche->append($label, array(), array(), true);

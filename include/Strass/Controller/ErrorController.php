@@ -3,8 +3,6 @@ interface Strass_Controller_ErrorController {}
 
 class ErrorController extends Strass_Controller_Action implements Strass_Controller_ErrorController
 {
-  protected $_titreBranche = 'Erreur';
-
   public function init()
   {
     $this->_request->setParam('format', 'xhtml');
