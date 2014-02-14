@@ -9,7 +9,7 @@ class Strass_Mail extends Zend_Mail
   {
     parent::__construct('utf-8');
 
-    $site = Zend_Registry::get('site');
+    $site = Zend_Registry::get('config')->site;
 
     if (is_string($metas)) {
       $title = $metas;
@@ -53,7 +53,7 @@ class Strass_Mail extends Zend_Mail
       $this->_headers['Bcc'] = array();
     }
 
-    $site = Zend_Registry::get('site');
+    $site = Zend_Registry::get('config')->site;
 
     if (!$site->mail->enable) {
       return true;
