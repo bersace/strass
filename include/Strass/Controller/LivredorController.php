@@ -64,18 +64,6 @@ class LivredorController extends Strass_Controller_Action
 			   ".");
 	  $s = $d->addSection(null, 'Message de '.$tuple['auteur']);
 	  $s->addText($tuple['message']);
-	  $s = $d->addSection(null, 'Validation');
-	  $l = $s->addList();
-	  $l->addItem()->addLink($this->_helper->Url->full('valider', null, null,
-							   array('auteur' => $tuple['auteur'],
-								 'date' => $tuple['date'],
-								 'verdict' => 'accepter')),
-				 "Accepter");
-	  $l->addItem()->addLink($this->_helper->Url->full('valider', null, null,
-							   array('auteur' => $tuple['auteur'],
-								 'date' => $tuple['date'],
-								 'verdict' => 'refuser')),
-				 "Refuser");
 	  $mail->send();
 	}
 
