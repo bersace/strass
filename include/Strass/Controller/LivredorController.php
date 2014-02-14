@@ -41,6 +41,8 @@ class LivredorController extends Strass_Controller_Action
 	$key = $t->insert($tuple);
 	$message = $t->findOne($key);
 
+	$this->logger->info("Nouveau message");
+
 	// signaler à l'admin qu'il faut modérer un nouveau message
 	// sur le livre d'or.
 	if (!$message->public) {
@@ -89,6 +91,8 @@ class LivredorController extends Strass_Controller_Action
     try {
       $message->public = 1;
       $message->save();
+      $this->logger->info("Message de {$message->auteur} accepté",
+			  array('controller'=>'livredor', 'action'=>'editer', 'message' => $message->id));
       $db->commit();
     }
     catch(Exception $e) {
@@ -123,6 +127,8 @@ class LivredorController extends Strass_Controller_Action
 	$db = $t->getAdapter();
 	$db->beginTransaction();
 	try {
+	  $this->logger->info("Message de {$message->auteur} supprimé",
+			      array('controller' => 'livredor', 'action' => 'index'));
 	  $message->delete();
 	  $db->commit();
 	}
@@ -170,6 +176,7 @@ class LivredorController extends Strass_Controller_Action
 	$tuple['public'] = intval($m->get('public'));
 	$message->setFromArray($tuple);
 	$message->save();
+	$this->logger->info("Message de {$message->auteur} édité");
 	$db->commit();
 	$this->redirectSimple('index', 'livredor', null, null, true);
       }
