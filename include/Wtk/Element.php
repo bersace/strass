@@ -56,6 +56,7 @@ abstract class Wtk_Element
 		$this->data = array('id' => $id,
 			            'flags' => &$this->flags);
 		$this->dojoType = null;
+		$this->tooltip = null;
 		$this->addFlags(array_slice(explode('_', strtolower(get_class($this))), 1));
 	}
 

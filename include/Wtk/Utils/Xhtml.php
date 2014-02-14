@@ -19,7 +19,7 @@ function flatten_array($array)
 {
 	$flat = array();
 	foreach ($array as $cell) {
-		if (is_array($cell)) 
+		if (is_array($cell))
 			$flat = array_merge($flat, flatten_array($cell));
 		else
 			array_push($flat, $cell);
@@ -34,9 +34,10 @@ function wtk_classes ($classes)
 	wtk_attr ('class', implode(' ', $classes));
 }
 
-function wtk_id_classes ($id, $classes, $type=null)
+function wtk_id_classes ($id, $classes, $type=null, $tooltip=null)
 {
 	wtk_id ($id);
 	wtk_classes ($classes);
 	wtk_djt($type);
+	wtk_attr('title', $tooltip);
 }
