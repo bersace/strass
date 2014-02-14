@@ -166,9 +166,7 @@ class Strass_Controller_Plugin_Auth extends Zend_Controller_Plugin_Abstract
     }
 
     $individu = $user->findParentIndividus();
-    if ($individu) {
-      $individu->initRoleAcl();
-    }
+    $individu->initRoleAcl();
     Zend_Registry::set('individu', $individu);
 
     $user->initRoleAcl();

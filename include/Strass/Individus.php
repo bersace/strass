@@ -497,12 +497,52 @@ class User extends Strass_Db_Table_Row_Abstract implements Zend_Acl_Role_Interfa
   }
 }
 
+class FakeIndividu implements Zend_Acl_Resource_Interface, Zend_Acl_Role_Interface {
+  function __construct($user) {
+    $this->user = $user;
+    $this->slug = $user->username;
+
+    $acl = Zend_Registry::get('acl');
+    if (!$acl->has($this)) {
+      $acl->add($this);
+    }
+    if (!$acl->hasRole($this)) {
+      $acl->addRole($this);
+    }
+  }
+
+  function initResourceAcl() {
+  }
+
+  function initRoleAcl() {
+  }
+
+  function getUnites() {
+    return array();
+  }
+
+  function getFullName() {
+    return null;
+  }
+
+  public function getRoleId()
+  {
+    return 'individu-'.$this->slug;
+  }
+
+  public function getResourceId()
+  {
+    return 'individu-'.$this->slug;
+  }
+}
+
 class Nobody implements Zend_Acl_Resource_Interface, Zend_Acl_Role_Interface {
   function __construct() {
     $this->id = null;
     $this->username = 'nobody';
     $this->admin = false;
     $this->last_login = null;
+    $this->individu = new FakeIndividu($this);
 
     $acl = Zend_Registry::get('acl');
     if (!$acl->has($this)) {
@@ -539,6 +579,6 @@ class Nobody implements Zend_Acl_Resource_Interface, Zend_Acl_Role_Interface {
   }
 
   function findParentIndividus() {
-    return null;
+    return $this->individu;
   }
 }
