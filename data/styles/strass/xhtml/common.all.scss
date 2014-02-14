@@ -96,9 +96,13 @@ ul.adminlinks {
 
 	a {
 	    display: block;
-	    background: #d6d2c1;
+	    background: $page_background;
 	    padding: 1ex;
 	    border-radius: 1ex;
+
+	    &.warn {
+		background: $warn_bg;
+	    }
 	}
     }
 }
@@ -160,6 +164,11 @@ ul.adminlinks {
 	border-style: solid;
 	border-color: #615230;
 	border-radius: 1ex;
+
+	h1 {
+	    padding-top: 0;
+	    margin-bottom: 1em;
+	}
 
 	& > div.dialog {
 	    width: 40ex;

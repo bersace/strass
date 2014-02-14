@@ -1,12 +1,49 @@
 /*-*- css -*-*/
 
+@import "common";
+
 #document.livredor {
-    li {
-	list-style-type: none;
+    & > .section,
+    & > .form
+    {
+	width: 60%;
+	margin: 1em auto;
     }
 
     .section.message
     {
 	position: relative;
+	padding: 1ex;
+	margin: 2pt auto;
+	background-color: $alt_background;
+
+	.auteur {
+	    float: left;
+	    margin: 1ex;
+	    font-weight: bold;
+	}
+    }
+
+    .section#poster {
+	text-align: center;
+
+	#control-poster-contenu span.control.input,
+	#control-editer-contenu span.control.input
+	{
+	    width: 100%;
+
+	    textarea {
+		width: 100%;
+		height: 6em;
+	    }
+	}
+
+	#control-editer-public {
+	    display: inline-block;
+	}
+    }
+
+    li {
+	list-style-type: none;
     }
 }

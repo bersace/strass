@@ -37,6 +37,15 @@ class Strass_Mail extends Zend_Mail
     return $this->_doc;
   }
 
+  function url($urlOptions)
+  {
+    $fc = Zend_Controller_Front::getInstance();
+    $router = $fc->getRouter();
+    $request = $fc->getRequest();
+    $url = $router->assemble($urlOptions);
+    return "http://".$request->getServer('HTTP_HOST').$url;
+  }
+
   function render() {
   }
 

@@ -161,7 +161,7 @@ tr td .check label
 
 .form .warn
 {
-    background-color: #FC7;
+    background-color: $warn_bg;
     background-image: url("icones/attention.png");
     background-repeat: no-repeat;
     background-position: 1ex .72ex;
