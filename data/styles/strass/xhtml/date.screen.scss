@@ -1,3 +1,5 @@
+/*-*- css -*-*/
+
 .dojoxCalendarContainer
 {
   cursor: default;
@@ -7,12 +9,12 @@
   width: 18em !important;
   background: white;
   border: 1px solid black ;
-  -moz-border-radius: 0 0 1ex 1ex;
+  border-radius: 0 0 1ex 1ex;
   }
 
 
 .dojoxCalendar .dijitCalendarNextMonth .dijitCalendarDateLabel,
-.dojoxCalendar .dijitCalendarPreviousMonth .dijitCalendarDateLabel 
+.dojoxCalendar .dijitCalendarPreviousMonth .dijitCalendarDateLabel
 {
   border: 0px;
   color: #444;
@@ -80,8 +82,8 @@
   }
 
 .dojoxCalendar .dijitCalendarDateTemplate
-{ 
-  padding: 0px; 
+{
+  padding: 0px;
   }
 
 .dojoxCalendar .noPointer,
@@ -170,7 +172,7 @@
 
 .dojoxCalendar .dojoxCalendarFooter
 {
-  border-top: 1px dotted #EEE; 
+  border-top: 1px dotted #EEE;
   padding-top: 4px;
   cursor: pointer;
   width: 100%;
@@ -206,12 +208,12 @@
 {
   background: white;
   border: 1px solid black;
-  -moz-border-radius: 0 0 1ex 1ex;
+  border-radius: 0 0 1ex 1ex;
   }
 
 .dijitArrowButtonInner
 {
-  display: none; 
+  display: none;
   }
 
 .dijitArrowButtonChar
@@ -249,7 +251,7 @@
 {
   background: lightgrey;
   color:black;
-  cursor: pointer; 
+  cursor: pointer;
   }
 
 .dijitTimePickerItemHover,
