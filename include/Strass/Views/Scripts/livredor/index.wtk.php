@@ -13,7 +13,10 @@ class Strass_Pages_Renderer_Livredor extends Strass_Pages_Renderer
     $s = $c->addSection('poster', "Poster un nouveau message");
     $s->level = 2;
     $f = $s->addForm($this->view->form_model);
-    $f->addEntry('auteur');
+    if ($f->model->get('auteur'))
+      $f->addHidden('auteur');
+    else
+      $f->addEntry('auteur');
     $f->addEntry('contenu', 48, 6);
     $f->addForm_ButtonBox()->addForm_Submit($this->view->form_model->getSubmission('poster'));
 

@@ -25,7 +25,8 @@ class LivredorController extends Strass_Controller_Action
 
     $this->view->form_model = $m = new Wtk_Form_Model('poster');
 
-    $i = $m->addString('auteur', 'Votre nom');
+    $individu = Zend_Registry::get('individu');
+    $i = $m->addString('auteur', 'Votre nom', $individu->getFullname(false, false));
     $m->addConstraintRequired($i);
     $i = $m->addString('contenu', 'Votre message public');
     $m->addConstraintRequired($i);
