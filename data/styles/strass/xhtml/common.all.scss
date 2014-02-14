@@ -170,6 +170,15 @@ ul.adminlinks {
 	    margin-bottom: 1em;
 	}
 
+	#flash {
+	    font-weight: bold;
+	    font-size: 105%;
+	    text-align: center;
+	    height: 3em;
+	    line-height: 3em;
+	    background-position: 1ex center;
+	}
+
 	& > div.dialog {
 	    width: 40ex;
 	    margin: 5em auto;
@@ -181,6 +190,14 @@ ul.adminlinks {
 
 	    .h {
 		margin: 1ex;
+	    }
+
+	    &.info {
+		color: $info;
+		background-color: $info_bg;
+		background-image: url("icones/information.png");
+		background-position: 1ex .72ex;
+		background-repeat: no-repeat;
 	    }
 
 	    &.error {
