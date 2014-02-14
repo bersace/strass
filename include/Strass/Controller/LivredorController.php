@@ -46,6 +46,7 @@ class LivredorController extends Strass_Controller_Action
 	// signaler à l'admin qu'il faut modérer un nouveau message
 	// sur le livre d'or.
 	if (!$message->public) {
+	  $this->_helper->Flash->info("Message en attente de validation");
 	  $mail = new Strass_Mail_Livredor($message);
 	  $mail->send();
 	}
@@ -100,7 +101,8 @@ class LivredorController extends Strass_Controller_Action
       throw $e;
     }
 
-    $this->redirectSimple('index', 'livredor', null, null, true);
+    $this->_helper->Flash->info("Message publié");
+    $this->redirectSimple('moderer', 'livredor', null, null, true);
   }
 
   function supprimerAction()
