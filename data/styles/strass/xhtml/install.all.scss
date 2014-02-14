@@ -23,4 +23,17 @@
     .control.select label {
 	display: block;
     }
+
+    #wait {
+	/* masqué par défaut, à activer en JS */
+	display: none;
+
+	img {
+	    display: block;
+	    margin: 1em auto;
+	}
+	p {
+	    text-align: center;
+	}
+    }
 }

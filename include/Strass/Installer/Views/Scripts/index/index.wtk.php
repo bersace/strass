@@ -25,8 +25,15 @@ class Strass_Pages_RendererInstall extends Wtk_Pages_Renderer_Form
     $f->addEntry('admin/adelec', 32);
     $f->addPassword('admin/motdepasse', 12);
     $f->addPassword('admin/confirmation', 12);
+    $f->dojoType = 'strass.install.Wizard';
   }
 }
+
+$d = $this->document->addDialog("Initialisation")
+  ->setId('wait');
+
+$d->addImage('/data/install/loading.gif', 'loading', 'loading');
+$d->addParagraph("Veuillez patienter…");
 
 $this->document->addPages(null, $this->model,
 			  new Strass_Pages_RendererInstall($this));
