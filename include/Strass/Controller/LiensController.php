@@ -48,9 +48,7 @@ class LiensController extends Strass_Controller_Action
 	  if ($data['url'])
 	    $t->insert($data);
 
-	$this->_helper->Log("Liens édités", array(),
-			    $this->_helper->Url('index', 'liens'),
-			    "Liens");
+	$this->logger->info("Liens édités");
 	$db->commit();
 	$this->redirectSimple('index', 'liens');
       }
