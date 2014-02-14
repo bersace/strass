@@ -10,21 +10,21 @@ class LivredorController extends Strass_Controller_Action
   {
     $this->metas(array('DC.Title' => "Livre d'or",
 		       'DC.Subject' => 'livre,or'));
-    
-    $this->view->livredor = $table = new Livredor;
-    $s = $table->select()->where('public')->order('date DESC');
+
+    $this->view->livredor = $t = new Livredor;
+    $s = $t->select()->where('public')->order('date DESC');
     $this->view->model = new Strass_Pages_Model_Rowset($s, 15, $this->_getParam('page'));
 
     $this->connexes->append('Poster un message',
 			    array('action' => 'poster'));
 
-    $s = $table->select()->where('public IS NULL');
-    if ($table->countRows($s)) {
+    $s = $t->select()->where('public IS NULL');
+    if ($t->countRows($s)) {
       $this->actions->append('Valider des messages',
 			     array('action' => 'moderer'),
-			     array(null, $table));
+			     array(null, $t));
     }
-    
+
     $this->formats('rss', 'atom');
   }
 
@@ -41,13 +41,13 @@ class LivredorController extends Strass_Controller_Action
     $m->addNewSubmission('poster', 'Poster');
 
     if ($m->validate()) {
-      $ti = new Livredor();
+      $ti = new Livredor;
       $db = $ti->getAdapter();
       $db->beginTransaction();
       try {
 	$tuple = $m->get();
 	$tuple['date'] = strftime('%Y-%m-%d %H:%m');
-	$tuple['public'] = Zend_Registry::get('user') ? '1' : null;
+	$tuple['public'] = Zend_Registry::get('user')->isMember() ? 1 : NULL;
 	$ti->insert($tuple);
 
 	// signaler à l'admin qu'il faut modérer un nouveau message
@@ -125,7 +125,7 @@ class LivredorController extends Strass_Controller_Action
       $db->rollBack();
       throw $e;
     }
-    
+
     $this->redirectSimple('index', 'livredor', null, null, true);
   }
 
@@ -140,7 +140,7 @@ class LivredorController extends Strass_Controller_Action
     $this->view->model = $m = new Wtk_Form_Model('suppression');
     $m->addBool('confirmer', "Je confirme vouloir supprimer ce message.");
     $m->addNewSubmission('continuer', 'continuer');
-    
+
     if ($m->validate()) {
       if ($m->get('confirmer')) {
 	$db = $t->getAdapter();
@@ -177,7 +177,7 @@ class LivredorController extends Strass_Controller_Action
     $m->addConstraintRequired($i);
     $m->addBool('public', 'Publier ce message', (bool) $message->public);
     $m->addNewSubmission('enregistrer', 'Enregistrer');
-  
+
     if ($m->validate()) {
       $db = $t->getAdapter();
       $db->beginTransaction();
