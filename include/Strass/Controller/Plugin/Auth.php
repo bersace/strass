@@ -22,10 +22,11 @@ class Strass_Controller_Plugin_Auth extends Zend_Controller_Plugin_Abstract
       $acl->allow('sachem', null, 'totem');
       $acl->addRole(new Zend_Acl_Role('membres'));
       $acl->add(new Zend_Acl_Resource('membres'));
+      $acl->add(new Zend_Acl_Resource('site'));
       $nobody = new Nobody;
     }
 
-    $config = new Strass_Config_Php('strass');
+    $config = Zend_Registry::get('config');
     try {
       $lifetime = $config->site->duree_connexion;
       Zend_Session::rememberMe($lifetime);

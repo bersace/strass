@@ -3,16 +3,29 @@ interface Strass_Controller_ErrorController {}
 
 class ErrorController extends Strass_Controller_Action implements Strass_Controller_ErrorController
 {
-  public function init()
-  {
-    $this->_request->setParam('format', 'xhtml');
-    parent::init();
-  }
-
   public function errorAction()
   {
-    $this->view->errors = $this->getResponse()->getException();
-    foreach($this->view->errors as $error) {
+    $this->view->errors = $errors = $this->getResponse()->getException();
+
+    /* Journal système */
+    foreach ($errors as $error) {
+      if ($error instanceof Zend_Controller_Dispatcher_Exception)
+      	continue;
+      if ($error instanceof Zend_Controller_Action_Exception)
+      	if ($error->getCode() <= 500)
+      	  continue;
+
+      try {
+	$this->logger->error($error->getMessage(), null, print_r($error, true));
+      }
+      catch (Exception $e) {
+	error_log($error->getMessage());
+	error_log($e->getMessage());
+      }
+    }
+
+    /* Code HTTP */
+    foreach($errors as $error) {
       if ($error instanceof Zend_Controller_Dispatcher_Exception) {
 	$this->getResponse()->setHttpResponseCode(404);
 	break;
@@ -24,5 +37,7 @@ class ErrorController extends Strass_Controller_Action implements Strass_Control
 	break;
       }
     }
+
+    $this->_request->setParam('format', 'xhtml');
   }
 }
