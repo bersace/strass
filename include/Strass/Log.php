@@ -1,30 +1,30 @@
 <?php
 
+require_once 'Individus.php';
+
 class Logs extends Zend_Db_Table_Abstract implements Zend_Acl_Resource_Interface
 {
-	protected	$_name		= 'log';
-	protected	$_dependentTables	= array('LogAttrs');
+  const LEVEL_INFO = 'INFO';
+  const LEVEL_WARNING = 'WARNING';
+  const LEVEL_ERROR = 'ERROR';
 
-	function __construct()
-	{
-		parent::__construct();
+  protected $_name = 'log';
+  protected $_referenceMap = array('User' => array('columns' => 'user',
+						   'refTableClass' => 'Users',
+						   'refColumns'	=> 'id',
+						   'onUpdate' => self::CASCADE,
+						   'onDelete' => self::CASCADE),
+				   );
 
-		$acl = Zend_Registry::get('acl');
-		if (!$acl->has($this))
-			$acl->add(new Zend_Acl_Resource($this->getResourceId()));
-	}
+  function __construct()
+  {
+    parent::__construct();
 
-	function getResourceId()
-	{ return 'log'; }
+    $acl = Zend_Registry::get('acl');
+    if (!$acl->has($this))
+      $acl->add(new Zend_Acl_Resource($this->getResourceId()));
+  }
+
+  function getResourceId()
+  { return 'log'; }
 }
-
-class LogAttrs extends Zend_Db_Table_Abstract
-{
-	protected	$_name		= 'log_attr';
-	protected	$_referenceMap	= array('Log'	=> array('columns'		=> 'log',
-								 'refTableClass'	=> 'Log',
-								 'refColumns'		=> 'id',
-								 'onUpdate'		=> self::CASCADE,
-								 'onDelete'		=> self::CASCADE));
-}
-

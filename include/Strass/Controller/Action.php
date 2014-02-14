@@ -70,6 +70,8 @@ abstract class Strass_Controller_Action extends Zend_Controller_Action implement
 			     array(),
 			     true);
 
+    $this->logger = new Strass_Logger($this);
+
   }
 
   protected function redirectUrl($urlOptions = array(), $route = null, $reset = false)
