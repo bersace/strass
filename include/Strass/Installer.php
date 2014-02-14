@@ -33,7 +33,7 @@ class Strass_Installer
 						       ),
 				     'association' => $this->data['site']['mouvement'],
 				     'short_title' => null,
-				     'id' => null,
+				     'id' => 'strass',
 				     'realm' => $this->generateRealm(),
 				     'realm_suffixe' => '',
 				     'duree_connexion' => 2678400,
