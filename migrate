@@ -16,5 +16,4 @@ $loader->registerNamespace('Dio_');
 $loader->registerNamespace('Wtk_');
 $loader->registerNamespace('Strass_');
 
-$migrator = new Strass_Migrate();
-$migrator->migrate();
+Strass_Migrate::run();

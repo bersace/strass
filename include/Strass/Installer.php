@@ -69,6 +69,11 @@ class Strass_Installer
       throw new Exception("Fichier ${name}.sql manquant");
     $db = Strass_Db::setup($this->dbname);
     $db->exec($sql);
+
+    Strass_Version::save(self::VERSION);
+
+    $migrator = new Strass_Migrate($db);
+    $migrator->migrate();
   }
 
   function initAdmin()
@@ -102,6 +107,6 @@ class Strass_Installer
     $this->initDb();
     $this->initAdmin();
 
-    Strass_Version::save(self::VERSION);
+    Strass_Version::setInstalled();
   }
 }
