@@ -4,7 +4,7 @@ require_once 'Strass/Log.php';
 
 class Strass_Logger
 {
-  function __construct($name = 'root')
+  function __construct($name = 'strass')
   {
     $this->name = $name;
     $this->table = new Logs;
