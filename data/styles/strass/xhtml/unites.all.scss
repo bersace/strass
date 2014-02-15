@@ -96,7 +96,9 @@ td.numero
 }
 
 @media screen {
-    #document.fonder form {
+    #document.fonder form,
+    #document.editer form
+    {
 	@include minipage;
     }
 

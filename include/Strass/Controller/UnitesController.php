@@ -18,9 +18,9 @@ class UnitesController extends Strass_Controller_Action
 
     $this->view->fiches = (bool) Zend_Registry::get('user');
 
-    $this->actions->append("Modifier",
+    $this->actions->append("Éditer",
 			   array('controller' => 'unites',
-				 'action' => 'modifier',
+				 'action' => 'editer',
 				 'unite' => $u->slug),
 			   array(null, $u));
 
@@ -243,13 +243,13 @@ class UnitesController extends Strass_Controller_Action
   }
 
 
-  function modifierAction()
+  function editerAction()
   {
     $u = $this->_helper->Unite();
-    $this->assert(null, $u, 'modifier',
+    $this->assert(null, $u, 'editer',
 		  "Vous n'avez pas le droit de modifier cette unité");
 
-    $this->metas(array('DC.Title' => 'Modifier '.$u->getFullname()));
+    $this->metas(array('DC.Title' => 'Éditer '.$u->getFullname()));
 
     $m = new Wtk_Form_Model('unite');
     $m->addString('nom', "Nom", $u->nom);
@@ -258,7 +258,7 @@ class UnitesController extends Strass_Controller_Action
 		  $u->extra);
     $m->addFile('image', "Image");
     $w = $u->getWiki(null, false);
-    $m->addString('presentation', "Message d'index", is_readable($w) ? file_get_contents($w) : '');
+    $m->addString('presentation', "Message d'accueil", is_readable($w) ? file_get_contents($w) : '');
     $m->addNewSubmission('enregistrer', "Enregistrer");
 
     // métier;
@@ -285,10 +285,8 @@ class UnitesController extends Strass_Controller_Action
 
 	file_put_contents($w, trim($m->get('presentation')));
 
-	$this->_helper->Log("Unité modifiée", array($u),
-			    $this->_helper->Url('index', 'unites', null,
-						array('unite' => $u->slug)),
-			    (string) $u);
+	$this->logger->info("Unité modifiée",
+			    array('controller' => 'unites', 'action' => 'index', 'unite' => $u->slug));
 
 	$db->commit();
 	$this->redirectSimple('index', 'unites', null,
