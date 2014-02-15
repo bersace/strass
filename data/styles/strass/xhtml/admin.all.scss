@@ -1,0 +1,50 @@
+/*-*- css -*-*/
+
+@import "common";
+
+.admin.index {
+    h2
+    {
+	margin: 0 0 1ex;
+    }
+
+    tr.critical, tr.error {
+	background: $critical_bg;
+	font-weight: bold;
+	color: $critical;
+
+	a {
+	    color: inherit;
+	}
+    }
+
+    tr.warn {
+	background: $warn_bg;
+	font-weight: bold;
+    }
+}
+
+table {
+    width: 100%;
+    margin-bottom: 1em;
+}
+
+#indicateurs, #membres
+{
+    float: left;
+    width: 22em;
+}
+
+#log
+{
+    float: right;
+    width: 40em;
+    min-height: 32em;
+    overflow: hidden;
+
+    td
+    {
+	white-space: nowrap;
+    }
+
+}
