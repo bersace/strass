@@ -7,7 +7,12 @@ class Strass_Logger
   function __construct($controller)
   {
     $this->controller = $controller;
+    $request = $controller->getRequest();
+    $this->name = strtolower(join('.', array($request->getModuleName(),
+					     $request->getControllerName(),
+					     $request->getActionName())));
     $this->table = new Logs;
+
   }
 
   function log($level, $message, $url=null, $detail=null)
@@ -21,11 +26,8 @@ class Strass_Logger
       $url = $this->controller->_helper->Url->url($url, null, true);
     }
 
-    $logger = strtolower(join('.', array($request->getModuleName(),
-					 $request->getControllerName(),
-					 $request->getActionName())));
     // insertion du tuple
-    $data = array('logger' => $logger,
+    $data = array('logger' => $this->name,
 		  'level' => $level,
 		  'user' => $user->id,
 		  'message' => $message,
