@@ -6,8 +6,7 @@
     & > .section,
     & > .form
     {
-	width: 60%;
-	margin: 1em auto;
+	@include minipage;
     }
 
     .section.message

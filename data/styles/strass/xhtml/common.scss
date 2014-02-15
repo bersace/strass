@@ -10,3 +10,11 @@ $info_bg: #A0BF6B;
 $warn_bg: #EEDC83;
 $critical: $error;
 $critical_bg: #D6968B;
+
+@mixin minipage {
+    /* style commun pour les pages avec peu de contenu, on utilise réduit
+       la largeur et on contre */
+
+    width: 60%;
+    margin: 1em auto;
+}
