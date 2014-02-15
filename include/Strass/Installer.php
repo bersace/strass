@@ -91,7 +91,8 @@ class Strass_Installer
 						    $this->data['admin']['motdepasse']),
 		  'admin' => TRUE,
 		  );
-    $t->insert($data);
+    $k = $t->insert($data);
+    Zend_Registry::set('user', $t->findOne($k));
   }
 
   function run()
@@ -99,6 +100,9 @@ class Strass_Installer
     $this->writeConfig();
     $this->initDb();
     $this->initAdmin();
+
+    $logger = new Strass_Logger('installeur');
+    $logger->info("Installation terminée");
 
     Strass_Version::setInstalled();
   }
