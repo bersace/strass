@@ -20,7 +20,7 @@ class Strass_Pages_Renderer_Livredor extends Strass_Pages_Renderer
 						    'message' => $message->id,
 						    'redirect' => 'moderer'),
 					      "Refuser", true))
-      ->addFlags('warn');
+      ->addFlags('critical');
   }
 }
 

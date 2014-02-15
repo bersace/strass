@@ -43,7 +43,7 @@ class Strass_Pages_Renderer_Livredor extends Strass_Pages_Renderer
 						      'action' => 'supprimer',
 						      'message' => $message->id),
 						"Supprimer", true))
-	->addFlags('warn');
+	->addFlags('critical');
     }
   }
 }

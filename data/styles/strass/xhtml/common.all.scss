@@ -100,8 +100,8 @@ ul.adminlinks {
 	    padding: 1ex;
 	    border-radius: 1ex;
 
-	    &.warn {
-		background: $warn_bg;
+	    &.critical {
+		background: $critical_bg;
 	    }
 	}
     }

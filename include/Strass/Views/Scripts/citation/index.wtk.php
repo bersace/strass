@@ -18,7 +18,8 @@ class Strass_Pages_RendererCitation extends Strass_Pages_Renderer
       $l->addItem()->addChild($this->view->lien(array('controller' => 'citation',
 						      'action' => 'supprimer',
 						      'citation' => $citation->id),
-						"Supprimer", true));
+						"Supprimer", true))
+	->addFlags('critical');
     }
   }
 }
