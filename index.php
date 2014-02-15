@@ -78,6 +78,6 @@ catch (Exception $e) {
   $msg.= $e->getMessage()."\n\n";
   $msg.= " à ".$e->getFile().":".$e->getLine()."\n\n";
   $msg.= str_replace ('#', '<br/>#', $e->getTraceAsString())."\n";
-  error_log($e->getMessage());
+  error_log(strtok($e->getMessage(), "\n"));
   Orror::kill(strip_tags($msg));
 }
