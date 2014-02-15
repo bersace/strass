@@ -221,7 +221,7 @@ class Individu extends Strass_Db_Table_Row_Abstract implements Zend_Acl_Role_Int
   function getAge()
   {
     if ($this->naissance)
-      return date("Y", time() - $this->naissance) - date("Y", 0);
+      return date("Y", time() - strtotime($this->naissance)) - date("Y", 0);
     else
       return null;
   }

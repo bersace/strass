@@ -1,5 +1,7 @@
 /*-*- css -*-*/
 
+@import "common";
+
 #informations p.avatar
 {
   float: right;
@@ -29,9 +31,6 @@
   width: 45%;
   }
 
-
-#progression,
-#formation,
 #commentaires,
 #articles
 {
@@ -41,3 +40,10 @@
   display: inline-block;
   text-align: vertical;
   }
+
+.individus.editer form {
+    @include minipage;
+    #control-editer-notes textarea {
+	width: 100%;
+    }
+}

@@ -164,9 +164,9 @@ class IndividusController extends Strass_Controller_Action
 	  $tr->free();
 	}
 
-	$this->_helper->Log("Fiche individu mis-à-jour", array($individu),
-			    $this->_helper->Url('fiche', 'individus', null, array('individu' => $individu->slug)),
-			    (string) $individu);
+	$this->logger->info("Fiche individu mis-à-jour",
+			    $this->_helper->Url('fiche', 'individus', null,
+						array('individu' => $individu->slug)));
 
 	$db->commit();
 	$this->redirectSimple('fiche', 'individus', null,
