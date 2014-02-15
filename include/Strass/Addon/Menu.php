@@ -10,6 +10,9 @@ class Strass_Addon_Menu extends Strass_Addon
 			      'url'   => array('controller' => 'livredor')),
 			array('metas' => array('label' => 'Liens'),
 			      'url'   => array('controller' => 'liens')),
+			array('metas' => array('label' => 'Administration'),
+			      'url'   => array('controller' => 'admin'),
+			      'acl'   => array(null, 'site', 'admin')),
 			);
 
   public function initView($view)

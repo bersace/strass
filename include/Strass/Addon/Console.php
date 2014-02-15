@@ -23,21 +23,6 @@ class Strass_Addon_Console extends Strass_Addon_Liens
     $view->user = $user = Zend_Registry::get('user');
     $actual = Zend_Registry::get('actual_user');
 
-    if ($acl->isAllowed($view->individu, 'membres')) {
-      $t = new Inscriptions();
-      $is = $t->fetchAll();
-      if ($is->count()) {
-	$this->append('Nouvelles inscriptions',
-		      array('controller' => 'membres',
-			    'action'	 => 'inscriptions'));
-      }
-      $this->append('Membres',
-		    array('controller' => 'membres',
-			  'action'	 => 'lister'));
-      $this->append('Journaux système',
-		    array('controller' => 'log'));
-    }
-
     if ($view->individu) {
       $us = $view->individu->getUnites();
       if (count($us) == 1) {
