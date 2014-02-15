@@ -18,37 +18,30 @@ class UnitesController extends Strass_Controller_Action
 
     $this->view->fiches = (bool) Zend_Registry::get('user');
 
-    $this->actions->append("Éditer",
-			   array('controller' => 'unites',
-				 'action' => 'editer',
-				 'unite' => $u->slug),
+    $this->actions->append(array('label' => "Inscrire"),
+			   array('action' => 'inscrire', 'unite' => $u->slug),
 			   array(null, $u));
 
     $soustypename = $u->getSousTypeName();
     if (!$u->isTerminale() && $soustypename)
       $this->actions->append(array('label' => "Fonder une ".$soustypename),
-			     array('action' => 'fonder',
-				   'parente' => $u->slug),
+			     array('action' => 'fonder', 'parente' => $u->slug),
 			     array(null, $u));
+
+    $journal = $u->findJournaux()->current();
+    if (!$journal)
+      $this->actions->append("Fonder le journal",
+			     array('controller' => 'journaux', 'action' => 'fonder'),
+			     array(null, $u, 'fonder-journal'));
+
+    $this->actions->append("Éditer",
+			   array('controller' => 'unites', 'action' => 'editer', 'unite' => $u->slug),
+			   array(null, $u));
 
     if (!$u->isFermee())
       $this->actions->append("Fermer l'unité",
 			     array('action' => 'fermer'),
 			     array(null, $u));
-
-    $this->actions->append("Détruire",
-			   array('controller' => 'action',
-				 'action' => 'detruire',
-				 'unite' => $u->slug),
-			   array(null, $u));
-
-    // journal d'unité
-    $journal = $u->findJournaux()->current();
-    if (!$journal)
-      $this->actions->append("Fonder le journal d'unité",
-			     array('controller' => 'journaux',
-				   'action' => 'fonder'),
-			     array(null, $u, 'fonder-journal'));
   }
 
   function contactsAction()
@@ -227,7 +220,7 @@ class UnitesController extends Strass_Controller_Action
 	$k = $t->insert($data);
 	$u = $t->findOne($k);
 
-	$this->logger->info("Nouvelle unité",
+	$this->logger->info("Fondation de ".$u->getFullname(),
 			    $this->_helper->Url('index', 'unites', null, array('unite' => $u->slug), true));
 
 	$db->commit();
@@ -285,7 +278,7 @@ class UnitesController extends Strass_Controller_Action
 
 	file_put_contents($w, trim($m->get('presentation')));
 
-	$this->logger->info("Unité modifiée",
+	$this->logger->info("Édition de ".$u->getFullname(),
 			    array('controller' => 'unites', 'action' => 'index', 'unite' => $u->slug));
 
 	$db->commit();
@@ -460,13 +453,13 @@ class UnitesController extends Strass_Controller_Action
   {
     $this->view->unite = $u = $this->_helper->Unite();
     $this->assert(null, $u, 'supprimer',
-		  "Vous n'avez pas le droit de détruire cette unité.");
+		  "Vous n'avez pas le droit de supprimer cette unité.");
 
-    $this->metas(array('DC.Title' => 'Détruire '.$u->getFullname()));
+    $this->metas(array('DC.Title' => 'Supprimer '.$u->getFullname()));
 
     $this->view->model = $m = new Wtk_Form_Model('supprimer');
     $m->addBool('confirmer',
-		"Je confirme la destruction de l'unité et de toutes ses données.", false);
+		"Je confirme la suppression de l'unité et de toutes ses données.", false);
     $m->addNewSubmission('continuer', 'Continuer');
 
     if ($m->validate()) {
@@ -476,10 +469,12 @@ class UnitesController extends Strass_Controller_Action
 	try {
 	  $nom = (string) $u;
 	  $u->delete();
-	  $this->logger->warn("Desctruction de l'unité ".$nom,
+	  $message = $nom." supprimé";
+	  $this->logger->warn($message,
 			      $this->_helper->Url('index', 'unites'));
+	  $this->_helper->Flash->info($message);
 	  $db->commit();
-	  $this->redirectSimple('index', 'unites');
+	  $this->redirectSimple('index', null, null, null, true);
 	}
 	catch(Exception $e) {
 	  $db->rollBack();
@@ -487,7 +482,7 @@ class UnitesController extends Strass_Controller_Action
 	}
       }
       else
-	$this->redirectSimple('index', 'unites', null, array('unite' => $u->slug));
+	$this->redirectSimple('index', null, null, array('unite' => $u->slug));
     }
   }
 

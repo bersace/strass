@@ -79,6 +79,26 @@ img
     visibility: visible;
 }
 
+@mixin adminlink {
+    display: inline-block;
+    background: $page_background;
+    padding: .5ex 1em;
+    border-radius: 1ex;
+    box-shadow: 2pt 4pt 1ex rgba(4, 4, 4, 0.5);
+
+    &.critical {
+	background: $critical_bg;
+    }
+}
+
+a.adminlink {
+    @include adminlink;
+}
+
+td.adminlinks a.adminlink {
+    font-size: 90%;
+}
+
 ul.adminlinks {
     position: absolute;
     top: -.5ex;
@@ -90,19 +110,10 @@ ul.adminlinks {
 
     li {
 	display: inline-block;
-	box-shadow: 2pt 4pt 1ex rgba(4, 4, 4, 0.5);
-	border-radius: 1ex;
 	margin: 0 .5ex;
 
 	a {
-	    display: block;
-	    background: $page_background;
-	    padding: 1ex;
-	    border-radius: 1ex;
-
-	    &.critical {
-		background: $critical_bg;
-	    }
+	    @include adminlink;
 	}
     }
 }

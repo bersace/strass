@@ -122,7 +122,9 @@ class AdminController extends Strass_Controller_Action
 
     $t = new Unites;
     $this->view->unites = $m = new Wtk_Table_Model_Tree('nom', 'accueil', 'statut',
-							'chef', 'fiche-chef', 'inscrits', 'flags');
+							'chef', 'fiche-chef', 'inscrits',
+							'url-supprimer',
+							'flags');
 
     $unites = $t->fetchAll();
     $pathes = array();
@@ -143,6 +145,7 @@ class AdminController extends Strass_Controller_Action
 			 $unite->isFermee() ? 'fermée' : 'ouverte',
 			 'Inconnu', null,
 			 "${actifs} inscrits",
+			 $this->_helper->Url('supprimer', 'unites', null, array('unite' => $unite->slug)),
 			 array($unite->isFermee() ? 'fermee' : 'ouverte',
 			       $unite->findParentTypesUnite()->slug,
 			       $actifs == 0 ? 'warn' : null,

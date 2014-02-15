@@ -15,9 +15,15 @@
     }
 
     &.unites {
-	td.statut, td.chef, td.inscrits {
-	    text-align: center;
+	td.nom {
+	    vertical-align: middle;
 	}
+
+	td.statut, td.chef, td.inscrits, td.adminlinks {
+	    text-align: center;
+	    vertical-align: middle;
+	}
+
     }
 
     tr.critical, tr.error {
@@ -34,12 +40,16 @@
 	}
     }
 
-    tr.warn {
+    tr.warn, tr.warning {
 	background: $warn_bg;
 	font-weight: bold;
 
 	&.odd {
 	    background: lighten($warn_bg, 10%);
+	}
+
+	td.inscrits {
+	    color: $warn;
 	}
     }
 }
