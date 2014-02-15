@@ -41,6 +41,14 @@ abstract class Strass_Controller_Action extends Zend_Controller_Action implement
       $page->addon(new Strass_Addon_Console($this->_helper->Auth));
       $page->addon(new Strass_Addon_Citation);
 
+      if ($config->short_title)
+	$this->branche->append($label, array(), array(), true);
+
+      if (!$this instanceof Strass_Controller_ErrorController)
+	$this->branche->append($this->_titreBranche,
+			       array('controller' => strtolower($this->_request->getControllerName())),
+			       array(), true);
+
       Zend_Registry::set('page', $page);
       return $page;
     }
@@ -48,7 +56,13 @@ abstract class Strass_Controller_Action extends Zend_Controller_Action implement
 
   public function init()
   {
-    $config = Zend_Registry::get('config');
+    try {
+      $this->logger = Zend_Registry::get('logger');
+    }
+    catch (Exception $e) {
+      $this->logger = new Strass_Logger($this);
+      Zend_Registry::set('logger', $this->logger);
+    }
 
     // lister les formats disponibles
     $formats = require('include/Strass/formats.php');
@@ -60,18 +74,6 @@ abstract class Strass_Controller_Action extends Zend_Controller_Action implement
       throw new Strass_Controller_Action_Exception("Format inconnu");
 
     $this->initPage();
-
-    if ($config->short_title)
-      $this->branche->append($label, array(), array(), true);
-
-    if (!$this instanceof Strass_Controller_ErrorController)
-      $this->branche->append($this->_titreBranche,
-			     array('controller' => strtolower($this->_request->getControllerName())),
-			     array(),
-			     true);
-
-    $this->logger = new Strass_Logger($this);
-
   }
 
   protected function redirectUrl($urlOptions = array(), $route = null, $reset = false)
