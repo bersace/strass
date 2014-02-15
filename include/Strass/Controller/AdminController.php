@@ -52,7 +52,7 @@ class AdminController extends Strass_Controller_Action
     $count = $t->countRows($t->select());
     $m->append("Unités",
 	       $this->_helper->Url('unites'),
-	       $count, strass_admin_count_level(1-$count, 0, 0));
+	       $count, strass_admin_count_level(0-$count, 0, 0));
 
     $t = new Individus;
     $count = $t->countRows($t->select());
@@ -109,6 +109,46 @@ class AdminController extends Strass_Controller_Action
       $m->append($u->last_login,
 		 $i->getFullname(false, false),
 		 $this->_helper->Url('fiche', 'individus', null, array('individu' => $i->slug)));
+    }
+  }
+
+  function unitesAction()
+  {
+    $this->metas(array('DC.Title' => 'Les unités'));
+
+    $this->actions->append(array('label' => "Fonder"),
+			   array('action' => 'fonder',
+				 'controller' => 'unites'));
+
+    $t = new Unites;
+    $this->view->unites = $m = new Wtk_Table_Model_Tree('nom', 'accueil', 'statut',
+							'chef', 'fiche-chef', 'inscrits', 'flags');
+
+    $unites = $t->fetchAll();
+    $pathes = array();
+    foreach ($unites as $unite) {
+      if ($unite->parent) {
+	$parent = $unite->findParentUnites();
+	$ppath = $pathes[$parent->slug];
+      }
+      else {
+	$ppath = array();
+      }
+
+      $apps = $unite->getApps();
+      $actifs = $apps->count();
+      $path = $m->append($ppath,
+			 wtk_ucfirst($unite->getFullname()),
+			 $this->_helper->Url('index', 'unites', null, array('unite' => $unite->slug)),
+			 $unite->isFermee() ? 'fermée' : 'ouverte',
+			 'Inconnu', null,
+			 "${actifs} inscrits",
+			 array($unite->isFermee() ? 'fermee' : 'ouverte',
+			       $unite->findParentTypesUnite()->slug,
+			       $actifs == 0 ? 'warn' : null,
+			       )
+			 );
+      $pathes[$unite->slug] = $path;
     }
   }
 }

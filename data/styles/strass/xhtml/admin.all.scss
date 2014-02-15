@@ -2,16 +2,32 @@
 
 @import "common";
 
-.admin.index {
-    h2
-    {
-	margin: 0 0 1ex;
+.admin {
+    &.index {
+	h2
+	{
+	    margin: 0 0 1ex;
+	}
+
+	#log .logger {
+	    font-family: monospace;
+	}
+    }
+
+    &.unites {
+	td.statut, td.chef, td.inscrits {
+	    text-align: center;
+	}
     }
 
     tr.critical, tr.error {
-	background: $critical_bg;
 	font-weight: bold;
 	color: $critical;
+	background: $critical_bg;
+
+	&.odd {
+	    background: lighten($critical_bg, 5%);
+	}
 
 	a {
 	    color: inherit;
@@ -21,6 +37,10 @@
     tr.warn {
 	background: $warn_bg;
 	font-weight: bold;
+
+	&.odd {
+	    background: lighten($warn_bg, 10%);
+	}
     }
 }
 

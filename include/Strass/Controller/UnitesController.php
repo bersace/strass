@@ -157,12 +157,12 @@ class UnitesController extends Strass_Controller_Action
     $this->assert(null, $unite, 'fonder',
 		  "Pas le droit de fonder une sous-unité !");
 
+    $ttu = new TypesUnite;
     // sous types possibles
     if ($unite) {
       $soustypes = $unite->getSousTypes();
     }
     else {
-      $ttu = new TypesUnite;
       $soustypes = $ttu->fetchAll($ttu->select()->where('virtuelle = 0'));
     }
 
@@ -228,10 +228,10 @@ class UnitesController extends Strass_Controller_Action
 	$u = $t->findOne($k);
 
 	$this->logger->info("Nouvelle unité",
-			    $this->_helper->Url('index', 'unites', null, array('unite' => $u->slug)));
+			    $this->_helper->Url('index', 'unites', null, array('unite' => $u->slug), true));
 
 	$db->commit();
-	$this->redirectSimple('index', 'unites', null, array('unite' => $u->slug));
+	$this->redirectSimple('index', 'unites', null, array('unite' => $u->slug), true);
       }
       catch(Exception $e) {
 	$db->rollBack();
