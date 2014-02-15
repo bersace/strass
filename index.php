@@ -61,9 +61,17 @@ try {
 }
 catch (Exception $e) {
   try {
-    Zend_Registry::get('logger')->error($e->getMessage(), null, print_r($e, true));
+    try {
+      $logger = Zend_Registry::get('logger');
+    }
+    catch (Exception $_) {
+      $logger = new Strass_Logger;
+    }
+
+    $logger->critical($e->getMessage(), null, print_r($e, true));
   }
-  catch (Exception $e) {}
+  catch(Exception $_) {}
+
 
   // affichage complet des exceptions non intercepté par le controlleur. À améliorer.
   $msg = ":(\n\n";

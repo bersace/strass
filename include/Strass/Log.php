@@ -7,6 +7,7 @@ class Logs extends Zend_Db_Table_Abstract implements Zend_Acl_Resource_Interface
   const LEVEL_INFO = 'INFO';
   const LEVEL_WARNING = 'WARNING';
   const LEVEL_ERROR = 'ERROR';
+  const LEVEL_CRITICAL = 'CRITICAL';
 
   protected $_name = 'log';
   protected $_referenceMap = array('User' => array('columns' => 'user',

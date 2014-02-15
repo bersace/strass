@@ -4,29 +4,19 @@ require_once 'Strass/Log.php';
 
 class Strass_Logger
 {
-  function __construct($controller)
+  function __construct($name = 'root')
   {
-    $this->controller = $controller;
-    $request = $controller->getRequest();
-    $this->name = strtolower(join('.', array($request->getModuleName(),
-					     $request->getControllerName(),
-					     $request->getActionName())));
+    $this->name = $name;
     $this->table = new Logs;
-
   }
 
   function log($level, $message, $url=null, $detail=null)
   {
     $user = Zend_Registry::get('user');
-    $request = $this->controller->getRequest();
 
     if (!$url)
-      $url = $request->REQUEST_URI;
-    if (is_array($url)) {
-      $url = $this->controller->_helper->Url->url($url, null, true);
-    }
+      $url = $_SERVER['REQUEST_URI'];
 
-    // insertion du tuple
     $data = array('logger' => $this->name,
 		  'level' => $level,
 		  'user' => $user->id,
@@ -55,6 +45,13 @@ class Strass_Logger
   {
     $args = func_get_args();
     array_unshift($args, Logs::LEVEL_ERROR);
+    return call_user_func_array(array($this, 'log'), $args);
+  }
+
+  function critical()
+  {
+    $args = func_get_args();
+    array_unshift($args, Logs::LEVEL_CRITICAL);
     return call_user_func_array(array($this, 'log'), $args);
   }
 }

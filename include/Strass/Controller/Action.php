@@ -60,7 +60,7 @@ abstract class Strass_Controller_Action extends Zend_Controller_Action implement
       $this->logger = Zend_Registry::get('logger');
     }
     catch (Exception $e) {
-      $this->logger = new Strass_Logger($this);
+      $this->logger = new Strass_ActionLogger($this);
       Zend_Registry::set('logger', $this->logger);
     }
 
