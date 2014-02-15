@@ -25,20 +25,8 @@ abstract class Strass_Format_Wtk extends Strass_Format
     $document->header->addFlags($site->association);
     $document->footer->addFlags($site->association);
 
-    if ($view->page->metas->title)
-      $titre = $metas->title;
-    else {
-      try {
-	$racine = $controller->_helper->Unite->racine();
-	$titre = wtk_ucfirst($racine->getFullname());
-      }
-      catch (Exception $e) {
-	$titre = null;
-      }
-    }
-    $link = new Wtk_Link('/', $titre);
+    $link = new Wtk_Link('/', $view->page->metas->site);
     $document->header->setTitle($link);
-
 
     foreach($controller->view->page->formats as $format) {
       if ($format->suffix != $this->suffix) {

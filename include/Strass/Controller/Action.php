@@ -22,8 +22,22 @@ abstract class Strass_Controller_Action extends Zend_Controller_Action implement
     }
     catch (Exception $e) {
       $config = Zend_Registry::get('config');
+
       /* instanciation de la page courante */
       $metas = $config->site->metas;
+      if ($metas->title) {
+	$site = $metas->title;
+      }
+      else {
+	try {
+	  $racine = $this->_helper->Unite->racine();
+	  $site = wtk_ucfirst($racine->getName());
+	}
+	catch (Strass_Db_Table_NotFound $e) {
+	  $site = null;
+	}
+      }
+
       $this->page = $page = new Strass_Page(new Wtk_Metas(array('DC.Title'		=> $metas->title,
 								'DC.Title.alternative'	=> $metas->title,
 								'DC.Subject'		=> $metas->subject,
@@ -31,7 +45,8 @@ abstract class Strass_Controller_Action extends Zend_Controller_Action implement
 								'DC.Creator'		=> $metas->author,
 								'DC.Date.created'	=> $metas->creation,
 								'DC.Date.available'	=> strftime('%Y-%m-%d'),
-								'organization'	=> $metas->organization,)));
+								'organization'	=> $metas->organization,
+								'site' => $site)));
       $page->addon(new Strass_Addon_Menu);
       $this->branche = $page->addon(new Strass_Addon_Branche);
       $page->addon(new Strass_Addon_Navigateurs);
@@ -214,20 +229,7 @@ abstract class Strass_Controller_Action extends Zend_Controller_Action implement
     /*
      * Concaténer certains champs plutôt que les écraser.
      */
-    if ($config->site->metas->title) {
-      $site = $config->site->metas->title;
-    }
-    else {
-      try {
-	$racine = $this->_helper->Unite->racine();
-	$site = $racine->getName();
-      }
-      catch (Strass_Db_Table_NotFound $e) {
-	$site = null;
-      }
-    }
-
-    $parts = array($site,
+    $parts = array($metas->site,
 		   $metas->get('title.alternative.append'),
 		   );
 
@@ -237,7 +239,7 @@ abstract class Strass_Controller_Action extends Zend_Controller_Action implement
     elseif ($metas->has('DC.Title')) {
       $parts[] = $metas->get('DC.Title');
     }
-    $parts = array_filter($parts);
+    $parts = array_reverse(array_filter($parts));
     $metas->set('DC.Title.alternative', join(' − ', $parts));
 
     if ($metas->has('DC.Subject'))
