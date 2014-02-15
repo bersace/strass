@@ -45,13 +45,6 @@ class Strass_Installer
 				     'rubrique' => null,
 				     ),
 		    'inscription' => array('scoutisme' => false, ),
-		    'menu' => array (array ('metas' => array ('label' => 'Accueil',),
-					    'url' => array ('controller' => '',),),
-				     array ('metas' => array ('label' => 'Livre d\'or', ),
-					    'url' => array ('controller' => 'livredor', ), ),
-				     array ( 'metas' => array ('label' => 'Liens', ),
-					     'url' => array ('controller' => 'liens', ), ),
-				     ),
 		    );
     $config = new Strass_Config_Php('strass', $config);
     $config->write();
