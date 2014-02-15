@@ -73,16 +73,23 @@ class Wtk_Table extends Wtk_Container
     $cclasses = $this->cclasses;
     $props = $column->getRenderer()->getProperties();
     $classes = array();
-    foreach($props as $prop)
+    foreach($props as $prop) {
+      if (is_array($prop))
+	continue;
+      if (!array_key_exists($prop, $this->model->columns))
+	continue;
       array_push($classes, wtk_strtoid($prop));
+    }
+    $classes = array_merge($classes, $column->flags);
     array_push($cclasses, $classes);
     $this->cclasses = $cclasses;
     return $column;
   }
 
-  function addNewColumn($title, $renderer)
+  function addNewColumn()
   {
-    $col = new Wtk_Table_Column($title, $renderer);
+    $args = func_get_args();
+    $col = wtk_new('Wtk_Table_Column', $args);
     $this->addColumn($col);
     return $col;
   }

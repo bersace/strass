@@ -2,8 +2,8 @@
 
 class Wtk_Table_Model implements Iterator, Countable
 {
-	protected	$columns;
-	protected	$rows;
+	public $columns;
+	public $rows;
 
 	// $columns est un tableau de clef=>valeur (chaîne ou null)
 	// ou une liste de clef.
