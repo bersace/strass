@@ -41,7 +41,7 @@ class LivredorController extends Strass_Controller_Action
 	$key = $t->insert($tuple);
 	$message = $t->findOne($key);
 
-	$this->logger->info("Nouveau message dans le livre d'or");
+	$this->logger->info("Nouveau message");
 
 	// signaler à l'admin qu'il faut modérer un nouveau message
 	// sur le livre d'or.
@@ -129,7 +129,7 @@ class LivredorController extends Strass_Controller_Action
 	$db = $t->getAdapter();
 	$db->beginTransaction();
 	try {
-	  $this->logger->info("Message de {$message->auteur} supprimé",
+	  $this->logger->warn("Message de {$message->auteur} supprimé",
 			      array('controller' => 'livredor', 'action' => 'index'));
 	  $message->delete();
 	  $db->commit();
