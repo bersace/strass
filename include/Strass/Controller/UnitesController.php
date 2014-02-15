@@ -456,18 +456,17 @@ class UnitesController extends Strass_Controller_Action
     $this->view->model = $m;
   }
 
-  function detruireAction()
+  function supprimerAction()
   {
-    $u = $this->_helper->Unite();
-    $this->assert(null, $u, 'detruire',
+    $this->view->unite = $u = $this->_helper->Unite();
+    $this->assert(null, $u, 'supprimer',
 		  "Vous n'avez pas le droit de détruire cette unité.");
 
     $this->metas(array('DC.Title' => 'Détruire '.$u->getFullname()));
 
-    $m = new Wtk_Form_Model('detruire');
+    $this->view->model = $m = new Wtk_Form_Model('supprimer');
     $m->addBool('confirmer',
-		"Je confirme la destruction de toute informations relative à l'unité ".
-		$u->getFullName().".", false);
+		"Je confirme la destruction de l'unité et de toutes ses données.", false);
     $m->addNewSubmission('continuer', 'Continuer');
 
     if ($m->validate()) {
@@ -477,9 +476,8 @@ class UnitesController extends Strass_Controller_Action
 	try {
 	  $nom = (string) $u;
 	  $u->delete();
-	  $this->_helper->Log("Desctruction de l'unité ".$nom, array('nom' => $nom),
-			      $this->_helper->Url('index', 'unites'),
-			      "Unités");
+	  $this->logger->warn("Desctruction de l'unité ".$nom,
+			      $this->_helper->Url('index', 'unites'));
 	  $db->commit();
 	  $this->redirectSimple('index', 'unites');
 	}
@@ -489,12 +487,8 @@ class UnitesController extends Strass_Controller_Action
 	}
       }
       else
-	$this->redirectSimple('index', 'unites', null,
-			      array('unite' => $u->id));
+	$this->redirectSimple('index', 'unites', null, array('unite' => $u->slug));
     }
-
-    $this->view->unite = $u;
-    $this->view->model = $m;
   }
 
   function nouveauxAction()

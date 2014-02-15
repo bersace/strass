@@ -97,7 +97,8 @@ td.numero
 
 @media screen {
     #document.fonder form,
-    #document.editer form
+    #document.editer form,
+    #document.supprimer form
     {
 	@include minipage;
     }
