@@ -55,11 +55,6 @@
     clear: both;
 }
 
-#index #effectifs td + td
-{
-    width: auto;
-}
-
 /* COLONNES */
 td.accr
 {
@@ -101,6 +96,10 @@ td.numero
 }
 
 @media screen {
+    #document.fonder form {
+	@include minipage;
+    }
+
     #effectifs > table.meute td.accr
     {
 	width: auto;

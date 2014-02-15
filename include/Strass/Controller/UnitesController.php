@@ -163,8 +163,14 @@ class UnitesController extends Strass_Controller_Action
     }
     else {
       $ttu = new TypesUnite;
-      $soustypes = $ttu->fetchAll();
+      $soustypes = $ttu->fetchAll($ttu->select()->where('virtuelle = 0'));
     }
+
+    $st = $soustypes->count() > 1 ? 'sous-unité' : $soustypes->rewind()->current();
+    if ($unite)
+      $this->metas(array('DC.Title' => 'Fonder une '.$st.' de '.$unite->getFullname()));
+    else
+      $this->metas(array('DC.Title' => 'Fonder une unité'));
 
     $ens = array();
     $enum = array();
@@ -173,11 +179,15 @@ class UnitesController extends Strass_Controller_Action
       if ($en)
 	array_push($ens, $en);
 
-      $enum[$type->id] = wtk_ucfirst($type->nom);
+      $label = wtk_ucfirst($type->nom);
+      /* en cas de nom doublon (ex: équipe, sizaine), inclure le nom du type parent */
+      $homonymes = $ttu->countRows($ttu->select()->where('nom = ?', $type->nom)) > 1;
+      if (!$unite && $homonymes)
+	$label.= ' (' .$type->findParentTypesUnite()->nom. ')';
+      $enum[$type->id] =  $label;
     }
     $ens = array_unique($ens);
     $types = $enum;
-
 
 
     $m = new Wtk_Form_Model('fonder');
@@ -206,7 +216,7 @@ class UnitesController extends Strass_Controller_Action
       $db = Zend_Registry::get('db');
       $db->beginTransaction();
       try {
-	$unites = new Unites();
+	$t = new Unites;
 
 	extract($m->get());
 	$data = array('slug' => wtk_strtoid($types[$type].'-'.$nom),
@@ -214,16 +224,14 @@ class UnitesController extends Strass_Controller_Action
 		      'type' => $type,
 		      'extra' => $extra,
 		      'parent' => $unite ? $unite->id : null);
-	$unites->insert($data);
+	$k = $t->insert($data);
+	$u = $t->findOne($k);
 
-	$u = $unites->findBySlug($data['slug']);
-	$this->_helper->Log("Nouvelle unité", array($u),
-			    $this->_helper->Url('index', 'unites', null,
-						array('unite' => $data['slug'])),
-			    (string) $u);
+	$this->logger->info("Nouvelle unité",
+			    $this->_helper->Url('index', 'unites', null, array('unite' => $u->slug)));
+
 	$db->commit();
-	$this->redirectSimple('index', 'unites', null,
-			      array('unite' => $data['slug']));
+	$this->redirectSimple('index', 'unites', null, array('unite' => $u->slug));
       }
       catch(Exception $e) {
 	$db->rollBack();
@@ -231,11 +239,6 @@ class UnitesController extends Strass_Controller_Action
       }
     }
 
-    $st = $soustypes->count() > 1 ? 'sous-unité' : $soustypes->rewind()->current();
-    if ($unite)
-      $this->metas(array('DC.Title' => 'Fonder une '.$st.' de '.$unite->getFullname()));
-    else
-      $this->metas(array('DC.Title' => 'Fonder une unité'));
     $this->view->model = $m;
   }
 
