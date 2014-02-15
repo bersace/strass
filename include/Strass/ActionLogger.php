@@ -5,11 +5,7 @@ class Strass_ActionLogger extends Strass_Logger
   function __construct($controller)
   {
     $this->controller = $controller;
-    $request = $controller->getRequest();
-    $name = strtolower(join('.', array($request->getModuleName(),
-					     $request->getControllerName(),
-					     $request->getActionName())));
-    parent::__construct($name);
+    parent::__construct($controller->getRequest()->getControllerName());
   }
 
   function log($level, $message, $url=null, $detail=null)
