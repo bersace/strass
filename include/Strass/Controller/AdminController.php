@@ -41,13 +41,6 @@ class AdminController extends Strass_Controller_Action
 	       $this->_helper->Url('inscriptions', 'membres'),
 	       $count, strass_admin_count_level($count, 1, 5));
 
-    $t = new Livredor;
-    $count = $t->countRows($t->select()->where('public = 0'));
-    $action = $count ? 'moderer' : 'index';
-    $m->append("Nouveaux messages du livre d'or",
-	       $this->_helper->Url($action, 'livredor'),
-	       $count, strass_admin_count_level($count, 1, 10));
-
     $t = new Unites;
     $count = $t->countRows($t->select());
     $m->append("Unités",
@@ -65,6 +58,14 @@ class AdminController extends Strass_Controller_Action
     $m->append("Membres",
 	       $this->_helper->Url('index', 'membres'),
 	       $count, 'good');
+
+    $t = new Livredor;
+    $count = $t->countRows($t->select()->where('public = 0'));
+    $action = $count ? 'moderer' : 'index';
+    $m->append("Nouveaux messages du livre d'or",
+	       $this->_helper->Url($action, 'livredor'),
+	       $count,
+	       strass_admin_count_level($count, 1, 10));
 
     $t = new Citation;
     $count = $t->countRows($t->select());
