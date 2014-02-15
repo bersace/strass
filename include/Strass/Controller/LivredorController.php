@@ -9,7 +9,7 @@ class LivredorController extends Strass_Controller_Action
   function indexAction()
   {
     $this->metas(array('DC.Title' => "Livre d'or",
-		       'DC.Subject' => 'livre,or'));
+		       'DC.Subject' => 'livre,or,guestbook'));
 
     /* Pour RSS et ATOM, on passe directement la table */
     $this->view->livredor = $t = new Livredor;
@@ -41,7 +41,7 @@ class LivredorController extends Strass_Controller_Action
 	$key = $t->insert($tuple);
 	$message = $t->findOne($key);
 
-	$this->logger->info("Nouveau message");
+	$this->logger->info("Nouveau message dans le livre d'or");
 
 	// signaler à l'admin qu'il faut modérer un nouveau message
 	// sur le livre d'or.

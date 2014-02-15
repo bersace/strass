@@ -4,9 +4,7 @@ class Strass_Pages_RendererCitation extends Strass_Pages_Renderer
 {
   function render($listid, $citation, $cont)
   {
-    $s = $cont->addSection()->addFlags('citation');
-    $s->addParagraph("« ".$citation->texte." »")->addFlags('citation');
-    $s->addParagraph($citation->auteur)->addFlags('signature');
+    $s = $cont->addChild($this->view->citation($citation));
 
     $resource = $citation->getTable();
     if (Zend_Registry::get('acl')->isAllowed(Zend_Registry::get('user'), $resource, 'admin')) {
@@ -24,7 +22,6 @@ class Strass_Pages_RendererCitation extends Strass_Pages_Renderer
   }
 }
 
-$this->document->addStyleComponents('signature');
 $renderer = new Strass_Pages_RendererCitation($this, $this->url(array('page' => '%i')),
 					      true, Strass_Pages_Renderer::$feminin);
 $this->document->addPages(null, $this->model, $renderer);
