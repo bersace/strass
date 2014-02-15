@@ -16,8 +16,8 @@ class Strass_Migrate
 
   function migrate()
   {
-    $current = Strass_Version::current();
-    $strass = Strass_Version::VERSION;
+    $current = Strass_Version::dataCurrent();
+    $strass = Strass_Version::DATA;
 
     if ($strass == $current) {
       error_log("Installation à jour de la version ".$current." !");
