@@ -46,16 +46,20 @@ class Strass_Controller_Action_Helper_Unite extends Zend_Controller_Action_Helpe
     /* hiérarchie des unités */
     $controller = $this->getRequest()->getParam('controller');
     $action = $this->getRequest()->getParam('action');
+    $us = array();
     $u = $unite;
     while ($u) {
-      $this->_actionController->branche->insert(1,
-						wtk_ucfirst($u->getName()),
+      array_unshift($us, $u);
+      $u = $u->findParentUnites();
+    }
+
+    foreach($us as $u) {
+      $this->_actionController->branche->append(wtk_ucfirst($u->getName()),
 						array('controller' => $controller,
 						      'action' => $action,
 						      'unite' => $u->slug),
 						array(),
 						true);
-      $u = $u->findParentUnites();
     }
 
     // CONNEXES
