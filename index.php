@@ -60,10 +60,16 @@ try {
   Zend_Session::writeClose();
 }
 catch (Exception $e) {
+  try {
+    Zend_Registry::get('logger')->error($e->getMessage(), null, print_r($e, true));
+  }
+  catch (Exception $e) {}
+
   // affichage complet des exceptions non intercepté par le controlleur. À améliorer.
   $msg = ":(\n\n";
   $msg.= $e->getMessage()."\n\n";
   $msg.= " à ".$e->getFile().":".$e->getLine()."\n\n";
   $msg.= str_replace ('#', '<br/>#', $e->getTraceAsString())."\n";
+  error_log($e->getMessage());
   Orror::kill(strip_tags($msg));
 }
