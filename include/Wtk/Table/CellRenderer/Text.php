@@ -2,8 +2,8 @@
 
 class Wtk_Table_CellRenderer_Text extends Wtk_Table_CellRenderer
 {
-	protected $properties = array ('text' => '',
-				       'wiki' => '');
+	public $properties = array ('text' => '',
+				    'wiki' => '');
 
 	function element($data)
 	{

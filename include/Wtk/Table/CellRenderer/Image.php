@@ -2,7 +2,7 @@
 
 class Wtk_Table_CellRenderer_Image extends Wtk_Table_CellRenderer
 {
-  protected $properties = array ('url' => null,
+  public $properties = array ('url' => null,
 				 'alt' => null,
 				 'title' => null,
 				 'width' => null,

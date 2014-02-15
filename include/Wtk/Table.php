@@ -71,7 +71,11 @@ class Wtk_Table extends Wtk_Container
     $this->columns = $cols;
 
     $cclasses = $this->cclasses;
-    array_push($cclasses, $column->getRenderer()->getProperties());
+    $props = $column->getRenderer()->getProperties();
+    $classes = array();
+    foreach($props as $prop)
+      array_push($classes, wtk_strtoid($prop));
+    array_push($cclasses, $classes);
     $this->cclasses = $cclasses;
     return $column;
   }

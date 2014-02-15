@@ -2,9 +2,9 @@
 
 class Wtk_Table_CellRenderer_Link extends Wtk_Table_CellRenderer
 {
-  protected $properties = array ('href' => '',
-				 'label' => '',
-				 'flags' => '');
+  public $properties = array ('href' => '',
+			      'label' => '',
+			      'flags' => '');
   protected	$urlFormat = '%s';
 
   function setUrlFormat($format)

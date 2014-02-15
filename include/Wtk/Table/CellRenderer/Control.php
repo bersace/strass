@@ -2,7 +2,7 @@
 
 class Wtk_Table_CellRenderer_Control extends Wtk_Table_CellRenderer
 {
-	protected $properties = array ('instance' => '');
+	public $properties = array ('instance' => '');
 
 	protected $args = array();
 	protected $class;

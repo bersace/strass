@@ -1,4 +1,4 @@
-<table<?php wtk_id_classes ($id, $flags, $dojoType); ?>>
+<table<?php wtk_id_classes ($id, $flags, $dojoType, $tooltip); ?>>
 <?php if ($show_header): ?>
 <thead>
 <tr>

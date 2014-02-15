@@ -2,8 +2,8 @@
 
 abstract class Wtk_Table_CellRenderer
 {
-  protected $properties = array();
-  protected $keys;
+  public $properties = array();
+  public $keys = array();
 
   /*
    * Les arguments du constructeur sont l'ensemble de couple
@@ -13,7 +13,6 @@ abstract class Wtk_Table_CellRenderer
   function __construct ($prop = null, $key = null)
   {
     $args = func_get_args();
-    $this->keys = array();
     for ($i = 0; $i < count ($args); $i+=2) {
       $this->keys[$args[$i]] = $args[$i+1];
     }
