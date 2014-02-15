@@ -44,11 +44,18 @@ abstract class Wtk_Table_CellRenderer
       if (is_array($keys)) {
 	$data[$prop] = array();
 	foreach ($keys as $key) {
-	  $data[$prop][] = $tuple[$key];
+	  if (array_key_exists($key, $tuple))
+	    $data[$prop][] = $tuple[$key];
+	  else /* permettre de passer directement des valeurs */
+	    $data[$prop][] = $key;
 	}
       }
       else {
-	$data[$prop] = $tuple[$keys];
+	$key = $keys;
+	if (array_key_exists($key, $tuple))
+	  $data[$prop] = $tuple[$key];
+	else /* permettre de passer directement des valeurs */
+	  $data[$prop] = $key;
       }
     }
     return $data;
