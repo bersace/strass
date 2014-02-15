@@ -158,7 +158,7 @@ class Strass_Controller_Plugin_Auth extends Zend_Controller_Plugin_Abstract
     if ($username) {
       $t = new Users();
       $user = $t->findByUsername($username);
-      $user->last_login = time();
+      $user->last_login = new Zend_Db_Expr('CURRENT_TIMESTAMP');
       $user->save();
     }
 
