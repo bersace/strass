@@ -16,7 +16,7 @@ class Strass_Addon_Liens extends Strass_Addon implements Iterator, Countable
     $this->titre = $titre;
   }
 
-  protected function lien($metas, array $urlOptions = array(), array $acl = array(), $reset = false)
+  protected function lien($metas = null, array $urlOptions = array(), array $acl = array(), $reset = false)
   {
     if ($acl && $acl[0] == null)
       $acl[0] = Zend_Registry::get('user');
@@ -36,7 +36,7 @@ class Strass_Addon_Liens extends Strass_Addon implements Iterator, Countable
 		 'reset' => $reset);
   }
 
-  function append($metas, array $urlOptions = array(), array $acl = array(), $reset = false)
+  function append($metas = null, array $urlOptions = array(), array $acl = array(), $reset = false)
   {
     if ($lien = $this->lien($metas, $urlOptions, $acl, $reset))
       $this->liens[] = $lien;
@@ -46,7 +46,7 @@ class Strass_Addon_Liens extends Strass_Addon implements Iterator, Countable
    * Insert un lien à la position $pos. Si $pos est négatif, la
    * position est compté à partir de la fin.
    */
-  function insert($pos, $metas, array $urlOptions = array(), array $acl = array(), $reset = false)
+  function insert($pos, $metas = null, array $urlOptions = array(), array $acl = array(), $reset = false)
   {
     $count = count($this->liens);
     if (!$lien = $this->lien($metas, $urlOptions, $acl, $reset))

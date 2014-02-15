@@ -47,6 +47,8 @@ abstract class Strass_Controller_Action extends Zend_Controller_Action implement
 								'DC.Date.available'	=> strftime('%Y-%m-%d'),
 								'organization'	=> $metas->organization,
 								'site' => $site)));
+      Zend_Registry::set('page', $page);
+
       $page->addon(new Strass_Addon_Menu);
       $this->branche = $page->addon(new Strass_Addon_Branche);
       $page->addon(new Strass_Addon_Navigateurs);
@@ -64,7 +66,6 @@ abstract class Strass_Controller_Action extends Zend_Controller_Action implement
 			       array('controller' => strtolower($this->_request->getControllerName())),
 			       array(), true);
 
-      Zend_Registry::set('page', $page);
       return $page;
     }
   }
