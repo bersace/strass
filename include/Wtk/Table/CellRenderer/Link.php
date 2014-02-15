@@ -14,8 +14,12 @@ class Wtk_Table_CellRenderer_Link extends Wtk_Table_CellRenderer
 
   function element($data)
   {
-    $link = new Wtk_Link (sprintf($this->urlFormat, $data['href']), $data['label']);
-    $link->addFlags($data['flags']);
-    return $link;
+    $href = $data['href'];
+    if ($href) {
+      $link = new Wtk_Link(sprintf($this->urlFormat, $href), $data['label']);
+      return $link->addFlags($data['flags']);
+    }
+    else
+      return new Wtk_RawText($data['label']);
   }
 }
