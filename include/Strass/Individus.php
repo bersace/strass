@@ -380,7 +380,7 @@ class Appartient extends Strass_Db_Table_Row_Abstract implements Zend_Acl_Role_I
 
 class Inscriptions extends Strass_Db_Table_Abstract implements Zend_Acl_Resource_Interface
 {
-  protected	$_name		= 'inscriptions';
+  protected	$_name		= 'inscription';
 
   function __construct()
   {
