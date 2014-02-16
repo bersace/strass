@@ -3,6 +3,11 @@
 @import "common";
 
 .admin {
+
+    &.parametres form {
+	@include minipage;
+    }
+
     &.index {
 	h2
 	{

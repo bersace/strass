@@ -59,7 +59,7 @@ abstract class Strass_Controller_Action extends Zend_Controller_Action implement
       $page->addon(new Strass_Addon_Citation);
 
       if ($config->system->short_title)
-	$this->branche->append($label, array(), array(), true);
+	$this->branche->append($config->system->short_title, array(), array(), true);
 
       if (!$this instanceof Strass_Controller_ErrorController)
 	$this->branche->append($this->_titreBranche,

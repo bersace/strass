@@ -119,6 +119,39 @@ class AdminController extends Strass_Controller_Action
   {
     $this->metas(array('DC.Title' => 'Paramètres'));
     $this->branche->append();
+
+    $config = Zend_Registry::get('config');
+    $this->view->model = $m = new Wtk_Form_Model('parametres');
+    $g = $m->addGroup('metas', "Informations");
+    $g->addString('title', 'Titre', $config->metas->title);
+    $g->addString('short_title', 'Titre court', $config->system->short_title);
+    $g->addString('subject', 'Mots clefs', $config->metas->subject);
+    $g->addString('author', 'Créateur du site', $config->metas->author);
+    $g->addInteger('creation', 'Date de création du site', $config->metas->creation);
+
+    $g = $m->addGroup('system', 'Système');
+    $g->addString('id', 'Identifiant du site', $config->system->id);
+    $enum = array();
+    foreach(Wtk_Document_Style::listAvailables() as $style) {
+      $enum[$style->id] = $style->title;
+    }
+    $g->addEnum('style', 'Style', $config->system->style, $enum);
+    $g->addString('admin', 'E-mail système', $config->system->admin);
+    $g = $g->addGroup('mail');
+    $i0 = $g->addBool('enable', 'Envoyer les mails', $config->system->mail->enable);
+    $i1 = $g->addString('smtp', 'Serveur SMTP', $config->system->mail->smtp);
+    $m->addConstraintDepends($i1, $i0);
+    $m->addNewSubmission('enregistrer', 'Enregistrer');
+
+    if ($m->validate()) {
+      $new = new Strass_Config_Php('strass', $m->get());
+      $new->system->short_title = $new->metas->short_title;
+      unset($new->metas->short_title);
+      $config->merge($new);
+      $config->write();
+      $this->logger->warn("Configuration mise-à-jour");
+      $this->redirectSimple('index');
+    }
   }
 
   function unitesAction()
