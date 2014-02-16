@@ -18,12 +18,13 @@ abstract class Strass_Format_Wtk extends Strass_Format
     $view = $controller->view;
     $document = new Wtk_Document($view->page->metas);
     $document->addFlags($mn, $cn, $an);
-    $document->setStyle(new Wtk_Document_Style($config->system->style, 'data/styles/'));
+    $document->setStyle(new Wtk_Document_Style($config->get('system/style', 'strass'), 'data/styles/'));
     $document->addStyleComponents('layout', $cn, $an, $mn);
 
-    $document->addFlags($config->system->association);
-    $document->header->addFlags($config->system->association);
-    $document->footer->addFlags($config->system->association);
+    $mouvement = $config->get('system/mouvement');
+    $document->addFlags($mouvement);
+    $document->header->addFlags($mouvement);
+    $document->footer->addFlags($mouvement);
 
     $link = new Wtk_Link('/', $view->page->metas->site);
     $document->header->setTitle($link);
