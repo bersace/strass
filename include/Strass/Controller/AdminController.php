@@ -115,6 +115,12 @@ class AdminController extends Strass_Controller_Action
     }
   }
 
+  function parametresAction()
+  {
+    $this->metas(array('DC.Title' => 'Paramètres'));
+    $this->branche->append();
+  }
+
   function unitesAction()
   {
     $this->metas(array('DC.Title' => 'Les unités'));
