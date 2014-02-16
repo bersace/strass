@@ -58,7 +58,7 @@ class AdminController extends Strass_Controller_Action
     $t = new Users;
     $count = $t->countRows($t->select());
     $m->append("Membres",
-	       $this->_helper->Url('index', 'membres'),
+	       $this->_helper->Url('membres'),
 	       $count, 'notice');
 
     $t = new Livredor;
