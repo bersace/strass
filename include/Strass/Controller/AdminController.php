@@ -30,13 +30,13 @@ class AdminController extends Strass_Controller_Action
     $this->actions->append("Paramètres", array('action' => 'parametres'));
 
     $this->view->indicateurs = $m = new Wtk_Table_Model('label', 'url', 'compteur', 'level');
-
-    $m->append('Version', null, Strass_Version::PROJET, array('version-produit', 'good'));
+    $config = Zend_Registry::get('config');
+    $m->append('Version', null, Strass_Version::PROJET, array('version-produit', 'notice'));
     $m->append('Version des données', null, Strass_Version::dataCurrent(),
 	       array('version-data',
 		     strass_admin_count_level(Strass_Version::DATA - Strass_Version::dataCurrent(),
 					      1, 1)));
-
+    $m->append('Mouvement', null, strtoupper($config->site->association), 'notice');
     $t = new Inscriptions;
     $count = $t->countRows($t->select());
     $m->append("Inscriptions à valider",
@@ -53,13 +53,13 @@ class AdminController extends Strass_Controller_Action
     $count = $t->countRows($t->select());
     $m->append("Fiches d'individu",
 	       $this->_helper->Url('individus'),
-	       $count, 'good');
+	       $count, 'notice');
 
     $t = new Users;
     $count = $t->countRows($t->select());
     $m->append("Membres",
 	       $this->_helper->Url('index', 'membres'),
-	       $count, 'good');
+	       $count, 'notice');
 
     $t = new Livredor;
     $count = $t->countRows($t->select()->where('public = 0'));
@@ -79,7 +79,7 @@ class AdminController extends Strass_Controller_Action
 		  l'activer, il faut rentrer une citation. On accède
 		  ensuite aux autres citations depuis la barre
 		  latérale. */
-	       $count, 'good');
+	       $count, 'notice');
 
     $this->view->log = $m = new Wtk_Table_Model('date', 'level', 'logger', 'label', 'url',
 						'prenom-nom', 'fiche');
