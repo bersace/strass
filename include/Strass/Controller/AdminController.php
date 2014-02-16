@@ -14,6 +14,8 @@ function strass_admin_count_level($count, $warn, $critical)
 
 class AdminController extends Strass_Controller_Action
 {
+  public $_titreBranche = 'Administration';
+
   function init()
   {
     parent::init();
@@ -116,8 +118,8 @@ class AdminController extends Strass_Controller_Action
   function unitesAction()
   {
     $this->metas(array('DC.Title' => 'Les unités'));
-
-    $this->actions->append(array('label' => "Fonder"),
+    $this->branche->append();
+    $this->actions->append("Fonder",
 			   array('action' => 'fonder',
 				 'controller' => 'unites'));
 
