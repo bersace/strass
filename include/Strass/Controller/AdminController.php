@@ -36,7 +36,7 @@ class AdminController extends Strass_Controller_Action
 	       array('version-data',
 		     strass_admin_count_level(Strass_Version::DATA - Strass_Version::dataCurrent(),
 					      1, 1)));
-    $m->append('Mouvement', null, strtoupper($config->site->association), 'notice');
+    $m->append('Mouvement', null, strtoupper($config->system->mouvement), 'notice');
     $t = new Inscriptions;
     $count = $t->countRows($t->select());
     $m->append("Inscriptions à valider",
