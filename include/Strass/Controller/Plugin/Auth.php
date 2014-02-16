@@ -87,7 +87,7 @@ class Strass_Controller_Plugin_Auth extends Zend_Controller_Plugin_Abstract
       if ($im->validate()) {
 	$username = $im->username;
 	// Regénérer le digest à partir du username original
-	$config = new Strass_Config_Php('strass');
+	$config = Zend_Registry::get('config');
 	$this->db->setIdentity(array('username' => $username, 'realm' => $config->site->realm));
 	$this->db->setCredential($im->password);
 	$result = $auth->authenticate($this->db);

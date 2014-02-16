@@ -143,7 +143,7 @@ class JournauxController extends Strass_Controller_Action
     $this->view->articles = $j->findArticles($s);
     $this->view->current = $p;
 
-    $config = new Strass_Config_Php('strass');
+    $config = Zend_Registry::get('config');
 
     // ÉDITORIAL
     $this->view->editorial = $e = $j->findEditorial($config->site->rubrique);

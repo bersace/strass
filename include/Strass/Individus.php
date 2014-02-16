@@ -412,7 +412,7 @@ class Users extends Strass_Db_Table_Abstract
   static function hashPassword($username, $password) {
     /* Free suffixe le realm par l'UID. On doit donc générer le
        hash avec le suffixe pour que ça corresponde. */
-    $config = new Strass_Config_Php('strass');
+    $config = Zend_Registry::get('config');
     return hash('md5', $username.':'.$config->site->realm.$config->site->realm_suffix.':'.$password);
   }
 
@@ -492,7 +492,7 @@ class User extends Strass_Db_Table_Row_Abstract implements Zend_Acl_Role_Interfa
   }
 
   function getIdentity() {
-    $config = new Strass_Config_Php('strass');
+    $config = Zend_Registry::get('config');
     return array('username' => $this->username, 'realm' => $config->realm);
   }
 }

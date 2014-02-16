@@ -18,7 +18,7 @@ class Strass_Mail_Recover extends Strass_Mail
 				   'confirmer' => $this->user->recover_token));
     $url = "http://".$request->getServer('HTTP_HOST').$url;
     $individu = $this->user->findParentIndividus();
-    $config = new Strass_Config_Php('strass');
+    $config = Zend_Registry::get('config');
 
     $this->_doc->addText(<<<EOS
 
