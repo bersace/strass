@@ -45,7 +45,6 @@ class Strass_Controller_Plugin_Auth extends Zend_Controller_Plugin_Abstract
     Zend_Registry::set('login_model', $m);
 
     $m = new Wtk_Form_Model('logout');
-    $m->addBool('logout', "Déconnecter", TRUE);
     $m->addNewSubmission('logout', "Déconnecter");
     Zend_Registry::set('logout_model', $m);
 
