@@ -30,10 +30,12 @@ class Strass_Addon_Liens extends Strass_Addon implements Iterator, Countable
     if (!is_array($metas))
       $metas = array('label' => $metas);
 
+
     return array('metas' => $metas,
 		 'urlOptions' => $urlOptions,
 		 'acl' => $acl,
-		 'reset' => $reset);
+		 'reset' => $reset,
+		 'flags' => array());
   }
 
   function append($metas = null, array $urlOptions = array(), array $acl = array(), $reset = false)
@@ -68,13 +70,22 @@ class Strass_Addon_Liens extends Strass_Addon implements Iterator, Countable
   function initView ($view)
   {
     $acl = Zend_Registry::get('acl');
+    $user = Zend_Registry::get('user');
+
+    $view->parent = $view->addons;
     $view->liens = array();
     $view->id = $this->id;
     $view->titre = $this->titre;
+
     foreach($this->liens as $lien) {
-      if (!$lien['acl'] || call_user_func_array(array($acl, 'isAllowed'), $lien['acl'])) {
-	$view->liens[] = $lien;
+      if (array_key_exists('acl', $lien) && $lien['acl']) {
+	list($role, $resource, $action) = $lien['acl'];
+	if (!$role) $role = $user;
+	if (!$acl->isAllowed($role, $resource, $action))
+	  continue;
       }
+
+      $view->liens[] = $lien;
     }
   }
 

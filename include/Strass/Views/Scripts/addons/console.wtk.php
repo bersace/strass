@@ -37,6 +37,5 @@ else {
   }
 
   $f = $s->addForm($this->auth_logout_model);
-  $f->addHidden('logout');
   $f->addForm_ButtonBox()->addForm_Submit($this->auth_logout_model->getSubmission('logout'));
 }

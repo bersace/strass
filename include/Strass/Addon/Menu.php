@@ -2,7 +2,7 @@
 
 require_once 'Strass/Addon.php';
 
-class Strass_Addon_Menu extends Strass_Addon
+class Strass_Addon_Menu extends Strass_Addon_Liens
 {
   static $menu = array (array('metas' => array('label' => 'Accueil'),
 			      'url'   => array('controller' => 'index')),
@@ -15,21 +15,18 @@ class Strass_Addon_Menu extends Strass_Addon
 			      'acl'   => array(null, 'site', 'admin')),
 			);
 
+  function __construct()
+  {
+    parent::__construct('menu', 'Menu');
+  }
+
   public function initView($view)
   {
-    $acl = Zend_Registry::get('acl');
-    $user = Zend_Registry::get('user');
-
-    $m = array();
     foreach (self::$menu as $item) {
-      if (array_key_exists('acl', $item)) {
-	list($role, $resource, $action) = $item['acl'];
-	if (!$role) $role = $user;
-	if (!$acl->isAllowed($role, $resource, $action))
-	  continue;
-      }
-      $m[] = $item;
+      $acl = array_key_exists('acl', $item) ? $item['acl'] : array();
+      $this->append($item['metas'], $item['url'], $acl, true);
     }
-    $view->menu = $m;
+
+    return parent::initView($view);
   }
 }
