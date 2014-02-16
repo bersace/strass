@@ -51,8 +51,7 @@ class Wtk_Form_Model_Instance_Group extends Wtk_Form_Model_Instance implements I
 			}
 		}
 		else {
-			$var = NULL;
-			return $var;
+		  throw new Exception("Child ".$path." not found");
 		}
 	}
 
@@ -72,7 +71,7 @@ class Wtk_Form_Model_Instance_Group extends Wtk_Form_Model_Instance implements I
 		if ($path) {
 			return $this->getChild($path)->get();
 		}
-	      
+
 		$values = array ();
 		foreach ($this->value as $id => $child) {
 			if ($id !== '$$validated$$') { // needs !== otherwise '0' is swallowed.

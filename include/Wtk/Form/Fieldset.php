@@ -20,13 +20,15 @@ class Wtk_Form_Fieldset extends Wtk_Container {
 		$form = $this->getParent('Wtk_Form');
 		$model = $form->getModel();
 
-		if ($i = $model->getInstance($this->title)) {
-			$this->title = $i->caption;
-			$this->prefix = $i->path;
-			$this->setId(wtk_strtoid($this->prefix));
+		try {
+		  $i = $model->getInstance($this->title);
+		  $this->title = $i->label;
+		  $this->prefix = $i->path;
+		  $this->setId(wtk_strtoid($this->prefix));
 		}
-		else
-			$this->setId(wtk_strtoid($this->title));
+		catch (Exception $e) {
+		  $this->setId(wtk_strtoid($this->title));
+		}
 
 		$this->title = new Wtk_Inline($this->title);
 		$this->_finalizeChildren();
@@ -42,9 +44,8 @@ class Wtk_Form_Fieldset extends Wtk_Container {
 			return parent::addChild($wid);
 		}
 		else {
-			$wid =
-				call_user_func_array(array ($this->getParent('Wtk_Form'),
-							    'addChild'), $args);
+			$wid = call_user_func_array(array($this->getParent('Wtk_Form'),
+							  'addChild'), $args);
 			$wid->reparent($this);
 		}
 	}
@@ -52,6 +53,16 @@ class Wtk_Form_Fieldset extends Wtk_Container {
 	function __call($method, $args)
 	{
 		$form = $this->getParent('Wtk_Form');
+		$model = $form->getModel();
+
+		/* Tenter de résoudre le chemin relativement au groupe */
+		$path = $args[0];
+		try {
+		  $instance = $model->getInstance($this->title . '/' . $path);
+		  $args[0] = $instance;
+		}
+		catch (Exception $e) {}
+
 		$cb = array($form, $method);
 		$el = call_user_func_array($cb, $args);
 		$el->reparent($this);
@@ -68,5 +79,3 @@ class Wtk_Form_Fieldset extends Wtk_Container {
 		return $tpl;
 	}
   }
-
-

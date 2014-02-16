@@ -5,7 +5,7 @@
    * Wtk_Form are inspired by XForm specs. It is designed to allow both
    * output as x?html and xform. Wtk_Form is the root element of the
    * form.
-   * 
+   *
    */
 class Wtk_Form extends Wtk_Container {
 	protected $errors;
@@ -62,10 +62,15 @@ class Wtk_Form extends Wtk_Container {
 		if (!@class_exists($class)) {
 			return parent::__call($method, $args);
 		}
-        
+
 		$instance = $i = array_shift($args);
 		if (is_string($instance)) {
-			$instance = $this->model->getInstance($instance);
+		  try {
+		    $instance = $this->model->getInstance($instance);
+		  }
+		  catch (Exception $e) {
+		    $instance = null;
+		  }
 		}
 
 		if (!$instance) {
@@ -97,4 +102,3 @@ class Wtk_Form extends Wtk_Container {
 		return $tpl;
 	}
   }
-
