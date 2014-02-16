@@ -5,7 +5,7 @@ abstract class Strass_Views_PagesRenderer_Historique extends Wtk_Pages_Renderer
   function __construct($view)
   {
     $this->view = $view;
-    parent::__construct($view->url(array('unite' => $view->unite->id,
+    parent::__construct($view->url(array('unite' => $view->unite->slug,
 					 'annee' => '%i')),
 			true, null);
   }
