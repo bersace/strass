@@ -2,7 +2,7 @@
 
 require_once 'Individus.php';
 
-class Logs extends Zend_Db_Table_Abstract implements Zend_Acl_Resource_Interface
+class Logs extends Strass_Db_Table_Abstract implements Zend_Acl_Resource_Interface
 {
   const LEVEL_INFO = 'INFO';
   const LEVEL_WARNING = 'WARNING';
