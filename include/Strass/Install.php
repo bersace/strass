@@ -1,9 +1,6 @@
 <?php
 
-$config = new Strass_Config_Php('strass',
-			      array('site' => array('style' => 'strass',
-						    'metas' => array('title' => 'Strass'))));
-Zend_Registry::set('config', $config);
+Zend_Registry::set('config', new Strass_Config_Php('strass', array()));
 Zend_Registry::set('acl', new Strass_Installer_FakeAcl);
 
 try {
