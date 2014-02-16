@@ -121,7 +121,7 @@ abstract class Wtk_Element
 		return $this;
 	}
 
-	function addFlags($flag)
+	function addFlags($flag = null)
 	{
 		$flags = func_get_args();
 		foreach($flags as $flag) {
