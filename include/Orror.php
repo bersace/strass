@@ -160,7 +160,7 @@ class Orror {
 	$msg.= "\n";
 	break;
       default:
-	$data = print_r($data, true);
+	$data = var_dump($data, true);
 	if (Orror::$html)
 	  $data = htmlspecialchars($data);
 	$msg.= $data."\n";
