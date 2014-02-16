@@ -24,7 +24,7 @@ foreach ($this->errors as $i => $error) {
     if (Zend_Registry::get('user')) {
       $config = new Strass_Config_Php('strass');
       $section->addText("Si vous devriez avoir accès au site, ".
-			"[mailto:".$config->site->admin." contactez le webmestre].");
+			"[mailto:".$config->system->admin." contactez le webmestre].");
     }
     else {
       $section->addParagraph("Si vous êtes inscrit, identifiez-vous. Sinon, ",

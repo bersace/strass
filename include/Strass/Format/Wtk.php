@@ -7,6 +7,8 @@ abstract class Strass_Format_Wtk extends Strass_Format
 
   function _preRender($controller)
   {
+    $config = Zend_Registry::get('config');
+
     /* création du document, widget racine */
     $request = $controller->getRequest();
     $cn = strtolower($request->getControllerName());
@@ -16,14 +18,12 @@ abstract class Strass_Format_Wtk extends Strass_Format
     $view = $controller->view;
     $document = new Wtk_Document($view->page->metas);
     $document->addFlags($mn, $cn, $an);
-    $config = Zend_Registry::get('config');
-    $site = $config->site;
-    $document->setStyle(new Wtk_Document_Style($site->style, 'data/styles/'));
+    $document->setStyle(new Wtk_Document_Style($config->system->style, 'data/styles/'));
     $document->addStyleComponents('layout', $cn, $an, $mn);
 
-    $document->addFlags($site->association);
-    $document->header->addFlags($site->association);
-    $document->footer->addFlags($site->association);
+    $document->addFlags($config->system->association);
+    $document->header->addFlags($config->system->association);
+    $document->footer->addFlags($config->system->association);
 
     $link = new Wtk_Link('/', $view->page->metas->site);
     $document->header->setTitle($link);

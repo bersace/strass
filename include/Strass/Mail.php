@@ -9,21 +9,21 @@ class Strass_Mail extends Zend_Mail
   {
     parent::__construct('utf-8');
 
-    $site = Zend_Registry::get('config')->site;
+    $config = Zend_Registry::get('config');
 
     if (is_string($metas)) {
       $title = $metas;
-      $metas = $site->metas->toArray();
+      $metas = $config->metas->toArray();
       $metas['title'] = $title;
       $metas = new Wtk_Metas($metas);
     }
 
-    $title = "[".$site->id."] ".$metas->title;
+    $title = "[".$config->system->id."] ".$metas->title;
     $this->setSubject($title);
 
     $this->_doc = $d = new Wtk_Document($metas);
     $d->addStyleComponents('mail');
-    $d->setStyle(new Wtk_Document_Style($site->style));
+    $d->setStyle(new Wtk_Document_Style($config->style));
     $d->embedStyle();
     $d->addFlags('mail');
 
@@ -62,9 +62,9 @@ class Strass_Mail extends Zend_Mail
       $this->_headers['Bcc'] = array();
     }
 
-    $site = Zend_Registry::get('config')->site;
+    $config = Zend_Registry::get('config');
 
-    if (!$site->mail->enable) {
+    if (!$config->system->mail->enable) {
       return true;
     }
 
@@ -75,19 +75,19 @@ class Strass_Mail extends Zend_Mail
 
     // assure que le courriel est bien envoyé à l'admin,
     // pour archivage.
-    if (!isset($this->_recipients[$site->admin])) {
+    if (!isset($this->_recipients[$config->system->admin])) {
       if (empty($this->_to))
-	$this->addTo($site->admin, $site->short_title);
+	$this->addTo($config->system->admin, $config->system->short_title);
       else
-	$this->addBcc($site->admin, $site->short_title);
+	$this->addBcc($config->system->admin, $config->system->short_title);
     }
 
-    // assure l'existence d'un expéditeur, par défaut le site.
+    // assure l'existence d'un expéditeur, par défaut le config.
     if (!isset($this->_headers['From']))
-      $this->setFrom($site->admin, $site->short_title);
+      $this->setFrom($config->system->admin, $config->system->short_title);
 
 
-    $smtp = $local ? 'smtp.free.fr' : $site->mail->smtp;
+    $smtp = $local ? 'smtp.free.fr' : $config->system->mail->smtp;
 
     if ($smtp)
       parent::send(new Zend_Mail_Transport_Smtp($smtp));

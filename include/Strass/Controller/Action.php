@@ -24,7 +24,7 @@ abstract class Strass_Controller_Action extends Zend_Controller_Action implement
       $config = Zend_Registry::get('config');
 
       /* instanciation de la page courante */
-      $metas = $config->site->metas;
+      $metas = $config->metas;
       if ($metas->title) {
 	$site = $metas->title;
       }
@@ -58,7 +58,7 @@ abstract class Strass_Controller_Action extends Zend_Controller_Action implement
       $page->addon(new Strass_Addon_Console($this->_helper->Auth));
       $page->addon(new Strass_Addon_Citation);
 
-      if ($config->short_title)
+      if ($config->system->short_title)
 	$this->branche->append($label, array(), array(), true);
 
       if (!$this instanceof Strass_Controller_ErrorController)

@@ -28,7 +28,7 @@ class Strass_Controller_Plugin_Auth extends Zend_Controller_Plugin_Abstract
 
     $config = Zend_Registry::get('config');
     try {
-      $lifetime = $config->site->duree_connexion;
+      $lifetime = $config->system->duree_connexion;
       Zend_Session::rememberMe($lifetime);
       Zend_Session::setOptions(array('cookie_path'	=> '/',
 				     'cookie_lifetime'=> $lifetime,
@@ -58,9 +58,9 @@ class Strass_Controller_Plugin_Auth extends Zend_Controller_Plugin_Abstract
 
     // HTTP_AUTH
     $config = array('accept_schemes' => 'digest',
-		    'realm'	     => $config->site->realm,
+		    'realm'	     => $config->system->realm,
 		    'digest_domains' => '/',
-		    'nonce_timeout'  => $config->site->duree_connexion);
+		    'nonce_timeout'  => $config->system->duree_connexion);
 
     $this->http = new Zend_Auth_Adapter_Http($config);
 
