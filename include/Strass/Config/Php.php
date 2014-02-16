@@ -25,11 +25,15 @@ class Strass_Config_Php extends Zend_Config
     $this->filename = $this->basedir.$name.'.php';
 
     if ($config === null) {
-      $config = @include $this->filename;
-
-      if (!is_array($config)) {
-	$config = array();
+      if (file_exists($this->filename)) {
+	/* Ne pas utiliser include, car le cache d'include fausse
+	   certains cas, notamment à l'installation. */
+	$php = str_replace('<?php', '', file_get_contents($this->filename));
+	$config = eval($php);
       }
+
+      if (!is_array($config))
+	$config = array();
     }
 
     parent::__construct ($config, true);
@@ -50,5 +54,21 @@ class Strass_Config_Php extends Zend_Config
     file_put_contents($this->filename,
 		      "<?php\n".
 		      "return ".var_export($this->toArray(), true).";\n");
+  }
+
+  public function get($name, $default=null)
+  {
+    $parts = split('/', $name);
+    $leaf = array_pop($parts);
+    $node = $this;
+
+    foreach($parts as $part) {
+      $node = parent::get($part, new self(null, array()));
+    }
+
+    if ($node === $this)
+      return parent::get($leaf, $default);
+    else
+      return $node->get($leaf, $default);
   }
 }
