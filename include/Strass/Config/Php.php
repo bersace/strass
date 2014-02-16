@@ -58,7 +58,7 @@ class Strass_Config_Php extends Zend_Config
 
   public function get($name, $default=null)
   {
-    $parts = split('/', $name);
+    $parts = explode('/', $name);
     $leaf = array_pop($parts);
     $node = $this;
 
