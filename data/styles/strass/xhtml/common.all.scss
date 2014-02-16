@@ -65,15 +65,6 @@ ul
   margin-left: 1em;
   }
 
-#footer
-{
-  color: #AAA;
-  }
-
-img
-{
-  }
-
 
 *:hover > ul.adminlinks {
     visibility: visible;
@@ -138,35 +129,35 @@ ul.adminlinks {
     {
 	background-repeat: no-repeat;
 	background-position: 96% center;
-    }
 
-    #header.suf
-    {
-	background-image: url("mouvements/suf.png");
-    }
+	&.suf
+	{
+	    background-image: url("mouvements/suf.png");
+	}
 
-    #header.fse
-    {
-	background-image: url("mouvements/fse.png");
-    }
+	&.fse
+	{
+	    background-image: url("mouvements/fse.png");
+	}
 
-    #header.europa
-    {
-	background-image: url("mouvements/europa.png");
-    }
+	&.europa
+	{
+	    background-image: url("mouvements/europa.png");
+	}
 
-    #header .h
-    {
-	font-size: 3em;
-	font-family: serif;
-    }
+	& > .h
+	{
+	    font-size: 3em;
+	    font-family: serif;
 
-    #header .h a
-    {
-	color: inherit;
-	text-decoration: inherit;
-	text-shadow: 1pt 1pt 2pt rgba(250, 251, 248, .75),
-	1pt 1pt 4pt rgba(50, 51, 48, .75);
+	    a
+	    {
+		color: inherit;
+		text-decoration: inherit;
+		text-shadow: 1pt 1pt 2pt rgba(250, 251, 248, .75),
+		1pt 1pt 4pt rgba(50, 51, 48, .75);
+	    }
+	}
     }
 
     #document
@@ -242,89 +233,93 @@ ul.adminlinks {
 	}
     }
 
-    #footer
-    {
-	color: #0a0905;
-    }
-
     #aside
     {
 	padding-top: 2em;
-	background-position: bottom left;
-	background-repeat: no-repeat;
-    }
 
-    #aside > .section > .h
-    {
-	text-align: right;
-	font-size: 1.1em;
-	margin: 0;
-	padding: 1ex;
-	color: #F2EDE4;
-	background: #615230;
-    }
+	.section
+	{
+	    .h, a {
+		font-size: 115%;
+	    }
 
-    #aside > .section > * + *
-    {
-	margin-left: 1ex;
-    }
+	    .h
+	    {
+		text-align: right;
+		font-size: 1.1em;
+		margin: 0;
+		padding: 1ex;
+		color: #F2EDE4;
+		background: #615230;
 
-    #aside > .section > .h a
-    {
-	color: inherit;
-	text-decoration: inherit;
-    }
+		a
+		{
+		    color: inherit;
+		    text-decoration: inherit;
+		}
+	    }
 
-    #aside .section li a
-    {
-	display: block;
-	padding: 0;
-	/* pour éviter la barre de défilement lorsque le lien est cliqué */
-	margin-right: 2px;
-    }
+	    & > * + *
+	    {
+		margin-left: 1ex;
+	    }
 
-    #aside .section ul
-    {
-	padding-left: 0;
-    }
+	    ul
+	    {
+		padding-left: 1ex;
 
-    #aside .section li
-    {
-	list-style-type: none;
-	background-repeat: no-repeat;
-	background-position: left center;
-	padding: .5ex 0 .5ex 2.5em;
+		li
+		{
+		    list-style-type: none;
+		    background-repeat: no-repeat;
+		    background-position: left center;
+
+		    a {
+			display: inline-block;
+			padding: .5ex 0 .5ex 2.5em;
+			vertical-align: middle;
+			width: 100%;
+			height: 1.5em;
+			line-height: 1.5em;
+
+			&:hover {
+			    text-shadow: 1pt 1pt 10pt rgba(50, 51, 48, .5);
+			}
+		    }
+		}
+	    }
+	}
     }
 
     /* BRANCHE */
     #branche
     {
 	font-size: 9pt !important;
-    }
 
-    /* branche a un traitement *très* spéciale, on réinitialise tout */
-    #branche *
-    {
-	position: static !important;
-	top: 0 !important;
-	margin: 0 !important;
-	display: inline !important;
-	padding: 0 !important;
-	background: none !important;
-    }
+	/* branche a un traitement *très* spéciale, on réinitialise tout */
+	*
+	{
+	    position: static !important;
+	    top: 0 !important;
+	    margin: 0 !important;
+	    display: inline !important;
+	    padding: 0 !important;
+	    background: none !important;
+	}
 
-    #branche .h
-    {
-	text-align: left;
-	font-size: inherit;
-	color: #483005 !important;
-    }
+	.h
+	{
+	    text-align: left;
+	    font-size: inherit;
+	    color: #483005 !important;
+	}
 
-    #branche li + li:before
-    {
-	content: "/";
-	margin: 0 1ex;
-	color: #483005;
+	li + li:before
+	{
+	    content: "/";
+	    margin: 0 1ex;
+	    color: $highlight_color;
+	}
     }
 
 
@@ -336,22 +331,38 @@ ul.adminlinks {
     }
 
     /* CONSOLE */
-    #console > .h
-    {
-	margin-bottom: 0;
+    #console, #login {
+	& > .h
+	{
+	    margin-bottom: 0;
+	}
+
+	div.section
+	{
+	    margin: 0 0 0 1em;
+	    padding: 0;
+
+	    .h
+	    {
+		font-size: 1.05em;
+		margin: 0;
+		padding: 0;
+	    }
+	}
+
+	form {
+	    margin: 0;
+
+	    .buttonbox {
+		padding: 1ex;
+		display: block;
+	    }
+	}
     }
 
-    #console div.section
+    #footer
     {
-	margin: 0 0 0 1em;
-	padding: 0;
-    }
-
-    #console .section .h
-    {
-	font-size: 1.05em;
-	margin: 0;
-	padding: 0;
+	color: $highlight_color;
     }
 
     /* ICÔNES */
@@ -372,21 +383,9 @@ ul.adminlinks {
 	background-image: url("icones/carnet.png");
     }
 
-    #connexes li.progression
-    {
-	background-image: url("icones/individus.png");
-    }
-
-    #aside li.activites,
-    #formats li.ics
+    #aside li.activites
     {
 	background-image: url("icones/activites.png");
-    }
-
-    #formats li.ods,
-    #formats li.csv
-    {
-	background-image: url("icones/tableur.png");
     }
 
     #aside li.photos
@@ -399,20 +398,25 @@ ul.adminlinks {
 	background-image: url("icones/journaux.png");
     }
 
-    #menu li.documents
+    #aside li.documents
     {
 	background-image: url("icones/documents.png");
     }
 
-    #menu li.liens
+    #aside li.liens
     {
 	background-image: url("icones/liens.png");
     }
 
     #connexes li.rapports,
-    #menu li.livredor
+    #aside li.livredor
     {
 	background-image: url("icones/livredor.png");
+    }
+
+    #aside li.citation
+    {
+	background-image: url("icones/citation.png");
     }
 
     #login li.inscription,
@@ -433,63 +437,39 @@ ul.adminlinks {
 	background-image: url("icones/fermer.png");
     }
 
-    #aside li.progression
-    {
-	background-image: url("icones/progression.png");
-    }
-
-    #aside li.formation
-    {
-	background-image: url("icones/diplome.png");
-    }
-
-    #console li.parametres
-    {
-	background-image: url("icones/editer.png");
-    }
-
     #login li + li
     {
 	background-image: url("icones/verrou.png");
     }
 
-    /* ACTIONS */
-    #actions li.editer,
-    #actions li.modifier,
-    #actions li.reporter
-    {
-	background-image: url("icones/editer.png");
-    }
-
-    #actions li.configurer,
-    #actions li.administrer
+    /* ADMIN */
+    #admin li.configurer,
+    #admin li.administrer,
+    #aside li.admin
     {
 	background-image: url("icones/config.png");
     }
 
-    #actions li.annuler,
-    #actions li.supprimer,
-    #actions li.detruire,
-    #actions li.desinscrire
+    #admin li.editer,
+    #admin li.modifier,
+    #admin li.reporter,
+    #aside li.parametres
+    {
+	background-image: url("icones/editer.png");
+    }
+
+    #admin li.annuler,
+    #admin li.supprimer,
+    #admin li.desinscrire
     {
 	background-image: url("icones/supprimer.png");
     }
 
     #connexes li.anciens,
     #connexes li.anciennes,
-    #actions li.historique
+    #admin li.historique
     {
 	background-image: url("icones/historique.png");
-    }
-
-    #menu li.statiques
-    {
-	background-image: url("icones/contacts.png");
-    }
-
-    #aside li.citation
-    {
-	background-image: url("icones/citation.png");
     }
 
     #aside li.prevoir
@@ -510,33 +490,19 @@ ul.adminlinks {
 	background-image: url("icones/carnet.png");
     }
 
-
-
-    /* Glisser-déposer */
-    .dojoDndItem
+    #formats li.ics
     {
-	cursor: pointer;
+	background-image: url("icones/activites.png");
     }
 
-    .dojoDndItemBefore,
-    .dojoDndItemBefore td
+    #formats li.ods,
+    #formats li.csv
     {
-	border-top: 2px solid red;
+	background-image: url("icones/tableur.png");
     }
 
-    .dojoDndItemAfter,
-    .dojoDndItemAfter td
-    {
-	border-bottom: 2px solid red;
-    }
-
-    .dojoDndAvatar
-    {
-	moz-opacity: .75;
-    }
 
     /* citation */
-
     #citation .signature
     {
 	font-size: 0.8em;
@@ -609,6 +575,29 @@ ul.adminlinks {
 	    padding: 1ex;
 	    margin: 1ex;
 	}
+    }
+
+    /* Glisser-déposer */
+    .dojoDndItem
+    {
+	cursor: pointer;
+    }
+
+    .dojoDndItemBefore,
+    .dojoDndItemBefore td
+    {
+	border-top: 2px solid red;
+    }
+
+    .dojoDndItemAfter,
+    .dojoDndItemAfter td
+    {
+	border-bottom: 2px solid red;
+    }
+
+    .dojoDndAvatar
+    {
+	moz-opacity: .75;
     }
 }
 
