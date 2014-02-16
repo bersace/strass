@@ -44,16 +44,16 @@ abstract class Strass_Db_Table_Abstract extends Zend_Db_Table_Abstract
       $select = clone($select);
     }
 
+    $select->reset($select::FROM);
     $select->from($this->_name, array('count' => 'COUNT(*)'));
 
     if ($where) {
       $select = $select->where($where);
     }
 
-
     $stmt = $db->query($select->__toString());
     $res = $stmt->fetch();
-    return $res['count'];
+    return intval($res['count']);
   }
 
   function fetchAll($where = null, $order = null, $count = null, $offset = null) {
