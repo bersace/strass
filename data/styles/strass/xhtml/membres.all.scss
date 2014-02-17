@@ -1,5 +1,7 @@
 /*-*- css -*-*/
 
+@import "common";
+
 #valider .form .select
 {
     display: block;
@@ -24,6 +26,10 @@
 }
 
 @media screen {
+
+    #document.recouvrir form {
+	@include minipage;
+    }
 
     #cotisation,
     #envoi

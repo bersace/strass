@@ -455,17 +455,24 @@ class MembresController extends Strass_Controller_Action implements Zend_Acl_Res
       $m->addNewSubmission('enregistrer', 'Enregistrer');
 
       if ($m->validate()) {
-	$this->view->individu = $individu = $user->findParentIndividus();
-	$user->username = $individu->adelec;
-	$user->setPassword($m->get('nouveau'));
-	$user->recover_token = null;
-	$user->save();
+	$db = $t->getAdapter();
+	$db->beginTransaction();
+	try {
+	  $this->view->individu = $individu = $user->findParentIndividus();
+	  $user->username = $individu->adelec;
+	  $user->setPassword($m->get('nouveau'));
+	  $user->recover_token = null;
+	  $user->save();
 
-	$this->_helper->Log("Recouvrement du compte", array($individu),
-			    $this->_helper->Url('fiche', 'individus', null,
-						array('individu' => $individu->slug)),
-			    (string) $individu);
-	$this->view->finish = true;
+	  $this->logger("Recouvrement du compte",
+			$this->_helper->Url('fiche', 'individus', null,
+					    array('individu' => $individu->slug)));
+	  $db->commit();
+	}
+	catch (Exception $e) {
+	  $db->rollBack();
+	  throw $e;
+	}
       }
     }
     else {
@@ -493,6 +500,12 @@ class MembresController extends Strass_Controller_Action implements Zend_Acl_Res
 	$this->view->mail = $mail = new Strass_Mail_Recover($user);
 	$mail->addTo($individu->adelec, $individu->getFullname(false));
 	$mail->send();
+
+	$this->_helper->flash->info("Courriel envoyé",
+				    "Un courriel vous a été envoyé avec un lien vers la page ".
+				    "pour définir un nouveau mot de passe. Le lien expirera dans ".
+				    "une demi heure.");
+	$this->redirectSimple('index', 'index');
       }
     }
   }
