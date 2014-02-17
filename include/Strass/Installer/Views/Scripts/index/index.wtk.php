@@ -1,6 +1,6 @@
 <?php
 
-class Strass_Pages_RendererInstall extends Wtk_Pages_Renderer_Form
+class Strass_Pages_Renderer_Install extends Wtk_Pages_Renderer_Form
 {
   protected $view;
 
@@ -18,6 +18,13 @@ class Strass_Pages_RendererInstall extends Wtk_Pages_Renderer_Form
 
   function renderAdmin($g, $f)
   {
+    $d = $this->view->document->addDialog("Initialisation")
+      ->setId('wait');
+
+    $d->addImage('/data/install/loading.gif', 'loading', 'loading');
+    $d->addParagraph("Veuillez patienter…");
+
+
     $this->view->document->addFlags('admin');
     $f->addEntry('admin/prenom', 24);
     $f->addEntry('admin/nom', 24);
@@ -29,11 +36,5 @@ class Strass_Pages_RendererInstall extends Wtk_Pages_Renderer_Form
   }
 }
 
-$d = $this->document->addDialog("Initialisation")
-  ->setId('wait');
-
-$d->addImage('/data/install/loading.gif', 'loading', 'loading');
-$d->addParagraph("Veuillez patienter…");
-
 $this->document->addPages(null, $this->model,
-			  new Strass_Pages_RendererInstall($this));
+			  new Strass_Pages_Renderer_Install($this));
