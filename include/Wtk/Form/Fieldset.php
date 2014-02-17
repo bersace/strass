@@ -55,13 +55,15 @@ class Wtk_Form_Fieldset extends Wtk_Container {
 		$form = $this->getParent('Wtk_Form');
 		$model = $form->getModel();
 
-		/* Tenter de résoudre le chemin relativement au groupe */
-		$path = $args[0];
-		try {
-		  $instance = $model->getInstance($this->title . '/' . $path);
-		  $args[0] = $instance;
+		if ($args) {
+		  /* Tenter de résoudre le chemin relativement au groupe */
+		  $path = $args[0];
+		  try {
+		    $instance = $model->getInstance($this->title . '/' . $path);
+		    $args[0] = $instance;
+		  }
+		  catch (Exception $e) {}
 		}
-		catch (Exception $e) {}
 
 		$cb = array($form, $method);
 		$el = call_user_func_array($cb, $args);
