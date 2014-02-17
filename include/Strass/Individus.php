@@ -233,6 +233,34 @@ class Individu extends Strass_Db_Table_Row_Abstract implements Zend_Acl_Role_Int
     return $this->findAppartenances($s)->count() == 0;
   }
 
+  function estActifDans($unite)
+  {
+    $t = new Appartenances;
+    $db = $t->getAdapter();
+    $s = $t->select()
+      ->setIntegrityCheck(false)
+      ->from('appartenance')
+      ->join('individu', $db->quoteInto('individu.id = ?', $this->id), array())
+      ->join('unite', $db->quoteInto('unite.id = ?', $unite->id), array())
+      ->where('appartenance.fin IS NULL');
+    return (bool) $t->countRows($s);
+  }
+
+  function findInscriptionSuivante($unite, $annee)
+  {
+    $t = new Appartenances;
+    $db = $t->getAdapter();
+    $s = $t->select()
+      ->setIntegrityCheck(false)
+      ->from('appartenance')
+      ->join('individu', $db->quoteInto('individu.id = ?', $this->id), array())
+      ->join('unite', $db->quoteInto('unite.id = ?', $unite->id), array())
+      ->where('appartenance.debut >= ?', $annee.'-09-01')
+      ->order('appartenance.debut')
+      ->limit(1);
+    return $t->fetchAll($s)->current();
+  }
+
   function getImage($id = null, $test = true)
   {
     $ind = Zend_Registry::get('user');

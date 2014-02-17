@@ -242,8 +242,8 @@ class UnitesController extends Strass_Controller_Action
     $m = new Wtk_Form_Model('inscrire');
     $this->view->model = $pm = new Wtk_Pages_Model_Form($m);
 
+    /* Sélection de l'individu à inscrire */
     $g = $m->addGroup('individu');
-
     $candidats = $u->findCandidats($a);
     $enum = array();
     foreach($candidats as $candidat) {
@@ -252,9 +252,11 @@ class UnitesController extends Strass_Controller_Action
     $enum['$$nouveau$$'] = 'Inscrire un nouveau';
     $g->addEnum('individu', 'Individu', null, $enum);
 
+    /* Enregistrement d'un nouvel individu */
     $g = $m->addGroup('fiche');
     $g->addString('prenom', 'Prénom');
 
+    /* Détails du mandat */
     $g = $m->addGroup('app');
     $roles = $u->findParentTypesUnite()->findRoles();
     $enum = array();
@@ -263,7 +265,7 @@ class UnitesController extends Strass_Controller_Action
     }
     $g->addEnum('role', 'Rôle', null, $enum);
     $g->addDate('debut', 'Début', $a.'-10-08');
-    $i0 = $g->addBool('clore', 'Mandat terminé', false);
+    $i0 = $g->addBool('clore', 'Inscription terminé', false);
     $i1 = $g->addDate('fin', 'Fin', ($a+1).'-10-08');
     $m->addConstraintDepends($i1, $i0);
 
@@ -273,14 +275,11 @@ class UnitesController extends Strass_Controller_Action
 
     if ($pm->current == 'app') {
       $individu = $ti->findOne($m->get('individu/individu'));
-      $t = new Appartenances;
-      $s = $t->select()
-	->setIntegrityCheck(false)
-	->from('appartenance')
-	->join('individu', $db->quoteInto('individu.id = ?', $individu->id), array())
-	->join('unite', $db->quoteInto('unite.id = ?', $u->id), array())
-	->where('appartenance.fin IS NULL');
-      $m->getInstance('app/clore')->set((bool) $t->countRows($s));
+      $m->getInstance('app/clore')->set($individu->estActifDans($u));
+
+      if ($app = $individu->findInscriptionSuivante($u, $a)) {
+	$m->getInstance('app/fin')->set($app->debut);
+      }
     }
 
     if ($validated) {
