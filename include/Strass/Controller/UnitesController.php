@@ -3,10 +3,9 @@
 require_once 'Strass/Unites.php';
 require_once 'Strass/Activites.php';
 
-
 class UnitesController extends Strass_Controller_Action
 {
-  public function indexAction()
+  function indexAction()
   {
     $this->view->unite = $u = $this->_helper->Unite();
     $this->view->annee = $a = $this->_helper->Annee();
@@ -18,9 +17,10 @@ class UnitesController extends Strass_Controller_Action
 
     $this->view->fiches = (bool) Zend_Registry::get('user');
 
-    $this->actions->append(array('label' => "Inscrire"),
-			   array('action' => 'inscrire', 'unite' => $u->slug),
-			   array(null, $u));
+    if (!$u->findParentTypesUnite()->virtuelle)
+      $this->actions->append(array('label' => "Inscrire"),
+			     array('action' => 'inscrire', 'unite' => $u->slug),
+			     array(null, $u));
 
     $soustypename = $u->getSousTypeName();
     if (!$u->isTerminale() && $soustypename)
@@ -75,73 +75,6 @@ class UnitesController extends Strass_Controller_Action
     }
 
     /* $this->formats('vcf', 'ods', 'csv'); */
-  }
-
-  function listeAction()
-  {
-    $this->view->unite = $unite = $this->_helper->Unite();
-    $this->view->annee = $annee = $this->_helper->Annee();
-
-    $this->assert(null, $unite, null,
-		  "Vous n'avez pas le droit de voir les contacts de l'unité");
-
-    $m = new Wtk_Form_Model('liste');
-    $enum = array('adelec'	=> 'Adélec',
-		  'fixe'	=> 'Fixe',
-		  'portable'	=> 'Portable',
-		  'telephone'	=> 'Téléphone',
-		  'adresse'	=> 'Adresse',
-		  'naissance'	=> 'Naissance',
-		  'age'		=> 'Âge',
-		  'situation'	=> 'Situation',
-		  'origine'	=> 'Unité d\'origine',
-		  'totem'	=> 'Totem',
-		  'numero'	=> 'N°adh');
-    $m->addEnum('existantes', "Colonnes préremplis", array('telephone'), $enum, TRUE);
-    $t = $m->addTable('supplementaires', "Colonnes supplémentaires",
-		      array('nom' => array('String', 'Nom')));
-    $t->addRow(array('nom' => ""));
-
-    $fmts = array('xhtml'	=> 'XHTML',
-		  'ods'	=> 'Tableur');
-    $m->addEnum('format', "Format", 'xhtml', $fmts);
-    $m->addNewSubmission('lister', 'Lister');
-
-    if ($m->validate()) {
-      $this->formats('ods');
-      $this->getRequest()->setParam('format', $m->get('format'));
-      $this->view->model = null;
-      $acl = Zend_Registry::get('acl');
-      $i = Zend_Registry::get('user');
-      $this->view->terminale = $unite->isTerminale();
-      $this->view->supplementaires = $m->get('supplementaires');
-
-      $existantes = $m->get('existantes');
-      $this->view->existantes = array();
-      foreach($existantes as $k) {
-	$this->view->existantes[$k] = $enum[$k];
-      }
-
-
-      // critère de sélection par année
-      $this->view->annees = $unite->getAnneesOuverte();
-      $this->view->annee = $annee = $this->_helper->Annee();
-
-      $this->metas(array('DC.Title' => 'Effectifs '.$annee,
-			 'DC.Title.alternate' => 'Effectifs '.$annee.' – '.
-			 wtk_ucfirst($unite->getFullname())));
-
-      // si l'individu est connecté, on propose le lien.
-      $this->view->fiches = (bool) $i;
-      $this->view->apps = $apps = $unite->getApps($annee);
-
-      // de même pour les sous-unités
-      $this->view->sousunites = $unite->getSousUnites(false, $annee);
-      $this->view->sousapps = $this->_helper->SousApps($this->view->sousunites, $annee);
-    }
-    else {
-      $this->view->model = $m;
-    }
   }
 
   function fonderAction()
@@ -235,7 +168,6 @@ class UnitesController extends Strass_Controller_Action
     $this->view->model = $m;
   }
 
-
   function editerAction()
   {
     $u = $this->_helper->Unite();
@@ -296,128 +228,56 @@ class UnitesController extends Strass_Controller_Action
     $this->view->model = $m;
   }
 
-  function historiqueAction()
+  function inscrireAction()
   {
-    $u = $this->_helper->Unite();
-    $a = $this->_helper->Annee(false);
-    $m = new Wtk_Form_Model('historique');
+    $this->metas(array('DC.Title.alternative' => "Inscrire"));
+    $this->view->unite = $u = $this->_helper->Unite();
+    $this->branche->append(null, array('annee' => false));
+    $this->view->annee = $a = $this->_helper->Annee();
+    $this->metas(array('DC.Title' => "Inscrire pour l'année $a-".($a+1)));
 
-    $this->assert(null, $u, 'inscrire',
-		  "Vous n'avez pas le droit d'inscrire un membre dans cette unité.");
+    $t = new Individus;
+    $db = $t->getAdapter();
+    $s = $t->select()
+      ->setIntegrityCheck(false)
+      ->distinct()
+      ->from('individu')
+      ->join('unite_type', $db->quoteInto("unite_type.id = ?\n", intval($u->type)), array())
+      /* filtre sur le sexe */
+      ->where("unite_type.sexe IN ('m', individu.sexe)\n")
+      /* connaître l'âge est nécessaire ? ou ne pas contraindre sur l'âge ? */
+      ->where("individu.naissance\n")
+      /* filtre sur l'âge */
+      ->where("unite_type.age_min <= CURRENT_DATE - individu.naissance - 1\n")
+      ->where("CURRENT_DATE - individu.naissance - 1 <= unite_type.age_max\n")
+      ->order('individu.nom', 'individu.prenom');
 
-    // sélectionner les individus pouvant avoir fait partie de cette unité
-    $db = $u->getTable()->getAdapter();
-    $t = $u->findParentTypesUnite();
-    $select = $db->select()
-      ->from('individus')
-      ->order('naissance');
+    $m = new Wtk_Form_Model('inscrire');
+    $this->view->model = $pm = new Wtk_Pages_Model_Form($m);
 
-    if ($a) {
-      $select->joinLeft('appartient',
-			"appartient.individu = individus.id".
-			" AND ".
-			"debut < '".$a."-08-31'".
-			" AND ".
-			"(fin > '".($a+1)."-09-01' OR fin IS NULL)\n",
-			array())
-	->where('naissance <= "'.($a - $t->age_min).'-12-31"'.
-		' AND '.'naissance >= "'.($a - $t->age_max).'-01-01"')
-	->where('appartient.individu IS NULL');
-    }
+    $g = $m->addGroup('individu');
 
-    if ($t->sexe != 'm')
-      $select->where('sexe = ?', $t->sexe);
-
-    $this->actions->append(array('label' => "Inscrire un nouveau"),
-			   array('controller' => 'inscription',
-				 'action' => 'nouveau',
-				 'unite' => $u->id,
-				 'annee' => $a),
-			   array(Zend_Registry::get('user'), $u));
-
-
-    $ti = new Individus;
-    $is = $ti->fetchAll($select);
-    if (!$is->count())
-      throw new Strass_Controller_Action_Exception("Aucun individu n'est disponible ".
-						   "pour cette unité pour l'année ".
-						   $a."-".($a+1).". Inscrivez un nouveau membre.");
-
+    $candidats = $t->fetchAll($s);
     $enum = array();
-    foreach($is as $i)
-      $enum[$i->id] = $i->getFullname(true, false);
-
-    ksort($enum);
-    $m->addEnum('individu', "Individu", key($enum), $enum);
-
-    // sélectionner les postes libre
-    $rs = $t->findRoles(null, 'ordre');
-    $enum = array();
-    foreach($rs as $r)
-      $enum[$r->id] = ucfirst($r->titre);
-
-    // on cherche les poste indisponible pour l'année courante
-    if ($a) {
-      $where = 'debut < "'.$a.'-12-31"'.
-	' AND '.
-	'fin > "'.($a + 1).'-08-31"'.
-	' OR '.
-	'fin IS NULL';
-      $s = $ti->select()->where($where);
-      $as = $u->findAppartenances($s);
+    foreach($candidats as $candidat) {
+      $enum[$candidat->slug] = $candidat->getFullname(false, false);
     }
-    else
-      $as = array();
+    $enum['$$nouveau$$'] = 'Inscrire un nouveau';
+    $g->addEnum('individu', 'Individu', null, $enum);
 
-    $values = $enum;
-    foreach($as as $app)
-      unset($values[$app->role]);
+    $g = $m->addGroup('fiche');
+    $g->addString('prenom', 'Prénom');
 
-    // unités avec une personne par poste :
-    if (!count($values)
-	&& in_array($t->id, array('patrouille', 'equipe', 'sizloup', 'sizjeannette')))
-      throw new Strass_Controller_Action_Exception("L'unité est complète pour l'année ".$a." !");
+    $g = $m->addGroup('role');
+    $g->addString('role', 'Rôle');
 
-    // on sélectionne le premier poste disponible.
-    $m->addEnum('role', 'Poste', key($values), $enum);
-    $m->addDate('debut', 'Début', $a.'-10-08');
-    $i = $m->addBool('clore', 'Mendat terminé', true);
-    $j = $m->addDate('fin', 'Fin', ($a + 1).'-10-08');
-    $m->addConstraintDepends($j, $i);
-    $m->addNewSubmission('valider', 'Valider');
+    $validated = $pm->validate();
+    if ($pm->current == 'fiche' && $m->get('individu/individu') != '$$nouveau$$')
+      $pm->gotoPage('role');
 
-    if ($m->validate()) {
-      $ta = new Appartenances();
-      $db->beginTransaction();
-      try {
-	$data = $m->get();
-	$data['unite'] = $u->id;
-	$data['type'] = $u->type;
-	if (!$data['clore'])
-	  $data['fin'] = NULL;
-	unset($data['clore']);
-	$ta->insert($data);
-
-	$ind = $ti->find($data['individu'])->current();
-	$this->_helper->Log("Effectifs complétés", array($u, $ind),
-			    $this->_helper->Url('index', 'unites', null, array('unite' => $u->id)),
-			    (string) $u);
-
-	$db->commit();
-	$this->redirectSimple('index', null, null, null, false);
-      }
-      catch(Exception $e) {
-	$db->rollBack();
-	throw $e;
-      }
+    if ($validated) {
+      Orror::dump($m->get());
     }
-
-    $this->view->model = $m;
-    $this->view->unite = $u;
-    $this->view->annee = $a;
-    $this->metas(array('DC.Title' => "Compléter l'effectif de ".$u->getFullname()));
-    $this->branche->append("Compléter l'effectif");
-
   }
 
   function fermerAction()
