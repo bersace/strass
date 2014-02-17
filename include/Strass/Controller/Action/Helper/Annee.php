@@ -6,8 +6,8 @@ class Strass_Controller_Action_Helper_Annee extends Zend_Controller_Action_Helpe
 	{
 		$annee = $this->getRequest()->getParam('annee');
 		$annee = $annee ? $annee : ($fallback ? $this->cetteAnnee() : null);
-		$this->_actionController->branche->append($annee,
-							  array('annee'	=> $annee));
+		if ($annee)
+		  $this->_actionController->branche->append($annee, array('annee' => $annee));
 		return intval($annee);
 	}
 
