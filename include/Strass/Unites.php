@@ -592,6 +592,7 @@ class Unite extends Strass_Db_Table_Row_Abstract implements Zend_Acl_Resource_In
     return $t->fetchAll($s);
   }
 
+  /* Liste les candidats à l'inscription dans l'unité pour une année données */
   function findCandidats($annee)
   {
     $t = new Individus;
@@ -601,6 +602,16 @@ class Unite extends Strass_Db_Table_Row_Abstract implements Zend_Acl_Resource_In
       ->distinct()
       ->from('individu')
       ->join('unite_type', $db->quoteInto("unite_type.id = ?\n", intval($this->type)), array())
+      ->joinLeft('appartenance',
+		 $db->quoteInto('appartenance.individu = individu.id AND appartenance.unite = ?',
+				$this->id).
+		 ' AND '.
+		 /* Appartenance en cours, débutté au plus tard cette année */
+		 '('.('appartenance.fin IS NULL AND '.
+		      $db->quoteInto("appartenance.debut < ?", ($annee+1).'-08-01')
+		      ).')', array())
+      /* n'appartient pas déjà à l'unité */
+      ->where('appartenance.id IS NULL')
       /* filtre sur le sexe */
       ->where("unite_type.sexe IN ('m', individu.sexe)\n")
       /* connaître l'âge est nécessaire ? ou ne pas contraindre sur l'âge ? */
