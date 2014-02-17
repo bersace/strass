@@ -143,14 +143,14 @@ tr td .check label
 
 .form.errors p
 {
-    background-color: #FB7;
+    background-color: $error_bg;
     background-image: url("icones/erreur.png");
     background-repeat: no-repeat;
     background-position: 1ex .72ex;
-    border: 2px solid $error;
+    box-shadow: 2pt 4pt 1ex rgba(4, 4, 4, 0.5);
     border-radius: .75ex;
     box-shadow: .4ex .4ex 1ex rgba(20, 20, 20, 0.5);
-    color: #750000;
+    color: $error;
     margin: .5ex 5%;
     padding: 1ex 1ex 1ex 48px;
 }
@@ -164,11 +164,11 @@ tr td .check label
     background-color: $warn_bg;
     background-image: url("icones/attention.png");
     background-repeat: no-repeat;
-    background-position: 1ex .72ex;
-    border: 2px solid #DA4;
+    background-position: 1em .75em;
+    box-shadow: 2pt 4pt 1ex rgba(4, 4, 4, 0.5);
     border-radius: .75ex;
-    color: #400;
-    margin: .5ex 5%;
+    color: $warn;
+    margin: 1ex 5%;
     text-align: justify;
     padding: 1ex 1ex 1ex 48px;
     min-height: 32px;
@@ -177,14 +177,14 @@ tr td .check label
 
 .form .info
 {
-    background-color: #BF5;
+    background-color: $info_bg;
     background-image: url("icones/information.png");
     background-repeat: no-repeat;
-    background-position: 1ex .72ex;
-    border: 2px solid #8B2;
+    background-position: 1em .75em;
+    box-shadow: 2pt 4pt 1ex rgba(4, 4, 4, 0.5);
     border-radius: .75ex;
-    color: #400;
-    margin: .5ex 5%;
+    color: $info;
+    margin: 1ex 5%;
     text-align: justify;
     padding: 1ex 1ex 1ex 48px;
     min-height: 32px;

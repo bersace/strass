@@ -5,12 +5,13 @@ $page_background: #D6C996;
 $content_background: #FAFBF8;
 $alt_background: #B8BFAE;
 $error: #750000;
+$error_bg: #D6968B;
 $info: #3F4C20;
 $info_bg: #A0BF6B;
 $warn: $error;
 $warn_bg: #EEDC83;
 $critical: $error;
-$critical_bg: #D6968B;
+$critical_bg: $error_bg;
 
 @mixin minipage {
     /* style commun pour les pages avec peu de contenu, on utilise réduit
