@@ -220,7 +220,8 @@ class Unite extends Strass_Db_Table_Row_Abstract implements Zend_Acl_Resource_In
   function getName()
   {
     // pat, sizaine, etc. utiliser le totem de pat
-    if ($this->findParentTypesUnite()->age_max < 18)
+    $tu = $this->findParentTypesUnite();
+    if ($tu->age_max && $tu->age_max < 18 && $this->nom)
       return $this->nom;
     else
       return $this->getFullName();
