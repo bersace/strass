@@ -518,7 +518,7 @@ class Unite extends Strass_Db_Table_Row_Abstract implements Zend_Acl_Resource_In
   {
     // sélectionner les années où l'unité à eut au moins un membre
     $db = $this->getTable()->getAdapter();
-    $ti = new Individus();
+    $ti = new Individus;
     // DISTINCT ON dans SQLite est fait avec MIN() hors group by.
     $select = $ti->select()
       ->setIntegrityCheck(false)
@@ -550,7 +550,7 @@ class Unite extends Strass_Db_Table_Row_Abstract implements Zend_Acl_Resource_In
     $annees = array();
     $cette_annee = intval(strftime('%Y', time()-243*24*60*60));
     foreach($is as $individu) {
-      /* pour le dernier chef en cours, inclure l'anne courante *incluse* */
+      /* pour le dernier chef en cours, inclure l'année courante *incluse* */
       $fin = $individu->fin ? $individu->fin : $cette_annee + 1;
       for($annee = $individu->debut; $annee < $fin; $annee++) {
 	if (!array_key_exists($annee, $annees))
@@ -589,6 +589,26 @@ class Unite extends Strass_Db_Table_Row_Abstract implements Zend_Acl_Resource_In
       ->join('unite_document', 'unite_document.document = document.id', array())
       ->where('unite_document.unite IN ?', $uids);
 
+    return $t->fetchAll($s);
+  }
+
+  function findCandidats($annee)
+  {
+    $t = new Individus;
+    $db = $t->getAdapter();
+    $s = $t->select()
+      ->setIntegrityCheck(false)
+      ->distinct()
+      ->from('individu')
+      ->join('unite_type', $db->quoteInto("unite_type.id = ?\n", intval($this->type)), array())
+      /* filtre sur le sexe */
+      ->where("unite_type.sexe IN ('m', individu.sexe)\n")
+      /* connaître l'âge est nécessaire ? ou ne pas contraindre sur l'âge ? */
+      ->where("individu.naissance\n")
+      /* filtre sur l'âge */
+      ->where("unite_type.age_min <= ? - individu.naissance - 1\n", $annee.'-8-01')
+      ->where("? - individu.naissance - 1 <= unite_type.age_max\n", $annee.'-8-01')
+      ->order('individu.nom', 'individu.prenom');
     return $t->fetchAll($s);
   }
 

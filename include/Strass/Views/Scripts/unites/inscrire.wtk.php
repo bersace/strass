@@ -20,9 +20,12 @@ class Strass_Pages_Renderer_UnitesInscrire extends Wtk_Pages_Renderer_Form
     $f->addParagraph('fiche')->addFlags('empty');
   }
 
-  function renderRole($g, $f)
+  function renderApp($g, $f)
   {
-    $f->addParagraph('rôle')->addFlags('empty');
+    $f->addSelect('app/role', true);
+    $f->addDate('app/debut');
+    $f->addCheck('app/clore');
+    $f->addDate('app/fin');
   }
 }
 

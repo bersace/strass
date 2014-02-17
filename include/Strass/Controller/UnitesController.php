@@ -236,31 +236,15 @@ class UnitesController extends Strass_Controller_Action
     $this->view->annee = $a = $this->_helper->Annee();
     $this->metas(array('DC.Title' => "Inscrire pour l'année $a-".($a+1)));
 
-    $t = new Individus;
-    $db = $t->getAdapter();
-    $s = $t->select()
-      ->setIntegrityCheck(false)
-      ->distinct()
-      ->from('individu')
-      ->join('unite_type', $db->quoteInto("unite_type.id = ?\n", intval($u->type)), array())
-      /* filtre sur le sexe */
-      ->where("unite_type.sexe IN ('m', individu.sexe)\n")
-      /* connaître l'âge est nécessaire ? ou ne pas contraindre sur l'âge ? */
-      ->where("individu.naissance\n")
-      /* filtre sur l'âge */
-      ->where("unite_type.age_min <= CURRENT_DATE - individu.naissance - 1\n")
-      ->where("CURRENT_DATE - individu.naissance - 1 <= unite_type.age_max\n")
-      ->order('individu.nom', 'individu.prenom');
-
     $m = new Wtk_Form_Model('inscrire');
     $this->view->model = $pm = new Wtk_Pages_Model_Form($m);
 
     $g = $m->addGroup('individu');
 
-    $candidats = $t->fetchAll($s);
+    $candidats = $u->findCandidats($a);
     $enum = array();
     foreach($candidats as $candidat) {
-      $enum[$candidat->slug] = $candidat->getFullname(false, false);
+      $enum[$candidat->id] = $candidat->getFullname(false, false);
     }
     $enum['$$nouveau$$'] = 'Inscrire un nouveau';
     $g->addEnum('individu', 'Individu', null, $enum);
@@ -268,15 +252,49 @@ class UnitesController extends Strass_Controller_Action
     $g = $m->addGroup('fiche');
     $g->addString('prenom', 'Prénom');
 
-    $g = $m->addGroup('role');
-    $g->addString('role', 'Rôle');
+    $g = $m->addGroup('app');
+    $roles = $u->findParentTypesUnite()->findRoles();
+    $enum = array();
+    foreach ($roles as $role) {
+      $enum[$role->id] = wtk_ucfirst($role->titre);
+    }
+    $g->addEnum('role', 'Rôle', null, $enum);
+    $g->addDate('debut', 'Début', $a.'-10-08');
+    $i0 = $g->addBool('clore', 'Mandat terminé', false);
+    $i1 = $g->addDate('fin', 'Fin', ($a+1).'-10-08');
+    $m->addConstraintDepends($i1, $i0);
 
     $validated = $pm->validate();
     if ($pm->current == 'fiche' && $m->get('individu/individu') != '$$nouveau$$')
-      $pm->gotoPage('role');
+      $pm->gotoPage('app');
 
     if ($validated) {
-      Orror::dump($m->get());
+      $ti = new Individus;
+      $t = new Appartenances;
+      $db = $t->getAdapter();
+      $db->beginTransaction();
+      try {
+	$data = array('unite' => $u->id,
+		      'individu' => $m->get('individu/individu'),
+		      'role' => $m->get('app/role'),
+		      'debut' => $m->get('app/debut'),
+		      );
+	if ($m->get('app/clore'))
+	  $data['fin'] = $m->get('app/fin');
+
+	$t->insert($data);
+	$i = $ti->findOne($data['individu']);
+	$message = $i->getFullname(false, false)." inscrit dans ".$u->getName();
+	$this->logger->info($message);
+	$this->_helper->Flash->info($message);
+	$db->commit();
+      }
+      catch (Exception $e) {
+	$db->rollBack();
+	throw $e;
+      }
+
+      $this->redirectSimple('index');
     }
   }
 
