@@ -246,10 +246,10 @@ class UnitesController extends Strass_Controller_Action
     $g = $m->addGroup('individu');
     $candidats = $u->findCandidats($a);
     $enum = array();
+    $enum['$$nouveau$$'] = 'Inscrire un nouveau';
     foreach($candidats as $candidat) {
       $enum[$candidat->id] = $candidat->getFullname(false, false);
     }
-    $enum['$$nouveau$$'] = 'Inscrire un nouveau';
     $g->addEnum('individu', 'Individu', null, $enum);
 
     /* Enregistrement d'un nouvel individu */
@@ -265,13 +265,18 @@ class UnitesController extends Strass_Controller_Action
     }
     $g->addEnum('role', 'Rôle', null, $enum);
     $g->addDate('debut', 'Début', $a.'-10-08');
-    $i0 = $g->addBool('clore', 'Inscription terminé', false);
+    $i0 = $g->addBool('clore', 'Inscription terminée', false);
     $i1 = $g->addDate('fin', 'Fin', ($a+1).'-10-08');
     $m->addConstraintDepends($i1, $i0);
 
     $validated = $pm->validate();
-    if ($pm->current == 'fiche' && $m->get('individu/individu') != '$$nouveau$$')
-      $pm->gotoPage('app');
+    /* Sauter l'étape fiche si l'individu est déjà en base */
+    if ($m->get('individu/individu') != '$$nouveau$$' && $pm->current == 'fiche') {
+      if ($m->sent_submission->id == 'continuer')
+	$pm->gotoPage('app');
+      else if ($m->sent_submission->id == 'precedent')
+	$pm->gotoPage('individu');
+    }
 
     if ($pm->current == 'app') {
       $individu = $ti->findOne($m->get('individu/individu'));
