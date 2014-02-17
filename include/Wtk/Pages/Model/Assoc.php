@@ -80,8 +80,9 @@ class Wtk_Pages_Model_Assoc extends Wtk_Pages_Model
 		$this->pointer = $this->current;
 	}
 
+	/* Compte le nombre d'item de la page courante */
 	public function count()
 	{
-	  return 1;
+	  return $this->current ? 1 : null;
 	}
 }
