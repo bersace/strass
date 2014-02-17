@@ -131,6 +131,7 @@ class LivredorController extends Strass_Controller_Action
 	try {
 	  $this->logger->warn("Message de {$message->auteur} supprimé",
 			      array('controller' => 'livredor', 'action' => 'index'));
+	  $this->_helper->flash->info("Message supprimé");
 	  $message->delete();
 	  $db->commit();
 	}
