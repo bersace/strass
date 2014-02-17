@@ -606,7 +606,7 @@ class Unite extends Strass_Db_Table_Row_Abstract implements Zend_Acl_Resource_In
 		 $db->quoteInto('appartenance.individu = individu.id AND appartenance.unite = ?',
 				$this->id).
 		 ' AND '.
-		 /* Appartenance en cours, débutté au plus tard cette année */
+		 /* Inscription en cours, débutée au plus tard cette année */
 		 '('.('appartenance.fin IS NULL AND '.
 		      $db->quoteInto("appartenance.debut < ?", ($annee+1).'-08-01')
 		      ).')', array())
@@ -620,6 +620,26 @@ class Unite extends Strass_Db_Table_Row_Abstract implements Zend_Acl_Resource_In
       ->where("unite_type.age_min <= ? - individu.naissance - 1\n", $annee.'-8-01')
       ->where("? - individu.naissance - 1 <= unite_type.age_max\n", $annee.'-8-01')
       ->order('individu.nom', 'individu.prenom');
+    return $t->fetchAll($s);
+  }
+
+  function findRolesCandidats($unite, $annee)
+  {
+    $t = new Roles;
+    $db = $t->getAdapter();
+    $s = $t->select()
+      ->setIntegrityCheck(false)
+      ->from('unite_role')
+      ->join('unite_type', 'unite_type.id = unite_role.type', array())
+      ->join('unite', 'unite.type = unite_type.id', array())
+      ->joinLeft('appartenance',
+		 'appartenance.role = unite_role.id AND '.
+		 'appartenance.unite = unite.id AND '.
+		 'appartenance.fin IS NULL AND '.
+		 $db->quoteInto('appartenance.debut < ?', ($annee+1).'-08-01'),
+		 array())
+      ->where('unite.id = ?', $unite->id)
+      ->where('appartenance.id IS NULL');
     return $t->fetchAll($s);
   }
 

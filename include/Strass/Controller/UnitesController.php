@@ -255,6 +255,14 @@ class UnitesController extends Strass_Controller_Action
     /* Enregistrement d'un nouvel individu */
     $g = $m->addGroup('fiche');
     $g->addString('prenom', 'Prénom');
+    $g->addString('nom', 'Nom');
+    $tu = $u->findParentTypesUnite();
+    if ($tu->sexe == 'm')
+      $g->addEnum('sexe', 'Sexe', null, array('h' => 'Masculin', 'f' => 'Féminin'));
+    else
+      $g->addString('sexe', $tu->sexe);
+
+    $g->addDate('naissance', 'Date de naissance', ($a - $tu->age_min) . '-01-01');
 
     /* Détails du mandat */
     $g = $m->addGroup('app');
@@ -270,25 +278,30 @@ class UnitesController extends Strass_Controller_Action
     $m->addConstraintDepends($i1, $i0);
 
     $validated = $pm->validate();
-    /* Sauter l'étape fiche si l'individu est déjà en base */
-    if ($m->get('individu/individu') != '$$nouveau$$' && $pm->current == 'fiche') {
-      if ($m->sent_submission->id == 'continuer')
-	$pm->gotoPage('app');
-      else if ($m->sent_submission->id == 'precedent')
-	$pm->gotoPage('individu');
-    }
-
-    /* préremplir l'inscription selon l'individu */
-    if ($pm->current == 'app') {
-      $individu = $ti->findOne($m->get('individu/individu'));
-
-      if ($role = $individu->findRolesCandidats($u)->current())
+    if ($m->get('individu/individu') == '$$nouveau$$') {
+      /* Proposer un role inoccupé */
+      if ($role = $u->findRolesCandidats($u, $a)->current())
 	$m->getInstance('app/role')->set($role->id);
+    } else {
+      if ($pm->current == 'fiche') {
+	/* Sauter l'étape fiche si l'individu est déjà en base */
+	if ($m->sent_submission->id == 'continuer')
+	  $pm->gotoPage('app');
+	else if ($m->sent_submission->id == 'precedent')
+	  $pm->gotoPage('individu');
+      }
+      else if ($pm->current == 'app') {
+	/* préremplir l'inscription selon l'individu */
+	$individu = $ti->findOne($m->get('individu/individu'));
 
-      $m->getInstance('app/clore')->set($individu->estActifDans($u));
+	if ($role = $individu->findRolesCandidats($u)->current())
+	  $m->getInstance('app/role')->set($role->id);
 
-      if ($app = $individu->findInscriptionSuivante($u, $a)) {
-	$m->getInstance('app/fin')->set($app->debut);
+	$m->getInstance('app/clore')->set($individu->estActifDans($u));
+
+	if ($app = $individu->findInscriptionSuivante($u, $a)) {
+	  $m->getInstance('app/fin')->set($app->debut);
+	}
       }
     }
 
@@ -296,8 +309,18 @@ class UnitesController extends Strass_Controller_Action
       $t = new Appartenances;
       $db->beginTransaction();
       try {
+	if ($m->get('individu/individu') == '$$nouveau$$') {
+	  $data = $m->get('fiche');
+	  $data['slug'] = wtk_strtoid($data['prenom'].' '.$data['nom']);
+	  $k = $ti->insert($data);
+	  $i = $ti->findOne($k);
+	}
+	else {
+	  $i = $ti->findOne($data['individu']);
+	}
+
 	$data = array('unite' => $u->id,
-		      'individu' => $m->get('individu/individu'),
+		      'individu' => $i->id,
 		      'role' => $m->get('app/role'),
 		      'debut' => $m->get('app/debut'),
 		      );
@@ -305,8 +328,7 @@ class UnitesController extends Strass_Controller_Action
 	  $data['fin'] = $m->get('app/fin');
 
 	$t->insert($data);
-	$i = $ti->findOne($data['individu']);
-	$message = $i->getFullname(false, false)." inscrit dans ".$u->getName();
+	$message = $i->getFullname(false, false)." inscrit.";
 	$this->logger->info($message);
 	$this->_helper->Flash->info($message);
 	$db->commit();

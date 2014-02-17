@@ -17,7 +17,15 @@ class Strass_Pages_Renderer_UnitesInscrire extends Wtk_Pages_Renderer_Form
 
   function renderFiche($g, $f)
   {
-    $f->addParagraph('fiche')->addFlags('empty');
+    $f->addEntry('fiche/prenom', 24);
+    $f->addEntry('fiche/nom', 24);
+    try {
+      $f->addSelect('fiche/sexe');
+    }
+    catch (Exception $e) {
+      $f->addHidden('fiche/sexe');
+    }
+    $f->addDate('fiche/naissance');
   }
 
   function renderApp($g, $f)

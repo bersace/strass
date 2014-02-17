@@ -16,6 +16,7 @@ abstract class Strass_Db_Table_Abstract extends Zend_Db_Table_Abstract
     $row = $res->current();
 
     if (!$row) {
+      $key = implode(', ', (array) $key);
       throw new Strass_Db_Table_NotFound("No row for ${key}");
     }
 
