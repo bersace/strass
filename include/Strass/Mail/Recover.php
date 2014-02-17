@@ -24,7 +24,7 @@ class Strass_Mail_Recover extends Strass_Mail
 
 Bonjour {$individu->getFullName(false)},
 
-Vous avez demandé à récupérer l'accès à votre compte sur {$config->site->short_title}.
+Vous avez demandé à récupérer l'accès à votre compte sur {$config->system->short_title}.
 
 **Si vous n'avez pas fait cette demande, ignorez ce message ou contactez l'administrateur du site !**
 
@@ -32,10 +32,10 @@ Pour récupérer l'accès à votre compte, réinitialisez votre mot de passe en 
 
 = [$url $url]
 
-À bientôt sur {$config->site->short_title} !
+À bientôt sur {$config->system->short_title} !
 
 FSS,
-L'automate du site {$config->site->short_title}.
+L'automate du site {$config->system->short_title}.
 EOS
 			 );
   }
