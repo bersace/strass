@@ -235,7 +235,7 @@ abstract class Strass_Controller_Action extends Zend_Controller_Action implement
 		   );
 
     if ($metas->has('DC.Title.alternative')) {
-      $parts[] = $metas->get('(DC.Title.alternative');
+      $parts[] = $metas->get('DC.Title.alternative');
     }
     elseif ($metas->has('DC.Title')) {
       $parts[] = $metas->get('DC.Title');
