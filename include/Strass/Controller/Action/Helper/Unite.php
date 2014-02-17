@@ -28,7 +28,8 @@ class Strass_Controller_Action_Helper_Unite extends Zend_Controller_Action_Helpe
 
     $page = Zend_Registry::get('page');
     $fn = wtk_ucfirst($unite->getFullname());
-    $page->metas->set('DC.Title', $fn);
+    if (!$page->metas->get('DC.Title'))
+      $page->metas->set('DC.Title', $fn);
     $page->metas->set('DC.Creator', $fn);
 
     return $unite;
@@ -61,7 +62,6 @@ class Strass_Controller_Action_Helper_Unite extends Zend_Controller_Action_Helpe
 						array(),
 						true);
     }
-
     // CONNEXES
     $connexes = $this->_actionController->connexes;
     $connexes->titre = $this->_actionController->view->lien(array('controller' => 'unites',
