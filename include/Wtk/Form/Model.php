@@ -57,6 +57,8 @@ class Wtk_Form_Model
   function &addSubmission (Wtk_Form_Model_Submission &$submission)
     {
       if ($submission instanceof Wtk_Form_Model_Submission) {
+	if (array_key_exists($submission->id, $this->submissions))
+	  throw new Exception("Submission {$submission->id} already registered");
 	$this->submissions[$submission->id] = $submission;
       }
       return $submission;
@@ -69,7 +71,7 @@ class Wtk_Form_Model
   function &addNewSubmission ($id, $label, $handler = null, $method = Wtk_Form_Model_Submission::METHOD_MULTIPART)
     {
       $submission = new Wtk_Form_Model_Submission ($id, $label, $handler, $method);
-      $this->addSubmission ($submission);
+      $this->addSubmission($submission);
       return $submission;
     }
 
