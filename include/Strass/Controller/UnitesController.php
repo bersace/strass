@@ -236,6 +236,9 @@ class UnitesController extends Strass_Controller_Action
     $this->view->annee = $a = $this->_helper->Annee();
     $this->metas(array('DC.Title' => "Inscrire pour l'année $a-".($a+1)));
 
+    $ti = new Individus;
+    $db = $ti->getAdapter();
+
     $m = new Wtk_Form_Model('inscrire');
     $this->view->model = $pm = new Wtk_Pages_Model_Form($m);
 
@@ -268,10 +271,20 @@ class UnitesController extends Strass_Controller_Action
     if ($pm->current == 'fiche' && $m->get('individu/individu') != '$$nouveau$$')
       $pm->gotoPage('app');
 
-    if ($validated) {
-      $ti = new Individus;
+    if ($pm->current == 'app') {
+      $individu = $ti->findOne($m->get('individu/individu'));
       $t = new Appartenances;
-      $db = $t->getAdapter();
+      $s = $t->select()
+	->setIntegrityCheck(false)
+	->from('appartenance')
+	->join('individu', $db->quoteInto('individu.id = ?', $individu->id), array())
+	->join('unite', $db->quoteInto('unite.id = ?', $u->id), array())
+	->where('appartenance.fin IS NULL');
+      $m->getInstance('app/clore')->set((bool) $t->countRows($s));
+    }
+
+    if ($validated) {
+      $t = new Appartenances;
       $db->beginTransaction();
       try {
 	$data = array('unite' => $u->id,
