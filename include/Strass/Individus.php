@@ -246,6 +246,25 @@ class Individu extends Strass_Db_Table_Row_Abstract implements Zend_Acl_Role_Int
     return (bool) $t->countRows($s);
   }
 
+  function findRolesCandidats($unite)
+  {
+    $t = new Roles;
+    $db = $t->getAdapter();
+    $s = $t->select()
+      ->setIntegrityCheck(false)
+      ->from('unite_role')
+      ->join('unite_type', 'unite_type.id = unite_role.type', array())
+      ->join('unite', 'unite.type = unite_type.id', array())
+      ->joinLeft('appartenance',
+		 'appartenance.role = unite_role.id AND '.
+		 'appartenance.unite = unite.id AND '.
+		 $db->quoteInto('appartenance.individu', $this->id),
+		 array())
+      ->where('unite.id = ?', $unite->id)
+      ->where('appartenance.id IS NULL');
+    return $t->fetchAll($s);
+  }
+
   function findInscriptionSuivante($unite, $annee)
   {
     $t = new Appartenances;

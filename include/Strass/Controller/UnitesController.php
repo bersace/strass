@@ -278,8 +278,13 @@ class UnitesController extends Strass_Controller_Action
 	$pm->gotoPage('individu');
     }
 
+    /* préremplir l'inscription selon l'individu */
     if ($pm->current == 'app') {
       $individu = $ti->findOne($m->get('individu/individu'));
+
+      if ($role = $individu->findRolesCandidats($u)->current())
+	$m->getInstance('app/role')->set($role->id);
+
       $m->getInstance('app/clore')->set($individu->estActifDans($u));
 
       if ($app = $individu->findInscriptionSuivante($u, $a)) {
