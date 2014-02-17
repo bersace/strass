@@ -11,7 +11,7 @@ class Strass_Addon_Branche extends Strass_Addon_Liens
   {
     if (!$metas) {
       $page = Zend_Registry::get('page');
-      $metas = $page->metas->get('DC.Title');
+      $metas = $page->metas->get('DC.Title.alternative');
     }
 
     if (!$reset) {
