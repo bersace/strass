@@ -23,18 +23,12 @@ class Wtk_Pages_Model_Form extends Wtk_Pages_Model
   {
     parent::__construct($model, 1, $current); // un groupe par page
 
+    $this->root = $model->getInstance();
+
     $model->addNewSubmission('precedent', 'Précédent');
     $model->addNewSubmission('continuer', 'Continuer');
-    $model->addNewSubmission('terminer', 'Terminer');
-
-    $this->root			= $model->getInstance();
-    $this->pages_count		= $this->root->count() - 1; // minus $$validated$$
-
-    foreach($this->root as $group)
-      if ($group instanceof Wtk_Form_Model_Instance_Group)
-	array_push($this->pages_id, $group->id);
-
-    $i = $model->addString('$$current$$', 'Current group', null);
+    try { $model->addNewSubmission('terminer', 'Terminer'); } catch (Exception $e) {}
+    $model->addString('$$current$$', 'Current group', null);
   }
 
   function getFormModel()
@@ -44,10 +38,18 @@ class Wtk_Pages_Model_Form extends Wtk_Pages_Model
 
   function validate()
   {
+    $this->pages_count = $this->root->count() - 1; // minus $$validated$$
+    $this->pages_id = array();
+    foreach($this->root as $group)
+      if ($group instanceof Wtk_Form_Model_Instance_Group)
+	array_push($this->pages_id, $group->id);
+
     $model = $this->data;
     $model->validate();
     $submission = $model->sent_submission;
     $current = $this->root->get('$$current$$');
+    $completed = false;
+
 
     if (!$current)
       $current = reset($this->pages_id);
@@ -60,7 +62,6 @@ class Wtk_Pages_Model_Form extends Wtk_Pages_Model
 	else
 	  $current = reset($this->pages_id);
 	$model->errors = array();
-	$completed = false;
       }
       else { // continuer, terminer
 	// suppression des erreurs ne concernant pas la page
@@ -82,7 +83,7 @@ class Wtk_Pages_Model_Form extends Wtk_Pages_Model
 	  if (isset($this->pages_id[$i]))
 	    $current = $this->pages_id[$i];
 	  else
-	    $current = '$$completed$$';
+	    $completed = true;
 	}
       }
     }
@@ -91,8 +92,15 @@ class Wtk_Pages_Model_Form extends Wtk_Pages_Model
     $i = $this->root->getChild('$$current$$');
     $i->set($current);
 
-    $completed = $current == '$$completed$$';
     return !count($model->errors) && $completed;
+  }
+
+  function gotoPage($page)
+  {
+    if (!in_array($page, $this->pages_id))
+      throw new Exception("Can't go to inexistant form step $page");
+
+    $this->current = $page;
   }
 
   function isValid()
@@ -154,7 +162,10 @@ class Wtk_Pages_Model_Form extends Wtk_Pages_Model
   // retourne le groupe courant.
   public function current()
   {
-    return $this->root->getChild($this->current);
+    try {
+      $this->root->getChild($this->current);
+    }
+    catch (Exception $e) { return null; }
   }
 
   /*
