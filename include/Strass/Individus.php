@@ -309,7 +309,7 @@ class Individu extends Strass_Db_Table_Row_Abstract implements Zend_Acl_Role_Int
     foreach($us as $u) {
       $unites[$u->id] = $u;
       $unites = array_merge($unites,
-			    ($recursif ? $u->getSousUnites() : array()));
+			    ($recursif ? $u->findSousUnites() : array()));
     }
     return $unites;
   }

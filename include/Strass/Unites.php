@@ -38,7 +38,7 @@ class Unites extends Strass_Db_Table_Abstract
     // sélectionner *toutes* les sous-unités.
     $unites = $ids_parent;
     foreach($rows as $unite) {
-      $sus = $unite->getSousUnites(true, $annee);
+      $sus = $unite->findSousUnites(true, $annee);
       foreach($sus as $su)
 	$unites[] = $su->id;
     }
@@ -69,8 +69,9 @@ class Unites extends Strass_Db_Table_Abstract
   protected function _ordonner($select)
   {
     $select->distinct()
-      ->join('unite_type', 'unite.type = unite_type.id', array())
-      ->order('unite_type.ordre');
+      ->join(array('strass_unite_ordre' => 'unite_type'),
+	     'strass_unite_ordre.id = unite.id'."\n", array())
+      ->order('strass_unite_ordre.ordre');
   }
 
   protected function _getStatut($ouverte, $where = null) {
@@ -309,61 +310,49 @@ class Unite extends Strass_Db_Table_Row_Abstract implements Zend_Acl_Resource_In
   }
 
   // retourne les sous-unités, récursivement ou non
-  //
-  // annee = null       ->toutes
-  //       = false      ->actives
-  //       = true       ->fermées
-  //       = <annee>    ->active en <annee>
-  public function getSousUnites($recursif = true, $annee = null) {
-    $ia = intval($annee);
-    $ir = intval($recursif);
-    if (!isset(self::$ssu[$this->id]))
-      self::$ssu[$this->id] = array();
+  public function findSousUnites($recursif = true, $annee = null) {
+    $unites = array();
+    $db = $this->getTable()->getAdapter();
+    $select = $this->getTable()->select()
+      ->setIntegrityCheck(false)
+      ->from('unite')
+      ->where('unite.parent = ?'."\n", $this->id);
 
-    if (!isset(self::$ssu[$this->id][$ia]))
-      self::$ssu[$this->id][$ia] = array();
-
-    if (!isset(self::$ssu[$this->id][$ia][$ir])) {
-      $unites = array();
-      $db = $this->getTable()->getAdapter();
-      $select = $this->getTable()->select()
-	->setIntegrityCheck(false)
-	->from('unite')
-	->where('unite.parent = ?', $this->id);
-
-      if (!is_null($annee)) {
-	$select
-	  ->join('unite_type', 'unite_type.id = unite.type', array())
-	  ->join('appartenance',
-		 'appartenance.unite = unite.id'.
-		 ' OR '.
-		 ("(unite_type.virtuelle".
-		  " AND ".
-		  " appartenance.unite = unite.parent)"),
-		 array());
-	if ($annee === false)
-	  $select->where('appartenance.fin IS NULL');
-	else if ($annee === true)
-	  $select->where('appartenance.fin IS NOT NULL');
-	else {
-	  $date = ($annee+1).'-06';
-	  $select->where("debut < ? AND (fin IS NULL OR fin >= ?)", $date);
-	}
-      }
-
-      $su = $this->getTable()->fetchAll($select);
-      foreach($su as $u) {
-	$unites[] = $u;
-	if ($recursif) {
-	  $sousunites = $u->getSousUnites($recursif, $annee);
-	  if ($sousunites) {
-	    $unites = array_merge($unites, $sousunites);
-	  }
-	}
-      }
-      self::$ssu[$this->id][$ia][$ir] = $unites;
+    if (!$annee) {
+      $select
+	->join('unite_type', 'unite_type.id = unite.type', array())
+	->joinLeft(array('actif' => 'appartenance'),
+		   'actif.unite = unite.id'."\n".
+		   ' OR '.
+		   ("(unite_type.virtuelle".
+		    " AND ".
+		    " actif.unite = unite.parent)"),
+		   array())
+	->joinLeft(array('inactif' => 'appartenance'),
+		   'inactif.unite = unite.id'."\n".
+		   ' OR '.
+		   ("(unite_type.virtuelle".
+		    " AND ".
+		    " inactif.unite = unite.parent)").
+		   ' AND inactif.fin IS NOT NULL',
+		   array());
+      $date = ($annee+1).'-06-01';
+      $select->where("(actif.debut < ? AND (actif.fin IS NULL OR ?<= actif.fin))".
+		     " OR inactif.ID IS NULL", $date);
     }
-    return self::$ssu[$this->id][$ia][$ir];
+
+    $su = $this->getTable()->fetchAll($select);
+    foreach($su as $u) {
+      $unites[] = $u;
+      if ($recursif) {
+	$sousunites = $u->findSousUnites($recursif, $annee);
+	if ($sousunites) {
+	  $unites = array_merge($unites, $sousunites);
+	}
+      }
+    }
+
+    return $unites;
   }
 
   /**
@@ -443,9 +432,23 @@ class Unite extends Strass_Db_Table_Row_Abstract implements Zend_Acl_Resource_In
   function isFermee()
   {
     if (is_null($this->fermee)) {
-      $this->fermee = $this->getApps()->count() == 0;
+      $t = new Appartenances;
+      $db = $t->getAdapter();
+      $s = $t->select()
+	->distinct()
+	->from('appartenance')
+	->where('fin IS NULL')
+	->where('unite = ?', $this->id);
+      $actives = $t->countRows($s);
+      $s = $t->select()
+	->distinct()
+	->from('appartenance')
+	->where('fin IS NOT NULL')
+	->where('unite = ?', $this->id);
+      $inactives = $t->countRows($s);
+      $this->fermee = $actives == 0 && $inactives > 0;
       if ($this->fermee && !$this->isTerminale())
-	$this->fermee = count($this->getSousUnites(null, false)) == 0;
+	$this->fermee = count($this->findSousUnites(null, false)) == 0;
     }
     return $this->fermee;
   }
@@ -461,7 +464,7 @@ class Unite extends Strass_Db_Table_Row_Abstract implements Zend_Acl_Resource_In
     }
 
     if ($recursif) {
-      $us = $this->getSousUnites(false, false);
+      $us = $this->findSousUnites(false, false);
       foreach($us as $u) {
 	$u->fermer($fin, $recursif);
       }

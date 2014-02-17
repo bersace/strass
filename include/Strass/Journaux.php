@@ -20,7 +20,7 @@ class Journal extends Strass_Db_Table_Row_Abstract implements Zend_Acl_Resource_
   {
     $u = $this->findParentUnites();
     $acl->allow($u, $this, 'ecrire');       // permettre à toute l'unité de poster
-    $acl->allow($u->getSousUnites(), $this, 'ecrire'); // et aux sous-unités
+    $acl->allow($u->findSousUnites(), $this, 'ecrire'); // et aux sous-unités
   }
 
   function getResourceId()

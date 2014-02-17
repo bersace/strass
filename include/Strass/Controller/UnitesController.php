@@ -46,33 +46,25 @@ class UnitesController extends Strass_Controller_Action
 
   function contactsAction()
   {
-    $this->view->unite = $unite = $this->_helper->Unite();
-    $this->view->annee = $annee = $this->_helper->Annee();
-    $this->assert(null, $unite, null,
+    $this->metas(array('DC.Title.alternative' => 'Effectifs'));
+    $this->view->unite = $u = $this->_helper->Unite();
+    $this->branche->append(null, array('annee' => false));
+    $this->view->annee = $a = $this->_helper->Annee();
+    $this->metas(array('DC.Title' => 'Effectifs '.$a));
+
+    $this->assert(null, $u, null,
 		  "Vous n'avez pas le droit de voir les contacts de l'unité");
-    $this->view->model = new Strass_Pages_Model_Contacts($unite, $annee);
+    $this->view->model = new Strass_Pages_Model_Contacts($u, $a);
 
     $i = Zend_Registry::get('user');
     // si l'individu est connecté, on propose le lien.
     $this->view->fiches = (bool) $i;
 
-    $this->metas(array('DC.Title' => 'Effectifs '.$annee,
-		       'DC.Title.alternate' => 'Effectifs '.$annee.' – '.
-		       wtk_ucfirst($unite->getFullname())));
 
-    if (!$unite->findParentTypesUnite()->virtuelle) {
-      $this->actions->append(array('label' => "Compléter l'effectif"),
-			     array('controller' => 'unites',
-				   'action' => 'historique',
-				   'unite' => $unite->slug),
-			     array(null, $unite));
-
-      $this->actions->append(array('label' => "Inscrire un nouveau"),
-			     array('controller' => 'inscription',
-				   'action' => 'nouveau',
-				   'unite' => $unite->slug),
-			     array(null, $unite));
-    }
+    if (!$u->findParentTypesUnite()->virtuelle)
+      $this->actions->append(array('label' => "Inscrire"),
+			     array('action' => 'inscrire', 'unite' => $u->slug),
+			     array(null, $u));
 
     /* $this->formats('vcf', 'ods', 'csv'); */
   }
@@ -316,7 +308,7 @@ class UnitesController extends Strass_Controller_Action
 	  $i = $ti->findOne($k);
 	}
 	else {
-	  $i = $ti->findOne($data['individu']);
+	  $i = $individu;
 	}
 
 	$data = array('unite' => $u->id,

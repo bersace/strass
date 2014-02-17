@@ -453,7 +453,7 @@ class Activite extends Strass_Db_Table_Row_Abstract implements Zend_Acl_Resource
     $participantes = array();
     foreach($rows as $unite) {
       $participantes[] = $unite->id;
-      $sus = $unite->getSousUnites(true, $this->getAnnee());
+      $sus = $unite->findSousUnites(true, $this->getAnnee());
       foreach($sus as $su) {
 	$participantes[] = $su->id;
       }

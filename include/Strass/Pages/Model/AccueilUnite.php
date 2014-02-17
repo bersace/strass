@@ -7,7 +7,7 @@ class Strass_Pages_Model_AccueilUnite extends Strass_Pages_Model_Historique
     $u = $this->unite;
     $w = $u->getWiki();
 
-    $unites = $u->getSousUnites(false, $annee);
+    $unites = $u->findSousUnites(false, $annee);
     $photos = new Photos;
 
     $select = $photos->select()

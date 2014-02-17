@@ -104,6 +104,10 @@ td.numero
 	@include minipage;
     }
 
+    #document.contacts table {
+	width: 100%;
+    }
+
     #effectifs > table.meute td.accr
     {
 	width: auto;
