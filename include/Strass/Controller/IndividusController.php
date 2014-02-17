@@ -114,9 +114,13 @@ class IndividusController extends Strass_Controller_Action
       $db->beginTransaction();
       try {
 	// contacts
-	$champs = array('nom', 'prenom', 'naissance',
-			'adelec', 'portable',
+	$champs = array('nom', 'prenom', 'naissance', 'portable',
 			'fixe', 'adresse', 'notes');
+	try {
+	  $m->getInstance('adelec');
+	  array_push($champs, 'adelec');
+	}
+	catch(Exception $e) {}
 
 	if ($sachem)
 	  $champs[] = 'totem';
