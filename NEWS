@@ -47,6 +47,19 @@ NOUVEAUTÉS UTILISATEUR
 
 CHANGEMENTS WEBMESTRE
 
+ - Un assistant d'installation est proposé permettant d'initialiser la
+   base et de créer le premier compte.
+
+ - Un tableau de bord d'administration présente des indicateurs, le
+   journal système, les dernières connexions.
+
+ - Les paramètres du site sont éditables : métas données,
+   configuration SMTP, etc.
+
+ - Les évènements du journal système ont une source et un niveau
+   d'alerte. Les bugs apparaissent dans le journal (autant que
+   possible, bien sûr).
+
  - Un thème par défaut est proposé.
 
  - L'année est un paramètre de base dans les URL

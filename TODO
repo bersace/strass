@@ -1,47 +1,49 @@
- * Illustration de calendrier data/calendrier/<unite>/<annee>.png
 
- * Pièces jointes privées
+ * Masquer complètement les erreurs 500.
 
- * Photo non supprimée du RSS.
+ * Export contact, calendrier et photos avec webdav
 
- * À l'inscription d'un nouveau, ne pas recréer si existant.
-
- * Profiler les requêtes SQL avec Zend_Db_Profiler
-
- * Écrire un manuel pour utilisateur ?
-
- * Cohérence des dates d'activités.
+ * Gérer plusieurs personnes ayant le même nom
 
  * Début et fin de role via les activités
 
- * Refactoriser le schémas BD : clef primaires entier, clef secondaire
-   "slug". Avant le site du clan St Raphaël archange !
+ * Gérer le sexe et l'âge min-max par rôle et non par type d'unité.
+
+ * Inscrire un scout sans le mettre dans une patrouille.
+
+ * Illustration de calendrier data/calendrier/<unite>/<annee>.png
+
+ * Pièces jointes privées
 
  * Thème CSS des courriels, avec composant *par* courriel, fichiers
    embarqués, (cid:, etc.)
 
  * Présenter une vue par année des informations. Une sorte de trombi
-   des années : chef, équipes, routes, photos, progression ?
-
- * Administrer les unités
-
- * Aperçu éditeur pour article, rapport, etc.
-
- * Recherche interne (Lucene)
-
- * Installateur
-
-  * Profils mouvement (structures, progression)
-
- * Export contact, calendrier et photos avec webdav
-
- * Publipostage (PDF, enveloppe DL/?)
+   des années : chef, équipes, routes, photos ?
 
  * Intégration Céphée : import du CSV des effectifs.
 
+ * Les vidéos sont elles supportées ? les diapos ? Picasa ? Flickr ?
+
+ * Aperçu éditeur pour article, rapport, etc. Markdown ?
+
+ * Recherche interne (Lucene)
+
  * Faire une alerte propre en cas de nom ou fonction (CT, CC...) déjà existant pour un membre
 
- * Gérer plusieurs personnes ayant le même nom
+ * Cohérence des dates d'activités.
+
+ * Les photos trop lourdes ne sont pas acceptées. (les compresser, ou
+   indiquer une limitation de taille ?).
+
+ * Paramétrer les photos : qualité, tailles des aperçus, taille des
+   photos
+
+BUGS :
+
+ * Photo non supprimée du RSS.
+
+ * À l'inscription d'un nouveau, ne pas recréer si existant.
 
  * Bandes jaunes pour les cheftaines de meute (à vérifier pour la
    ronde aussi).  Akéla n'a pas sa bande jaune dans les effectifs de
@@ -55,15 +57,8 @@
 
  * En non-connecté, Joséphine apparait comme "Akéla bagheera"
 
- * Les photos trop lourdes ne sont pas acceptées. (les compresser, ou
-   indiquer une limitation de taille ?)
+AUTRES :
 
- * Dans les journaux, les catégories se partagent entre les
-   différentes unités. Ex : la catégorie "chant" regroupe les chants
-   louveteaux et éclaireurs. Est-ce un comportement normal ?
-
- * Les vidéos sont elles supportées ? les diapos ?
-
- * Espace admin : stats, log, paramètres, inscriptions, etc.
+ * Profiler les requêtes SQL avec Zend_Db_Profiler
 
  * Passer à ZF 1.12 et jQuery
