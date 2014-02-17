@@ -9,22 +9,6 @@ class Wtk_Form_Model_Instance_Date extends Wtk_Form_Model_Instance
 	 */
 	function __construct ($path, $label, $value = NULL, $format = '%Y-%m-%d')
 	{
-		switch(gettype($value)) {
-		case 'null':
-		case 'NULL':
-			$value = $this->timeToDateArray(time());
-			break;
-		case 'integer':
-			$value = $this->timeToDateArray($value);
-			break;
-		case 'string':
-			$value = $this->timeToDateArray(strtotime($value));
-			break;
-		case 'array':
-			break;
-		default:
-			throw new Exception("Impossible de récupérer la date $path");
-		}
 		parent::__construct ($path, $label, $value);
 		$this->format = $format;
 	}
@@ -48,6 +32,27 @@ class Wtk_Form_Model_Instance_Date extends Wtk_Form_Model_Instance
 		$date = array_merge($default, $date);
 		extract($date);
 		return strtotime($year.'-'.$month.'-'.$day.' '.$hour.':'.$min.':'.$sec);
+	}
+
+	function set($value)
+	{
+	  switch(gettype($value)) {
+	  case 'null':
+	  case 'NULL':
+	    $value = $this->timeToDateArray(time());
+	    break;
+	  case 'integer':
+	    $value = $this->timeToDateArray($value);
+	    break;
+	  case 'string':
+	    $value = $this->timeToDateArray(strtotime($value));
+	    break;
+	  case 'array':
+	    break;
+	  default:
+	    throw new Exception("Impossible de récupérer la date $path");
+	  }
+	  parent::set($value);
 	}
 
 	function retrieve ($value)

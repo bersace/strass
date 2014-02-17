@@ -11,8 +11,8 @@ abstract class Wtk_Form_Model_Instance
   function __construct ($path, $label = null, $value = NULL)
   {
     $this->label	= $label;
-    $this->value	= $value;
     $this->valid	= NULL;
+    $this->set($value);
     $this->setPath ($path);
   }
 
