@@ -194,7 +194,6 @@ ul.adminlinks {
 	    margin: 5em auto;
 	    padding: 1ex;
 	    background: lighten($page_background, 22%);
-
 	    box-shadow: 2pt 4pt 1ex rgba(4, 4, 4, 0.5);
 	    border-radius: 1ex;
 
@@ -211,14 +210,31 @@ ul.adminlinks {
 	    }
 
 	    &.error {
-		.details {
+		color: $warn;
+		background-color: $warn_bg;
+		background-image: url("icones/attention.png");
+		background-position: 1em 1em;
+		background-repeat: no-repeat;
+
+		.h {
+		    margin-left: 48px;
+		    font-size: 140%;
+		}
+
+		#aide {
+		    font-size: 120%;
+		    width: 90%;
+		    margin: 0 auto;
+		}
+
+		#details {
 		    display: none;
 		}
 
 		&.showtrace {
 		    width: 80%;
 
-		    .details {
+		    #details {
 			display: block;
 
 			> .h {
@@ -232,7 +248,9 @@ ul.adminlinks {
 			    display: none;
 			}
 
-			&:hover > * {
+			&:hover > *,
+			&:active > *
+			{
 			    display: block;
 			}
 		    }
