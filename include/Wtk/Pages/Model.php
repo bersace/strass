@@ -44,9 +44,7 @@ abstract class Wtk_Pages_Model implements Iterator
 	// Retourne un élément de la page
 	abstract function fetch($id = null);
 
-	function current($id)
+	function current()
 	{
-		return $this->fetch($id);
-	}
-}
-
+		return $this->fetch($this->current);
+	}}

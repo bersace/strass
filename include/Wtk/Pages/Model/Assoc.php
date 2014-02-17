@@ -82,6 +82,6 @@ class Wtk_Pages_Model_Assoc extends Wtk_Pages_Model
 
 	public function count()
 	{
-	  return $this->pointer ? 1 : null;
+	  return 1;
 	}
 }
