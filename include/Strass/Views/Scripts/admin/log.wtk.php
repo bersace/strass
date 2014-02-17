@@ -17,6 +17,7 @@ class Strass_Pages_Renderer_Log extends Wtk_Pages_Renderer
     $model = $m = new Wtk_Table_Model('date', 'level', 'logger', 'label', 'url',
 				      'prenom-nom', 'fiche');
     $table = $t = new Wtk_Table($model, true, 'level');
+    $t->addFlags('logs');
 
     $t->addNewColumn("Niveau", new Wtk_Table_CellRenderer_Text('text', 'level'));
     $t->addNewColumn("Date", new Wtk_Table_CellRenderer_Text('text', 'date'));

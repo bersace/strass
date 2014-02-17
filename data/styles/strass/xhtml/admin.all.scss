@@ -89,7 +89,9 @@ table {
     width: 40em;
     min-height: 32em;
     overflow: hidden;
+}
 
+table.logs {
     td
     {
 	white-space: nowrap;

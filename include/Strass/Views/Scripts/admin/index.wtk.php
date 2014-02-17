@@ -11,7 +11,7 @@ $s = $this->document->addSection('log',
 							       'action' => 'log')),
 					      'Journal système'));
 if ($this->log->count()) {
-  $t = $s->addTable($this->log, false, 'level');
+  $t = $s->addTable($this->log, false, 'level')->addFlags('logs');
   $t->addNewColumn(null, new Wtk_Table_CellRenderer_Text('text', 'logger'));
   $t->addNewColumn(null, new Wtk_Table_CellRenderer_Link('href', 'fiche',
 							 'label', 'prenom-nom'));
