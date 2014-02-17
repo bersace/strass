@@ -21,7 +21,8 @@ class Strass_Format_Xhtml extends Strass_Format_Wtk
       $d = $controller->view->document->addDialog()
 	->addFlags($flash->level)
 	->setId('flash');
-      $d->addChild($flash->message);
+      $d->addParagraph($flash->message)->addFlags('message');
+      $d->addParagraph($flash->detail)->addFlags('detail');
       $flash->clear();
     }
     catch (Strass_Flash_Empty $e) {}

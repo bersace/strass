@@ -173,12 +173,20 @@ ul.adminlinks {
 	}
 
 	#flash {
-	    font-weight: bold;
 	    font-size: 105%;
-	    text-align: center;
-	    height: 3em;
-	    line-height: 3em;
-	    background-position: 1ex center;
+	    background-position: 1em .75em;
+
+	    .message {
+		height: 3em;
+		line-height: 3em;
+		margin: 0;
+		font-weight: bold;
+		text-align: center;
+	    }
+
+	    .detail {
+		margin: 0;
+	    }
 	}
 
 	& > div.dialog {
@@ -236,6 +244,7 @@ ul.adminlinks {
     #aside
     {
 	padding-top: 2em;
+	padding-bottom: 4em;
 
 	.section
 	{

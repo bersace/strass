@@ -7,29 +7,34 @@ class Strass_Flash
   const LEVEL_INFO = 'info';
   const LEVEL_WARNING = 'warn';
 
-  function __construct($level, $message)
+  function __construct($level, $message, $detail)
   {
     $this->level = $level;
     $this->message = $message;
+    $this->detail = $detail;
   }
+
+  static function getSessionNamespace()
+  {
+    return new Zend_Session_Namespace('strassFlash');
+  }
+
 
   function save()
   {
-    $session = new Zend_Session_Namespace('strassFlash');
-    $session->flash = $this;
+    self::getSessionNamespace()->flash = $this;
     return $this;
   }
 
   function clear()
   {
-    $session = new Zend_Session_Namespace('strassFlash');
-    $session->flash = null;
+    self::getSessionNamespace()->flash = null;
     return $this;
   }
 
   static function current()
   {
-    $session = new Zend_Session_Namespace('strassFlash');
+    $session = self::getSessionNamespace();
     if ($session->flash)
       return $session->flash;
     else
