@@ -100,6 +100,7 @@ class Wtk_Pages_Model_Form extends Wtk_Pages_Model
     if (!in_array($page, $this->pages_id))
       throw new Exception("Can't go to inexistant form step $page");
 
+    $this->data->getInstance('$$current$$')->set($page);
     $this->current = $page;
   }
 
