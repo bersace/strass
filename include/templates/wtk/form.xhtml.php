@@ -1,25 +1,30 @@
 <?php
 reset ($model->submissions);
 $submission = current ($model->submissions);
-$action = $submission->handler;
-switch ($submission->method) {
- case Wtk_Form_Model_Submission::METHOD_POST:
-   $method = 'post';
-   $enctype = NULL;
-   break;
- case Wtk_Form_Model_Submission::METHOD_GET:
-   $method = 'get';
-   $enctype = NULL;
-   break;
- case Wtk_Form_Model_Submission::METHOD_FORM_DATA:
- case Wtk_Form_Model_Submission::METHOD_MULTIPART:
-   $method = 'post';
-   $enctype = 'multipart/form-data';
-   break;
- default:
-   $method = NULL;
-   $enctype = NULL;
-   break;
+if ($submission) {
+  $action = $submission->handler;
+  switch ($submission->method) {
+  case Wtk_Form_Model_Submission::METHOD_POST:
+    $method = 'post';
+    $enctype = NULL;
+    break;
+  case Wtk_Form_Model_Submission::METHOD_GET:
+    $method = 'get';
+    $enctype = NULL;
+    break;
+  case Wtk_Form_Model_Submission::METHOD_FORM_DATA:
+  case Wtk_Form_Model_Submission::METHOD_MULTIPART:
+    $method = 'post';
+    $enctype = 'multipart/form-data';
+    break;
+  default:
+    $method = NULL;
+    $enctype = NULL;
+    break;
+  }
+}
+else {
+  $method = $enctype = $action = null;
 }
 ?>
 <form<?php
