@@ -9,16 +9,17 @@
     clear: both;
     text-align: left;
     width: 60%;
-    margin: 0 2em 0 0;
-    padding: 0 1em;
-    background: #f3f0df;
+    margin: 0 2em 2em 0;
+    padding: 0;
+    background: lighten($alt_background, 10%);
     border-radius: 1ex;
 
 
     .image
     {
 	float: left;
-	margin: 1ex;
+	margin: 1em;
+
 	&.empty {
 	    width: 200px;
 	}
