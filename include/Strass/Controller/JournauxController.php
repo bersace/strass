@@ -261,7 +261,7 @@ class JournauxController extends Strass_Controller_Action
 	  $mail = new Strass_Mail("Nouvel article : ".$data['titre']);
 	  // envoi à tous les chefs
 	  $u = $j->findParentUnites();
-	  $apps = $u->getApps();
+	  $apps = $u->findAppartenances();
 	  foreach($apps as $app) {
 	    $ind = $app->findParentIndividus();
 	    if ($ind->adelec)
@@ -348,7 +348,7 @@ class JournauxController extends Strass_Controller_Action
     if ($super) {
       // membres de l'unité
       $u = $j->findParentUnites();
-      $apps = $u->getApps(null, true);
+      $apps = $u->findAppartenances(null, true);
       $enum = array();
       foreach($apps as $app)
 	$enum[$app->individu] = $app->findParentIndividus()->getFullname(true, false);

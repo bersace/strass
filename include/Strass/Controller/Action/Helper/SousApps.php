@@ -14,7 +14,7 @@ class Strass_Controller_Action_Helper_SousApps extends Zend_Controller_Action_He
 				$ssapps[$su->id] = array();
 				break;
 			default:
-				$ssapps[$su->id] = $su->getApps($annee);
+				$ssapps[$su->id] = $su->findAppartenances($annee);
 				break;
 			}
 		}

@@ -359,11 +359,11 @@ class Unite extends Strass_Db_Table_Row_Abstract implements Zend_Acl_Resource_In
    * Retrouve les appartenances à l'unité en fonction de l'année en
    * tenant compte du type (ex: HP).
    */
-  public function getApps($annee = null, $recursive = false, $where = '')
+  public function findAppartenances($annee = null, $recursive = false)
   {
     $db = $this->getTable()->getAdapter();
 
-    $where = (array) $where;
+    $where = array();
 
     if ($annee === false)
       $where[]= 'fin IS NULL';
@@ -375,58 +375,49 @@ class Unite extends Strass_Db_Table_Row_Abstract implements Zend_Acl_Resource_In
       $where[]= $db->quoteInto('fin IS NULL OR STRFTIME("%Y-%m-%d", fin) >= ?', ($annee+1).'-01-01');
     }
 
-    $select = $this->getTable()->select()
+    $t = new Appartenances;
+    $select = $t->select()
       ->setIntegrityCheck(false)
       ->distinct()
       ->from('appartenance')
-      ->join('unite', 'unite.id = appartenance.unite')
-      ->join('unite_role',
-	     'unite_role.type = unite.type AND unite_role.id = appartenance.role',
-	     array());
+      ->join('unite_type', $db->quoteInto('unite_type.id = ?', $this->type), array())
+      ->joinLeft(array('soeur' => 'unite'),
+		 'unite_type.virtuelle AND '.
+		 $db->quoteInto('soeur.parent = ?', $this->parent)."\n",
+		 array());
 
-    switch($this->type) {
-    case 'hp':
-      $where[]= 'appartenance.role = "chef" OR appartenance.role = "assistant"';
-    case 'aines':
-      $select->join('unite',
-		    'appartenance.unite = unite.id'.
-		    ' AND '.
-		    '('.($db->quoteInto('unite.parent = ?',
-					$this->parent).
-			 ' OR '.
-			 $db->quoteInto('unite.id = ?',
-					$this->parent)).
-		    ')',
-		    array());
-      break;
-    default:
-      if ($recursive) {
-	$in = $db->select()
-	  ->from(array('filles' => 'unite'), 'id')
-	  ->where("filles.parent = ?", $this->id)
-	  ->orWhere("filles.id = ?", $this->id);
-	$select->where('unite IN (?)',
-		       new Zend_Db_Expr($in->__toString()));
-      }
-      else {
-	$select->where('unite = ?', $this->id);
-      }
-      break;
+    if ($recursive) {
+      $in = $db->select()
+	->from(array('filles' => 'unite'), 'id')
+	->where("filles.parent = ?", $this->id)
+	->orWhere("filles.id = ?", $this->id);
+      $select->where('appartenance.unite IN (?)',
+		     new Zend_Db_Expr($in->__toString()));
+    }
+    else {
+      $select->where('(unite_type.virtuelle AND '.
+		     ('(appartenance.unite = soeur.id OR '.
+		      $db->quoteInto('appartenance.unite = ?', $this->parent).')').') OR '.
+		     'appartenance.unite = ?', $this->id);
     }
 
-    $select->join('individu',
+    $select
+      ->order('appartenance.unite')
+      ->join('individu',
 		  "individu.id = appartenance.individu\n",
 		  array())
-      ->order('unite.id')
-      ->order('unite_role.ordre')
-      ->order('naissance');
+      ->order('naissance')
+      ->join('unite_role',
+	     'unite_role.id = appartenance.role',
+	     array())
+      ->order('unite_role.ordre');
+
     $where = array_filter($where);
     foreach($where as $clause)
       if ($clause)
 	$select->where($clause);
 
-    $ta = new Appartenances();
-    return $ta->fetchAll($select);
+    return $t->fetchAll($select);
   }
 
   function isFermee()

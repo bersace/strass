@@ -190,7 +190,7 @@ class AdminController extends Strass_Controller_Action
 	$ppath = array();
       }
 
-      $apps = $unite->getApps();
+      $apps = $unite->findAppartenances();
       $actifs = $apps->count();
       $path = $m->append($ppath,
 			 wtk_ucfirst($unite->getFullname()),

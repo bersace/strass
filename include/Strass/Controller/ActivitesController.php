@@ -197,7 +197,7 @@ class ActivitesController extends Strass_Controller_Action
     $apps = array();
     foreach ($us as $u) {
       if (!$u->abstraite)
-	$apps[] = $u->getApps($a->getAnnee());
+	$apps[] = $u->findAppartenances($a->getAnnee());
     }
     $this->view->apps = $apps;
 
@@ -217,7 +217,7 @@ class ActivitesController extends Strass_Controller_Action
     $apps = array();
     foreach ($us as $u) {
       if (!$u->abstraite) {
-	$ssapps = $u->getApps($a->getAnnee());
+	$ssapps = $u->findAppartenances($a->getAnnee());
 	foreach($ssapps as $app) {
 	  if ($this->assert($app->findParentIndividus(), $a, 'dossier'))
 	    $apps[] = $app;
