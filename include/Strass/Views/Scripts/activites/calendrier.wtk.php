@@ -29,8 +29,12 @@ class Strass_Views_PagesRenderer_Calendrier extends Strass_Views_PagesRenderer_H
     $t->addColumn(new Wtk_Table_Column("Activité", $c));
     // TODO: déterminer par activité si c'est future. Un
     // CellRendererLink spécialisé ferait l'affaire
-    $url = $this->view->url(array('action' => $future ? 'consulter' : 'rapport',
-				  'activite' => '%s'));
+    if ($future) {
+      $url = $this->view->url(array('controller' => 'activites', 'action' => 'consulter', 'activite' => '%s'));
+    }
+    else {
+      $url = $this->view->url(array('controller' => 'photos', 'action' => 'consulter', 'album' => '%s'));
+    }
     $c->setUrlFormat(urldecode($url));
 
     if($future)
