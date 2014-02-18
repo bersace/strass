@@ -40,180 +40,101 @@ class PhotosController extends Strass_Controller_Action
   function envoyerAction()
   {
     $ta = new Activites;
-    $a = $activite = $this->_helper->Activite(null, false);
+    $a = $activite = $this->_helper->Album(null, false);
 
-    $enum = array();
-    if (!$activite) {
-      $i = Zend_Registry::get('user');
-      if (!$i)
-	throw new Strass_Controller_Action_Exception_Forbidden("Vous devez être identifé pour envoyer des photos.");
-
-      $annee = $this->_helper->Annee(false);
-      $debut = $annee ? $this->_helper->Annee->dateDebut($annee) : null;
-      $fin = $annee ? $this->_helper->Annee->dateFin($annee) : null;
-      $as = $this->_helper->Activite->pourIndividu(Zend_Registry::get('individu'), $debut, $fin);
-      if (!$as)
-	throw new Strass_Controller_Action_Exception_Forbidden("Vous ne pouvez envoyer de photos dans aucune activités.");
-      foreach($as as $a)
-	if ($this->assert(null, $a, 'envoyer-photo'))
-	  $enum[$a->id] = wtk_ucfirst($a->getIntitule());
+    if ($activite) {
+      $this->view->activite = $activite;
+      $as = array($activite);
     }
     else {
-      $this->assert(null, $activite, 'envoyer-photo',
-		    "Vous n'avez pas le droit d'envoyer de photos de l'activité ".
-		    $a.". ");
-      $enum[$a->id] = wtk_ucfirst($activite->getIntitule());
-    }
+      $annee = $this->_helper->Annee(false);
+      $individu = Zend_Registry::get('individu');
+      $as = $individu->findActivites($annee);
 
-    $this->view->activite = $activite ? $activite->getIntitule() : current($enum);
+      if (count($as) == 1) {
+	$this->view->activite = current($as);
+	$this->_helper->Album->setBranche($as);
+      }
+    }
 
     $this->metas(array('DC.Title' => "Envoyer une photo",
 		       'DC.Subject' => 'envoyer,photos'));
     $this->view->model = $m = new Wtk_Form_Model('envoyer');
     $i = $m->addString('titre', 'Titre');
     $m->addConstraintRequired($i);
+
+    $enum = array();
+    foreach($as as $a)
+      if ($this->assert(null, $a, 'envoyer-photo'))
+	$enum[$a->id] = wtk_ucfirst($a->getIntitule());
+    if (!$enum)
+      throw new Strass_Controller_Action_Exception_Forbidden("Vous ne pouvez envoyer de photos ".
+							     "dans aucune activité.");
+
     $m->addEnum('activite', "Activité", key($enum), $enum);
     $m->addFile('photo', "Photo");
     $m->addString('commentaire', 'Votre commentaire');
     $m->addBool('envoyer', "J'ai d'autres photos à envoyer", true);
     $m->addNewSubmission('envoyer', "Envoyer");
 
-
     if ($m->validate()) {
-      $db = $ta->getAdapter();
+      $photo = $m->get();
+      unset($photo['photo']);
+
+      $activite = $ta->find($photo['activite'])->current();
+      $photo['slug'] = wtk_strtoid($photo['titre']);
+
+      $action = $photo['envoyer'] ? 'envoyer' : 'consulter';
+      unset($photo['envoyer']);
+      unset($photo['commentaire']);
+
+      $t = new Photos;
+      $db = $t->getAdapter();
       $db->beginTransaction();
 
       try {
-	$data = $m->get();
-	unset($data['photo']);
-
-	$activite = $ta->find($data['activite'])->current();
-	// id
-	$data['id'] = wtk_strtoid($data['titre']);
-	if (!$data['id']) {
-	  throw new Exception("Le titre n'est pas suffisant");
-	}
-
-	$action = $data['envoyer'] ? 'envoyer' : 'consulter';
-	unset($data['envoyer']);
-	unset($data['commentaire']);
+	$tc = new Commentaires;
+	$k = $tc->insert(array('auteur' => $individu->id,
+			       'message' => $m->get('commentaire')));
+	$photo['commentaires'] = $k;
+	$k = $t->insert($photo);
+	$photo = $t->findOne($k);
 
 	$tmp = $m->getInstance('photo')->getTempFilename();
+	$photo->storeFile($tmp);
 
-	// date
-	$exif = exif_read_data($tmp);
-	if (array_key_exists('DateTimeOriginal', $exif)) {
-	  preg_match("`(\d{4})[:-](\d{2})[:-](\d{2}) (\d{2}):(\d{2}):(\d{2})`",
-		     $exif['DateTimeOriginal'], $match);
-	  $date = $match[1].'-'.$match[2].'-'.$match[3].' '.
-	    $match[4].':'.$match[5].':'.$match[6];
-	}
-	else
-	  $date = null;
-
-	if (!$date || $date < $activite->debut || $activite->fin < $activite->debut)
-	  $date = $activite->fin;
-	$data['date'] =  $date;
-
-	// fichier
-	$tr = Image_Transform::factory('GD');
-	if (PEAR::isError($tr))
-	  Orror::kill($tr);
-
-	$tr->load($tmp);
-
-	$dossier = $activite->getDossierPhoto();
-	$suffixe = '.jpeg';
-	$fichier = $dossier.$data['id'].$suffixe;
-
-	list($w, $h) = $tr->getImageSize();
-
-	// image
-	if (!file_exists($dossier))
-	  mkdir($dossier, 0755, true);
-	$max = 1280;
-	$ratio = max($h/$max, $w/$max);
-	$ratio = max($ratio, 1);
-	$w /= $ratio;
-	$h /= $ratio;
-	$tr->resize(intval($w), intval($h));
-	if (Pear::isError($e = @$tr->save($fichier, 'jpeg')))
-	  throw new Strass_Controller_Action_Exception_Internal(null,
-								"Impossible d'enregistrer le fichier ".$fichier." : ".
-								"« ".$e->getMessage()." »");
-	$tr->free();
-
-	// vignette
-	$mini = $dossier.$data['id'].'-vignette'.$suffixe;
-	$tr->load($fichier);
-	list($w, $h) = $tr->getImageSize();
-	$hv = 256;
-	$ratio = $h / $hv;
-	$w /= $ratio;
-	$tr->resize(intval($w), $hv);
-	if (Pear::isError($e = @$tr->save($mini, 'jpeg')))
-	  throw new Strass_Controller_Action_Exception_Internal(null,
-								"Impossible d'enregistrer le fichier ".$mini." : ".
-								"« ".$e->getMessage()." »");
-	$tr->free();
-
-	$photos = new Photos();
-	$key = $photos->insert($data);
-
-	if ($m->get('commentaire')) {
-	  $tc = new Commentaires;
-	  $data = array('activite' => $activite->id,
-			'photo'	=> $key['id'],
-			'individu' => Zend_Registry::get('user')->id,
-			'commentaire' => $m->get('commentaire'),
-			'date' => strftime('%Y-%m-%d %T'));
-	  $tc->insert($data);
-	}
-
-	$this->_helper->Log("Photo envoyée", array($activite),
-			    $this->_helper->Url->url(array('action' => 'voir',
-							   'activite' => $activite->id,
-							   'photo' => $key['id'])),
-			    $activite." – ".$m->titre);
+	$this->logger->info("Photo envoyée",
+			    $this->_helper->Url('voir', null, null, array('photo' => $photo->slug)));
 
 	$db->commit();
-	$this->redirectSimple($action, 'photos', null,
-			      array('activite' => $activite->id));
       }
       catch(Exception $e) {
 	$db->rollBack();
 	throw $e;
       }
-    }
 
-    if ($activite) {
-      $this->actions->append("Revenir à l'album",
-			     array('action' => 'consulter',
-				   'photo' => null));
+      $this->redirectSimple($action, null, null, array('album' => $activite->slug));
     }
-    $this->actions->append("Nouvelle activité",
-			   array('controller' => 'activites',
-				 'action' => 'prevoir'));
   }
 
   function voirAction()
   {
-    $photo = $this->_helper->Photo();
+    $this->view->photo = $photo = $this->_helper->Photo();
     $s = $photo->getTable()->select()->order('date');
-    $a = $photo->findParentActivites();
+    $this->view->activite = $a = $photo->findParentActivites();
     $ps = $a->findPhotos($s);
     $data = array();
     foreach($ps as $p)
       $data[$p->slug] = $p;
 
-    $m = new Wtk_Pages_Model_Assoc($data, $photo->slug);
+    $this->view->commentaires = $photo->findCommentaires();
+    $this->view->model = $m = new Wtk_Pages_Model_Assoc($data, $photo->slug);
 
     $this->metas(array('DC.Title' => wtk_ucfirst($photo->titre),
 		       'DC.Subject' => 'photo',
 		       'DC.Date.created' => $photo->date));
     $this->connexes->append("Revenir à l'album",
-			    array('action' => 'consulter',
-				  'photo' => null));
+			    array('action' => 'consulter', 'photo' => null, 'album' => $a->slug));
 
     // cherche le commentaire de l'individu
     if ($i = Zend_Registry::get('user')) {
@@ -226,19 +147,14 @@ class PhotosController extends Strass_Controller_Action
       $this->actions->append($c ? "Éditer votre commentaire" : "Commenter",
 			     array('action' => 'commenter'),
 			     array(null, $photo));
-      $this->actions->append("Modifier",
-			     array('action' => 'modifier',
-				   'annee' => $a->getAnnee()),
-			     array(null, $a));
-      $this->actions->append("Supprimer",
-			     array('action' => 'supprimer'),
-			     array(null, $a));
-
     }
-    $this->view->model = $m;
-    $this->view->activite = $a;
-    $this->view->photo = $photo;
-    $this->view->commentaires = $photo->findCommentaires();
+
+    $this->actions->append("Modifier",
+			   array('action' => 'modifier'),
+			   array(null, $photo));
+    $this->actions->append("Supprimer",
+			   array('action' => 'supprimer'),
+			   array(null, $photo));
   }
 
   function modifierAction()
@@ -402,7 +318,7 @@ class PhotosController extends Strass_Controller_Action
 			      (string) $a);
 	  $db->commit();
 	  $this->redirectSimple('consulter', 'photos', null,
-				array('activite' => $a->id));
+				array('album' => $a->id));
 	}
 	catch(Exception $e) {
 	  $db->rollBack();

@@ -12,7 +12,7 @@ class Strass_Controller_Action_Helper_Album extends Zend_Controller_Action_Helpe
 
     if (!$activite)
       if ($throw)
-	throw new Strass_Controller_Action_Exception_Notice("Album ".$slug." inexistante.");
+	throw new Strass_Controller_Action_Exception_Notice("Album ".$slug." inexistant");
       else
 	return null;
 
@@ -26,13 +26,7 @@ class Strass_Controller_Action_Helper_Album extends Zend_Controller_Action_Helpe
     $unites = $activite->findUnitesParticipantesExplicites();
     if ($unites->count() == 1) {
       $unite = $unites->current();
-      $urlOptions = array('controller'=> 'photos',
-			  'action'	=> 'index',
-			  'unite'	=> $unite->slug);
-      $this->_actionController->branche->append(wtk_ucfirst($unite->getName()),
-						$urlOptions,
-						array(),
-						true);
+      $this->_actionController->_helper->Unite->setBranche($unite, 'index', 'photos');
 
       $urlOptions = array('controller'=> 'photos',
 			  'action'	=> 'index',

@@ -280,6 +280,31 @@ class Individu extends Strass_Db_Table_Row_Abstract implements Zend_Acl_Role_Int
     return $t->fetchAll($s)->current();
   }
 
+  function findActivites($annee=null)
+  {
+    $t = new Activites;
+    $db = $t->getAdapter();
+    $s = $t->select()
+      ->setIntegrityCheck(false)
+      ->distinct()
+      ->from('activite')
+      ->join('participation', 'participation.activite = activite.id', array())
+      ->join('unite', 'unite.id = participation.unite', array())
+      ->join('appartenance',
+	     $db->quoteInto("appartenance.individu = ?", $this->id)." AND ".
+	     "appartenance.unite = unite.id", array())
+      // on trie de manière à avoir les activités
+      // les plus récentes en haut de liste.
+      ->order('activite.debut DESC');
+
+    if ($annee) {
+      $s->where("activite.debut >= ?", $annee.'-08-31');
+      $s->where("activite.fin <= ?", ($annee+1).'-08-31');
+    }
+
+    return $t->fetchAll($s);
+  }
+
   function getImage($id = null, $test = true)
   {
     $ind = Zend_Registry::get('user');
@@ -580,6 +605,11 @@ class FakeIndividu implements Zend_Acl_Resource_Interface, Zend_Acl_Role_Interfa
   public function getResourceId()
   {
     return 'individu-'.$this->slug;
+  }
+
+  function findActivites()
+  {
+    return array();
   }
 }
 

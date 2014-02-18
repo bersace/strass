@@ -1,4 +1,6 @@
 
+ * Commenter la photo sur sa page
+
  * Export contact, calendrier et photos avec webdav
 
  * Gérer les homonymes
@@ -71,9 +73,11 @@ BUGS :
 
 AUTRES :
 
+ * Gérer le type date de SQLite dans l'adapter, pour n'avoir que des epoch
+
  * Profiler les requêtes SQL avec Zend_Db_Profiler
 
- * Passer à ZF 1.12 et jQuery
+ * Passer à ZF 1.12 ? et jQuery ?
 
 CAS :
 

@@ -1,6 +1,8 @@
 /*-*- css -*-*/
 
-#document h1 {
+@import "common";
+
+#document.voir h1 {
     text-align: center;
     font-size: 200%;
 }
@@ -30,14 +32,12 @@
     background: white;
 }
 
+#document form {
+    @include minipage;
+}
+
 #document.photos.voir ul
 {
     margin: 1em;
     padding: 0;
-}
-
-#document.supprimer form
-{
-    width: 50%;
-    margin: 1em auto;
 }

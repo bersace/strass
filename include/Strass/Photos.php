@@ -106,7 +106,7 @@ class Photo extends Strass_Db_Table_Row_Abstract implements Zend_Acl_Resource_In
     }
     else {
       $ta = new Activites;
-      $a = $ta->find($data['activite']);
+      $a = $ta->findOne($data['activite']);
     }
     $d = $a->getDossierPhoto();
 
@@ -121,6 +121,54 @@ class Photo extends Strass_Db_Table_Row_Abstract implements Zend_Acl_Resource_In
   function getCheminVignette($data = null)
   {
     return $this->getChemin($data).'-vignette.jpeg';
+  }
+
+  function storeFile($path)
+  {
+    $activite = $this->findParentActivites();
+
+    /* date */
+    $exif = exif_read_data($tmp);
+    if (array_key_exists('DateTimeOriginal', $exif)) {
+      preg_match("`(\d{4})[:-](\d{2})[:-](\d{2}) (\d{2}):(\d{2}):(\d{2})`",
+		 $exif['DateTimeOriginal'], $match);
+      $this->date = $match[1].'-'.$match[2].'-'.$match[3].' '.
+	$match[4].':'.$match[5].':'.$match[6];
+    }
+    else
+      $this->date = $activite->fin;
+
+    $this->save();
+
+    /* fichier */
+    $tr = Image_Transform::factory('GD');
+    if (PEAR::isError($tr))
+      throw new Exception($tr->getMessage());
+
+    $tr->load($path);
+
+    $dossier = $activite->getDossierPhoto();
+    $suffixe = '.jpeg';
+    $fichier = $dossier.'/'.$this->slug.$suffixe;
+
+    if (!file_exists($dossier))
+      mkdir($dossier, 0755, true);
+    $tr->fit(2048);
+    if (Pear::isError($e = @$tr->save($fichier, 'jpeg')))
+      throw new Strass_Controller_Action_Exception_Internal(null,
+							    "Impossible d'enregistrer ".$fichier." : ".
+							    "« ".$e->getMessage()." »");
+    $tr->free();
+
+    /* vignette */
+    $mini = $dossier.'/'.$this->slug.'-vignette'.$suffixe;
+    $tr->load($fichier);
+    $tr->fit(256);
+    if (Pear::isError($e = @$tr->save($mini, 'jpeg')))
+      throw new Strass_Controller_Action_Exception_Internal(null,
+							    "Impossible d'enregistrer ".$mini." : ".
+							    "« ".$e->getMessage()." »");
+    $tr->free();
   }
 
   function findCommentaires() {
