@@ -40,7 +40,7 @@ function wtk_glob($pattern, $flags = 0) {
 		return $glob;
 	} else {
 		return false;
-	}   
+	}
 }
 
 /*
@@ -94,7 +94,7 @@ function wtk_steno_to_int($str)
 		$m*= 1024;
 	case 'm':
 		$m*= 1024;
-	case 'k':    
+	case 'k':
 		$m*= 1024;
 	default:
 		$m*= 1;
@@ -106,10 +106,14 @@ function wtk_steno_to_int($str)
 /* on pourrai appeler cette fonction instiancate_user_class_array() */
 function wtk_new($class, $args)
 {
+  if (!class_exists($class))
+    throw new Exception("Class $class inexistant");
+
 	$code = '$obj = new '.$class.' ('.implode(', ', wtk_args_string('args', $args)).');';
 	eval($code);
 	return $obj;
 }
+
 /**
  * Returne un tableau contenant les chaînes de chaque arguments à passer à
  * eval() pour faire un appel de fonction avec les valeurs de $args.
