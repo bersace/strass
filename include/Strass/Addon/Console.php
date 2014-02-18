@@ -24,25 +24,10 @@ class Strass_Addon_Console extends Strass_Addon_Liens
     $actual = Zend_Registry::get('actual_user');
 
     if ($view->individu) {
-      $us = $view->individu->getUnites();
-      if (count($us) == 1) {
-	$u = current($us);
-	$this->append(wtk_ucfirst($u->getFullName()),
-		      array('controller' => 'unites',
-			    'action' => 'index',
-			    'unite' => $u->slug));
-	$this->append('Votre calendrier',
-		      array('controller' => 'activites',
-			    'action'	=> 'index'));
-      }
-
       $this->append('Votre fiche',
 		    array('controller' => 'individus',
 			  'action' => 'fiche',
 			  'individu' => $view->individu->slug));
-      $this->append('Votre compte',
-		    array('controller' => 'membres',
-			  'action' => 'parametres'));
     }
 
 
