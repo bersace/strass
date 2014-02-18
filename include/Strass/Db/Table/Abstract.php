@@ -5,6 +5,30 @@ class Strass_Db_Table_NotFound extends Zend_Db_Table_Exception {}
 
 abstract class Strass_Db_Table_Abstract extends Zend_Db_Table_Abstract
 {
+  function createSlug($base)
+  {
+    $s = $this->getAdapter()->select()
+      ->from($this->_name, array('slug'))
+      ->where('slug LIKE ?', $base.'%');
+
+    $r = $this->getAdapter()->query($s)->fetchAll();
+    $existants = array();
+    foreach($r as $row)
+      array_push($existants, $row['slug']);
+
+    $i = 0;
+    do {
+      $candidat = $base;
+      if ($i)
+	$candidat.= '-'.$i;
+
+      if (in_array($candidat, $existants))
+	$i++;
+      else
+	return $candidat;
+    } while(true);
+  }
+
   function findBySlug($slug) {
     $s = $this->select()->where($this->_name.'.slug = ?', $slug);
     return $this->fetchAll($s)->current();
