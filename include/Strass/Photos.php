@@ -138,45 +138,36 @@ class Photo extends Strass_Db_Table_Row_Abstract implements Zend_Acl_Resource_In
     else
       $this->date = $activite->fin;
 
-    /* fichier */
-    $tr = Image_Transform::factory('GD');
-    if (PEAR::isError($tr))
-      throw new Exception($tr->getMessage());
-
-    $tr->load($path);
-
     $dossier = $activite->getDossierPhoto();
-    $suffixe = '.jpeg';
-    $fichier = $dossier.'/'.$this->slug.$suffixe;
-
     if (!file_exists($dossier))
       mkdir($dossier, 0755, true);
-    $e = $tr->fit(2048, 2048);
-    if (Pear::isError($e))
-      throw new Strass_Controller_Action_Exception_Internal(null,
-							    "Impossible de redimensionner ".$fichier." : ".
-							    "« ".$e->getMessage()." »");
 
-    if (Pear::isError($e = @$tr->save($fichier, 'jpeg')))
-      throw new Strass_Controller_Action_Exception_Internal(null,
-							    "Impossible d'enregistrer ".$fichier." : ".
-							    "« ".$e->getMessage()." »");
-    $tr->free();
+    $suffixe = '.jpeg';
+    $fichier = $dossier.'/'.$this->slug.$suffixe;
+    $vignette = $dossier.'/'.$this->slug.'-vignette'.$suffixe;
 
-    /* vignette */
-    $mini = $dossier.'/'.$this->slug.'-vignette'.$suffixe;
-    $tr->load($fichier);
-    $ret = $tr->fit(256, 256);
-    if (Pear::isError($ret))
-      throw new Strass_Controller_Action_Exception_Internal(null,
-							    "Impossible de redimensionner ".$mini." : ".
-							    "« ".$ret->getMessage()." »");
+    $config = Zend_Registry::get('config');
 
-    if (Pear::isError($e = @$tr->save($mini, 'jpeg')))
-      throw new Strass_Controller_Action_Exception_Internal(null,
-							    "Impossible d'enregistrer ".$mini." : ".
-							    "« ".$e->getMessage()." »");
-    $tr->free();
+    $image = new Imagick($path);
+    $image->setImageAlphaChannel(Imagick::ALPHACHANNEL_RESET);
+    $image->setImageCompression(Imagick::COMPRESSION_JPEG);
+    $image->setImageCompressionQuality($config->get('photo/qualite', 85));
+    $image->setImageFormat('jpeg');
+    $image->setBackgroundColor('white');
+    $width = $image->getImageWidth();
+    $height = $image->getImageWidth();
+
+    $MAX = $config->get('photo/taille', 2048);
+    if (min($width, $height) > $MAX)
+      $image->scaleImage($MAX, $MAX, true);
+    $image->writeImage($fichier);
+
+    $MAX = $config->get('photo/taille_vignette', 256);
+    if (min($width, $height) > $MAX)
+      $image->cropThumbnailImage($MAX, $MAX);
+    $image->writeImage($vignette);
+
+    unset($image);
 
     $this->save();
   }

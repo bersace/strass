@@ -78,17 +78,17 @@ class PhotosController extends Strass_Controller_Action
     $m->addNewSubmission('envoyer', "Envoyer");
 
     if ($m->validate()) {
+      $t = new Photos;
       $photo = $m->get();
       unset($photo['photo']);
 
       $activite = $ta->find($photo['activite'])->current();
-      $photo['slug'] = wtk_strtoid($photo['titre']);
+      $photo['slug'] = $t->createSlug(wtk_strtoid($photo['titre']));
 
       $action = $photo['envoyer'] ? 'envoyer' : 'consulter';
       unset($photo['envoyer']);
       unset($photo['commentaire']);
 
-      $t = new Photos;
       $db = $t->getAdapter();
       $db->beginTransaction();
 
@@ -103,6 +103,7 @@ class PhotosController extends Strass_Controller_Action
 	$tmp = $m->getInstance('photo')->getTempFilename();
 	$photo->storeFile($tmp);
 
+	$this->_helper->Flash->info("Photo envoyée");
 	$this->logger->info("Photo envoyée",
 			    $this->_helper->Url('voir', null, null, array('photo' => $photo->slug)));
 
