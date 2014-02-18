@@ -128,8 +128,8 @@ class Photo extends Strass_Db_Table_Row_Abstract implements Zend_Acl_Resource_In
     $activite = $this->findParentActivites();
 
     /* date */
-    $exif = exif_read_data($path);
-    if (array_key_exists('DateTimeOriginal', $exif)) {
+    $exif = @exif_read_data($path);
+    if ($exif && array_key_exists('DateTimeOriginal', $exif)) {
       preg_match("`(\d{4})[:-](\d{2})[:-](\d{2}) (\d{2}):(\d{2}):(\d{2})`",
 		 $exif['DateTimeOriginal'], $match);
       $this->date = $match[1].'-'.$match[2].'-'.$match[3].' '.
@@ -148,14 +148,15 @@ class Photo extends Strass_Db_Table_Row_Abstract implements Zend_Acl_Resource_In
 
     $config = Zend_Registry::get('config');
 
-    $image = new Imagick($path);
-    $image->setImageAlphaChannel(Imagick::ALPHACHANNEL_RESET);
+    $photo = new Imagick($path);
+    $width = $photo->getImageWidth();
+    $height = $photo->getImageHeight();
+
+    $image = new Imagick;
+    $image->newImage($width, $height, "white", 'jpeg');
     $image->setImageCompression(Imagick::COMPRESSION_JPEG);
     $image->setImageCompressionQuality($config->get('photo/qualite', 85));
-    $image->setImageFormat('jpeg');
-    $image->setBackgroundColor('white');
-    $width = $image->getImageWidth();
-    $height = $image->getImageWidth();
+    $image->compositeImage($photo, Imagick::COMPOSITE_OVER, 0, 0);
 
     $MAX = $config->get('photo/taille', 2048);
     if (min($width, $height) > $MAX)
