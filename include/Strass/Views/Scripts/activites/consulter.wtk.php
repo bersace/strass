@@ -13,7 +13,7 @@ if ($this->documents->count()) {
  }
 
 // UNITÉ PARTICIPANTES
-$unites = $a->getUnitesParticipantes();
+$unites = $a->findUnitesParticipantes();
 
 if ($unites->count()) {
 	$titre = "Unités participantes";

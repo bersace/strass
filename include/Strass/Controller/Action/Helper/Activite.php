@@ -49,7 +49,7 @@ class Strass_Controller_Action_Helper_Activite extends Zend_Controller_Action_He
       else
 	return null;
 
-    $unites = $activite->getUnitesParticipantesExplicites();
+    $unites = $activite->findUnitesParticipantesExplicites();
     if ($unites->count() == 1) {
       $unite = $unites->current();
       $urlOptions = array('controller'=> 'activites',

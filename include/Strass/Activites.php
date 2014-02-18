@@ -21,7 +21,7 @@ class Activites extends Strass_Db_Table_Abstract
 
   // Retourne les clefs primaires des unités qui ne sont pas
   // implicetement participante d'une activité via une unité parente.
-  static function getUnitesParticipantesExplicites($participantes)
+  static function findUnitesParticipantesExplicites($participantes)
   {
     $explicites = array();
     $parentes = clone $participantes;
@@ -75,7 +75,7 @@ class Activite extends Strass_Db_Table_Row_Abstract implements Zend_Acl_Resource
   {
     parent::__construct($config);
 
-    $this->initResourceAcl($this->getUnitesParticipantesExplicites());
+    $this->initResourceAcl($this->findUnitesParticipantesExplicites());
 
     $this->type = self::findType($this->debut, $this->fin);
     $this->annee = intval(date('Y', strtotime($this->debut) - 243 * 24 * 60 * 60));
@@ -90,7 +90,7 @@ class Activite extends Strass_Db_Table_Row_Abstract implements Zend_Acl_Resource
     $acl->allow(null, $this, 'rapport');
 
     // permettre à toute les maîtrise d'envoyer des photos.
-    $us = $this->getUnitesParticipantes();
+    $us = $this->findUnitesParticipantes();
     $chefs = array();
     foreach($us as $u) {
       if ($acl->hasRole($role = $u->getRoleRoleId('chef')))
@@ -157,7 +157,7 @@ class Activite extends Strass_Db_Table_Row_Abstract implements Zend_Acl_Resource
     }
     else {
       $intitule = self::generateIntitule($this->_data,
-					 $this->getUnitesParticipantes(),
+					 $this->findUnitesParticipantes(),
 					 false, $lieu, $compact);
     }
 
@@ -176,7 +176,7 @@ class Activite extends Strass_Db_Table_Row_Abstract implements Zend_Acl_Resource
   protected function getGeneratedIntitule()
   {
     return self::generateIntitule($this->toArray(),
-				  $this->getUnitesParticipantes());
+				  $this->findUnitesParticipantes());
   }
 
 
@@ -190,7 +190,7 @@ class Activite extends Strass_Db_Table_Row_Abstract implements Zend_Acl_Resource
     $type = self::findType($debut, $fin);
 
     $tu = new Unites();
-    $eids = Activites::getUnitesParticipantesExplicites($unites);
+    $eids = Activites::findUnitesParticipantesExplicites($unites);
 
     $explicites = count($eids) > 1 ? $tu->findMany($eids) : Unite::getInstance($eids[0]);
 
@@ -444,7 +444,7 @@ class Activite extends Strass_Db_Table_Row_Abstract implements Zend_Acl_Resource
     }
   }
 
-  function getUnitesParticipantes()
+  function findUnitesParticipantes()
   {
     // mettre à jour les participations
     $rows = $this->findUnitesViaParticipations();
@@ -464,10 +464,10 @@ class Activite extends Strass_Db_Table_Row_Abstract implements Zend_Acl_Resource
     return $tu->findMany($participantes);
   }
 
-  function getUnitesParticipantesExplicites()
+  function findUnitesParticipantesExplicites()
   {
     $tu = new Unites();
-    $ids = Activites::getUnitesParticipantesExplicites($this->getUnitesParticipantes());
+    $ids = Activites::findUnitesParticipantesExplicites($this->findUnitesParticipantes());
     return $tu->findMany($ids);
   }
 }

@@ -291,7 +291,7 @@ class MembresController extends Strass_Controller_Action implements Zend_Acl_Res
 			   'accepter' => 'Accepter !'));
     $m->addString('message', "Message à ".$ins->prenom." ".$ins->nom);
 
-    if (!$ind || !$ind->getUnites()) {
+    if (!$ind || !$ind->findUnites()) {
       // unités susceptible d'indexlir le nouveau membre.
       $tu = new Unites();
       $s = $tu->select()

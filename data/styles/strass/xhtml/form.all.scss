@@ -41,6 +41,7 @@ div.control > label
     width: 12em;
     display: block;
     padding: .5ex 0;
+    margin-bottom: 1ex;
     white-space: nowrap;
 }
 
@@ -100,7 +101,7 @@ div.control.check > .input
 {
     clear: left;
     position: relative;
-    top: -1.5em;
+    top: -2em;
     margin-bottom: -1.65em;
 }
 

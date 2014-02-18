@@ -18,7 +18,7 @@ class ActivitesController extends Strass_Controller_Action
       throw new Strass_Controller_Action_Exception_Notice("Vous devez être identifié pour voir ".
 							  "le calendrier des activités.");
 
-    $u = current($i->getUnites());
+    $u = current($i->findUnites());
 
     if ($u)
       $this->redirectUrl(array('action' => 'calendrier',
@@ -51,8 +51,7 @@ class ActivitesController extends Strass_Controller_Action
     $this->view->annee = $annee;
 
     $this->actions->append("Nouvelle activité",
-			   array('action' => 'prevoir',
-				 'unite' => null),
+			   array('action' => 'prevoir'),
 			   array(Zend_Registry::get('user'), $u));
 
     $this->formats('ics');
@@ -61,47 +60,34 @@ class ActivitesController extends Strass_Controller_Action
   /* prévoir une nouvelle activité pour une ou plusieurs unités */
   function prevoirAction()
   {
+    $this->metas(array('DC.Title' => 'Prévoir une nouvelle activité',
+		       'DC.Title.alternate' => 'Prévoir'));
+    $u = $this->_helper->Unite(null, false);
+    $this->branche->append();
+
     $individu = Zend_Registry::get('individu');
-    if (!$individu)
-      throw new Strass_Controller_Action_Exception_Notice("Vous devez être inscrit et identifié ".
-							  "pour prévoir une nouvelle activité");
-    $this->view->model = $m = new Wtk_Form_Model('prevoir');
+    $t = new Unites;
+    $unites = $individu->findUnites();
+    $programmables = array();
+    foreach($unites as $unite)
+      if ($this->assert(null, $unite, 'prevoir'))
+	array_push($programmables, $unite);
 
-    $this->metas(array('DC.Title' => 'Prévoir une nouvelle activité'));
+    if (!$programmables)
+      throw new Strass_Controller_Action_Exception_Notice("Vous n'avez pas le droit d'enregistrer une activité");
 
-    $unites = $this->getUnitesProgrammable();
-    $annee = $this->_getParam('annee');
-
-    if (count($unites) == 1) {
-      $uid = array_shift(array_keys($unites));
-      $unite = $this->_helper->Unite($uid);
-
-      $urlOptions = array('controller'=> 'activites',
-			  'action'	=> 'calendrier',
-			  'unite'	=> $unite->id);
-      $this->branche->append('Calendrier',
-			     $urlOptions,
-			     array(),
-			     true);
-
-      if ($annee) {
-	$urlOptions = array('controller'=> 'activites',
-			    'action'	=> 'calendrier',
-			    'unite'	=> $unite->id,
-			    'annee' => $annee);
-	$this->branche->append($urlOptions['annee'],
-			       $urlOptions,
-			       array(),
-			       true);
-      }
-    }
-
-    // on ne décale pas en arrière afin de réserver pour
-    // la date actuel si possible.
+    $annee = $this->_helper->Annee(false);
+    // On ne décale pas en septembre afin de réserver pour la date
+    // actuelle si possible.
     $annee = $annee ? $annee : date('Y');
 
+    $this->view->model = $m = new Wtk_Form_Model('prevoir');
+    $enum = array();
+    foreach($programmables as $unite)
+      $enum[$unite->id] = wtk_ucfirst($unite->getFullname());
+    $default = $u ? $u->id : null;
     $m->addEnum('unites', 'Unités participantes',
-		key($unites), $unites, true);        // multiple
+		$default, $enum, true);        // multiple
     $m->addDate('debut', 'Début',
 		$annee.date('-m-d').' 14:30',
 		'%Y-%m-%d %H:%M');
@@ -111,121 +97,61 @@ class ActivitesController extends Strass_Controller_Action
     $m->addString('intitule', 'Intitulé explicite', "");
     $m->addString('lieu', 'Lieu');
 
-    // attacher
-    $td = new Documents;
-    $docs = $td->fetchAll();
-    $enum = array('NULL' => 'Aucun');
-    foreach($docs as $doc)
-      $enum[$doc->id] = $doc->titre;
-    $ta = $m->addTable('attacher', "Attacher",
-		       array('document'	=> array('Enum', null, $enum)));
-    $ta->addRow();
-
-
-    // envoyer
-    $tn = $m->addTable('documents', "Pièces-jointe",
-		       array('fichier' 	=> array('File', "Fichier"),
-			     'titre'	=> array('String', "Titre")));
-    $tn->addRow();
     $m->addBool('prevoir', "J'ai d'autres activités à prévoir", true);
     $m->addNewSubmission('ajouter', 'Ajouter');
-    $m->addConstraint(new Wtk_Form_Model_Constraint_Required($m->getInstance('unites')));
+    $m->addConstraintRequired($m->getInstance('unites'));
 
     if ($m->validate()) {
+      $tu = new Unites;
+      $data = $m->get();
+      $unites = $data['unites'];
+      $keys = array('debut', 'fin', 'lieu');
+      $tuple = array();
+      foreach($keys as $k)
+	$tuple[$k] = $m->$k;
+
+      // Sélectionner les sous unités des unités sélectionné à l'année de l'activité
+      $annee = intval(date('Y', strtotime($m->get('debut')) - 243 * 24 * 60 * 60));
+      $participantes = $tu->getIdSousUnites((array) $unites, $annee);
+
+      // génération de l'intitulé
+      $unites = $tu->find(array_values($participantes));
+      $intitule = $m->get('intitule');
+      $tuple['intitule'] = $intitule;
+      if (!$intitule)
+	$intitule = Activite::generateIntitule($tuple, $unites, false);
+      $intitule .= Activite::generateDate($intitule,
+					  Activite::findType($tuple['debut'],
+							     $tuple['fin']),
+					  strtotime($tuple['debut']),
+					  strtotime($tuple['fin']));
+      $tuple['slug'] = $slug = wtk_strtoid($intitule);
+
       $db = Zend_Registry::get('db');
       $db->beginTransaction();
       try {
-	$tu = new Unites();
-	$data = $m->get();
-	$unites = $data['unites'];
-	$keys = array('debut', 'fin', 'lieu','message');
-	$tuple = array();
-	foreach($keys as $k)
-	  $tuple[$k] = $m->$k;
-
-	// Sélectionner les sous unités des unités sélectionné à l'année de l'activité
-	$annee = intval(date('Y', strtotime($m->get('debut')) - 243 * 24 * 60 * 60));
-	$participantes = $tu->getIdSousUnites((array) $unites, $annee);
-
-
-	// génération de l'intitulé
-	$unites = $tu->find(array_values($participantes));
-	$intitule = $m->get('intitule');
-	$tuple['intitule'] = $intitule;
-	// on génère l'intitulé pour d'id
-	if (!$intitule)
-	  $intitule = Activite::generateIntitule($tuple, $unites, false);
-	$intitule .= Activite::generateDate($intitule,
-					    Activite::findType($tuple['debut'],
-							       $tuple['fin']),
-					    strtotime($tuple['debut']),
-					    strtotime($tuple['fin']));
-	$tuple['id'] = $id = wtk_strtoid($intitule);
-
-	// enregistrement de l'activité
-	$activites = new Activites();
-	$id = $activites->insert($tuple);
-	$a = $activites->find($id)->current();
+	$t = new Activites;
+	$k = $t->insert($tuple);
+	$a = $t->findOne($k);
 
 	$tp = new Participations;
 	$tp->updateActivite($a, $participantes);
 
-	// Pièces-jointes
-	$tda = new PiecesJointes;
-	// attacher existants
-	foreach($ta as $row) {
-	  if (!$row->document)
-	    continue;
-
-	  $data = array('document' => $row->document,
-			'activite' => $a->id);
-	  $tda->insert($data);
-	}
-
-	// ajouter nouveau
-	$td = new Documents;
-	foreach($tn as $row) {
-	  if (!$row->titre)
-	    continue;
-
-	  $i = $row->getChild('fichier');
-	  $data = array('id' 	=> wtk_strtoid($row->titre),
-			'titre'	=> $row->titre,
-			'suffixe'	=> strtolower(end(explode('.', $row->fichier['name']))),
-			'date'	=> strftime('%Y-%m-%d'),
-			'type_mime'=> $i->getMimeType());
-	  $k = $td->insert($data);
-	  $doc = $td->find($k)->current();
-	  $fichier = $doc->getFichier();
-	  if (!move_uploaded_file($i->getTempFilename(), $fichier)) {
-	    throw new Zend_Controller_Exception
-	      ("Impossible de copier le fichier !");
-	  }
-
-	  $data = array('document' => $doc->id,
-			'activite' => $a->id);
-	  $tda->insert($data);
-	}
+	$this->_helper->Flash->info("Activité enregistrée");
+	$this->logger->info("Nouvelle activite",
+			    $this->_helper->Url('consulter', null, null, array('activite' => $a->slug)));
 
 	$db->commit();
-
-	$this->_helper->Log("Nouvelle activité", array(),
-			    $this->_helper->Url->url(array('action' => 'consulter',
-							   'activite' => $a->id)),
-			    $intitule);
-
-	if ($m->get('prevoir')) {
-	  $this->redirectSimple('prevoir', null, null, null, false);
-	}
-	else {
-	  $this->redirectSimple('consulter', null, null,
-				array('activite' => $id));
-	}
       }
       catch(Exception $e) {
 	$db->rollBack();
 	throw $e;
       }
+
+      if ($m->get('prevoir'))
+	$this->redirectSimple('prevoir');
+      else
+	$this->redirectSimple('consulter', null, null, array('activite' => $slug));
     }
   }
 
@@ -267,7 +193,7 @@ class ActivitesController extends Strass_Controller_Action
 
     $this->assert(null, $a, 'dossier',
 		  "Vous n'avez pas le droit d'accéder au dossier de camp");
-    $us = $a->getUnitesParticipantes();
+    $us = $a->findUnitesParticipantes();
     $apps = array();
     foreach ($us as $u) {
       if (!$u->abstraite)
@@ -287,7 +213,7 @@ class ActivitesController extends Strass_Controller_Action
 
     $this->assert(null, $a, 'dossier',
 		  "Vous n'avez pas le droit d'accéder au dossier de camp");
-    $us = $a->getUnitesParticipantesExplicites();
+    $us = $a->findUnitesParticipantesExplicites();
     $apps = array();
     foreach ($us as $u) {
       if (!$u->abstraite) {
@@ -315,11 +241,11 @@ class ActivitesController extends Strass_Controller_Action
 
     $this->metas(array('DC.Title' => 'Modifier '.$a->getIntitule()));
 
-    $unites = $this->getUnitesProgrammable();
+    $unites = $this->findUnitesProgrammable();
 
     $participantes = $a->findUnitesViaParticipations();
     $explicites =
-      Activites::getUnitesParticipantesExplicites($participantes);
+      Activites::findUnitesParticipantesExplicites($participantes);
 
     $m = new Wtk_Form_Model('activite');
     $i = $m->addEnum('unites', 'Unités participantes', $explicites, $unites, true);    // multiple
@@ -475,7 +401,7 @@ class ActivitesController extends Strass_Controller_Action
       }
     }
 
-    $upe = $a->getUnitesParticipantesExplicites();
+    $upe = $a->findUnitesParticipantesExplicites();
     if ($upe->count() == 1) {
       $u = $upe->current();
       $this->connexes->append('Calendrier',
@@ -521,7 +447,7 @@ class ActivitesController extends Strass_Controller_Action
 	      $doc->delete();
 	  }
 	  // destruction de l'activité.
-	  $unite = $a->getUnitesParticipantesExplicites()->current();
+	  $unite = $a->findUnitesParticipantesExplicites()->current();
 	  $intitule = (string) $a;
 	  $a->delete();
 	  $this->_helper->Log("Activité annulé", array(),
@@ -551,23 +477,23 @@ class ActivitesController extends Strass_Controller_Action
   }
 
   // HELPER
-  function getUnitesProgrammable($assert = TRUE) {
+  function findUnitesProgrammable($assert = TRUE) {
     $unites = array();
     $individu = Zend_Registry::get('individu');
-    if (!$this->assert()) {
-      // Sélectionner les unité où l'individu est ou a été inscrit
-      // et dont il a le droit de prévoir une activité.
-      $us = $individu->getUnites(null, true);
-      foreach($us as $u)
-	if ($this->assert(null, $u, 'prevoir-activite'))
-	  $unites[$u->id] = wtk_ucfirst($u->getFullname());
-    }
-    else {
-      // Sélectionner toute les unites !
-      $table = new Unites();
+    if ($this->assert()) {
+      // Sélectionner toutes les unites pour les admin !
+      $table = new Unites;
       $rows = $table->fetchAll();
       foreach($rows as $row)
 	$unites[$row->id] = wtk_ucfirst($row->getFullname());
+    }
+    else {
+      // Sélectionner les unité où l'individu est ou a été inscrit
+      // et dont il a le droit de prévoir une activité.
+      $us = $individu->findUnites(null, true);
+      foreach($us as $u)
+	if ($this->assert(null, $u, 'prevoir-activite'))
+	  $unites[$u->id] = wtk_ucfirst($u->getFullname());
     }
 
     if (!count($unites) && $assert) {

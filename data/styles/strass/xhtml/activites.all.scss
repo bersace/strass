@@ -1,5 +1,7 @@
 /*-*- css -*-*/
 
+@import "common.scss";
+
 @media screen {
     #calendrier table
     {
@@ -20,9 +22,12 @@
 	font-size: 1.1em;
     }
 
+    #document.prevoir form {
+	@include minipage;
+    }
 
-    #document.activites.modifier form table,
-    #document.activites.prevoir form table
+
+    #document.activites.modifier form table
     {
 	min-width: 80%;
     }

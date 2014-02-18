@@ -28,7 +28,7 @@ class Individu extends Strass_Db_Table_Row_Abstract implements Zend_Acl_Role_Int
   {
     parent::__construct($config);
 
-    $this->initResourceAcl($this->getUnites(NULL));
+    $this->initResourceAcl($this->findUnites(NULL));
   }
 
   function _initResourceAcl($acl)
@@ -294,24 +294,24 @@ class Individu extends Strass_Db_Table_Row_Abstract implements Zend_Acl_Role_Int
    * Retourne la liste de toutes les unités où l'individu a un rôle,
    * récursivement.
    */
-  function getUnites($actif = TRUE, $recursif = FALSE)
+  function findUnites($actif = TRUE, $recursif = FALSE)
   {
-    $unites = array();
-    $where = is_null($actif) ? NULL : "fin IS ".($actif ? "": " NOT ")." NULL";
-    if ($where) {
-      $t = new Unites;
-      $s = $t->select()->where($where);
-    }
-    else {
-      $s = NULL;
-    }
-    $us = $this->findUnitesViaAppartenances($s);
-    foreach($us as $u) {
-      $unites[$u->id] = $u;
-      $unites = array_merge($unites,
-			    ($recursif ? $u->findSousUnites() : array()));
-    }
-    return $unites;
+    $t = new Unites;
+    $s = $t->select()
+      ->setIntegrityCheck(false)
+      ->distinct()
+      ->from('unite')
+      ->joinLeft(array('parent' => 'unite'), 'parent.id = unite.parent', array())
+      ->joinLeft(array('grandparent' => 'unite'), 'grandparent.id = parent.parent', array())
+      ->join('appartenance', 'appartenance.unite IN (unite.id, parent.id, grandparent.id)', array())
+      ->where('appartenance.individu = ?', $this->id);
+
+    if ($actif)
+      $s->where('appartenance.fin IS NULL');
+    else
+      $s->where('appartenance.fin IS NOT NULL');
+
+    return $t->fetchAll($s);
   }
 
   /*
@@ -564,7 +564,7 @@ class FakeIndividu implements Zend_Acl_Resource_Interface, Zend_Acl_Role_Interfa
   function initRoleAcl() {
   }
 
-  function getUnites() {
+  function findUnites() {
     return array();
   }
 
@@ -621,7 +621,7 @@ class Nobody implements Zend_Acl_Resource_Interface, Zend_Acl_Role_Interface {
     return false;
   }
 
-  function getUnites() {
+  function findUnites() {
     return array();
   }
 
