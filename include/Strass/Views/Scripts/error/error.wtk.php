@@ -32,6 +32,7 @@ foreach ($this->errors as $i => $error) {
     $aide->addText("Désolé pour la gêne occasionée. ".
 		   "Le bug est enregistré dans le journal et nous ferons notre possible ".
 		   "pour le corriger. //En attendant, essayez de le contourner !//");
+    $dialog->addFlags('showtrace');
   }
 
   $section = $details->addSection(null, $titre)->addFlags('error');
@@ -44,9 +45,5 @@ foreach ($this->errors as $i => $error) {
     extract($step);
     $list->addItem()->addText("{{".(isset($file) ? $file.":".$line." " : "")." ".
 			      (isset($class) ? $class."::" : "").$step['function']."}}");
-  }
-
-  if (!($error instanceof Zend_Controller_Action_Exception)) {
-    $dialog->addFlags('showtrace');
   }
 }
