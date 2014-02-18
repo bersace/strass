@@ -12,7 +12,8 @@ RÉGRESSIONS
 NOUVEAUTÉS UTILISATEUR
 
  - Rafraîchissement de l'interface : plus de liens et d'actions
-   contextuelles, menus plus simples et concrets.
+   contextuelles, menus et formulaires plus simples et
+   concrets. (Ergonomie de nazi®).
 
  - Possibilité de réinitialiser son mot de passe sans passer par
    l'admin :-)
@@ -20,7 +21,7 @@ NOUVEAUTÉS UTILISATEUR
  - Il faut renseigner son mot de passe pour changer d'adresse électronique.
 
  - Par défaut, c'est l'adélec qui est utilisée pour s'identifier. Les
-   anciens comptes doivent migrer dans les paramètres de comptes.
+   anciens comptes peuvent migrer dans les paramètres de comptes.
 
  - La page d'accueil est remplacée par la page d'accueil de l'unité
    racine.
@@ -63,15 +64,16 @@ CHANGEMENTS WEBMESTRE
  - Un thème par défaut est proposé.
 
  - L'année est un paramètre de base dans les URL
-   /controller/action.format/annee/key/val/key/val.
+   /controlleur/action.format/annee/clef/val/clef/val.
 
  - Utilisation de SCSS pour générer le CSS des thèmes.
 
- - Versionnage des données et migration offline du modèle SQL et des
-   données.
+ - Versionnage des données et migration du modèle SQL et des
+   données. Attention, certaines migrations peuvent n'être réalisée
+   que offline.
 
  - Le nombre de dossiers a été réduit. Un dossier private/ contient
    les données à ne pas publier par le serveur HTTP. data/ contient
    les données à publier (style, scripts, images, documents,
    etc.). include/ reste. Également, les dossiers de data/ ont été
-   étalé en largeur plutôt que multiplier les dossiers mono-fils.
+   étalé en largeur plutôt que multiplier les dossiers fils unique.

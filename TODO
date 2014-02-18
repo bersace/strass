@@ -1,9 +1,7 @@
 
- * Masquer complètement les erreurs 500.
-
  * Export contact, calendrier et photos avec webdav
 
- * Gérer plusieurs personnes ayant le même nom
+ * Gérer les homonymes
 
  * Début et fin de role via les activités
 
@@ -13,23 +11,27 @@
 
  * Illustration de calendrier data/calendrier/<unite>/<annee>.png
 
- * Pièces jointes privées
-
  * Thème CSS des courriels, avec composant *par* courriel, fichiers
    embarqués, (cid:, etc.)
 
  * Présenter une vue par année des informations. Une sorte de trombi
-   des années : chef, équipes, routes, photos ?
+   des années : chef, équipes, routes, photos ? page "archive",
+   "souvenir".
 
  * Intégration Céphée : import du CSV des effectifs.
 
  * Les vidéos sont elles supportées ? les diapos ? Picasa ? Flickr ?
 
- * Aperçu éditeur pour article, rapport, etc. Markdown ?
+ * Passer à markdown
+
+ * Aperçu éditeur pour article, etc.
 
  * Recherche interne (Lucene)
 
- * Faire une alerte propre en cas de nom ou fonction (CT, CC...) déjà existant pour un membre
+ * Faire une alerte propre en cas de nom ou fonction (CT, CC...) déjà
+   existant pour un membre.
+
+ * Associer un titre à un rôle (Bagheera)
 
  * Cohérence des dates d'activités.
 
@@ -38,6 +40,14 @@
 
  * Paramétrer les photos : qualité, tailles des aperçus, taille des
    photos
+
+ * Tests automatiques. Opter pour des tests de scénarios. Lancer une
+   instance et exécuter tout depuis l'installation.
+
+ * Faciliter le développement de style CSS, notamment pour les
+   mails. Ex: générer un jeu de pages HTML type (mail, admin, etc.) à
+   partir des tests automatiques.
+
 
 BUGS :
 
@@ -62,3 +72,34 @@ AUTRES :
  * Profiler les requêtes SQL avec Zend_Db_Profiler
 
  * Passer à ZF 1.12 et jQuery
+
+CAS :
+
+ * Inscrire un nouveau
+
+ * Inscrire un ancien
+
+ * Inscrire un actif
+
+ * Monter un louveteau
+
+ * Inscrire à un poste précédent
+
+ * Prévoir une activité dans ses unités
+
+ * Un admin prévoit une activité
+
+ * Enregistrer une activité passée
+
+ * Envoyer une photo
+
+ * Renvoyer une photo
+
+ * Un nouveau s'inscrit sur le site.
+
+ * Un scout s'inscrit sur le site
+
+ * Un ancien s'inscrit sur le site
+
+ * Un scout s'enregistre sur le site, mais il a une adresse
+   électronique partagée avec ses frères.
