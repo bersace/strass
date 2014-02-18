@@ -162,14 +162,24 @@ ul.adminlinks {
 
     #document
     {
+	position: relative;
 	background-color: $content_background;
 	border-style: solid;
-	border-color: #615230;
+	border-color: $highlight_color;
 	border-radius: 1ex;
+	overflow: hidden;
+	padding-top: 4em;
 
 	h1 {
-	    padding-top: 0;
+	    font-size: 150%;
+	    position: absolute;
+	    top: 0;
+	    left: 0;
+	    border-radius: 0 0 2em 0;
+	    padding: 1ex 5em 1ex 1em;
 	    margin-bottom: 1em;
+	    background: $highlight_color;
+	    color: $content_background;
 	}
 
 	#flash {
@@ -276,8 +286,8 @@ ul.adminlinks {
 		font-size: 1.2em;
 		margin: 0;
 		padding: 1ex;
-		color: #F2EDE4;
-		background: #615230;
+		color: lighten($content_background, 10%);
+		background: $highlight_color;
 
 		a
 		{
