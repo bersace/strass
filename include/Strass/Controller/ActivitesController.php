@@ -186,53 +186,6 @@ class ActivitesController extends Strass_Controller_Action
     /* $this->formats('ics'); */
   }
 
-  function participantsAction()
-  {
-    $this->view->activite = $a = $this->_helper->Activite();
-    $this->branche->append('Participants');
-
-    $this->assert(null, $a, 'dossier',
-		  "Vous n'avez pas le droit d'accéder au dossier de camp");
-    $us = $a->findUnitesParticipantes();
-    $apps = array();
-    foreach ($us as $u) {
-      if (!$u->abstraite)
-	$apps[] = $u->findAppartenances($a->getAnnee());
-    }
-    $this->view->apps = $apps;
-
-    $this->connexes->append('Maîtrise',
-			    array('action'	=> 'maitrise'),
-			    array(null, $a, 'dossier'));
-  }
-
-  function maitriseAction()
-  {
-    $this->view->activite = $a = $this->_helper->Activite();
-    $this->branche->append('Maîtrise');
-
-    $this->assert(null, $a, 'dossier',
-		  "Vous n'avez pas le droit d'accéder au dossier de camp");
-    $us = $a->findUnitesParticipantesExplicites();
-    $apps = array();
-    foreach ($us as $u) {
-      if (!$u->abstraite) {
-	$ssapps = $u->findAppartenances($a->getAnnee());
-	foreach($ssapps as $app) {
-	  if ($this->assert($app->findParentIndividus(), $a, 'dossier'))
-	    $apps[] = $app;
-	}
-      }
-    }
-    // todo: aumônier
-    $this->view->apps = array($apps);
-
-    $this->connexes->append('Participants',
-			    array('action'	=> 'participants'),
-			    array(null, $a, 'dossier'));
-
-  }
-
   function editerAction()
   {
     $this->view->activite = $a = $this->_helper->Activite();
