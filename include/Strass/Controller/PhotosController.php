@@ -42,13 +42,13 @@ class PhotosController extends Strass_Controller_Action
     $ta = new Activites;
     $a = $activite = $this->_helper->Album(null, false);
 
+    $individu = Zend_Registry::get('individu');
     if ($activite) {
       $this->view->activite = $activite;
       $as = array($activite);
     }
     else {
       $annee = $this->_helper->Annee(false);
-      $individu = Zend_Registry::get('individu');
       $as = $individu->findActivites($annee);
 
       if (count($as) == 1) {
@@ -324,7 +324,7 @@ class PhotosController extends Strass_Controller_Action
 	$this->redirectSimple('consulter', null, null, array('album' => $a->slug, 'photo' => null));
       }
       else {
-	$this->redirectSimple();
+	$this->redirectSimple('voir');
       }
     }
   }
