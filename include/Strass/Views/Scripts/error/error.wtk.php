@@ -23,8 +23,9 @@ foreach ($this->errors as $i => $error) {
 			     ".");
     }
   }
-  if ($error instanceof Strass_Controller_Action_Exception_Notice)
-    $dialog->title = $titre = "Attention";
+  if ($error instanceof Strass_Controller_Action_Exception_Notice) {
+    $dialog->title = $titre = $error->getMessage();
+  }
   else if ($i == 0) {
     $dialog->title = "Bug !";
     $titre = null;
