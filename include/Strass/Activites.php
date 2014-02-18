@@ -64,7 +64,7 @@ class Activite extends Strass_Db_Table_Row_Abstract implements Zend_Acl_Resource
 
 
   protected $_privileges = array(array('chef', NULL),
-				 array('assistant', array('modifier',
+				 array('assistant', array('editer',
 							  'envoyer-photo',
 							  'dossier')),
 				 array(NULL, 'consulter'));
@@ -226,9 +226,10 @@ class Activite extends Strass_Db_Table_Row_Abstract implements Zend_Acl_Resource
     }
     else {                  // unité unique
       $unite = $explicites;
+      $typu = $unite->findParentTypesUnite()->slug;
 
       if ($compact && $type == 'we') {
-	switch ($unite->type) {
+	switch ($typu) {
 	case 'groupe':
 	  $i.= "G";
 	  break;
@@ -266,7 +267,7 @@ class Activite extends Strass_Db_Table_Row_Abstract implements Zend_Acl_Resource
       else {
 	switch ($type) {
 	case 'camp':
-	  if ($unite->type == 'hp') {
+	  if ($typu == 'hp') {
 	    $i.= ' HP';
 	  }
 	  else {
@@ -294,7 +295,7 @@ class Activite extends Strass_Db_Table_Row_Abstract implements Zend_Acl_Resource
 	  }
 	  break;
 	default:
-	  switch ($unite->type) {
+	  switch ($typu) {
 	  case 'hp':
 	    $i.= ' HP';
 	    break;

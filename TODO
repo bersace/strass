@@ -67,6 +67,8 @@ BUGS :
 
  * En non-connecté, Joséphine apparait comme "Akéla bagheera"
 
+ * Les NOTICE PHP sont affichés en prod…
+
 AUTRES :
 
  * Profiler les requêtes SQL avec Zend_Db_Profiler
@@ -103,3 +105,11 @@ CAS :
 
  * Un scout s'enregistre sur le site, mais il a une adresse
    électronique partagée avec ses frères.
+
+ * Joindre un fichier PDF à une activité
+
+ * Joindre une image à une activité
+
+ * Supprimer une pièce jointe d'une activité
+
+ * Deux troupes enregistrent un Camp HP 2014

@@ -22,10 +22,11 @@
 	font-size: 1.1em;
     }
 
-    #document.prevoir form {
+    #document.prevoir form,
+    #document.modifier form
+    {
 	@include minipage;
     }
-
 
     #document.activites.modifier form table
     {

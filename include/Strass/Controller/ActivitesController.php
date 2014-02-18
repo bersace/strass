@@ -174,8 +174,8 @@ class ActivitesController extends Strass_Controller_Action
 			     array(null, $a, 'envoyer-photo'));
     }
 
-    $this->actions->append('Modifier',
-			   array('action' => 'modifier',
+    $this->actions->append('Éditer',
+			   array('action' => 'editer',
 				 'activite' => $a->slug),
 			   array(null, $a));
     $this->actions->append('Annuler',
@@ -233,187 +233,69 @@ class ActivitesController extends Strass_Controller_Action
 
   }
 
-  function modifierAction()
+  function editerAction()
   {
-    $a = $this->_helper->Activite();
-    $this->assert(null, $a, 'modifier',
-		  "Vous n'avez pas le droit de modifier cettes activités");
+    $this->view->activite = $a = $this->_helper->Activite();
+    $this->assert(null, $a, 'editer',
+		  "Vous n'avez pas le droit d'éditer cettes activités");
 
-    $this->metas(array('DC.Title' => 'Modifier '.$a->getIntitule()));
+    $this->metas(array('DC.Title' => 'Éditer '.$a->getIntitule()));
 
-    $unites = $this->findUnitesProgrammable();
-
+    $individu = Zend_Registry::get('individu');
+    $unites = $individu->findUnites();
+    $programmables = array();
+    foreach($unites as $unite)
+      if ($this->assert(null, $unite, 'prevoir'))
+	array_push($programmables, $unite);
     $participantes = $a->findUnitesViaParticipations();
-    $explicites =
-      Activites::findUnitesParticipantesExplicites($participantes);
+    $explicites = Activites::findUnitesParticipantesExplicites($participantes);
 
-    $m = new Wtk_Form_Model('activite');
-    $i = $m->addEnum('unites', 'Unités participantes', $explicites, $unites, true);    // multiple
-    $m->addConstraint(new Wtk_Form_Model_Constraint_Required($i));
+    $enum = array();
+    foreach($programmables as $unite)
+      $enum[$unite->id] = wtk_ucfirst($unite->getFullname());
+    $this->view->model = $m = new Wtk_Form_Model('activite');
+    $i = $m->addEnum('unites', 'Unités participantes', $explicites, $enum, true);    // multiple
+    $m->addConstraintRequired($i);
 
     $m->addString('intitule', 'Intitulé explicite', $a->intitule);
     $m->addString('lieu', 'Lieu', $a->lieu);
     $m->addDate('debut', 'Début', $a->debut, '%Y-%m-%d %H:%M');
     $m->addDate('fin', 'Fin', $a->fin, '%Y-%m-%d %H:%M');
-
-    // pièces-jointes
-    $g = $m->addGroup('documents', "Pièces-jointes");
-
-    $td = new Documents;
-    $docs = $td->fetchAll();
-    $enum = array('NULL' => 'Aucun');
-    foreach($docs as $doc)
-      $enum[$doc->id] = $doc->titre;
-
-    // existants - attaché
-    $das = $a->findPiecesJointes();
-    if ($das->count()) {
-      $t = $g->addTable('existants', "Actuels",
-			array('id'	=> array('String'),
-			      'titre'	=> array('String')),
-			false, false);
-
-      foreach($das as $da) {
-	$doc = $da->findParentDocuments();
-	$t->addRow($doc->id, $doc->titre);
-	unset($enum[$doc->id]);
-      }
-    }
-
-    // existants - détaché
-    $ta = $g->addTable('attacher', "Attacher",
-		       array('document'	=> array('Enum', null, $enum)));
-    $ta->addRow();
-
-    // nouveau
-    $tn = $g->addTable('envois', "Nouveaux",
-		       array('fichier'	=> array('File'),
-			     'titre'	=> array('String')));
-    $tn->addRow();
-
     $m->addNewSubmission('enregistrer', 'Enregistrer');
 
-    // métier
     if ($m->validate()) {
+      $tu = new Unites;
+      $unites = $tu->getIdSousUnites((array) $m->get('unites'), $a->getAnnee());
+
       $db = $a->getTable()->getAdapter();
       $db->beginTransaction();
-
       try {
-	$tu = new Unites();
-	// mettre à jour l'activité elle-même.
 	$champs = array('debut', 'fin', 'lieu');
 	foreach($champs as $champ)
 	  $a->$champ = $m->get($champ);
 
 	$data = $m->get();
-	$unites = $tu->find($data['unites']);
 	unset($data['unites']);
 	$intitule = $m->get('intitule');
-	$annee = intval(date('Y', strtotime($data['debut']) - 243 * 24 * 60 * 60));
 	$a->intitule = $intitule;
 	$a->slug = wtk_strtoid($a->getIntitule());
 	$a->save();
 
-	// mettre à jour les participations
-	$unites = $tu->getIdSousUnites((array) $m->get('unites'),
-				       $a->getAnnee());
 	$tp = new Participations;
 	$tp->updateActivite($a, $unites);
 
-	// PIÈCES-JOINTES
-	$td = new Documents;
-	if (array_key_exists('existants', $data['documents'])) {
-	  // renomer
-	  $done = array();
-	  foreach($m->get('documents/existants') as $d) {
-	    // vider la case "titre" -> supprimer
-	    if (!$d['titre'])
-	      continue;
-
-	    $id = wtk_strtoid($d['titre']);
-	    $done[] = $d['id'];
-
-	    // pas besoin de renomer.
-	    if ($id == $d['id'])
-	      continue;
-
-	    // renommage
-	    $doc = $td->find($d['id'])->current();
-	    $doc->titre = $d['titre'];
-	    $doc->id = $id;
-	    $doc->save();
-	  }
-
-	  // supprimer
-	  foreach($das as $i => $da) {
-	    if (!in_array($da->document, $done))
-	      $da->findParentDocuments()->delete();
-	  }
-	}
-
-	$tda = new PiecesJointes;
-	// attacher existants
-	foreach($ta as $row) {
-	  if (!$row->document)
-	    continue;
-
-	  $data = array('document' => $row->document,
-			'activite' => $a->id);
-	  $tda->insert($data);
-	}
-
-	// attacher nouveaux
-	foreach($tn as $row) {
-	  if (!$row->titre)
-	    continue;
-
-	  $i = $row->getChild('fichier');
-	  $data = array('id' 	=> wtk_strtoid($row->titre),
-			'titre'	=> $row->titre,
-			'suffixe'	=> strtolower(end(explode('.', $row->fichier['name']))),
-			'date'	=> strftime('%Y-%m-%d'),
-			'type_mime'=> $i->getMimeType());
-	  $k = $td->insert($data);
-	  $doc = $td->find($k)->current();
-	  $fichier = $doc->getFichier();
-	  if (!move_uploaded_file($i->getTempFilename(), $fichier)) {
-	    throw new Zend_Controller_Exception
-	      ("Impossible de copier le fichier !");
-	  }
-	  $data = array('document' => $doc->id,
-			'activite' => $a->id);
-	  $tda->insert($data);
-	}
-
-	$this->_helper->Log("Activité mise-à-jour", array($a),
-			    $this->_helper->Url('consulter', 'activites', null,
-						array('activite' => $a->slug)),
-			    (string) $a);
+	$this->logger->info("Activité mise-à-jour",
+			    $this->_helper->Url('consulter', null, null, array('activite' => $a->slug)));
 
 	$db->commit();
 
-	$this->redirectSimple('consulter', null, null,
-			      array('activite' => $a->slug));
+	$this->redirectSimple('consulter', null, null, array('activite' => $a->slug));
       }
       catch(Exception $e) {
 	$db->rollBack();
 	throw $e;
       }
     }
-
-    $upe = $a->findUnitesParticipantesExplicites();
-    if ($upe->count() == 1) {
-      $u = $upe->current();
-      $this->connexes->append('Calendrier',
-			      array('action' => 'calendrier',
-				    'unite' => $u->id,
-				    'annee' => $a->getAnnee()),
-			      array(null, $u));
-    }
-
-    // vue
-    $this->view->activite = $a;
-    $this->view->model = $m;
   }
 
 

@@ -42,11 +42,14 @@ class Strass_Controller_Action_Helper_Unite extends Zend_Controller_Action_Helpe
     return $t->fetchOne($s);
   }
 
-  protected function liensConnexes($unite)
+  function setBranche($unite, $action=null, $controller=null)
   {
     /* hiérarchie des unités */
-    $controller = $this->getRequest()->getParam('controller');
-    $action = $this->getRequest()->getParam('action');
+    if (!$controller)
+      $controller = $this->getRequest()->getParam('controller');
+    if (!$action)
+      $action = $this->getRequest()->getParam('action');
+
     $us = array();
     $u = $unite;
     while ($u) {
@@ -62,6 +65,12 @@ class Strass_Controller_Action_Helper_Unite extends Zend_Controller_Action_Helpe
 						array(),
 						true);
     }
+  }
+
+  protected function liensConnexes($unite)
+  {
+    $this->setBranche($unite);
+
     // CONNEXES
     $connexes = $this->_actionController->connexes;
     $connexes->titre = $this->_actionController->view->lien(array('controller' => 'unites',
