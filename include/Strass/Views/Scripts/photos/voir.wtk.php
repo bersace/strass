@@ -8,8 +8,7 @@ class Scout_Pages_Renderer_Photo extends Wtk_Pages_Renderer
       ->addFlags('photo')
       ->addImage($photo->getCheminImage(),
 		 $photo->titre,
-		 $photo->titre)
-      ->addFlags('photo');
+		 $photo->titre);
 
     return $c;
   }

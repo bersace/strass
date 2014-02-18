@@ -2,20 +2,29 @@
 
 @import "common";
 
-#document.voir h1 {
-    text-align: center;
-    font-size: 200%;
+#document.voir {
+    h1 {
+	text-align: center;
+	font-size: 200%;
+    }
+
+    p.photo
+    {
+	text-align: center;
+	vertical-align: middle;
+	height: 48em;
+	line-height: 48em;
+    }
+
+    ul
+    {
+	margin: 1em;
+	padding: 0;
+    }
 }
 
-#document.photos.voir p.photo
-{
-    text-align: center;
-    vertical-align: middle;
-    height: 48em;
-    line-height: 48em;
-}
-
-#document.photos.voir img
+#document.photos.voir img,
+#document.editer img
 {
     display: inline-block;
     vertical-align: middle;
@@ -32,6 +41,14 @@
     background: white;
 }
 
+#document.photos.editer .photo
+{
+    text-align: center;
+    vertical-align: middle;
+    height: 24em;
+    line-height: 24em;
+}
+
 .supprimer #vignette
 {
     text-align: center;
@@ -40,10 +57,4 @@
 
 #document form {
     @include minipage;
-}
-
-#document.photos.voir ul
-{
-    margin: 1em;
-    padding: 0;
 }

@@ -150,67 +150,69 @@ class PhotosController extends Strass_Controller_Action
 			     array(null, $photo));
     }
 
-    $this->actions->append("Modifier",
-			   array('action' => 'modifier'),
+    $this->actions->append("Éditer",
+			   array('action' => 'editer'),
 			   array(null, $photo));
     $this->actions->append("Supprimer",
 			   array('action' => 'supprimer'),
 			   array(null, $photo));
   }
 
-  function modifierAction()
+  function editerAction()
   {
-    list($a, $p) = $this->_helper->Photo(true);
-
-    $this->assert(null, $p, 'modifier',
-		  "Vous n'avez pas le droit de modifier cette photo.");
-
-    $this->metas(array('DC.Title' => "Modifier ".$p->titre,
+    $this->view->photo = $p = $this->_helper->Photo();
+    $this->view->album = $a = $p->findParentActivites();
+    $this->metas(array('DC.Title' => "Éditer ".$p->titre,
 		       'DC.Subject' => 'photo',
 		       'DC.Date.created' => $p->date));
-
     $annee = $this->_helper->Annee(false);
-    $debut = $annee ? $this->_helper->Annee->dateDebut($annee) : null;
-    $fin = $annee ? $this->_helper->Annee->dateFin($annee) : null;
-    $as = $this->_helper->Activite->pourIndividu(Zend_Registry::get('user'), $debut, $fin);
+
+    $this->connexes->append("Revenir à l'album",
+			   array('action' => 'consulter', 'photo' => null, 'album' => $a->slug));
+
+    $this->assert(null, $p, 'editer',
+		  "Vous n'avez pas le droit de editer cette photo.");
+
+    $individu = Zend_Registry::get('individu');
+    $as = $individu->findActivites($annee);
     if (!$as)
       throw new Strass_Controller_Action_Exception_Forbidden("Vous ne pouvez envoyer de photos dans aucune activités.");
+
+    $this->view->model = $m = new Wtk_Form_Model('photo');
+    $enum = array();
     foreach($as as $a)
       if ($this->assert(null, $a, 'envoyer-photo'))
 	$enum[$a->id] = wtk_ucfirst($a->getIntitule());
 
-    $m = new Wtk_Form_Model('photo');
+    $m->addEnum('activite', "Album", $p->activite, $enum);
+    $m->addFile('photo', "Photo");
     $m->addString('titre', "Titre", $p->titre);
-    $m->addEnum('activite', "Activité", $p->activite, $enum);
+
     $m->addNewSubmission('enregistrer', "Enregistrer");
 
     if ($m->validate()) {
-      $db = $p->getTable()->getAdapter();
+      $t = $p->getTable();
+      $keys = array('titre', 'activite');
+      foreach($keys as $k)
+	$p->$k = $m->get($k);
+      $p->slug = $t->createSlug(wtk_strtoid($p->titre), $p->slug);
+
+      $db = $t->getAdapter();
       $db->beginTransaction();
       try {
-	$keys = array('titre', 'activite');
-	foreach($keys as $k)
-	  $p->$k = $m->get($k);
-	$p->id = wtk_strtoid($p->titre);
+	if ($tmp = $m->getInstance('photo')->getTempFilename())
+	  $p->storeFile($tmp);
 	$p->save();
+	$this->logger->info("Photo éditée",
+			    $this->_helper->Url('voir', null, null, array('photo' => $p->slug)));
 	$db->commit();
-	$this->redirectSimple('voir', 'photos', null,
-			      array('photo' => $p->id,
-				    'activite' => $p->activite));
       }
       catch(Exception $e) {
 	$db->rollBack();
 	throw $e;
       }
+      $this->redirectSimple('voir', null, null, array('photo' => $p->slug));
     }
-
-    $this->actions->append("Revenir à l'album",
-			   array('action' => 'consulter',
-				 'photo' => null));
-
-    $this->view->model = $m;
-    $this->view->activite = $a;
-    $this->view->photo = $p;
   }
 
   function commenterAction()
