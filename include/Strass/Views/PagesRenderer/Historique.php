@@ -66,13 +66,13 @@ abstract class Strass_Views_PagesRenderer_Historique extends Wtk_Pages_Renderer
     foreach($model->data as $annee => $chef) {
       $intitule = $this->intituleChef($chef, $model->unite);
       if (!$sss || $pre != $chef) {
-	$titre = new Wtk_Container("L'annee ", $this->titreChef($chef, $intitule));
+	$titre = new Wtk_Container("L'année ", $this->titreChef($chef, $intitule));
 	$sss = $ss->addSection(null, $intitule ? $titre : null);
 	$l = $sss->addList();
 	$pre = $chef;
       }
       else {
-	$titre = new Wtk_Container("Les annees ", $this->titreChef($chef, $intitule));
+	$titre = new Wtk_Container("Les années ", $this->titreChef($chef, $intitule));
 	$sss->setTitle($titre);
       }
       $etiq = $annee."-".($annee+1);
