@@ -52,6 +52,7 @@ class Strass_Controller_Plugin_Auth extends Zend_Controller_Plugin_Abstract
 
     // initialise la session.
     $auth = Zend_Auth::getInstance();
+    error_log(join('@', (array) $auth->getIdentity()));
 
     // DB AUTH
     $this->db = new Strass_Auth_Adapter_DbTable($db, 'user', 'username', 'password');
@@ -85,6 +86,7 @@ class Strass_Controller_Plugin_Auth extends Zend_Controller_Plugin_Abstract
       $om = Zend_Registry::get('logout_model');
 
       if ($im->validate()) {
+	error_log('LOGIN');
 	$username = $im->username;
 	// Regénérer le digest à partir du username original
 	$config = Zend_Registry::get('config');
@@ -112,10 +114,12 @@ class Strass_Controller_Plugin_Auth extends Zend_Controller_Plugin_Abstract
 	}
       }
       else if ($om->validate()) {
+	error_log('LOGOUT');
 	$auth->clearIdentity();
       }
     }
     catch (Wtk_Form_Model_Exception $e) {
+      error_log($e->getMessage());
       $auth->clearIdentity();
       $im->errors[] = $e;
     }
