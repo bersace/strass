@@ -128,7 +128,7 @@ class Photo extends Strass_Db_Table_Row_Abstract implements Zend_Acl_Resource_In
     $activite = $this->findParentActivites();
 
     /* date */
-    $exif = exif_read_data($tmp);
+    $exif = exif_read_data($path);
     if (array_key_exists('DateTimeOriginal', $exif)) {
       preg_match("`(\d{4})[:-](\d{2})[:-](\d{2}) (\d{2}):(\d{2}):(\d{2})`",
 		 $exif['DateTimeOriginal'], $match);
@@ -137,8 +137,6 @@ class Photo extends Strass_Db_Table_Row_Abstract implements Zend_Acl_Resource_In
     }
     else
       $this->date = $activite->fin;
-
-    $this->save();
 
     /* fichier */
     $tr = Image_Transform::factory('GD');
@@ -153,7 +151,12 @@ class Photo extends Strass_Db_Table_Row_Abstract implements Zend_Acl_Resource_In
 
     if (!file_exists($dossier))
       mkdir($dossier, 0755, true);
-    $tr->fit(2048);
+    $e = $tr->fit(2048, 2048);
+    if (Pear::isError($e))
+      throw new Strass_Controller_Action_Exception_Internal(null,
+							    "Impossible de redimensionner ".$fichier." : ".
+							    "« ".$e->getMessage()." »");
+
     if (Pear::isError($e = @$tr->save($fichier, 'jpeg')))
       throw new Strass_Controller_Action_Exception_Internal(null,
 							    "Impossible d'enregistrer ".$fichier." : ".
@@ -163,12 +166,19 @@ class Photo extends Strass_Db_Table_Row_Abstract implements Zend_Acl_Resource_In
     /* vignette */
     $mini = $dossier.'/'.$this->slug.'-vignette'.$suffixe;
     $tr->load($fichier);
-    $tr->fit(256);
+    $ret = $tr->fit(256, 256);
+    if (Pear::isError($ret))
+      throw new Strass_Controller_Action_Exception_Internal(null,
+							    "Impossible de redimensionner ".$mini." : ".
+							    "« ".$ret->getMessage()." »");
+
     if (Pear::isError($e = @$tr->save($mini, 'jpeg')))
       throw new Strass_Controller_Action_Exception_Internal(null,
 							    "Impossible d'enregistrer ".$mini." : ".
 							    "« ".$e->getMessage()." »");
     $tr->free();
+
+    $this->save();
   }
 
   function findCommentaires() {
