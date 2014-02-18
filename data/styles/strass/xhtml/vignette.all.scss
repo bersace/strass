@@ -57,7 +57,8 @@
     }
 }
 
-.vignettes > li .image
+.photos .vignette .image,
+.unites .vignette .image
 {
     max-width: 90%;
     max-height: 90%;

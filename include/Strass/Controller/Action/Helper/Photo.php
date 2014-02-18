@@ -7,17 +7,16 @@ class Strass_Controller_Action_Helper_Photo extends Strass_Controller_Action_Hel
   function direct($throw = true)
   {
     $slug = $this->getRequest()->getParam('photo');
-    $tp = new Photos();
+    $t = new Photos;
     try {
-      $p = $tp->findBySlug($slug);
+      $p = $t->findBySlug($slug);
     }
     catch (Strass_Db_Table_NotFound $e) {
       if ($throw)
 	throw new Zend_Controller_Exception("Photo inconnue");
+      else
+	return null;
     }
-
-    if (!$p)
-      return array(null, null);
 
     $this->setBranche($p);
 
@@ -26,6 +25,7 @@ class Strass_Controller_Action_Helper_Photo extends Strass_Controller_Action_Hel
 
   function setBranche($p) {
     $a = $p->findParentActivites();
+
     parent::setBranche($a);
 
     $this->_actionController->branche->append(wtk_ucfirst($p->titre),

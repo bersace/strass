@@ -291,19 +291,18 @@ class PhotosController extends Strass_Controller_Action
 
   function supprimerAction()
   {
-    list($a, $p) = $this->_helper->Photo();
+    $this->view->photo = $p = $this->_helper->Photo();
+    $a = $p->findParentActivites();
 
     $this->assert(null, $p, 'supprimer',
 		  "Vous n'avez pas le droit de supprimer la photo ".$p->titre.".");
 
     $this->metas(array('DC.Title' => "Supprimer ".$p->titre,
-		       'DC.Subject' => 'photo',
+		       'DC.Subject' => 'photo,image',
 		       'DC.Date.created' => $p->date));
 
-    $m = new Wtk_Form_Model('supprimer');
-    $m->addBool('confirmer',
-		"Je confirme la suppression de la photo ".$p->titre.".",
-		false);
+    $this->view->model = $m = new Wtk_Form_Model('supprimer');
+    $m->addBool('confirmer', "Je confirme la suppression de cette photo.", false);
     $m->addNewSubmission('continuer', 'Continuer');
 
     if ($m->validate()) {
@@ -312,27 +311,21 @@ class PhotosController extends Strass_Controller_Action
 	$db->beginTransaction();
 	try {
 	  $p->delete();
-	  $this->_helper->Log("Photo supprimée", array($a),
-			      $this->_helper->Url->url(array('action' => 'consulter',
-							     'photo' => null)),
-			      (string) $a);
+	  $this->logger->warn("Photo supprimée",
+			      $this->_helper->Url('consulter', 'photos', null,
+						  array('album' => $a->slug), true));
 	  $db->commit();
-	  $this->redirectSimple('consulter', 'photos', null,
-				array('album' => $a->id));
 	}
 	catch(Exception $e) {
 	  $db->rollBack();
 	  throw $e;
 	}
+
+	$this->redirectSimple('consulter', null, null, array('album' => $a->slug, 'photo' => null));
       }
       else {
-	$this->redirectSimple('voir', 'photos', null,
-			      array('activite' => $a->id,
-				    'photo' => $p->id)).'#photo';
+	$this->redirectSimple();
       }
     }
-
-    $this->view->photo = $p;
-    $this->view->model = $m;
   }
 }

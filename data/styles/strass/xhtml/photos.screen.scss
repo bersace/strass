@@ -32,6 +32,12 @@
     background: white;
 }
 
+.supprimer #vignette
+{
+    text-align: center;
+    margin: 1em auto;
+}
+
 #document form {
     @include minipage;
 }
