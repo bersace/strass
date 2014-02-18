@@ -10,7 +10,7 @@ foreach ($this->errors as $i => $error) {
   if ($error instanceof Strass_Controller_Action_Exception_Forbidden) {
     $dialog->title = $titre = "Accès refusé";
     $dialog->addFlags('forbidden');
-    if (Zend_Registry::get('user')) {
+    if (Zend_Registry::get('user')->isMember()) {
       $config = Zend_Registry::get('config');
       $aide->addText("Si vous devriez avoir accès au site, ".
 		     "[mailto:".$config->system->admin." contactez le webmestre].");
@@ -23,7 +23,7 @@ foreach ($this->errors as $i => $error) {
 			     ".");
     }
   }
-  if ($error instanceof Strass_Controller_Action_Exception_Notice) {
+  else if ($error instanceof Strass_Controller_Action_Exception_Notice) {
     $dialog->title = $titre = $error->getMessage();
   }
   else if ($i == 0) {
