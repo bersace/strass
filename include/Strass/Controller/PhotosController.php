@@ -1,6 +1,6 @@
 <?php
 
-require_once 'Strass/Activites.php';
+require_once 'Strass/Photos.php';
 
 class PhotosController extends Strass_Controller_Action
 {
