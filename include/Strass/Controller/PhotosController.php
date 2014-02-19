@@ -110,8 +110,11 @@ class PhotosController extends Strass_Controller_Action
 	$k = $t->insert($photo);
 	$photo = $t->findOne($k);
 
-	$tmp = $m->getInstance('photo')->getTempFilename();
-	$photo->storeFile($tmp);
+	$i = $m->getInstance('photo');
+	if ($i->isUploaded()) {
+	  $tmp = $i->getTempFilename();
+	  $photo->storeFile($tmp);
+	}
 
 	$this->_helper->Flash->info("Photo envoyée");
 	$this->logger->info("Photo envoyée",

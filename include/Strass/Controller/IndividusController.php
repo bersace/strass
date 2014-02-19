@@ -140,31 +140,7 @@ class IndividusController extends Strass_Controller_Action
 	$image = $m->getInstance('image');
 	if ($image->isUploaded()) {
 	  $tmp = $image->getTempFilename();
-	  if ($fichier = $individu->getImage())
-	    unlink($fichier);
-
-	  $fichier = $individu->getImage(null, false);
-	  $dossier = dirname($fichier);
-	  if (!file_exists($dossier))
-	    mkdir($dossier, 0755, true);
-	  // largeur max de 128px;
-	  $mw = 128;
-	  $tr = Image_Transform::factory('GD');
-	  $tr->load($tmp);
-	  list($w, $h) = $tr->getImageSize();
-	  $ratio = $w > $mw ? $w/$mw : null;
-	  if ($ratio || $image->getMimeType() != 'image/png') {
-	    if ($ratio) {
-	      $w /= $ratio;
-	      $h /= $ratio;
-	      $tr->resize(intval($w), intval($h));
-	    }
-	    $tr->save($fichier, 'png');
-	  }
-	  else {
-	    copy($tmp, $fichier);
-	  }
-	  $tr->free();
+	  $individu->storeImage($tmp);
 	}
 
 	$this->logger->info("Fiche individu mis-à-jour",
