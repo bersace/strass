@@ -59,6 +59,14 @@ class PhotosController extends Strass_Controller_Action
 
     $this->metas(array('DC.Title' => "Envoyer une photo",
 		       'DC.Subject' => 'envoyer,photos'));
+
+    $this->connexes->append("Nouvelle activité",
+			    array('controller' => 'activites',
+				  'action'  => 'prevoir'));
+
+    if (!$ta->countRows())
+      throw new Strass_Controller_Action_Exception_Notice("Aucune activité enregistrée");
+
     $this->view->model = $m = new Wtk_Form_Model('envoyer');
     $i = $m->addString('titre', 'Titre');
     $m->addConstraintRequired($i);
