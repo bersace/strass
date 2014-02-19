@@ -4,17 +4,19 @@ require_once 'Strass/Activites.php';
 
 class Strass_Controller_Action_Helper_Album extends Zend_Controller_Action_Helper_Abstract
 {
-  function direct($slug = null, $throw = true)
+  function direct($throw = true)
   {
-    $slug = $slug ? $slug : $this->getRequest()->getParam('album');
-    $activites = new Activites();
-    $activite = $activites->findBySlug($slug);
-
-    if (!$activite)
+    $slug = $this->getRequest()->getParam('album');
+    $t = new Activites;
+    try {
+      $activite = $t->findBySlug($slug);
+    }
+    catch (Strass_Db_Table_NotFound $e) {
       if ($throw)
 	throw new Strass_Controller_Action_Exception_Notice("Album ".$slug." inexistant");
       else
 	return null;
+    }
 
     $this->setBranche($activite);
 

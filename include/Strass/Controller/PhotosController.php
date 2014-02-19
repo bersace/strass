@@ -14,9 +14,10 @@ class PhotosController extends Strass_Controller_Action
 
     $this->view->model = new Strass_Pages_Model_Photos($this->view->unite, $annee);
 
-    $this->actions->append("Envoyer une photo",
-			   array('action' => 'envoyer',
-				 'annee' => null));
+    if (Zend_Registry::get('user')->isMember())
+      $this->actions->append("Envoyer une photo",
+			     array('action' => 'envoyer',
+				   'annee' => null));
   }
 
   function consulterAction()
@@ -39,7 +40,7 @@ class PhotosController extends Strass_Controller_Action
   function envoyerAction()
   {
     $ta = new Activites;
-    $a = $activite = $this->_helper->Album(null, false);
+    $a = $activite = $this->_helper->Album(false);
 
     $individu = Zend_Registry::get('individu');
     if ($activite) {
