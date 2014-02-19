@@ -14,17 +14,16 @@ class Strass_Addon_Console extends Strass_Addon_Liens
   {
     $view->auth_login_model = Zend_Registry::get('login_model');
     $view->auth_logout_model = Zend_Registry::get('logout_model');
-    $view->individu = Zend_Registry::get('individu');
 
     $acl = Zend_Registry::get('acl');
-    $view->user = $user = Zend_Registry::get('user');
+    $user = Zend_Registry::get('user');
     $actual = Zend_Registry::get('actual_user');
 
-    if ($view->individu) {
+    if ($user->isMember()) {
       $this->append('Votre fiche',
 		    array('controller' => 'individus',
 			  'action' => 'fiche',
-			  'individu' => $view->individu->slug));
+			  'individu' => $user->findParentIndividus()->slug));
     }
 
 
