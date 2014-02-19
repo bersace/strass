@@ -7,7 +7,7 @@ class Strass_Pages_RendererCitation extends Strass_Pages_Renderer
     $s = $cont->addChild($this->view->citation($citation));
 
     $resource = $citation->getTable();
-    if (Zend_Registry::get('acl')->isAllowed(Zend_Registry::get('user'), $resource, 'admin')) {
+    if ($this->view->assert(null, $resource, 'admin')) {
       $l = $s->addList()->addFlags('adminlinks');
       $l->addItem()->addChild($this->view->lien(array('controller' => 'citation',
 						      'action' => 'editer',

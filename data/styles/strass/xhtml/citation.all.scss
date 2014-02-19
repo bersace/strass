@@ -2,17 +2,7 @@
 
 @import "common";
 
-#document.citation {
-
-    li {
-	list-style-type: none;
-    }
-
-    .section.citation
-    {
-	position: relative;
-    }
-
+#document {
     form
     {
 	@include minipage;
@@ -21,15 +11,6 @@
     .section.citation
     {
 	@include minipage;
-
-	padding: 1ex;
-	margin: 2pt auto;
-	background-color: $alt_background;
-
-	.auteur {
-	    float: left;
-	    margin: 1ex;
-	    font-weight: bold;
-	}
+	@include message;
     }
 }

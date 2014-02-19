@@ -20,3 +20,21 @@ $critical_bg: $error_bg;
     width: 60%;
     margin: 1em auto;
 }
+
+@mixin message {
+    position: relative;
+    padding: 1ex;
+    margin: 2pt auto;
+    background-color: $alt_background;
+
+    p {
+	margin: 1ex;
+	line-height: 1.1em;
+    }
+
+    .auteur {
+	float: left;
+	margin: 1ex 1em 0 1ex;
+	font-weight: bold;
+    }
+}

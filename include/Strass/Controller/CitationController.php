@@ -32,20 +32,23 @@ class CitationController extends Strass_Controller_Action
     $m->addNewSubmission('enregistrer', 'Enregistrer');
 
     if ($m->validate()) {
+      $data = $m->get();
+      $data['date'] = new Zend_Db_Expr('CURRENT_TIMESTAMP');
+
       $db = $tc->getAdapter();
       $db->beginTransaction();
       try {
-	$data = $m->get();
-	$data['date'] = new Zend_Db_Expr('CURRENT_TIMESTAMP');
 	$tc->insert($data);
 	$this->logger->info("Citation enregistrée", $this->_helper->Url(null, 'citations'));
 	$db->commit();
-	$this->redirectSimple('index', null, null, null, true);
       }
       catch (Exception $e) {
 	$db->rollback();
 	throw $e;
       }
+
+      $this->_helper->Flash->info("Citation enregistrée");
+      $this->redirectSimple('index', null, null, null, true);
     }
   }
 
