@@ -372,6 +372,12 @@ class Individu extends Strass_Db_Table_Row_Abstract implements Zend_Acl_Role_Int
     return $t->fetchAll($s);
   }
 
+  function findCommentaires($select)
+  {
+    $select->where('commentaire.parent IS NOT NULL');
+    return parent::findCommentaires($select);
+  }
+
   /*
    * Sélectionne les activités concernées par l'individus;
    */

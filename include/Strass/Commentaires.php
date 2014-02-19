@@ -36,4 +36,14 @@ class Commentaire extends Strass_Db_Table_Row_Abstract implements Zend_Acl_Resou
   {
     return 'commentaire-'.$this->id;
   }
+
+  function findPhoto()
+  {
+    $t = new Photos;
+    $s = $t->select()
+      ->setIntegrityCheck(false)
+      ->from('photo')
+      ->where('photo.commentaires = ?', $this->parent);
+    return $t->fetchOne($s);
+  }
 }

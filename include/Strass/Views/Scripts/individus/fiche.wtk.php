@@ -81,13 +81,14 @@ if ($this->historique->count()) {
 }
 
 // commentaires
-
 if ($this->commentaires->count()) {
   $s = $this->document->addSection('commentaires', "Derniers commentaires de photos");
   $l = $s->addList();
-  foreach($this->commentaires as $commentaire)
-    $l->addItem(new Wtk_Container($this->lienPhoto($commentaire->findParentPhotos()),
-				  new Wtk_RawText(" le ".strftime("%e-%m-%Y", strtotime($commentaire->date)).".")));
+  foreach($this->commentaires as $commentaire) {
+    $i =  $l->addItem();
+    $i->addChild($this->lienPhoto($commentaire->findPhoto()));
+    $i->addChild(" le ".strftime("%e-%m-%Y", strtotime($commentaire->date)).".");
+  }
 }
 
 // articles
