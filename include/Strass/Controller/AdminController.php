@@ -38,25 +38,25 @@ class AdminController extends Strass_Controller_Action
 					      1, 1)));
     $m->append('Mouvement', null, strtoupper($config->system->mouvement), 'notice');
     $t = new Inscriptions;
-    $count = $t->countRows($t->select());
+    $count = $t->countRows();
     $m->append("Inscriptions à valider",
 	       $this->_helper->Url('valider', 'membres'),
 	       $count, strass_admin_count_level($count, 1, 5));
 
     $t = new Unites;
-    $count = $t->countRows($t->select());
+    $count = $t->countRows();
     $m->append("Unités",
 	       $this->_helper->Url('unites'),
 	       $count, strass_admin_count_level(0-$count, 0, 0));
 
     $t = new Individus;
-    $count = $t->countRows($t->select());
+    $count = $t->countRows();
     $m->append("Fiches d'individu",
 	       $this->_helper->Url('individus'),
 	       $count, 'notice');
 
     $t = new Users;
-    $count = $t->countRows($t->select());
+    $count = $t->countRows();
     $m->append("Membres",
 	       $this->_helper->Url('membres'),
 	       $count, 'notice');
@@ -70,7 +70,7 @@ class AdminController extends Strass_Controller_Action
 	       strass_admin_count_level($count, 1, 10));
 
     $t = new Citation;
-    $count = $t->countRows($t->select());
+    $count = $t->countRows();
     $m->append("Citations",
 	       $this->_helper->Url('index', 'citation'),
 	       /* réellement, on s'en fout des citations, c'est
@@ -206,5 +206,21 @@ class AdminController extends Strass_Controller_Action
 			 );
       $pathes[$unite->slug] = $path;
     }
+  }
+
+  function membresAction()
+  {
+    $this->metas(array('DC.Title' => 'Les membres',
+		       'DC.Title.alternative' => 'Membres'));
+    $this->branche->append();
+
+    $t = new Users;
+    $s = $t->select()
+      ->setIntegrityCheck(false)
+      ->from('user')
+      ->join('individu', 'individu.id = user.id', array())
+      ->order('individu.nom')
+      ->order('individu.prenom');
+    $this->view->membres = new Strass_Pages_Model_Rowset($s, 30, $this->_getParam('page'));
   }
 }

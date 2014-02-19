@@ -4,7 +4,9 @@
 
 .admin {
 
-    &.parametres form {
+    &.parametres form,
+    &.membres table
+    {
 	@include minipage;
     }
 

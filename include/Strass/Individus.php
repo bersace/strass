@@ -529,6 +529,16 @@ class Users extends Strass_Db_Table_Abstract
     return hash('md5', $username.':'.$config->system->realm.$config->system->realm_suffix.':'.$password);
   }
 
+  function selectAll()
+  {
+    return $this->select()
+      ->setIntegrityCheck(false)
+      ->from('user')
+      ->join('individu', 'individu.id = user.id', array())
+      ->order('individu.nom')
+      ->order('individu.prenom');
+  }
+
   function findByUsername($username) {
     $s = $this->select()->where('username = ?', $username);
     return $this->fetchOne($s);
