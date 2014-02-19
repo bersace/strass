@@ -1,24 +1,18 @@
 <?php
 
-$i = $this->inscription;
 $f = $this->document->addForm($this->model);
 
-$enum = array('accepter' => 'acceptée',
-	      'refuser' => 'refusée');
-
-$f->addParagraph()->addFlags('warn')
-->addInline("Êtes-vous **sûr** de l'authenticité de cette inscription ?");
-
-if ($this->individu)
-  $f->addParagraph($this->lienIndividu($this->individu),
-		   " a sa fiche dans la base.")->addFlags('info');
-
-$f->addEntry('prenom', 24)->setReadonly($this->individu);
-$f->addEntry('nom', 24)->setReadonly($this->individu);
+$f->addEntry('prenom', 24);
+$f->addEntry('nom', 24);
+if ($this->individu) {
+  $f->addParagraph()->addFlags('warn')
+    ->addInline("Êtes-vous **sûr** de l'authenticité de cette inscription ?");
+  $f->addSelect('fiche', false);
+}
 
 $s = $f->addSection('presentation');
-$s->addParagraph($i->adelec)->addFlags('auteur');
-$s->addText($i->presentation);
+$s->addParagraph($this->inscription->adelec)->addFlags('auteur');
+$s->addText($this->inscription->presentation);
 
 $f->addEntry('message', 48, 4);
 

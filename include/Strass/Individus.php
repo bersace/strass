@@ -523,6 +523,14 @@ class Inscription extends Strass_Db_Table_Row_Abstract
   {
     return $this->prenom.' '.$this->nom;
   }
+
+  function findIndividus()
+  {
+    $t = new Individus;
+    $s = $t->select()
+      ->where('slug LIKE ?', wtk_strtoid($this->getFullname()).'%');
+    return $t->fetchAll($s)->current();
+  }
 }
 
 class Users extends Strass_Db_Table_Abstract

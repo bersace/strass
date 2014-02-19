@@ -157,30 +157,44 @@ class MembresController extends Strass_Controller_Action implements Zend_Acl_Res
     else if (!$ins = $t->fetchAll()->current())
       throw new Strass_Controller_Action_Exception_Notice("Aucune inscription à valider.");
 
+    $this->view->individu = $ind = $ins->findIndividus();
+    $this->view->inscription = $ins;
     $this->branche->append($ins->getFullname());
 
-    $this->view->inscription = $ins;
     $this->view->model = $m = new Wtk_Form_Model('valider');
-    $m->addConstraintRequired($m->addString('prenom', 'Prénom', $ins->prenom));
-    $m->addConstraintRequired($m->addString('nom', 'Nom', $ins->nom));
+    $i = $m->addString('prenom', 'Prénom', $ins->prenom);
+    $i->setReadonly((bool) $ind);
+    $m->addConstraintRequired($i);
+    $i = $m->addString('nom', 'Nom', $ins->nom);
+    $i->setReadonly((bool) $ind);
+    $m->addConstraintRequired($i);
+
+    if ($ind) {
+      $enum = array($ind->id => "Rattacher à ".$ind->getFullname(),
+		    '$$nouveau$$' => "Créer une nouvelle fiche",
+		    );
+      $m->addEnum('fiche', null, $ind->id, $enum);
+    }
     $m->addString('message', "Message à ".$ins->getFullname());
 
     $m->addNewSubmission('accepter', 'Accepter');
     $m->addNewSubmission('refuser', 'Spam !');
 
     if ($s = $m->validate()) {
-      $ti = new Individus;
       $tu = new Users;
+      $ti = new Individus;
       $db = $ti->getAdapter();
 
       if ($s->id == 'accepter') {
-
-	$ituple = array('slug' => $ti->createSlug(wtk_strtoid($ins->getFullname())));
-	$ituple['prenom'] = $m->get('prenom');
-	$ituple['nom'] = $m->get('nom');
-	$ituple['sexe'] = $ins->sexe;
-	$ituple['naissance'] = $ins->naissance;
-	$ituple['adelec'] = $ins->adelec;
+	$creer = !$ind || $m->get('fiche') == '$$nouveau$$';
+	if ($creer) {
+	  $ituple = array('slug' => $ti->createSlug(wtk_strtoid($ins->getFullname())));
+	  $ituple['prenom'] = $m->get('prenom');
+	  $ituple['nom'] = $m->get('nom');
+	  $ituple['sexe'] = $ins->sexe;
+	  $ituple['naissance'] = $ins->naissance;
+	  $ituple['adelec'] = $ins->adelec;
+	}
 
 	$utuple = array('username' => $ins->adelec,
 			'password' => $ins->password,
@@ -188,9 +202,11 @@ class MembresController extends Strass_Controller_Action implements Zend_Acl_Res
 
 	$db->beginTransaction();
 	try {
-	  $k = $ti->insert($ituple);
-	  $ind = $ti->findOne($k);
-	  $utuple['individu'] = $k;
+	  if ($creer) {
+	    $k = $ti->insert($ituple);
+	    $ind = $ti->findOne($k);
+	  }
+	  $utuple['individu'] = $ind->id;
 	  $k = $tu->insert($utuple);
 	  $user = $tu->findOne($k);
 
