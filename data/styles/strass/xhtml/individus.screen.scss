@@ -41,8 +41,9 @@
   text-align: vertical;
   }
 
-.individus.editer form {
+.individus form {
     @include minipage;
+
     #control-editer-notes textarea {
 	width: 100%;
     }

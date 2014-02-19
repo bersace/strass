@@ -4,11 +4,10 @@ require_once 'Strass/Unites.php';
 
 class MembresController extends Strass_Controller_Action implements Zend_Acl_Resource_Interface
 {
-  static $cotisation = 'private/cotisation.wiki';
-
   function init()
   {
     parent::init();
+
     $acl = Zend_Registry::get('acl');
     if (!$acl->has($this))
       $acl->add($this);
@@ -17,7 +16,6 @@ class MembresController extends Strass_Controller_Action implements Zend_Acl_Res
       $acl->allow($racine->getRoleRoleId('chef'), $this);
     }
     catch (Strass_Db_Table_NotFound $e) {}
-    $acl->allow('individus', $this, 'fiche');
   }
 
   function getResourceID()
@@ -60,377 +58,179 @@ class MembresController extends Strass_Controller_Action implements Zend_Acl_Res
 
   function inscriptionAction()
   {
-    $this->metas(array('DC.Title' => "Fiche d'inscription",
-		       'DC.Subject' => 'livre,or'));
-    $conf = $this->_helper->Config('strass')->inscription;
+    $this->metas(array('DC.Title' => "Fiche d'inscription"));
+    $this->branche->append();
 
     $m = new Wtk_Form_Model('inscription');
-    $m->addNewSubmission('inscrire', 'Inscrire');
 
+    // FICHE INDIVIDU
     $g = $m->addGroup('fiche');
-
-    // ÉTAT CIVIL
-    $gg = $g->addGroup('etat-civil');
-    $i = $gg->addString('prenom', "Prénom");
+    $i = $g->addString('prenom', "Prénom");
     $m->addConstraintRequired($i);
 
-    $i = $gg->addString('nom', "Nom");
+    $i = $g->addString('nom', "Nom");
     $m->addConstraintRequired($i);
 
-    // listage des sexes acceuillis
     $enum = array('h' => 'Masculin', 'f' => 'Féminin');
-    $ttu = new TypesUnite();
-    $s = $ttu->select()
-      ->distinct()
-      ->from('types_unite', array('sex' => 'sexe'))
-      ->distinct()
-      ->join('unites',
-	     'unites.type = types_unite.id',
-	     array());
-    $default = null;
-    $tuples = $ttu->fetchAll($s);
-    $sexes = array();
-    foreach($tuples as $tuple) {
-      $sexe = $tuple->sex;
-      switch($sexe) {
-      case 'm':
-	$default = 'h';
-	$sexes = array('h', 'f');
-	break;
-      case 'h':
-      case 'f':
-	if (!$default)
-	  $default = $sexe;
-	array_push($sexes, $sexe);
-	break;
-      }
-    }
-    $keys = array_flip($sexes);
-    $enum = array_intersect_key($enum, $keys);
-
-    $i = $gg->addEnum('sexe', 'Sexe', $default, $enum);
+    $i = $g->addEnum('sexe', 'Sexe', null, $enum);
     $m->addConstraintRequired($i);
 
-    $i = $gg->addDate('naissance', "Date de naissance", 0);
+    $i = $g->addDate('naissance', "Date de naissance", 0);
     $m->addConstraintRequired($i);
-    $gg->addString('situation', "Situation");
-
-
-    // CONTACT
-    $gg = $g->addGroup('contact');
-    $gg->addString('adresse', "Adresse");
-    $gg->addString('fixe', "Fixe");
-    $gg->addString('portable', "Portable");
-
-    $i = $gg->addString('adelec', "Adresse électronique");
-    $m->addConstraintMatch($i,
-			   '/^[[:alnum:]\._+-]{3,}@[[:alnum:]\._-]{3,}\.[[:alnum:]]{2,6}$/');
-    $m->addConstraintRequired($i);
-
-    // PROGRESSION
-    $gg = $g->addGroup('progression');
-    $gg->addString('origine', "Unité d'origine");
-
-    $td = new Diplomes();
-    $ds = $td->fetchAll();
-    $enum = array();
-    foreach($ds as $diplome)
-      $enum[$diplome->id] = $diplome->accr;
-
-    $gg->addEnum('formation', "Diplômes", null, $enum, true); // multiple
-
-    $te = new Etape();
-    $es = $te->fetchAll("titre NOT LIKE '%Badge%'");
-    $enum = array();
-    foreach($es as $etape)
-      $enum[$etape->id] = $etape->titre;
-
-    $gg->addEnum('progression', "État scout", null, $enum, true); // multiple
-    $gg->addString('perespi', "Père Spi");
 
     // COMPTE
     $g = $m->addGroup('compte');
-    $i = $g->addString('identifiant', "Identifiant");
-    $m->addConstraintRequired($i);
-    // contrainte : pas d'identifiant unique
-    $tu = new Users();
-    $us = $tu->fetchAll();
-    $forbidden = array();
-    foreach($us as $u)
-      array_push($forbidden, $u->username);
+    $i = $g->addString('adelec', "Adresse électronique");
+    $m->addConstraintEMail($i);
 
-    $m->addConstraintForbid($i, $forbidden, "Cet %s est déjà utilisé !");
+    $i0 = $g->addString('motdepasse', "Mot de passe");
+    $m->addConstraintLength($i0, 6);
+    $i1 = $g->addString('confirmer', "Confirmer");
+    $m->addConstraintEqual($i1, $i0);
 
+    $m->addString('presentation', "Présentation");
 
+    $this->view->model = $pm = new Wtk_Pages_Model_Form($m);
+    if ($pm->validate()) {
+      $data = $m->get('fiche');
+      $data['adelec'] = $m->get('compte/adelec');
+      $data['password'] = Users::hashPassword($m->get('compte/adelec'),
+					      $m->get('compte/motdepasse'));
+      $data['presentation'] = $m->get('presentation');
 
-    $i = $g->addString('code', "Mot de passe");
-    $m->addConstraintLength($i, 6);
-
-    // MODÉRATION
-    $g = $m->addGroup('moderation');
-    $i = $g->addString('message', "Message à l'administrateur");
-
-    if ($conf->scoutisme) {
-      $t = $g->addTable('participations',
-			"Votre scoutisme dans notre groupe",
-			array('unite' => array ('String', 'Unité'),
-			      'poste' => array ('String', 'Poste'),
-			      'debut' => array ('Date', 'Début', '%Y/%m/%d'),
-			      'fin' => array ('Date', 'Fin', '%Y/%m/%d')));
-      $t->addRow('', '', strtotime((intval(date('Y')) - 1).'-10-01'),
-		 strtotime((intval(date('Y'))).'-10-01'));
-    }
-
-    $this->view->model = new Wtk_Pages_Model_Form($m);
-
-    $this->view->cotisation = file_get_contents($this::$cotisation);
-    $racine = $this->_helper->Unite->racine();
-    $app = $racine->findAppartenances("role = 'chef' AND fin IS NULL")->current();
-    $chef = $app->findParentIndividus();
-    $this->view->envoi =
-      "À adresser rapidement au ".$app->findParentRoles()->titre." :\n\n".
-      $chef->getFullname(false)."\n".
-      $chef->adresse."\n";
-
-    if ($this->view->model->isValid()) {
-      $t = new Inscriptions();
+      $t = new Inscriptions;
       $db = $t->getAdapter();
       $db->beginTransaction();
       try {
-	$private = $m->get();
-	$config = $this->_helper->Config('strass')->site;
-	$realm = (string) $config->realm;
-	$private = array('username' => trim($private['compte']['identifiant']),
-			 'password' => md5($private['compte']['code']),
-			 'ha1' => Users::ha1(trim($private['compte']['identifiant']),
-					     $realm,
-					     $private['compte']['code']),
-			 'message' => $private['moderation']['message']."\n");
+	$k = $t->insert($data);
+	$i = $t->findOne($k);
 
-	$private['scoutisme'] = '';
-	$private+= $m->get('fiche/etat-civil');
-	$private+= $m->get('fiche/contact');
-	$private+= $m->get('fiche/progression');
-	$private['progression'] = var_export($private['progression'], true);
-	$private['formation'] = var_export($private['formation'], true);
-	if ($conf->scoutisme) {
-	  foreach($m->get('moderation/participations') as $row) {
-	    if ($row['poste'] && $row['unite']) {
-	      $private['scoutisme'].=
-		"|| ".$row['unite']." || ".$row['poste']." || ".
-		$row['debut']." || ".$row['fin']."||\n";
-	    }
-	  }
-	}
-	$t->insert($private);
-	$this->sendInscriptionMail($private, $conf->scoutisme ? $m->get('moderation/participations') : null);
-	$this->_helper->Log("Nouvelle inscription",
-			    array('identifiant' => trim($private['username']),
-				  'prenom' => $private['prenom'],
-				  'nom' => $private['nom'],
-				  'adelec' => $private['adelec']),
-			    $this->_helper->Url('inscriptions', 'membres'), "Inscriptions");
+	$this->logger->info("Nouvelle inscription",
+			    $this->_helper->Url('valider', 'membres', null, array('adelec' => $i->adelec)));
+	$this->_helper->Flash->info("Inscription en modération");
+
+	$mail = new Strass_Mail_Inscription($i);
+	$mail->send();
+
 	$db->commit();
-	//$this->redirectSimple('index', 'index');
       }
       catch(Exception $e) {
 	$db->rollBack();
 	throw $e;
       }
-    }
 
-    $this->branche->append("Fiche d'inscription");
-    $this->actions->append("Éditer la fiche d'inscription",
-			   array('action' => 'editer'),
-			   array(null, $this));
+      $this->redirectSimple('index', 'index');
+    }
   }
 
   function inscriptionsAction()
   {
-    $t = new Inscriptions();
-    $this->assert(null, $t, 'fiche',
-		  "Vous n'avez pas le droit de voir les inscriptions en attente.");
     $this->metas(array('DC.Title' => "Inscriptions en attente",
-		       'DC.Subject' => 'livre,or'));
+		       'DC.Title.alternative' => "Inscriptions"));
+    $this->branche->append();
 
-    $is = $t->fetchAll();
+    $t = new Inscriptions;
+    $this->assert(null, $t, 'valider',
+		  "Vous n'avez pas le droit de voir les inscriptions en attente.");
 
-    $this->view->inscriptions = new Wtk_Pages_Model_Iterator($is);
+    $this->view->inscriptions = new Strass_Pages_Model_Rowset($t->select());
   }
 
   function validerAction()
   {
-    $t = new Inscriptions();
+    $this->metas(array('DC.Title' => "Valider une inscription"));
+    $this->branche->append("Inscriptions", array('action' => 'inscriptions', 'adelec' => null));
+
+    $t = new Inscriptions;
     $this->assert(null, $t, 'valider',
 		  "Vous n'avez pas le droit de valider les inscriptions en attente.");
-    $this->metas(array('DC.Title' => "Valider une inscription",
-		       'DC.Subject' => 'inscription'));
 
-    $id = $this->_getParam('id');
-    if ($id)
-      $ins = $t->find($id)->current();
-    else
-      $ins = $t->fetchAll()->current();
-
-    if (!$ins)
+    $adelec = $this->_getParam('adelec');
+    if ($adelec) {
+      try {
+	$ins = $t->findByEMail($adelec);
+      }
+      catch (Strass_Db_Table_NotFound $e)  {
+	throw new Strass_Controller_Action_Exception_NotFound("Inscription déjà validée");
+      }
+    }
+    else if (!$ins = $t->fetchAll()->current())
       throw new Strass_Controller_Action_Exception_Notice("Aucune inscription à valider.");
 
-    $tind = new Individus();
-    $id = wtk_strtoid($ins->prenom.' '.$ins->nom);
-    $ind = $tind->find($id)->current();
+    $this->branche->append($ins->getFullname());
 
-    $m = new Wtk_Form_Model('valider');
-    $m->addString('nom', 'Nom', $ins->nom);
-    $m->addString('prenom', 'Prénom', $ins->prenom);
-    $m->addString('username', 'Identifiant', trim($ins->username));
-    $m->addString('adelec', 'Adélec', $ins->adelec);
-    // $v = $m->addBool('verdict', 'Accepter '.$ins->prenom.' '.$ins->nom.' ?', false);
-    $v = $m->addEnum('verdict', 'Verdict',
-		     'refuser',
-		     array('refuser' => 'Refuser !',
-			   'accepter' => 'Accepter !'));
-    $m->addString('message', "Message à ".$ins->prenom." ".$ins->nom);
+    $this->view->inscription = $ins;
+    $this->view->model = $m = new Wtk_Form_Model('valider');
+    $m->addConstraintRequired($m->addString('prenom', 'Prénom', $ins->prenom));
+    $m->addConstraintRequired($m->addString('nom', 'Nom', $ins->nom));
+    $m->addString('message', "Message à ".$ins->getFullname());
 
-    if (!$ind || !$ind->findUnites()) {
-      // unités susceptible d'indexlir le nouveau membre.
-      $tu = new Unites();
-      $s = $tu->select()
-	->where("sexe = ? OR sexe = 'm'", $ins->sexe);
-      $us = $tu->fetchAll($s);
-      $enum = array();
-      foreach ($us as $u)
-	$enum[$u->id] = wtk_ucfirst($u->getFullname());
+    $m->addNewSubmission('accepter', 'Accepter');
+    $m->addNewSubmission('refuser', 'Spam !');
 
-      $i = $m->addEnum('unite', "Inscrire dans l'unité", key($enum), $enum);
-      $m->addConstraintDepends($i, $v);
-    }
+    if ($s = $m->validate()) {
+      $ti = new Individus;
+      $tu = new Users;
+      $db = $ti->getAdapter();
 
-    $m->addNewSubmission('valider', 'Valider');
+      if ($s->id == 'accepter') {
 
-    if ($m->validate()) {
-      if ($m->get('verdict') == 'accepter') {
-	$tu = new Users();
-	$db = $tu->getAdapter();
+	$ituple = array('slug' => $ti->createSlug(wtk_strtoid($ins->getFullname())));
+	$ituple['prenom'] = $m->get('prenom');
+	$ituple['nom'] = $m->get('nom');
+	$ituple['sexe'] = $ins->sexe;
+	$ituple['naissance'] = $ins->naissance;
+	$ituple['adelec'] = $ins->adelec;
+
+	$utuple = array('username' => $ins->adelec,
+			'password' => $ins->password,
+			);
+
 	$db->beginTransaction();
 	try {
-	  // TODO: regénérer la hash !!??
-	  $k = $tu->insert(array('username' => trim($m->username),
-				 'password' => $ins->password,
-				 'ha1' => $ins->ha1));
-	  $keys = array('naissance', 'situation', 'origine',
-			'adresse', 'fixe', 'portable', 'adelec',
-			'perespi');
-	  if ($ind) {
-	    // relier à une fiche existante
-	    $ind->username = $k;
-	    foreach($keys as $k)
-	      if ($ins->$k)
-		$ind->$k = $ins->$k;
+	  $k = $ti->insert($ituple);
+	  $ind = $ti->findOne($k);
+	  $utuple['individu'] = $k;
+	  $k = $tu->insert($utuple);
+	  $user = $tu->findOne($k);
 
-	    $ind->fixe = $this->_helper->Telephone($ind->fixe);
-	    $ind->portable = $this->_helper->Telephone($ind->portable);
+	  $mail = new Strass_Mail_InscriptionValide($user, $m->get('message'));
+	  $mail->send();
 
-	    $ind->save();
-	    $private = $ind->toArray();
-	  }
-	  else {
-	    // créer une nouvelle fiche.
-	    $private = array('username' => $k,
-			     'id' => $id,
-			     'nom' => $m->nom,
-			     'prenom' => $m->prenom,
-			     'sexe' => $ins->sexe);
-
-	    foreach($keys as $k)
-	      $private[$k] = $ins->$k;
-	    $private['fixe'] = $this->_helper->Telephone($ins->fixe);
-	    $private['portable'] = $this->_helper->Telephone($ins->portable);
-
-	    $key = $tind->insert($private);
-	    $ind = $tind->find($key)->current();
-	  }
-
-	  // progression
-	  $tp = new Progression();
-	  eval("\$progression = ".$ins->progression.";");
-	  foreach($progression as $etape) {
-	    try {
-	      // il arrive qu'une étape ai déjà été enregistrée !
-	      $tp->insert(array('individu' => $private['id'],
-				'sexe' => $private['sexe'], // à l'arrache !
-				'etape' => $etape));
-	    }catch(Exception $e) {}
-	  }
-
-	  $tf = new Formation();
-	  eval("\$formation = ".$ins->formation.";");
-	  foreach($formation as $diplome) {
-	    $td = new Diplomes();
-	    $s = $td->select()
-	      ->where("id = ?", $diplome)
-	      ->where("sexe = 'm' OR sexe = ?", $ind->sexe);
-	    $d = $td->fetchAll($s);
-	    try {
-	      // Il arrive que la formation ai déjà été enregistrée.
-	      $tf->insert(array('individu' => $private['id'],
-				'diplome' => $diplome,
-				'branche' => (string)$d->branche)); // branche ???
-	    } catch(Exception $e) {}
-	  }
-
-	  $this->_helper->Log("Inscription acceptée", array($ind),
+	  $this->logger->info("Inscription acceptée",
 			      $this->_helper->Url('fiche', 'individus', null,
-						  array('individu' => $ind->id)),
+						  array('individu' => $ind->slug)),
 			      (string) $ind);
+	  $ins->delete();
 
 	  $db->commit();
-	  // ne parler de la cotisation
-	  // qu'au nouveau membre sans
-	  // préinscription
-	  $this->sendValidationMail($private, $m->message, !$ind);
 	}
-	catch(Exception $e) {
-	  $db->rollBack();
-	  throw $e;
-	}
+	catch(Exception $e) { $db->rollBack(); throw $e; }
+
+	$this->_helper->Flash->info("Inscription acceptée");
       }
       else {
-	$this->_helper->Log("Inscription refusée",
-			    array('inscription' => $ins->toArray()),
-			    $this->_helper->Url('inscriptions', 'membres'),
-			    "Inscriptions");
+	$db->beginTransaction();
+	try {
+	  $this->logger->warn("Inscription de {$ins->adelec} refusée",
+			      $this->_helper->Url('inscriptions', 'membres', null, null, true));
+	  $mail = new Strass_Mail_InscriptionRefus($ins, $m->get('message'));
+	  $mail->send();
 
-	$this->sendValidationRefusMail($ins->toArray(),
-				       $m->get('message'));
+	  $ins->delete();
+
+	  $db->commit();
+	}
+	catch(Exception $e) { $db->rollBack(); throw $e; }
+
+	$this->_helper->Flash->info("Inscription refusée");
       }
-      // détruire l'inscription
-      $ins->delete();
 
-      if ($m->verdict == 'refuser' || !$m->get('unite'))
-	// pour valider les autres
-	$this->redirectSimple('valider', 'membres', null,
-			      array('precedent' => $private['id'],
-				    'verdict' => $m->verdict),
-			      true);
+      if ($this->_getParam('adelec'))
+	$this->redirectSimple('inscriptions', 'membres', null, null, true);
       else
-	// Pour inscrire le nouvel inscrit dans une unité
-	$this->redirectSimple('nouveau', 'inscription', null,
-			      array('unite' => $m->get('unite'),
-				    'individu' => $private['id']),
-			      true);
+	$this->redirectSimple('valider');
     }
-
-    $t = new Individus;
-    $id = $this->_getParam('precedent');
-    $this->view->verdict = $this->_getParam('verdict');
-    if ($id)
-      $this->view->precedent = $t->find($id)->current();
-    else
-      $this->view->precedent = null;
-
-    $this->view->individu = $ind;
-    $this->view->inscription = $ins;
-    $this->view->model = $m;
   }
 
   function recouvrirAction()
@@ -740,131 +540,5 @@ class MembresController extends Strass_Controller_Action implements Zend_Acl_Res
     $auth = Zend_Auth::getInstance();
     $auth->clearIdentity();
     $this->redirectSimple('index', 'index', null, array(), true);
-  }
-
-  // ENVOI DES COURRIELS
-
-
-  // envoi un courriel à tous les admins notifiant une nouvelle
-  // inscription.
-  function sendInscriptionMail($tuple, $scoutisme)
-  {
-    $site = Zend_Registry::get('site');
-
-    // Envoi d'un courriel à tout les admins.
-    // WTK
-    $metas = $site->metas->toArray();
-    $nc = $tuple['prenom'].' '.$tuple['nom'];
-    $mail = new Strass_Mail('Inscription : '.$nc);
-    $mail->setFrom($tuple['adelec'], $nc);
-    $mail->addTo($site->admin, $site->title);
-    $mail->notifyAdmins();
-    $mail->notifyChefs();
-
-    $d = $mail->getDocument();
-    $d->addText("Chers administrateurs,\n\n".
-		$nc." (".
-		strftime('%e/%m/%Y',
-			 strtotime($tuple['naissance'])).
-		") a soumis son inscription sur ".$site->id);
-
-    if ($tuple['message']) {
-      $s = $d->addSection(null, 'Message personnel');
-      $s->addText($tuple['message']);
-    }
-
-    if ($scoutisme) {
-      // purge des items inutiles.
-      foreach($scoutisme as $i => $s) {
-	if (!$s['unite'] || !$s['poste']) {
-	  unset($scoutisme[$i]);
-	}
-      }
-
-      if (count($scoutisme)) {
-	$m = new Wtk_Table_Model_Array($scoutisme);
-	$s = $d->addSection(null, 'Scoutisme');
-	$t = $s->addTable($m);
-	$t->addNewColumn('Unité', new Wtk_Table_CellRenderer_Text('text', 'unite'));
-	$t->addNewColumn('Poste', new Wtk_Table_CellRenderer_Text('text', 'poste'));
-	$t->addNewColumn('Début', new Wtk_Table_CellRenderer_Text('text', 'debut'));
-	$t->addNewColumn('Fin', new Wtk_Table_CellRenderer_Text('text', 'fin'));
-      }
-    }
-
-    $l = $d->addList();
-    $l->addItem(new Wtk_Link($this->_helper->Url->full('valider', null, null,
-						       array('id' => $tuple['username'])),
-			     "Modérer cette inscription"));
-    $l->addItem(new Wtk_Link($this->_helper->Url->full('inscriptions'),
-			     "Voir les inscriptions en attentes"));
-    $mail->send();
-  }
-
-  // envoi un courriel à tous les admins notifiant une nouvelle
-  // inscription validée.
-  // $cotisation indique s'il faut parler de la côtisation … !
-  function sendValidationMail($tuple, $message, $cotisation)
-  {
-    $site = Zend_Registry::get('site');
-
-    // Envoi d'un courriel à tout les admins.
-    $nc = $tuple['prenom'].' '.$tuple['nom'];
-    $mail = new Strass_Mail('Inscription validée');
-    $mail->addTo($tuple['adelec'], $nc);
-
-    // WTK
-    $d = $mail->getDocument();
-    $d->addText("Cher ".$nc.",\n\n".
-		"Votre inscription a été validée. ".
-		"Votre identifiant est '".$tuple['username']."'.\n");
-    if ($message)
-      $d->addSection(null, 'Message du modérateur :')->addText($message);
-
-    $d->addText("Les modérateurs peuvent modifier votre identifiant. ".
-		"Dans un tel cas, votre mot de passe sera invalide. ".
-		"Demander à un administrateur de changer votre mot de ".
-		"passe manuellement pour vous donner accès au site. ".
-		"Merci de votre compréhension.");
-
-    if ($cotisation) {
-      $cotisation = "Votre inscription sera validé à la réception de votre côtisation.\n\n".
-	file_get_contents($this::$cotisation);
-      $racine = $this->_helper->Unite->racine();
-      $app = $racine->findAppartenances("role = 'chef' AND fin IS NULL")->current();
-      $chef = $app->findParentIndividus();
-      $envoi ="À adresser rapidement au ".$app->findParentRoles()->titre." :\n\n".
-	$chef->getFullname(false)."\n".
-	$chef->adresse."\n";
-
-      $d->addSection('cotisation', "Côtisation")->addText($cotisation);
-      $d->addSection('envoi', "Envoi")->addText($envoi);
-    }
-
-    $l = $d->addList();
-    $l->addItem(new Wtk_Link($this->_helper->Url->full('index', 'index'),
-			     "Accéder au site web"));
-    $l->addItem(new Wtk_Link($this->_helper->Url->full('fiche', 'individus', null,
-						       array('individu' => $tuple['id'])),
-			     "Accéder à votre fiche"));
-    $mail->send();
-  }
-
-  // envoi un courriel à tous les admins notifiant une nouvelle
-  // inscription.
-  function sendValidationRefusMail($tuple, $message)
-  {
-    // Envoi d'un courriel à tout les admins.
-    $nc = $tuple['prenom'].' '.$tuple['nom'];
-    $mail = new Strass_Mail('Inscription refusée');
-    $mail->addTo($tuple['adelec'], $nc);
-
-    // WTK
-    $d = $mail->getDocument();
-    $d->addText("Cher ".$nc.",\n\n".
-		"Votre inscription a été refusée.\n\n".
-		($message ? "++ Message du modérateur :\n".
-		 $message."\n" : ""));
-    $mail->send();
   }
 }

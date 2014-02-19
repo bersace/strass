@@ -13,7 +13,7 @@ form
 {
     clear: both;
     text-align: center;
-    padding: 2em .5ex .5ex .5ex;
+    padding: 2em 0 .5ex;
     margin: 0;
 
     display: flex;
@@ -21,6 +21,11 @@ form
     flex-wrap: nowrap;
     justify-content: space-between;
     align-items: center;
+
+    .critical {
+	color: $critical;
+	font-weight: bold;
+    }
 }
 
 div.control
@@ -160,38 +165,34 @@ tr td .check label
     color: $error;
 }
 
-.form .warn
-{
-    background-color: $warn_bg;
-    background-image: url("icones/attention.png");
-    background-repeat: no-repeat;
-    background-position: 1em .75em;
-    box-shadow: 2pt 4pt 1ex rgba(4, 4, 4, 0.5);
-    border-radius: .75ex;
-    color: $warn;
-    margin: 1ex 5%;
-    text-align: justify;
-    padding: 1ex 1ex 1ex 48px;
-    min-height: 32px;
+.form {
+    .warn, .info {
+	font-size: 110%;
+	background-repeat: no-repeat;
+	background-position: 1em .75em;
+	box-shadow: 2pt 4pt 1ex rgba(4, 4, 4, 0.5);
+	border-radius: .75ex;
+	margin: 1ex 5%;
+	text-align: justify;
+	padding: 1ex 1ex 1ex 48px;
+    }
+
+    .warn
+    {
+	background-color: $warn_bg;
+	color: $warn;
+    }
+
+
+    .info
+    {
+	background-color: $info_bg;
+	color: $info;
+    }
 }
 
 
-.form .info
-{
-    background-color: $info_bg;
-    background-image: url("icones/information.png");
-    background-repeat: no-repeat;
-    background-position: 1em .75em;
-    box-shadow: 2pt 4pt 1ex rgba(4, 4, 4, 0.5);
-    border-radius: .75ex;
-    color: $info;
-    margin: 1ex 5%;
-    text-align: justify;
-    padding: 1ex 1ex 1ex 48px;
-    min-height: 32px;
-}
-
-fieldset, form p
+fieldset, form > p
 {
     clear: both;
 }

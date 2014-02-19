@@ -27,14 +27,28 @@
 
 @media screen {
 
-    #document.recouvrir form {
+    #document form,
+    #document.inscriptions table
+    {
 	@include minipage;
     }
 
-    #cotisation,
-    #envoi
-    {
-	display: none;
+    .valider form {
+	.h {
+	    clear: both;
+	}
+
+	#presentation {
+	    @include message;
+	    clear: both;
+	}
+
+	.control[id*=message] {
+	    .input, textarea {
+		box-sizing: border-box;
+		width: 100%;
+	    }
+	}
     }
 
     #document.parametres #parametres {

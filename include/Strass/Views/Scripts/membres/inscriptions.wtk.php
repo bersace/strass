@@ -1,59 +1,52 @@
 <?php
-class Scout_Page_RendererInscriptions extends Wtk_Pages_Renderer
+
+class Strass_Page_RendererInscriptions extends Wtk_Pages_Renderer
 {
-	protected	$view;
+  protected	$view;
 
-	function __construct($view)
-	{
-		parent::__construct($view->url(array('page' => '%i')),
-				    true,
-				    array('previous'	=> "Précédents",
-					  'next'		=> "Suivants"));
-		$this->view = $view;
-	}
+  function __construct($view)
+  {
+    parent::__construct($view->url(array('page' => '%i')),
+			true,
+			array('previous'	=> "Précédentes",
+			      'next'		=> "Suivantes"));
+    $this->view = $view;
+  }
 
-	function renderContainer()
-	{
-		$m = new Wtk_Table_Model('prenom-nom', 'username', 'adelec', 'fixe', 'portable');
-		$t = new Wtk_Table($m);
+  function renderContainer()
+  {
+    $m = new Wtk_Table_Model('date', 'prenom-nom', 'adelec');
+    $t = new Wtk_Table($m);
 
-		// prénom-nom
-		$r = new Wtk_Table_CellRenderer_Link('href', 'username',
-						     'label', 'prenom-nom');
-		$r->setUrlFormat($this->view->url(array('action' => 'valider',
-							'id' => '%s',
-							'page' => null)));
-		$t->addColumn(new Wtk_Table_Column("Nom", $r));
+    $t->addNewColumn("Date", new Wtk_Table_CellRenderer_Text('text', 'date'));
+    $r = new Wtk_Table_CellRenderer_Link('href', 'adelec',
+					 'label', 'prenom-nom');
+    $r->setUrlFormat($this->view->url(array('action' => 'valider',
+					    'adelec' => '%s',
+					    'page' => null)));
+    $t->addNewColumn("Nom", $r);
 
-		// fixe
-		$t->addColumn(new Wtk_Table_Column("Fixe",
-						   new Wtk_Table_CellRenderer_Text('text', 'fixe')));
-
-		// portable
-		$t->addColumn(new Wtk_Table_Column("Portable",
-						   new Wtk_Table_CellRenderer_Text('text', 'portable')));
-
-		// adélec
-		$r = new Wtk_Table_CellRenderer_Link('href', 'adelec',
-						     'label', 'adelec');
-		$r->setUrlFormat('mailto:%s');
-		$t->addColumn(new Wtk_Table_Column("Adélec", $r));
+    $r = new Wtk_Table_CellRenderer_Link('href', 'adelec',
+					 'label', 'adelec');
+    $r->setUrlFormat('mailto:%s');
+    $t->addNewColumn("Adélec", $r);
 
 
-		return $t;
-	}
+    return $t;
+  }
 
-	function render($id, $i, $table)
-	{
-		$m = $table->getModel();
-		$m->append($i->prenom.' '.$i->nom,
-			   $i->username,
-			   $i->adelec,
-			   $i->fixe,
-			   $i->portable);
-	}
+  function renderEmpty($cont)
+  {
+    $cont->addParagraph('Aucune inscription à valider')->addFlags('empty');
+  }
+
+  function render($id, $i, $table)
+  {
+    $m = $table->getModel();
+    $m->append(strftime('%d/%m/%Y %H:%M', strtotime($i->date)),
+	       $i->getFullname(),
+	       $i->adelec);
+  }
 }
 
-$s = $this->document->addSection('inscriptions', "Inscriptions en attente");
-$s->addChild(new Wtk_Pages(null, $this->inscriptions,
-			   new Scout_Page_RendererInscriptions($this)));
+$this->document->addPages(null, $this->inscriptions, new Strass_Page_RendererInscriptions($this));

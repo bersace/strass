@@ -16,6 +16,30 @@ class Individus extends Strass_Db_Table_Abstract
 						    'onUpdate'		=> self::CASCADE,
 						    'onDelete'		=> self::CASCADE),
 				   );
+
+  function findAdmins()
+  {
+    $s = $this->select()
+      ->setIntegrityCheck(false)
+      ->from($this->_name)
+      ->join('user', 'user.individu = individu.id', array())
+      ->where('user.admin > 0');
+    return $this->fetchAll($s);
+  }
+
+  function findChefsRacines()
+  {
+    $s = $this->select()
+      ->setIntegrityCheck(false)
+      ->distinct()
+      ->from($this->_name)
+      ->join('appartenance', 'appartenance.individu = individu.id', array())
+      ->join('unite', 'unite.id = appartenance.unite', array())
+      ->join('unite_role', 'unite_role.id = appartenance.role', array())
+      ->where("unite_role.acl_role = 'chef'")
+      ->where('unite.parent IS NULL');
+    return $this->fetchAll($s);
+  }
 }
 
 class Individu extends Strass_Db_Table_Row_Abstract implements Zend_Acl_Role_Interface, Zend_Acl_Resource_Interface
@@ -452,7 +476,8 @@ class Appartient extends Strass_Db_Table_Row_Abstract implements Zend_Acl_Role_I
 
 class Inscriptions extends Strass_Db_Table_Abstract implements Zend_Acl_Resource_Interface
 {
-  protected	$_name		= 'inscription';
+  protected $_name = 'inscription';
+  protected $_rowClass = 'Inscription';
 
   function __construct()
   {
@@ -467,6 +492,22 @@ class Inscriptions extends Strass_Db_Table_Abstract implements Zend_Acl_Resource
   function getResourceId()
   {
     return 'inscriptions';
+  }
+
+  function findByEMail($email)
+  {
+    $s = $this->select()
+      ->from($this->_name)
+      ->where('adelec = ?', $email);
+    return $this->fetchOne($s);
+  }
+}
+
+class Inscription extends Strass_Db_Table_Row_Abstract
+{
+  function getFullname()
+  {
+    return $this->prenom.' '.$this->nom;
   }
 }
 

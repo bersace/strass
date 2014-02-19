@@ -180,6 +180,10 @@ ul.adminlinks {
 	    margin-bottom: 1em;
 	    background: $highlight_color;
 	    color: $content_background;
+
+	    a {
+		color: inherit !important;
+	    }
 	}
 
 	#flash {

@@ -20,8 +20,10 @@ class Strass_Mail extends Zend_Mail
 
     $title = "[".$config->system->id."] ".$metas->title;
     $this->setSubject($title);
+    $this->addTo(null);
 
     $this->_doc = $d = new Wtk_Document($metas);
+    $d->level+= 2;
     $d->addStyleComponents('mail');
     $d->setStyle(new Wtk_Document_Style($config->system->style));
     $d->embedStyle();
@@ -103,43 +105,16 @@ class Strass_Mail extends Zend_Mail
 
   function notifyAdmins()
   {
-    $ti = new Individus();
-    $db = $ti->getAdapter();
-    $select = $db->select()
-      ->distinct()
-      ->from('individus')
-      ->join('membership',
-	     'individus.username = membership.username'.
-	     ' AND '.
-	     "membership.groupname = 'admins'",
-	     array());
-
-    $admins = $ti->fetchAll($select);
-    $tos = array();
+    $t = new Individus;
+    $admins = $t->findAdmins();
     foreach($admins as $admin)
       $this->addBcc($admin->adelec, $admin->getFullName(true));
   }
 
   function notifyChefs()
   {
-    $tu = new Unites;
-    $ti = new Individus;
-    $s = $ti->select()
-      ->from('individus')
-      ->join('unites',
-	     'unites.parent IS NULL',
-	     array())
-      ->join('appartient',
-	     'appartient.unite = unites.id'.
-	     ' AND '.
-	     "appartient.role = 'chef'".
-	     ' AND '.
-	     'appartient.fin IS NULL',
-	     array())
-      ->where('individus.id = appartient.individu');
-    $chefs = $ti->fetchAll($s);
-
-    $tos = array();
+    $t = new Individus;
+    $chefs = $t->findChefsRacines();
     foreach($chefs as $chef)
       $this->addBcc($chef->adelec, $chef->getFullName(false));
   }

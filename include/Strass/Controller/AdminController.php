@@ -40,7 +40,7 @@ class AdminController extends Strass_Controller_Action
     $t = new Inscriptions;
     $count = $t->countRows($t->select());
     $m->append("Inscriptions à valider",
-	       $this->_helper->Url('inscriptions', 'membres'),
+	       $this->_helper->Url('valider', 'membres'),
 	       $count, strass_admin_count_level($count, 1, 5));
 
     $t = new Unites;
@@ -106,7 +106,7 @@ class AdminController extends Strass_Controller_Action
 
     $this->view->connexions = $m = new Wtk_Table_Model('date', 'prenom-nom', 'fiche');
     $t = new Users;
-    $users = $t->fetchAll($t->select()->order('last_login DESC')->limit(8));
+    $users = $t->fetchAll($t->select()->where('last_login')->order('last_login DESC')->limit(8));
     foreach ($users as $u) {
       $i = $u->findParentIndividus();
       $m->append($u->last_login,
