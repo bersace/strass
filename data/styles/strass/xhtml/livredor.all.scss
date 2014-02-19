@@ -11,16 +11,7 @@
 
     .section.message
     {
-	position: relative;
-	padding: 1ex;
-	margin: 2pt auto;
-	background-color: $alt_background;
-
-	.auteur {
-	    float: left;
-	    margin: 1ex;
-	    font-weight: bold;
-	}
+	@include message;
     }
 
     .section#poster {

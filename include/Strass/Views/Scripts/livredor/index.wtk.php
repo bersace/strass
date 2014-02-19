@@ -33,7 +33,7 @@ class Strass_Pages_Renderer_Livredor extends Strass_Pages_Renderer
     $s = $cont->addChild($this->view->Livredor($message));
 
     $resource = $message->getTable();
-    if (Zend_Registry::get('acl')->isAllowed(Zend_Registry::get('user'), $resource, 'admin')) {
+    if ($this->view->assert(null, $resource, 'admin')) {
       $l = $s->addList()->addFlags('adminlinks');
       $l->addItem()->addChild($this->view->lien(array('controller' => 'livredor',
 						      'action' => 'editer',
