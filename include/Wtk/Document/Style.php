@@ -47,10 +47,12 @@ class Wtk_Document_Style {
 		      else {
 			$fs = wtk_glob($bf.'.css');
 		      }
-		      rsort($fs);
 
 		      if (file_exists($bf.'.css'))
 			array_unshift($fs, $bf.'.css');
+
+		      $fs = array_unique($fs);
+		      rsort($fs);
 
 		      foreach($fs as $f)
 			$files[] = array('file' => $f,
