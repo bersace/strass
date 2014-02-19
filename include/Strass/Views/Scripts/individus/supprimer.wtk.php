@@ -1,7 +1,5 @@
 <?php
 
-$this->document->setTitle(new Wtk_Container(new Wtk_Inline("Désinscrire "),
-					    $this->lienIndividu($this->individu)));
 $f = $this->document->addForm($this->model);
 $f->addCheck('confirmer');
 

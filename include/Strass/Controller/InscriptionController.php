@@ -10,47 +10,6 @@ class InscriptionController extends Strass_Controller_Action
     $this->redirectSimple('index', 'unites');
   }
 
-  function desinscrireAction()
-  {
-    $i = $this->_helper->Individu();
-    $this->assert(null, $i, 'desinscrire',
-		  "Vous n'avez pas le droit de désinscrire cet individu.");
-
-    $this->metas(array('DC.Title' => 'Désinscrire '.$i->getFullname()));
-
-    $m = new Wtk_Form_Model('desinscrire');
-    $m->addBool('confirmer',
-		"Je confirme la destruction de toute informations relative à ".$i->getFullName().".",
-		false);
-    $m->addNewSubmission('continuer', 'Continuer');
-
-    if ($m->validate()) {
-      if ($m->get('confirmer')) {
-	$db = $i->getTable()->getAdapter();
-	$db->beginTransaction();
-	try {
-	  $nom = $i->getFullName();
-	  $i->delete();
-	  $this->_helper->Log("Désincription de ".$nom, array(),
-			      $this->_helper->Url('index', 'unites'), "Unites");
-	  $db->commit();
-	  $this->redirectSimple('index', 'unites');
-	}
-	catch (Exception $e) {
-	  $db->rollBack();
-	  throw $e;
-	}
-      }
-      else {
-	$this->redirectSimple('fiche', 'individus', null,
-			      array('individu' => $i->id));
-      }
-    }
-
-    $this->view->individu = $i;
-    $this->view->model = $m;
-  }
-
   function administrerAction()
   {
     $this->view->individu = $individu = $this->_helper->Individu();

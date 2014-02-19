@@ -46,10 +46,9 @@ class IndividusController extends Strass_Controller_Action
 			   array('controller'	=> 'inscription',
 				 'action'		=> 'historique'),
 			   array(null, $individu, 'inscrire'));
-    $this->actions->append("Désinscrire",
-			   array('controller'	=> 'inscription',
-				 'action'		=> 'desinscrire'),
-			   array(null, $individu, 'desinscrire'));
+    $this->actions->append("Supprimer",
+			   array('action' => 'supprimer'),
+			   array(null, $individu, 'supprimer'));
     $this->actions->append("Administrer",
 			   array('controller'	=> 'inscription',
 				 'action'		=> 'administrer'),
@@ -187,6 +186,40 @@ class IndividusController extends Strass_Controller_Action
 			   array('controller'	=> 'inscription',
 				 'action'	=> 'administrer'),
 			   array(null, $individu, 'admin'));
+  }
+
+
+  function supprimerAction()
+  {
+    $this->view->individu = $i = $this->_helper->Individu();
+    $this->assert(null, $i, 'supprimer',
+		  "Vous n'avez pas le droit de supprime cette fiche.");
+
+    $this->metas(array('DC.Title' => 'Supprimer '.$i->getFullname()));
+
+    $this->view->model = $m = new Wtk_Form_Model('desinscrire');
+    $m->addBool('confirmer',"Je confirme la destruction de cette fiche.", false);
+    $m->addNewSubmission('continuer', 'Continuer');
+
+    if ($m->validate()) {
+      if ($m->get('confirmer')) {
+	$db = $i->getTable()->getAdapter();
+	$db->beginTransaction();
+	try {
+	  $this->logger->warn("Suppression de ".$i->getFullname(),
+			      $this->_helper->Url('individus', 'admin'));
+	  $i->delete();
+	  $db->commit();
+	}
+	catch (Exception $e) { $db->rollBack(); throw $e; }
+
+	$this->_helper->Flash->info("Fiche supprimée");
+	$this->redirectSimple('individus', 'admin');
+      }
+      else {
+	$this->redirectSimple('fiche', 'individus', null, array('individu' => $i->slug));
+      }
+    }
   }
 
   // éditer la progression d'un individu
