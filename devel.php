@@ -5,5 +5,6 @@ $_SERVER['SCRIPT_NAME'] = substr($_SERVER['SCRIPT_FILENAME'], strlen($_SERVER['D
 
 // Ne servir que les requêtes PATH_INFO
 if (file_exists('./'.$_SERVER['REQUEST_URI'])) return false;
+if (strpos($_SERVER['REQUEST_URI'], 'favicon.ico')) return false;
 
 include_once 'index.php';

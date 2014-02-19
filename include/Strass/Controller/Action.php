@@ -3,7 +3,6 @@
 abstract class Strass_Controller_Action extends Zend_Controller_Action implements Zend_Acl_Resource_Interface
 {
   protected $_titreBranche = '';
-  protected $_availableFormats = array();
   protected $_formats = array('xhtml');
   protected $resourceid;
   public $_helper = null;
@@ -38,15 +37,15 @@ abstract class Strass_Controller_Action extends Zend_Controller_Action implement
 	}
       }
 
-      $this->page = $page = new Strass_Page(new Wtk_Metas(array('DC.Title'		=> $metas->title,
-								'DC.Title.alternative'	=> $metas->title,
-								'DC.Subject'		=> $metas->subject,
-								'DC.Language'		=> $metas->language,
-								'DC.Creator'		=> $metas->author,
-								'DC.Date.created'	=> $metas->creation,
-								'DC.Date.available'	=> strftime('%Y-%m-%d'),
-								'organization'	=> $metas->organization,
-								'site' => $site)));
+      $page = new Strass_Page(new Wtk_Metas(array('DC.Title'		=> $metas->title,
+						  'DC.Title.alternative'	=> $metas->title,
+						  'DC.Subject'		=> $metas->subject,
+						  'DC.Language'		=> $metas->language,
+						  'DC.Creator'		=> $metas->author,
+						  'DC.Date.created'	=> $metas->creation,
+						  'DC.Date.available'	=> strftime('%Y-%m-%d'),
+						  'organization'	=> $metas->organization,
+						  'site' => $site)));
       Zend_Registry::set('page', $page);
 
       $page->addon(new Strass_Addon_Menu);
@@ -79,15 +78,6 @@ abstract class Strass_Controller_Action extends Zend_Controller_Action implement
       $this->logger = new Strass_ActionLogger($this);
       Zend_Registry::set('logger', $this->logger);
     }
-
-    // lister les formats disponibles
-    $formats = require('include/Strass/formats.php');
-    foreach($formats as $format)
-      if ($f = Strass_Format::factory($format))
-	$this->_availableFormats[$f->suffix] = $f;
-
-    if (!array_key_exists($this->_getParam('format'), $this->_availableFormats))
-      throw new Strass_Controller_Action_Exception("Format inconnu");
 
     $this->initPage();
   }
@@ -153,12 +143,6 @@ abstract class Strass_Controller_Action extends Zend_Controller_Action implement
       $view->addHelperPath($viewdir.'Helpers', $prefix.'_View_Helper_');
     }
 
-    $view->page = Zend_Registry::get('page');
-    try {
-      $view->user = Zend_Registry::get('user');
-    }
-    catch(Exception $e) {}
-
     return $view;
   }
 
@@ -197,13 +181,20 @@ abstract class Strass_Controller_Action extends Zend_Controller_Action implement
   function postDispatch ()
   {
     $format = $this->_getParam('format');
-    $page = $this->view->page;
+    $page = Zend_Registry::get('page');
+
     if (!in_array($format, $this->_formats))
       $format = 'xhtml';
     //throw new Strass_Controller_Action_Exception("Ce document n'est pas disponible dans ce format.");
 
-    foreach($this->_formats as $f)
-      $page->addFormat($this->_availableFormats[$f]);
+    $available_formats = require('include/Strass/formats.php');
+    foreach($available_formats as $name) {
+      if (!$f = Strass_Format::factory($name))
+	continue;
+
+      if (in_array($f->suffix, $this->_formats))
+	$page->addFormat($f);
+    }
 
     // choper le format actuel
     $page->selectFormat($format);
@@ -225,7 +216,7 @@ abstract class Strass_Controller_Action extends Zend_Controller_Action implement
   {
     $metas = new Wtk_Metas($metas);
     $config = Zend_Registry::get('config');
-    $page = $this->view->page;
+    $page = Zend_Registry::get('page');
 
     /*
      * Concaténer certains champs plutôt que les écraser.
@@ -254,8 +245,6 @@ abstract class Strass_Controller_Action extends Zend_Controller_Action implement
   {
     $formats = func_get_args();
     foreach($formats as $format) {
-      if (!array_key_exists($format, $this->_availableFormats))
-	continue;
       if (!in_array($format, $this->_formats))
 	$this->_formats[] = $format;
     }

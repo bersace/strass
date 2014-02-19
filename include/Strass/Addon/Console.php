@@ -8,15 +8,12 @@ class Strass_Addon_Console extends Strass_Addon_Liens
   function __construct()
   {
     parent::__construct('console', 'Console');
-
-    $this->login = Zend_Registry::get('login_model');
-    $this->logout = Zend_Registry::get('logout_model');
   }
 
   function initView($view)
   {
-    $view->auth_login_model = $this->login;
-    $view->auth_logout_model = $this->logout;
+    $view->auth_login_model = Zend_Registry::get('login_model');
+    $view->auth_logout_model = Zend_Registry::get('logout_model');
     $view->individu = Zend_Registry::get('individu');
 
     $acl = Zend_Registry::get('acl');

@@ -7,7 +7,6 @@ class Strass_Logger
   function __construct($name = 'strass')
   {
     $this->name = $name;
-    $this->table = new Logs;
   }
 
   function log($level, $message, $url=null, $detail=null)
@@ -24,7 +23,8 @@ class Strass_Logger
 		  'url' => $url,
 		  'detail' => var_export($detail, true),
 		  );
-    return $this->table->insert($data);
+    $t = new Logs;
+    return $t->insert($data);
   }
 
   function info()

@@ -4,19 +4,20 @@ class Strass_ActionLogger extends Strass_Logger
 {
   function __construct($controller)
   {
-    $this->controller = $controller;
-    parent::__construct($controller->getRequest()->getControllerName());
+    $request = $controller->getRequest();
+    parent::__construct($request->getControllerName());
+    $this->default_url = $request->REQUEST_URI;
   }
 
   function log($level, $message, $url=null, $detail=null)
   {
     if (!$url) {
-      $request = $this->controller->getRequest();
-      $url = $request->REQUEST_URI;
+      $url = $this->default_url;
     }
 
     if (is_array($url)) {
-      $url = $this->controller->_helper->Url->url($url, null, true);
+      $router = Zend_Controller_Front::getInstance()->getRouter();
+      $url = $router->assemble($url, null, $reset);
     }
 
     return parent::log($level, $message, $url, $detail);
