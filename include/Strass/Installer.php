@@ -13,7 +13,7 @@ class Strass_Installer
     $this->dbname = $dbname;
   }
 
-  static function run()
+  static function main()
   {
     Zend_Registry::set('config', new Strass_Config_Php('strass', array()));
     Zend_Registry::set('acl', new Strass_Installer_FakeAcl);

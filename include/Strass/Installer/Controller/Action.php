@@ -19,9 +19,10 @@ class Strass_Installer_Controller_Action extends Zend_Controller_Action
       $view->addHelperPath($viewdir.'Helpers', $prefix.'_View_Helper_');
     }
 
-    $view->page = new Strass_Page(new Wtk_Metas(array('DC.Title'	=> 'Installation',
-						      'DC.Language'	=> 'fr',
-						      'site' => 'Strass')));
+    $page = new Strass_Page(new Wtk_Metas(array('DC.Title'	=> 'Installation',
+						'DC.Language'	=> 'fr',
+						'site' => 'Strass')));
+    Zend_Registry::set('page', $page);
 
     return $view;
   }
@@ -61,7 +62,7 @@ class Strass_Installer_Controller_Action extends Zend_Controller_Action
    */
   function postDispatch ()
   {
-    $page = $this->view->page;
+    $page = Zend_Registry::get('page');
     $page->addFormat(Strass_Format::factory('Xhtml'));
     $page->selectFormat('xhtml');
     $this->viewSuffix = $page->format->viewSuffix.'.php';
