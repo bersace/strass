@@ -173,10 +173,23 @@ class Photo extends Strass_Db_Table_Row_Abstract implements Zend_Acl_Resource_In
     $this->save();
   }
 
-  function findCommentaires() {
+  function findCommentaires()
+  {
     $t = new Commentaires;
     $parent = $t->findOne($this->commentaires);
     return $parent->findCommentaires();
+  }
+
+  function findCommentaire($individu)
+  {
+    $t = new Commentaires;
+    $s = $t->select()
+      ->setIntegrityCheck(false)
+      ->distinct()
+      ->from('commentaire')
+      ->where('parent = ?', $this->commentaires)
+      ->where('auteur = ?', $individu->id);
+    return $t->fetchOne($s);
   }
 
   function __toString()
@@ -217,17 +230,21 @@ class Commentaires extends Strass_Db_Table_Abstract
 
 class Commentaire extends Strass_Db_Table_Row_Abstract implements Zend_Acl_Resource_Interface
 {
-  function initResourceAcl($acl) {
-    if (!$acl->has($this)) {
-      $acl->add($this);
-      $auteur = $this->findParentIndividus();
-      if ($acl->hasRole($auteur))
-	$acl->allow($auteur, $this, 'editer');
-    }
+  function __construct($config)
+  {
+    parent::__construct($config);
+
+    $this->initResourceAcl(array());
+  }
+
+  function _initResourceAcl($acl) {
+    $auteur = $this->findParentIndividus();
+    if ($acl->hasRole($auteur))
+      $acl->allow($auteur, $this, 'editer');
   }
 
   function getResourceId()
   {
-    return 'commentaire-'.$this->photo.'-'.$this->individu;
+    return 'commentaire-'.$this->id;
   }
 }

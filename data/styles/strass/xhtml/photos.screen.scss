@@ -2,6 +2,11 @@
 
 @import "common";
 
+.section.commentaire
+{
+    @include message;
+}
+
 #document.voir {
     p.photo
     {
@@ -11,10 +16,20 @@
 	line-height: 48em;
     }
 
-    ul
+    .links
     {
 	margin: 1em;
 	padding: 0;
+    }
+
+    #control-commentaire-message {
+	label {
+	    display: none;
+	}
+
+	.input, textarea {
+	    width: 100%;
+	}
     }
 }
 
@@ -36,12 +51,18 @@
     background: white;
 }
 
-#document.photos.editer .photo
-{
-    text-align: center;
-    vertical-align: middle;
-    height: 24em;
-    line-height: 24em;
+#document.photos.editer {
+    #photo {
+	margin-bottom: 2em;
+    }
+
+    .photo
+    {
+	text-align: center;
+	vertical-align: middle;
+	height: 24em;
+	line-height: 24em;
+    }
 }
 
 .supprimer #vignette
@@ -50,6 +71,10 @@
     margin: 1em auto;
 }
 
-#document form {
+#document.envoyer form,
+#document.editer form,
+#document.supprimer form,
+.voir #commentaires
+{
     @include minipage;
 }

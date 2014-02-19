@@ -1,6 +1,6 @@
 <?php
 
-class Scout_Pages_Renderer_Photo extends Wtk_Pages_Renderer
+class Strass_Pages_Renderer_Photo extends Wtk_Pages_Renderer
 {
   function render($id, $photo, $c)
   {
@@ -15,22 +15,42 @@ class Scout_Pages_Renderer_Photo extends Wtk_Pages_Renderer
 }
 
 $this->document->addStyleComponents('signature');
-$s = $this->document;
-$s->addPages(null, $this->model,
-	     new Scout_Pages_Renderer_Photo($this->url(array('photo' => '%i')).'#document',
-					    false,
+$renderer = new Strass_Pages_Renderer_Photo($this->url(array('photo' => '%i')).'#document', false,
 					    array('previous'	=> "Précédente",
-						  'next'		=> "Suivante")));
+						  'next'		=> "Suivante"));
+$this->document->addPages(null, $this->model, $renderer);
 $description = $this->photo->findParentCommentaires()->message;
 if ($description) {
   $s->addText($description);
 }
 
-if ($this->commentaires->count()) {
-	$ss = $s->addSection('commentaires', "Commentaires");
-	foreach($this->commentaires as $i => $c) {
-		$sss = $s->addSection(null)->addFlags('commentaire', $i%2 ? 'even' : 'odd');
-		$sss->addText($c->message);
-		$sss->addParagraph($this->signature($c))->addFlags('signature');
-	}
- }
+if ($this->commentaires->count() || $this->com_model) {
+  $s = $this->document->addSection('commentaires', "Commentaires");
+  if ($m = $this->com_model) {
+    $f = $s->addForm($this->com_model);
+    $f->addEntry('message', 38, 4);
+    $f->addForm_ButtonBox()->addForm_Submit($m->getSubmission('commenter'));
+  }
+
+  $acl = Zend_Registry::get('acl');
+  foreach($this->commentaires as $i => $c) {
+    $com = $s->addSection(null)->addFlags('commentaire', $i%2 ? 'even' : 'odd');
+    $p = $com->addParagraph($this->lienIndividu($c->findParentIndividus()))->addFlags('auteur');
+    $p->tooltip = strftime('le %d-%m-%Y à %H:%M', strtotime($c->date));
+    $com->addText($c->message);
+
+    if ($this->assert(null, $c, 'editer')) {
+      $l = $com->addList()->addFlags('adminlinks');
+      $l->addItem()->addChild($this->lien(array('controller' => 'commentaires',
+						'action' => 'editer',
+						'message' => $c->id),
+					  "Éditer", true));
+      $l->addItem()->addChild($this->lien(array('controller' => 'commentaires',
+						'action' => 'supprimer',
+						'message' => $c->id),
+					  "Supprimer", true))
+	->addFlags('critical');
+
+    }
+  }
+}

@@ -1,6 +1,5 @@
 <?php
 
-require_once 'Image/Transform.php';
 require_once 'Strass/Activites.php';
 
 class PhotosController extends Strass_Controller_Action
@@ -121,41 +120,60 @@ class PhotosController extends Strass_Controller_Action
   function voirAction()
   {
     $this->view->photo = $photo = $this->_helper->Photo();
-    $s = $photo->getTable()->select()->order('date');
     $this->view->activite = $a = $photo->findParentActivites();
-    $ps = $a->findPhotos($s);
-    $data = array();
-    foreach($ps as $p)
-      $data[$p->slug] = $p;
-
-    $this->view->commentaires = $photo->findCommentaires();
-    $this->view->model = $m = new Wtk_Pages_Model_Assoc($data, $photo->slug);
-
     $this->metas(array('DC.Title' => wtk_ucfirst($photo->titre),
 		       'DC.Subject' => 'photo',
 		       'DC.Date.created' => $photo->date));
+
     $this->connexes->append("Revenir à l'album",
 			    array('action' => 'consulter', 'photo' => null, 'album' => $a->slug));
-
-    // cherche le commentaire de l'individu
-    if ($i = Zend_Registry::get('user')) {
-      $s = $photo->getTable()->select();
-      $s->join('individus',
-	       'commentaire.individu = individu.id',
-	       array())
-	->where('individus.id = ?', $i->id);
-      $c = $photo->findCommentaires($s)->current();
-      $this->actions->append($c ? "Éditer votre commentaire" : "Commenter",
-			     array('action' => 'commenter'),
-			     array(null, $photo));
-    }
-
     $this->actions->append("Éditer",
 			   array('action' => 'editer'),
 			   array(null, $photo));
     $this->actions->append("Supprimer",
 			   array('action' => 'supprimer'),
 			   array(null, $photo));
+
+    $ps = $a->findPhotos($photo->getTable()->select()->order('date'));
+    $data = array();
+    foreach($ps as $p)
+      $data[$p->slug] = $p;
+
+    $this->view->model = $m = new Wtk_Pages_Model_Assoc($data, $photo->slug);
+
+    $i = Zend_Registry::get('individu');
+    if ($this->assert(null, $photo, 'commenter')) {
+      /* Si l'utilisateur peut commenter mais ne l'a pas fait, lui
+	 présenter le formulaire */
+      try {
+	$photo->findCommentaire($i);
+      }
+      catch (Strass_Db_Table_NotFound $e) {
+	$this->view->com_model = $m = new Wtk_Form_Model('commentaire');
+	$m->addString('message', "Message");
+	$m->addNewSubmission('commenter', "Commenter");
+
+	if ($m->validate()) {
+	  $t = new Commentaires;
+	  $tuple = array('parent' => $photo->commentaires,
+			 'auteur' => $i->id,
+			 'message' => $m->get('message'),
+			 );
+	  $db = $t->getAdapter();
+	  $db->beginTransaction();
+	  try {
+	    $t->insert($tuple);
+	    $this->logger->info("Photo commentée");
+	    unset($this->view->com_model);
+	    $db->commit();
+	  }
+	  catch (Exception $e) { $db->rollBack(); throw $e; }
+	}
+      }
+    }
+
+    /* Lister les commentaires après l'insertion  */
+    $this->view->commentaires = $photo->findCommentaires();
   }
 
   function editerAction()
@@ -213,83 +231,6 @@ class PhotosController extends Strass_Controller_Action
       }
       $this->redirectSimple('voir', null, null, array('photo' => $p->slug));
     }
-  }
-
-  function commenterAction()
-  {
-    list($a, $p) = $this->_helper->Photo();
-
-    $i = Zend_Registry::get('user');
-    $this->assert(null, $p, 'commenter',
-		  "Vous n'avez pas le droit de commenter cette photos.");
-
-    $tc = new Commentaires;
-    $c = $tc->find($a->id, $p->id, $i->id)->current();
-
-    $this->view->model = $m = new Wtk_Form_Model('commentaire');
-    $in = $m->addString('commentaire', "Commentaire", $c ? $c->commentaire : null);
-    if ($c)
-      $s = $m->addBool('supprimer', "Supprimer le commentaire", false);
-
-    $m->addNewSubmission('commenter', "Commenter");
-
-    if ($m->validate()) {
-      $db = $p->getTable()->getAdapter();
-      $db->beginTransaction();
-      try {
-	if (!$c) {
-	  // création à la volée.
-	  $data = array('activite' => $a->id,
-			'photo'	=> $p->id,
-			'individu' => $i->id);
-	  $k = $tc->insert($data);
-	  $c = call_user_func_array(array($tc, 'find'), $k)->current();
-	}
-
-	if ($m->commentaire && !$m->supprimer) {
-	  $c->commentaire = $m->commentaire;
-	  $c->date	= strftime('%Y-%m-%d %T');
-	  $c->save();
-	  $this->_helper->Log("Commentaire modifié", array($a, $p, $i),
-			      $this->_helper->Url->url(array('action' => 'voir')),
-			      $a." – ".$p);
-	}
-	else {
-	  // on supprime les commentaire vide
-	  $c->delete();
-	  $this->_helper->Log("Commentaire supprimé", array($a, $p, $i),
-			      $this->_helper->Url('voir', 'photos', null,
-						  array('activite'	=> $a->id,
-							'photo'	=> $p->id)).'#photo',
-			      (string)$p);
-	}
-
-	$db->commit();
-      }
-      catch(Exception $e) {
-	$db->rollBack();
-	throw $e;
-      }
-
-      $this->redirectSimple('voir', 'photos', null,
-			    array('activite'	=> $a->id,
-				  'photo'	=> $p->id)).'#photo';
-    }
-
-    $this->view->photo = $p;
-  }
-
-  function deplacerAction()
-  {
-    list($a, $p) = $this->_helper->Photo();
-    $this->assert(null, $p, 'deplacer',
-		  "Vous n'avez pas le droit de déplacer cette photo.");
-    $this->metas(array('DC.Title' => "Déplacer ".$p->titre,
-		       'DC.Subject' => 'photo',
-		       'DC.Date.created' => $p->date));
-
-
-
   }
 
   function supprimerAction()
