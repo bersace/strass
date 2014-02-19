@@ -28,4 +28,30 @@ class CommentairesController extends Strass_Controller_Action
       catch (Exception $e) { $db->rollBack(); throw $e; }
     }
   }
+
+  function supprimerAction()
+  {
+    $this->metas(array('DC.Title' => 'Supprimer un commentaire'));
+    $this->view->commentaire = $c = $this->_helper->Commentaire();
+    $this->assert(null, $c, 'editer',
+		  "Vous n'avez pas le droit de supprimer ce commentaire !");
+
+    $this->view->model = $m = new Wtk_Form_Model('supprimer');
+    $m->addNewSubmission('continuer', 'Continuer');
+    $m->addBool('confirmer', "Je confirmer la suppression", false);
+
+    if ($m->validate()) {
+      if ($m->get('confirmer')) {
+	$db = $c->getTable()->getAdapter();
+	$db->beginTransaction();
+	try {
+	  $c->delete();
+	  $this->_helper->Flash->info("Commentaire supprimé");
+	  $this->logger->info('Commentaire supprimé');
+	  $db->commit();
+	}
+	catch (Exception $e) { $db->rollBack(); throw $e; }
+      }
+    }
+  }
 }

@@ -15,7 +15,18 @@
     }
 }
 
-.commentaires form  {
-    @include minipage;
-    @include formcommentaire;
+.commentaires
+{
+    form  {
+	@include minipage;
+	@include formcommentaire;
+    }
+
+    .section.commentaire {
+	@include minipage;
+    }
+}
+
+.section.commentaire {
+    @include message;
 }

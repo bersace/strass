@@ -14,7 +14,7 @@ class Strass_Controller_Action_Helper_Commentaire extends Zend_Controller_Action
     }
     catch (Strass_Db_Table_NotFound $e) {
       if ($throw)
-	throw new Strass_Controller_Action_Exception_Notice("Commentaire #".$id." inexistant.");
+	throw new Strass_Controller_Action_Exception_NotFound("Commentaire #".$id." inexistant.");
       else
 	return null;
     }

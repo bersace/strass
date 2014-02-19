@@ -200,14 +200,15 @@ ul.adminlinks {
 	}
 
 	& > div.dialog {
-	    width: 40ex;
-	    margin: 5em auto;
+	    width: 30em;
+	    margin: 8em auto;
 	    padding: 1ex;
 	    background: lighten($page_background, 22%);
 	    box-shadow: 2pt 4pt 1ex rgba(4, 4, 4, 0.5);
 	    border-radius: 1ex;
 
 	    .h {
+		text-align: center;
 		margin: 1ex;
 	    }
 
@@ -227,7 +228,6 @@ ul.adminlinks {
 		background-repeat: no-repeat;
 
 		.h {
-		    margin-left: 48px;
 		    font-size: 140%;
 		}
 
@@ -243,6 +243,11 @@ ul.adminlinks {
 
 		&.showtrace {
 		    width: 80%;
+
+		    .h {
+			margin-left: 48px;
+			text-align: left;
+		    }
 
 		    #details {
 			display: block;
