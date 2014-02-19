@@ -1,5 +1,8 @@
 <?php
 
+if (!$this->document->title)
+  $this->document->setTitle("Erreur");
+
 $dialog = $this->document->addDialog("Bug !")
   ->setId("errors")->addFlags('error');
 
