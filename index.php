@@ -16,7 +16,7 @@ $loader->registerNamespace('Wtk_');
 $loader->registerNamespace('Strass_');
 
 if (!Strass_Version::isInstalled()) {
-  require_once 'Strass/Install.php';
+  Strass_Installer::main();
   return;
 }
 
