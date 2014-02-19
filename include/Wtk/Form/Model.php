@@ -77,6 +77,9 @@ class Wtk_Form_Model
 
   function &getSubmission ($id)
     {
+      if (!array_key_exists($id, $this->submissions))
+	throw new Exception("No submission '$id' in model '$this->id'");
+
       return $this->submissions[$id];
     }
 
