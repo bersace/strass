@@ -44,11 +44,11 @@ if ($this->commentaires->count() || $this->com_model) {
       $l->addItem()->addChild($this->lien(array('controller' => 'commentaires',
 						'action' => 'editer',
 						'message' => $c->id),
-					  "Éditer", true));
+					  "Éditer"));
       $l->addItem()->addChild($this->lien(array('controller' => 'commentaires',
 						'action' => 'supprimer',
 						'message' => $c->id),
-					  "Supprimer", true))
+					  "Supprimer"))
 	->addFlags('critical');
 
     }

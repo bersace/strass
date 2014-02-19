@@ -6,6 +6,7 @@ class CommentairesController extends Strass_Controller_Action
 {
   function editerAction()
   {
+    $p = $this->_helper->Photo(false);
     $this->metas(array('DC.Title' => 'Éditer un commentaire'));
     $this->view->commentaire = $c = $this->_helper->Commentaire();
     $this->assert(null, $c, 'editer',
@@ -18,19 +19,29 @@ class CommentairesController extends Strass_Controller_Action
     if ($m->validate()) {
       $c->message = $m->get('message');
 
+      if ($p)
+	$url = $this->_helper->Url('voir', 'photos', null, array('message' => null));
+      else
+	$url;
+
       $db = $c->getTable()->getAdapter();
       $db->beginTransaction();
       try {
 	$c->save();
-	$this->logger->info('Commentaire édité');
+	$this->logger->info('Commentaire édité', $url);
 	$db->commit();
       }
       catch (Exception $e) { $db->rollBack(); throw $e; }
+
+      if ($p) {
+	$this->redirectSimple('voir', 'photos', null, array('message' => null));
+      }
     }
   }
 
   function supprimerAction()
   {
+    $p = $this->_helper->Photo(false);
     $this->metas(array('DC.Title' => 'Supprimer un commentaire'));
     $this->view->commentaire = $c = $this->_helper->Commentaire();
     $this->assert(null, $c, 'editer',
@@ -42,15 +53,24 @@ class CommentairesController extends Strass_Controller_Action
 
     if ($m->validate()) {
       if ($m->get('confirmer')) {
+	if ($p)
+	  $url = $this->_helper->Url('voir', 'photos', null, array('message' => null));
+	else
+	  $url;
+
 	$db = $c->getTable()->getAdapter();
 	$db->beginTransaction();
 	try {
 	  $c->delete();
 	  $this->_helper->Flash->info("Commentaire supprimé");
-	  $this->logger->info('Commentaire supprimé');
+	  $this->logger->info('Commentaire supprimé', $url);
 	  $db->commit();
 	}
 	catch (Exception $e) { $db->rollBack(); throw $e; }
+      }
+
+      if ($p) {
+	$this->redirectSimple('voir', 'photos', null, array('message' => null));
       }
     }
   }
