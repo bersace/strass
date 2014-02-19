@@ -35,10 +35,8 @@ class Wtk_Section extends Wtk_Container
 	function _computeLevel($children = false)
 	{
 		$parent = $this->getParent('Wtk_Section');
-		if ($parent)
-			$this->level = intval($parent->level) + ($this->title ? 1 : 0);
-		else
-			$this->level = 1;
+		$ref = $parent ?  $parent->level : 0;
+		$this->level = $ref + ($this->title ? 1 : 0);
 
 		if ($children) {
 			foreach ($this->children as $child) {
