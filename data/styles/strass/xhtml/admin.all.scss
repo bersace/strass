@@ -5,7 +5,8 @@
 .admin {
 
     &.parametres form,
-    &.membres table
+    &.membres table,
+    &.individus table
     {
 	@include minipage;
     }
@@ -89,7 +90,8 @@ table {
     overflow: hidden;
 }
 
-table.logs td
+table.logs td,
+.individus td
 {
     white-space: nowrap;
 }

@@ -17,6 +17,15 @@ class Individus extends Strass_Db_Table_Abstract
 						    'onDelete'		=> self::CASCADE),
 				   );
 
+  function selectAll()
+  {
+    return $this->select()
+      ->setIntegrityCheck(false)
+      ->from($this->_name)
+      ->order('individu.nom')
+      ->order('individu.prenom');
+  }
+
   function findAdmins()
   {
     $s = $this->select()
@@ -98,7 +107,7 @@ class Individu extends Strass_Db_Table_Row_Abstract implements Zend_Acl_Role_Int
       $roles = array_merge($roles, $this->getSousRoles($u));
     }
 
-    if ($this->findUsers()->current()) {
+    if ($this->findUser()) {
       $roles[] = 'membres';
     }
 
@@ -471,6 +480,11 @@ class Appartient extends Strass_Db_Table_Row_Abstract implements Zend_Acl_Role_I
   {
     return strftime('%Y', strtotime($this->debut) - 243 * 24 * 60 * 60);
   }
+
+  function getShortDescription()
+  {
+    return $this->findParentRoles()->accr.' '.$this->findParentUnites()->getName();
+  }
 }
 
 
@@ -533,7 +547,7 @@ class Users extends Strass_Db_Table_Abstract
   {
     return $this->select()
       ->setIntegrityCheck(false)
-      ->from('user')
+      ->from($this->_name)
       ->join('individu', 'individu.id = user.id', array())
       ->order('individu.nom')
       ->order('individu.prenom');

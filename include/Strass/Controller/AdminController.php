@@ -215,12 +215,18 @@ class AdminController extends Strass_Controller_Action
     $this->branche->append();
 
     $t = new Users;
-    $s = $t->select()
-      ->setIntegrityCheck(false)
-      ->from('user')
-      ->join('individu', 'individu.id = user.id', array())
-      ->order('individu.nom')
-      ->order('individu.prenom');
+    $s = $t->selectAll();
     $this->view->membres = new Strass_Pages_Model_Rowset($s, 30, $this->_getParam('page'));
+  }
+
+  function individusAction()
+  {
+    $this->metas(array('DC.Title' => 'Les fiches',
+		       'DC.Title.alternative' => 'Individus'));
+    $this->branche->append();
+
+    $t = new Individus;
+    $s = $t->selectAll();
+    $this->view->individus = new Strass_Pages_Model_Rowset($s, 30, $this->_getParam('page'));
   }
 }
