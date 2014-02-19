@@ -4,18 +4,20 @@ require_once 'Strass/Activites.php';
 
 class Strass_Controller_Action_Helper_Activite extends Zend_Controller_Action_Helper_Abstract
 {
-  function direct($slug = null, $throw = true, $reset = true,
-		  $urlOptions = array())
+  function direct($throw = true)
   {
-    $slug = $slug ? $slug : $this->getRequest()->getParam('activite');
-    $activites = new Activites;
-    $activite = $activites->findBySlug($slug);
+    $slug = $this->getRequest()->getParam('activite');
+    $t = new Activites;
 
-    if (!$activite)
+    try {
+      $activite = $t->findBySlug($slug);
+    }
+    catch (Strass_Db_Table_NotFound $e) {
       if ($throw)
-	throw new Strass_Controller_Action_Exception_Notice("Activité ".$slug." inexistante.");
+	throw new Strass_Controller_Action_Exception_NotFound("Activité ".$slug." inexistante.");
       else
 	return null;
+    }
 
     $this->setBranche($activite);
 
