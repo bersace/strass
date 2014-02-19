@@ -5,7 +5,6 @@ $dialog = $this->document->addDialog("Bug !")
 
 $aide = $dialog->addSection('aide');
 $details = $dialog->addSection('details', 'Détails');
-$details->level = 0;
 
 foreach ($this->errors as $i => $error) {
   if ($error instanceof Strass_Controller_Action_Exception_Forbidden) {
