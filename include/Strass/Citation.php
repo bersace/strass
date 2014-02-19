@@ -2,20 +2,26 @@
 
 class Citation extends Strass_Db_Table_Abstract implements Zend_Acl_Resource_Interface
 {
-	protected $_name = 'citation';
+  protected $_name = 'citation';
 
-	function __construct()
-	{
-		parent::__construct();
-		$acl = Zend_Registry::get('acl');
-		if (!$acl->has($this)) {
-			$acl->add(new Zend_Acl_Resource($this->getResourceId()));
-			$acl->allow('individus', $this, 'enregistrer');
-		}
-	}
+  function __construct()
+  {
+    parent::__construct();
+    $acl = Zend_Registry::get('acl');
+    if (!$acl->has($this)) {
+      $acl->add(new Zend_Acl_Resource($this->getResourceId()));
+      $acl->allow('individus', $this, 'enregistrer');
+    }
+  }
 
-	function getResourceId()
-	{
-		return 'citations';
-	}
+  function getResourceId()
+  {
+    return 'citations';
+  }
+
+  function findRandom()
+  {
+    $s = $this->select()->order('RANDOM()')->limit(1);
+    return $this->fetchAll($s)->current();
+  }
 }
