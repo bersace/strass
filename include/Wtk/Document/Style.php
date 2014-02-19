@@ -35,23 +35,25 @@ class Wtk_Document_Style {
 
 		switch ($format) {
 		case 'Xhtml':
-			$media = array('all', 'screen', 'print', 'handheld');
-			foreach($media as $medium) {
-				foreach($components as $comp) {
-					$bf = $this->basedir.'/'.$this->id.'/xhtml'.
-						'/'.$comp.'.'.$medium;
-					$fs = wtk_glob($bf.'.*.css');
-					rsort($fs);
+		  $media = array(null, 'all', 'screen', 'print', 'handheld');
+		  foreach($media as $medium) {
+		    foreach($components as $comp) {
+		      $bf = $this->basedir.'/'.$this->id.'/xhtml'.
+			'/'.$comp;
+		      if ($medium)
+			$bf.= '.'.$medium;
+		      $fs = wtk_glob($bf.'.*.css');
+		      rsort($fs);
 
-					if (file_exists($bf.'.css'))
-						array_unshift($fs, $bf.'.css');
+		      if (file_exists($bf.'.css'))
+			array_unshift($fs, $bf.'.css');
 
-					foreach($fs as $f)
-						$files[] = array('file' => $f,
-								 'medium' => $medium);
-				}
-			}
-			break;
+		      foreach($fs as $f)
+			$files[] = array('file' => $f,
+					 'medium' => $medium ? $medium : 'all');
+		    }
+		  }
+		  break;
 		}
 
 		return $files;
