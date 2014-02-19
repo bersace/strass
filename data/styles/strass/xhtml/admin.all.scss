@@ -28,12 +28,8 @@
 
     }
 
-    &.log {
-	overflow: hidden;
-
-	table {
-	    width: 100%;
-	}
+    &.log table {
+	width: 100%;
     }
 
     tr.critical, tr.error {
@@ -91,9 +87,7 @@ table {
     overflow: hidden;
 }
 
-table.logs {
-    td
-    {
-	white-space: nowrap;
-    }
+table.logs td
+{
+    white-space: nowrap;
 }

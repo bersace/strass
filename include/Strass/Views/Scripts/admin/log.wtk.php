@@ -45,7 +45,7 @@ class Strass_Pages_Renderer_Log extends Wtk_Pages_Renderer
       $fiche = null;
     }
     $m->append($event->date, strtolower($event->level), $event->logger,
-	       wtk_first_words($event->message, 56), $event->url,
+	       wtk_first_words($event->message, 42), $event->url,
 	       $pn, $fiche);
   }
 }
