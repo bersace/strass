@@ -16,7 +16,7 @@ abstract class Wtk_Form_Control extends Wtk_Element
 			$this->addFlags('valid');
 
 		$this->useLabel();
-		$this->setReadonly(false);
+		$this->setReadonly($instance->readonly);
 		$this->name	= $this->getName();
 		$this->value	= $this->instance->get();
 		$this->wtkConstraint = array();
@@ -51,7 +51,7 @@ abstract class Wtk_Form_Control extends Wtk_Element
 
 	function setReadonly($readonly = true)
 	{
-		$this->readonly = (bool)$readonly;
+		$this->readonly = (bool) $readonly;
 	}
 
 	function template ()
@@ -69,4 +69,3 @@ abstract class Wtk_Form_Control extends Wtk_Element
 		return $tpl;
 	}
 }
-

@@ -39,6 +39,9 @@ class Wtk_Form_Model_Instance_Enum extends Wtk_Form_Model_Instance implements It
 
   function retrieve ($value)
   {
+    if ($this->readonly)
+      return true;
+
     if ($value == 'NULL' || is_null($value)) {
       $this->value = $this->getMultiple() ? array() : NULL;
     }
@@ -48,11 +51,11 @@ class Wtk_Form_Model_Instance_Enum extends Wtk_Form_Model_Instance implements It
     else if (array_key_exists ($value, $this->enum)) {
       $this->value = $value;
     }
-    
+
     if ($this->multiple) {
         $this->value = (array) $value;
     }
-    
+
     return TRUE;
   }
 
@@ -84,5 +87,3 @@ class Wtk_Form_Model_Instance_Enum extends Wtk_Form_Model_Instance implements It
     return $this->current() !== false;
   }
 }
-
-?>

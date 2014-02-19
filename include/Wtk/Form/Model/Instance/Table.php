@@ -49,6 +49,9 @@ class Wtk_Form_Model_Instance_Table extends Wtk_Form_Model_Instance_Group
 
 	function retrieve ($values)
 	{
+	  if ($this->readonly)
+	    return true;
+
 		$valid = TRUE;
 		$saved = $this->value;
 		$this->value = array();

@@ -9,9 +9,10 @@ class Wtk_Form_Model_Instance_Integer extends Wtk_Form_Model_Instance
 
   function retrieve ($value)
   {
+	  if ($this->readonly)
+	    return true;
+
     $this->value = intval($value);
     return TRUE;
   }
 }
-
-?>

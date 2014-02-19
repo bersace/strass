@@ -7,13 +7,20 @@ abstract class Wtk_Form_Model_Instance
   public	$label;
   protected	$value;
   public	$valid;
+  public $readonly;
 
   function __construct ($path, $label = null, $value = NULL)
   {
     $this->label	= $label;
     $this->valid	= NULL;
+    $this->readonly = false;
     $this->set($value);
     $this->setPath ($path);
+  }
+
+  function setReadonly($ro = true)
+  {
+    $this->readonly = $ro;
   }
 
   function setPath ($path)
@@ -24,7 +31,8 @@ abstract class Wtk_Form_Model_Instance
 
   function retrieve ($value)
   {
-    $this->set ($value);
+    if (!$this->readonly)
+      $this->set($value);
     return TRUE;
   }
 
@@ -39,5 +47,3 @@ abstract class Wtk_Form_Model_Instance
     return $this->value;
   }
 }
-
-?>

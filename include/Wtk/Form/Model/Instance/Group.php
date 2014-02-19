@@ -99,6 +99,9 @@ class Wtk_Form_Model_Instance_Group extends Wtk_Form_Model_Instance implements I
 
 	function retrieve ($values)
 	{
+	  if ($this->readonly)
+	    return true;
+
 		$valid = FALSE;
 
 		foreach ($this->value as $id => $child) {
@@ -118,5 +121,3 @@ class Wtk_Form_Model_Instance_Group extends Wtk_Form_Model_Instance implements I
 	public function next()	{ return next ($this->value); }
 	public function valid()	{ return $this->current () !== false; }
 }
-
-?>

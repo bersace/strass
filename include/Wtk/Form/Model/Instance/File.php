@@ -32,6 +32,9 @@ class Wtk_Form_Model_Instance_File extends Wtk_Form_Model_Instance
 
 	function retrieve($value)
 	{
+	  if ($this->readonly)
+	    return true;
+
 		if (!isset($value['name']))
 			return FALSE;
 
@@ -73,5 +76,3 @@ class Wtk_Form_Model_Instance_File extends Wtk_Form_Model_Instance
 		return FALSE;
 	}
 }
-
-?>

@@ -9,9 +9,10 @@ class Wtk_Form_Model_Instance_String extends Wtk_Form_Model_Instance
 
   function retrieve ($value)
   {
-    $this->set(get_magic_quotes_gpc() ? stripslashes($value) : $value);
+    if ($this->readonly)
+      return true;
+
+    $this->set($value);
     return TRUE;
   }
 }
-
-?>

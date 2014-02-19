@@ -9,9 +9,8 @@ class Wtk_Form_Model_Instance_Bool extends Wtk_Form_Model_Instance
 
   function retrieve ($value)
   {
-    $this->value = (bool) $value;
+    if (!$this->readonly)
+      $this->value = (bool) $value;
     return TRUE;
   }
 }
-
-?>

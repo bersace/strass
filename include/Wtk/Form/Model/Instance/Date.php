@@ -57,6 +57,9 @@ class Wtk_Form_Model_Instance_Date extends Wtk_Form_Model_Instance
 
 	function retrieve ($value)
 	{
+	  if ($this->readonly)
+	    return true;
+
 		if (!$value)
 			return false;
 
