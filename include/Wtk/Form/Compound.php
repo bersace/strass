@@ -4,7 +4,7 @@ class Wtk_Form_Compound extends Wtk_Container
 {
 	protected $caption;
 
-	function __construct ($label)
+	function __construct ($label = null)
 	{
 		parent::__construct();
 
