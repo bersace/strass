@@ -40,9 +40,13 @@ class Wtk_Document_Style {
 		    foreach($components as $comp) {
 		      $bf = $this->basedir.'/'.$this->id.'/xhtml'.
 			'/'.$comp;
-		      if ($medium)
+		      if ($medium) {
 			$bf.= '.'.$medium;
-		      $fs = wtk_glob($bf.'.*.css');
+			$fs = wtk_glob($bf.'.*.css');
+		      }
+		      else {
+			$fs = wtk_glob($bf.'.css');
+		      }
 		      rsort($fs);
 
 		      if (file_exists($bf.'.css'))
