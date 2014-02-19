@@ -291,7 +291,7 @@ class UnitesController extends Strass_Controller_Action
 
 	$m->getInstance('app/clore')->set($individu->estActifDans($u));
 
-	if ($app = $individu->findInscriptionSuivante($u, $a)) {
+	if ($app = $individu->findInscriptionSuivante($a)) {
 	  $m->getInstance('app/fin')->set($app->debut);
 	}
       }

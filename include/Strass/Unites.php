@@ -70,7 +70,7 @@ class Unites extends Strass_Db_Table_Abstract
   {
     $select->distinct()
       ->join(array('strass_unite_ordre' => 'unite_type'),
-	     'strass_unite_ordre.id = unite.id'."\n", array())
+	     'strass_unite_ordre.id = unite.type'."\n", array())
       ->order('strass_unite_ordre.ordre');
   }
 

@@ -85,7 +85,9 @@ CAS :
 
  * Inscrire un ancien
 
- * Inscrire un actif
+ * Inscrire un actif (à deux postes)
+
+ * Promouvoir un actif (et clore son poste précédent)
 
  * Monter un louveteau
 
@@ -133,3 +135,11 @@ CAS :
  * Un homonyme s'inscrit à la place d'un autre
 
  * Un chef de clan valide une inscription sans être admin
+
+ * Inscrire un nouveau dans une unité depuis sa fiche
+
+ * Promouvoir un actif depuis sa fiche
+
+ * Clore l'inscription d'un actif depuis sa fiche
+
+ * Inscrire une Bagheera

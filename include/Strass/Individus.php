@@ -311,6 +311,25 @@ class Individu extends Strass_Db_Table_Row_Abstract implements Zend_Acl_Role_Int
     unset($image);
   }
 
+  function findInscriptionsActives()
+  {
+    $s = $this->getTable()->select()->where('fin IS NULL');
+    return parent::findAppartenances($s);
+  }
+
+  function findUnitesCandidates()
+  {
+    $t = new Unites;
+    $s = $t->select()
+      ->setIntegrityCheck(false)
+      ->distinct()
+      ->from('unite')
+      ->join('unite_type', "unite_type.id = unite.type\n", array())
+      ->where("unite_type.sexe IN ('m', ?)\n", $this->sexe)
+      ->where("unite_type.age_min <= ?\n", $this->getAge())
+      ->where("NOT unite_type.virtuelle\n");
+    return $t->fetchAll($s);
+  }
 
   function findRolesCandidats($unite)
   {
@@ -331,7 +350,7 @@ class Individu extends Strass_Db_Table_Row_Abstract implements Zend_Acl_Role_Int
     return $t->fetchAll($s);
   }
 
-  function findInscriptionSuivante($unite, $annee)
+  function findInscriptionSuivante($annee)
   {
     $t = new Appartenances;
     $db = $t->getAdapter();
@@ -339,7 +358,6 @@ class Individu extends Strass_Db_Table_Row_Abstract implements Zend_Acl_Role_Int
       ->setIntegrityCheck(false)
       ->from('appartenance')
       ->join('individu', $db->quoteInto('individu.id = ?', $this->id), array())
-      ->join('unite', $db->quoteInto('unite.id = ?', $unite->id), array())
       ->where('appartenance.debut >= ?', $annee.'-09-01')
       ->order('appartenance.debut')
       ->limit(1);

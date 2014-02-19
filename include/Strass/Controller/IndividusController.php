@@ -38,20 +38,15 @@ class IndividusController extends Strass_Controller_Action
     $this->actions->append("Éditer la fiche",
 			   array('action'	=> 'editer'),
 			   array(null, $individu));
-    $this->actions->append("Éditer l'inscription",
-			   array('controller'	=> 'inscription',
-				 'action'		=> 'editer'),
-			   array(null, $individu, 'inscrire'));
-    $this->actions->append("Compléter l'historique",
-			   array('controller'	=> 'inscription',
-				 'action'		=> 'historique'),
+    $this->actions->append("Inscription",
+			   array('action' => 'inscrire'),
 			   array(null, $individu, 'inscrire'));
     $this->actions->append("Supprimer",
 			   array('action' => 'supprimer'),
 			   array(null, $individu, 'supprimer'));
     $this->actions->append("Administrer",
-			   array('controller'	=> 'inscription',
-				 'action'		=> 'administrer'),
+			   array('controller' => 'inscription',
+				 'action' => 'administrer'),
 			   array(null, null, 'admin'));
 
     $moi = Zend_Registry::get('individu');
@@ -164,6 +159,108 @@ class IndividusController extends Strass_Controller_Action
 			   array(null, $individu, 'admin'));
   }
 
+  function inscrireAction()
+  {
+    $this->view->individu = $individu = $this->_helper->Individu();
+    $this->metas(array('DC.Title' => 'Inscription'));
+    $this->branche->append();
+
+    $this->assert(null, $individu, 'inscrire',
+		  "Vous n'avez pas le droit d'inscrire cet individu dans une unité.");
+
+    $apps = $individu->findInscriptionsActives();
+    $unites = $individu->findUnitesCandidates();
+
+    $m = new Wtk_Form_Model('inscrire');
+    $g = $m->addGroup('actuel');
+    $g->addDate('date', "Date d'inscription");
+
+    $gg = $g->addGroup('apps');
+    $default_next = null;
+
+    if ($apps->count()) {
+      $default_next = $apps->rewind()->current()->unite;
+
+      foreach ($apps as $app)
+	$gg->addBool($app->id, "N'est plus ".$app->getShortDescription(), true);
+    }
+
+    if ($unites->count()) {
+      $i0 = $g->addBool('inscrire', "Inscrire dans une autre unité ou promouvoir", true);
+      $enum = array();
+      foreach($unites as $u)
+	$enum[$u->id] = wtk_ucfirst($u->getFullname());
+      $i1 = $g->addEnum('unite', "Unité", $default_next, $enum);
+      $m->addConstraintDepends($i1, $i0);
+    }
+
+    $g = $m->addGroup('role');
+    $i0 = $g->addBool('clore', "Ne l'est plus depuis", $apps->count() > 0);
+    $i1 = $g->addDate('fin', "Date de fin", $m->get('actuel/date'));
+    $m->addConstraintDepends($i1, $i0);
+
+    $this->view->model = $pm = new Wtk_Pages_Model_Form($m);
+    $valid = $pm->validate();
+
+    if ($pm->current == 'role') {
+      /* Sélections des rôles ou on peut l'inscrire */
+      $tu = new Unites;
+      $unite = $tu->findOne($m->get('actuel/unite'));
+      $roles = $u->findParentTypesUnite()->findRoles();
+      $enum = array();
+      foreach ($roles as $role) {
+	$enum[$role->id] = wtk_ucfirst($role->titre);
+      }
+      $i = $g->addEnum('role', 'Rôle', null, $enum);
+
+      /* Préselection */
+      $candidats = $individu->findRolesCandidats($unite);
+      if ($candidats->count())
+	$i->set($candidats->current()->id);
+
+      /* Présélection de la date */
+      $annee = strftime('%Y', $m->getInstance('actuel/date')->getDateArray()['year']);
+      if ($app = $individu->findInscriptionSuivante(null, $annee))
+	$m->getInstance('role/fin')->set($app->debut);
+      else
+	$m->getInstance('role/fin')->set($m->get('actuel/date'));
+    }
+
+    if ($valid) {
+      $t = new Appartenances;
+      $tu = new Unites;
+
+      $db = $t->getAdapter();
+      $db->beginTransaction();
+      try {
+	foreach($m->get('actuel/apps') as $k => $clore) {
+	  if (!$clore)
+	    continue;
+	  $app = $t->findOne($k);
+	  $app->fin = $m->get('actuel/date');
+	  $app->save();
+	}
+
+	if ($m->get('actuel/inscrire')) {
+	  $data = array('individu' => $individu->id,
+			'unite' => $m->get('actuel/unite'),
+			'role' => $m->get('role/role'),
+			'debut' => $m->get('actuel/date'),
+			);
+	  if ($m->get('role/clore'))
+	    $data['fin'] = $m->get('role/fin');
+	  $k = $t->insert($data);
+	  $app = $t->findOne($k);
+	}
+
+	$this->logger->info("Inscription éditée", $this->_helper->Url('fiche'));
+	$db->commit();
+      }
+      catch (Exception $e) { $db->rollBack(); throw $e; }
+
+      $this->redirectSimple('fiche');
+    }
+  }
 
   function supprimerAction()
   {
