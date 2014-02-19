@@ -54,17 +54,8 @@ abstract class Strass_Db_Table_Abstract extends Zend_Db_Table_Abstract
   {
     $db = $this->getAdapter();
 
-    if (is_string($select)) {
-      $where = $select;
-      $select = null;
-    }
-    else {
-      $where = null;
-    }
-
     if (!$select) {
-      $select = $db->select()
-	->distinct();
+      $select = $this->select();
     }
     else {
       // On clone, car le $select est souvent utilisé pour autre
@@ -72,15 +63,14 @@ abstract class Strass_Db_Table_Abstract extends Zend_Db_Table_Abstract
       $select = clone($select);
     }
 
-    $select->reset($select::FROM);
-    $select->from($this->_name, array('count' => 'COUNT(*)'));
-
-    if ($where) {
-      $select = $select->where($where);
+    try {
+      $select->columns(array('count' => 'COUNT(*)'));
+    }
+    catch (Zend_Db_Select_Exception $e) {
+      $select->from($this->_name, array('count' => 'COUNT(*)'));
     }
 
-    $stmt = $db->query($select->__toString());
-    $res = $stmt->fetch();
+    $res = $select->query()->fetch();
     return intval($res['count']);
   }
 
