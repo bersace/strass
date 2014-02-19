@@ -1,0 +1,8 @@
+Pour tester Strass :
+
+     git clone git://gitorious.org/strass/main.git
+     make setup
+     make all
+     make serve
+
+Ensuite, suivre l'assistant.
