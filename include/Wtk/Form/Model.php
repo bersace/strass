@@ -154,7 +154,10 @@ class Wtk_Form_Model
 
     $validated = $this->get('$$validated$$');
 
-    return !count($this->errors) && $valid && $validated;
+    if (!count($this->errors) && $valid && $validated)
+      return $this->sent_submission;
+    else
+      return false;
   }
 
   function get ($path = NULL)
