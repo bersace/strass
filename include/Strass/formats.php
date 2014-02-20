@@ -1,2 +1,2 @@
 <?php
-return array('Xhtml', 'Txt', 'RSS', 'Atom', 'VCard', 'ICS', 'ODT', 'ODS', 'CSV');
+return array('Xhtml', 'Txt', 'RSS', 'Atom', 'VCard', 'ICS', 'CSV');
