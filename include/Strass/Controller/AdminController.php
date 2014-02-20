@@ -126,10 +126,6 @@ class AdminController extends Strass_Controller_Action
     $this->view->events = new Strass_Pages_Model_Rowset($s, 30, $this->_helper->Page());
   }
 
-  function totoAction()
-  {
-  }
-
   function eventAction()
   {
     $t = new Logs;
