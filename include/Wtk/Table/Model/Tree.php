@@ -7,9 +7,9 @@ function wtk_table_tree_path_cmp($a, $b)
 
   for ($i = 0; $i < $max; $i++) {
     if (!array_key_exists($i, $a))
-      return 1;
-    if (!array_key_exists($i, $b))
       return -1;
+    if (!array_key_exists($i, $b))
+      return 1;
 
     if ($cmp = $a[$i] - $b[$i])
       return $cmp;
@@ -38,7 +38,7 @@ class Wtk_Table_Model_Tree extends Wtk_Table_Model
       $this->compteurs = array();
   }
 
-  function append($parent_path, $value0)
+  function append($parent_path)
   {
     $values = func_get_args();
 
@@ -65,7 +65,7 @@ class Wtk_Table_Model_Tree extends Wtk_Table_Model
     $added = false;
     for($i = 0; $i < $count; $i++) {
       $pathb = $this->rows[$i]['$$path$$'];
-      if (wtk_table_tree_path_cmp($patha, $pathb) > 0) {
+      if (wtk_table_tree_path_cmp($patha, $pathb) < 0) {
 	  array_splice($this->rows, $i, 0, array($row));
 	  $added = true;
 	  break;
