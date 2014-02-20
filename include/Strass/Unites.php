@@ -256,16 +256,18 @@ class Unite extends Strass_Db_Table_Row_Abstract implements Zend_Acl_Resource_In
 
     $config = Zend_Registry::get('config');
 
-    $image = new Imagick($path);
+    $image = new Imagick;
+    $image->setBackgroundColor(new ImagickPixel('transparent'));
+    $image->readImage($path);
     $width = $image->getImageWidth();
     $height = $image->getImageHeight();
-    $image->setImageFormat('png');
 
     $MAX = $config->get('photo/taille_vignette', 256);
     if (min($width, $height) > $MAX)
-      $image->cropThumbnailImage($MAX, $MAX);
-    $image->writeImage($fichier);
+      $image->scaleImage($MAX, $MAX, true);
 
+    $image->setImageFormat('png');
+    $image->writeImage($fichier);
   }
 
   function getWiki($slug = null, $test = true)
