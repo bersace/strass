@@ -191,7 +191,7 @@ class UnitesController extends Strass_Controller_Action
 	// photos
 	$i = $m->getInstance('image');
 	if ($i->isUploaded()) {
-	  $u->saveImage($i->getTempFilename(), $i->getMimeType());
+	  $u->storeImage($i->getTempFilename());
 	}
 
 	// wiki

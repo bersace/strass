@@ -240,36 +240,28 @@ class Unite extends Strass_Db_Table_Row_Abstract implements Zend_Acl_Resource_In
     return !$test || is_readable($image) ? $image : null;
   }
 
-  function saveImage($tmpfile, $mimeType) {
+  function storeImage($path)
+  {
     if ($fichier = $this->getImage())
       unlink($fichier);
 
     $fichier = $this->getImage(null, false);
     $dossier = dirname($fichier);
     if (!file_exists($dossier))
-      mkdir($dossier, 0755, true);
+      mkdir($dossier, 0700, true);
 
-    $tr = Image_Transform::factory('GD');
-    $tr->load($tmpfile);
+    $config = Zend_Registry::get('config');
 
-    list($w, $h) = $tr->getImageSize();
-    // largeur / hauteur max de 256;
-    $max = 256;
-    $ratio = max($w/$max, $h/$max);
-    if ($ratio > 1 || $mimeType != 'image/png') {
-      if ($ratio > 1) {
-	$w /= $ratio;
-	$h /= $ratio;
-	$tr->resize(intval($w), intval($h));
-      }
-      error_log("Sauve dans ".$fichier);
-      $tr->save($fichier, 'png');
-    }
-    else {
-      copy($tmp, $fichier);
-    }
+    $image = new Imagick($path);
+    $width = $image->getImageWidth();
+    $height = $image->getImageHeight();
+    $image->setImageFormat('png');
 
-    $tr->free();
+    $MAX = $config->get('photo/taille_vignette', 256);
+    if (min($width, $height) > $MAX)
+      $image->cropThumbnailImage($MAX, $MAX);
+    $image->writeImage($fichier);
+
   }
 
   function getWiki($slug = null, $test = true)
