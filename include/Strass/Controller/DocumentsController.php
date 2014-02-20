@@ -17,69 +17,74 @@ class DocumentsController extends Strass_Controller_Action
 				 'unite' => $unite->slug),
 			   array(),
 			   true);
+
+    $this->actions->append('Envoyer',
+			   array('action' => 'envoyer'),
+			   array(null, $unite, 'envoyer-document'));
   }
 
 
   function envoyerAction()
   {
-    $i = Zend_Registry::get('user');
+    $this->metas(array('DC.Title' => 'Envoyer un document'));
 
+    $i = Zend_Registry::get('individu');
 
-    $unites = $this->unitesEnvoyables();
-    if (!count($unites))
+    $unites = $i->findUnites(null, true);
+    $envoyables = array();
+    foreach($unites as $u)
+      if ($this->assert(null, $u, 'envoyer-document'))
+	$envoyables[$u->id] = wtk_ucfirst($u->getFullName());
+
+    if (!count($envoyables))
       throw new Strass_Controller_Exception
 	("Vous n'avez le droit d'envoyer de document pour aucune unité");
 
-    $this->metas(array('DC.Title' => 'Envoyer un document'));
-
     $this->view->model = $m = new Wtk_Form_Model('envoyer');
-    $m->addInstance('Enum', 'unite', "Unité concernée", key($unites),
-		    $unites);
-    $m->addInstance('String', 'titre', "Titre");
-    $i = $m->addInstance('File', 'document', "Document");
     $m->addNewSubmission('envoyer', "Envoyer");
 
+    $m->addInstance('Enum', 'unite', "Unité concernée", key($envoyables), $envoyables);
+    $m->addInstance('String', 'titre', "Titre");
+    $i = $m->addInstance('File', 'document', "Document");
+
     if ($m->validate()) {
-      $docs = new Documents();
-      $db = $docs->getAdapter();
+      $i = $m->getInstance('document');
+      if (!$i->isUploaded())
+	throw new Exception("Fichier manquant");
+
+      $t = new Documents;
+      $data = $m->get();
+      $data['suffixe'] =
+	strtolower(end(explode('.', $data['document']['name'])));
+      unset($data['document']);
+      $data['slug'] = $t->createSlug(wtk_strtoid($data['titre']));
+      $data['date'] = strftime('%Y-%m-%d');
+      $unite = $data['unite'];
+      unset($data['unite']);
+
+      $db = $t->getAdapter();
       $db->beginTransaction();
-
       try {
-	$data = $m->get();
-	$data['suffixe'] =
-	  strtolower(end(explode('.', $data['document']['name'])));
-	unset($data['document']);
-	$data['id'] = wtk_strtoid($data['titre']);
-	$data['date'] = strftime('%Y-%m-%d');
-	$data['type_mime'] = $i->getMimeType();
-	$unite = $data['unite'];
-	unset($data['unite']);
+	$k = $t->insert($data);
+	$d = $t->findOne($k);
+	$d->storeFile($i->getTempFilename());
 
-	$i = $m->getInstance('document');
-	$fichier = 'data/documents/'.$data['id'].'.'.$data['suffixe'];
-	mkdir(dirname($fichier), 0775, true);
-	if (!move_uploaded_file($i->getTempFilename(), $fichier)) {
-	  throw new Zend_Controller_Exception
-	    ("Impossible de copier le fichier !");
-	}
+	$tdu = new DocsUnite();
+	$data = array('unite' => $unite,
+		      'document' => $d->id);
+	$k = $tdu->insert($data);
+	$du = $tdu->findOne($k);
 
-	$docs->insert($data);
-
-	$du = new DocsUnite();
-	$data = array('unite' => $unite, 'document' => $data['id']);
-	$du->insert($data);
-
-	$this->_helper->Log("Document envoyé", array("Document" => $data['titre'], $unite),
-			    $this->_helper->Url(null, 'documents'),
-			    "Documents");
+	$this->logger->info("Document envoyé",
+			    $this->_helper->Url('index', null, null,
+						array('unite' => $du->findParentUnites()->slug)));
 
 	$db->commit();
-	$this->redirectSimple('index');
       }
-      catch(Exception $e) {
-	$db->rollBack();
-	throw $e;
-      }
+      catch(Exception $e) { $db->rollBack(); throw $e; }
+
+      $this->redirectSimple('index', null, null,
+			    array('unite' => $du->findParentUnites()->slug));
     }
   }
 

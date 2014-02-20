@@ -1,16 +1,15 @@
 <?php
 
 $i = $this->model->getInstance('unite');
-$s = $this->document->addSection('documents', "Envoyer un document".(count($i) == 1 ? " à l'unité ".current(current($i)) : ""));
-$f = $s->addChild(new Wtk_Form($this->model));
+$f = $this->document->addForm($this->model);
 if (count($i) > 1) {
-  $f->addChild('Select', 'unite');
+  $f->addSelect('unite');
  }
  else {
-   $f->addChild('Hidden', 'unite');
+   $f->addHidden('unite');
  }
-$f->addChild('Entry', 'titre', 36);
-$f->addChild('File', 'document');
+$f->addEntry('titre', 36);
+$f->addFile('document');
 
-$b = $f->addChild(new Wtk_Form_ButtonBox());
-$b->addChild(new Wtk_Form_Submit($this->model->getSubmission('envoyer')));
+$b = $f->addForm_ButtonBox();
+$b->addForm_Submit($this->model->getSubmission('envoyer'));

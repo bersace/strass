@@ -730,7 +730,7 @@ class Role extends Zend_Db_Table_Row_Abstract
   }
 }
 
-class Titres extends Zend_Db_Table_Abstract
+class Titres extends Strass_Db_Table_Abstract
 {
   protected $_name = 'unite_titre';
   protected $_dependentTables = array();
@@ -741,7 +741,7 @@ class Titres extends Zend_Db_Table_Abstract
 						   'onDelete' => self::CASCADE));
 }
 
-class DocsUnite extends Zend_Db_Table_Abstract
+class DocsUnite extends Strass_Db_Table_Abstract
 {
   protected $_name = 'unite_document';
   protected $_referenceMap = array('Document' => array('columns' => 'document',

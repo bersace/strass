@@ -1,3 +1,12 @@
+/*-*- css -*-*/
+
+@import "common";
+
+#document form
+{
+    @include minipage;
+}
+
 #actions li.envoyer
 {
   list-style-image: url("icones/envoyer.png");

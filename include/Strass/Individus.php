@@ -418,7 +418,7 @@ class Individu extends Strass_Db_Table_Row_Abstract implements Zend_Acl_Role_Int
    * Retourne la liste de toutes les unités où l'individu a un rôle,
    * récursivement.
    */
-  function findUnites($actif = TRUE, $recursif = FALSE)
+  function findUnites($actif = TRUE)
   {
     $t = new Unites;
     $s = $t->select()
@@ -430,9 +430,9 @@ class Individu extends Strass_Db_Table_Row_Abstract implements Zend_Acl_Role_Int
       ->join('appartenance', 'appartenance.unite IN (unite.id, parent.id, grandparent.id)', array())
       ->where('appartenance.individu = ?', $this->id);
 
-    if ($actif)
+    if ($actif === true)
       $s->where('appartenance.fin IS NULL');
-    else
+    else if ($actif === false)
       $s->where('appartenance.fin IS NOT NULL');
 
     return $t->fetchAll($s);

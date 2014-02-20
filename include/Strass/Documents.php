@@ -1,6 +1,6 @@
 <?php
 
-class Documents extends Zend_Db_Table_Abstract {
+class Documents extends Strass_Db_Table_Abstract {
   protected $_name = 'document';
   protected $_rowClass = 'Document';
   protected $_dependentTables = array('DocsUnite', 'PiecesJointes');
@@ -34,6 +34,30 @@ class Document extends Strass_Db_Table_Row_Abstract implements Zend_Acl_Resource
   {
     if (!$data) $data = $this->_cleanData;
     return 'data/documents/'.$data['slug'].'.'.$data['suffixe'];
+  }
+
+  function storeFile($tmp)
+  {
+    $config = Zend_Registry::get('config');
+
+    $fichier = $this->getFichier();
+    if (!file_exists($dossier = dirname($fichier)))
+	mkdir($dossier, 0700, true);
+
+    if (!move_uploaded_file($tmp, $fichier))
+      throw new Exception("Impossible de copier le fichier !");
+
+    if ($this->suffixe != 'pdf')
+      return;
+
+    $vignette = $this->getCheminVignette();
+    $im = new Imagick($fichier . '[0]');
+    $im->setImageAlphaChannel(Imagick::ALPHACHANNEL_RESET);
+    $im->setImageFormat('png');
+    $im->setBackgroundColor('white');
+    $MAX = $config->get('photo/taille_vignette', 256);
+    $im->thumbnailImage(0, $MAX);
+    $im->writeImage($vignette);
   }
 
   function _postDelete()
