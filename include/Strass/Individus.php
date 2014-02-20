@@ -541,13 +541,17 @@ class Appartient extends Strass_Db_Table_Row_Abstract implements Zend_Acl_Role_I
     return strftime('%Y', strtotime($this->debut) - 243 * 24 * 60 * 60);
   }
 
-  function getShortDescription()
+  function getAccronyme()
   {
     if ($this->titre)
-      $accr = $this->titre;
+      return $this->titre;
     else
-      $accr = $this->findParentRoles()->getAccronyme();
-    return $accr.' '.$this->findParentUnites()->getName();
+      return $this->findParentRoles()->getAccronyme();
+  }
+
+  function getShortDescription()
+  {
+    return $this->getAccronyme().' '.$this->findParentUnites()->getName();
   }
 }
 

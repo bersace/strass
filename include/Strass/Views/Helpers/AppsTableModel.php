@@ -65,7 +65,7 @@ class Strass_View_Helper_AppsTableModel
 		 $url_unite,
 		 $individu->getFullname(true, false),
 		 $role->acl_role,
-		 $role->getAccronyme(),
+		 $app->getAccronyme(),
 		 $etape ? $etape->slug : null,
 		 $url_fiche,
 		 $individu->adelec,
