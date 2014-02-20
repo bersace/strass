@@ -2,7 +2,6 @@
 
 class Wtk_Pages_Model_Assoc extends Wtk_Pages_Model
 {
-	protected	$pages_id;
 	protected	$pointer;
 
 	function __construct(array $data, $current = null)

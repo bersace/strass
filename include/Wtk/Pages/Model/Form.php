@@ -36,7 +36,7 @@ class Wtk_Pages_Model_Form extends Wtk_Pages_Model
     return $this->data;
   }
 
-  function validate()
+  function partialValidate()
   {
     $this->pages_count = $this->root->count() - 1; // minus $$validated$$
     $this->pages_id = array();
@@ -45,11 +45,8 @@ class Wtk_Pages_Model_Form extends Wtk_Pages_Model
 	array_push($this->pages_id, $group->id);
 
     $model = $this->data;
-    $model->validate();
-    $submission = $model->sent_submission;
+    $submission = $model->validate();
     $current = $this->root->get('$$current$$');
-    $completed = false;
-
 
     if (!$current)
       $current = reset($this->pages_id);
@@ -83,18 +80,27 @@ class Wtk_Pages_Model_Form extends Wtk_Pages_Model
 	  if (isset($this->pages_id[$i]))
 	    $current = $this->pages_id[$i];
 	  else
-	    $completed = true;
+	    /* Terminé, il ne reste plus de groupes de champs */
+	    $current = null;
 	}
       }
     }
 
-    $this->current = $current;
-    $i = $this->root->getChild('$$current$$');
-    $i->set($current);
-
-    return !count($model->errors) && $completed;
+    return $current;
   }
 
+  function validate()
+  {
+    $current = $this->partialValidate();
+    $completed = $current === null;
+
+    if (!$completed)
+      $this->gotoPage($current);
+
+    return !count($this->data->errors) && $completed;
+  }
+
+  /* Force le rendu de la page suivante */
   function gotoPage($page)
   {
     if (!in_array($page, $this->pages_id))
@@ -102,6 +108,18 @@ class Wtk_Pages_Model_Form extends Wtk_Pages_Model
 
     $this->data->getInstance('$$current$$')->set($page);
     $this->current = $page;
+  }
+
+  /* Compare si une page est postérieure à une autre */
+  function pageCmp($a, $b)
+  {
+    /* Comparaison avec la page correspondant à l'état terminé : null */
+    if (!$a && $b)
+      return 1;
+    if ($a && !$b)
+      return -1;
+
+    return array_search($a, $this->pages_id) - array_search($b, $this->pages_id);
   }
 
   function isValid()
@@ -139,8 +157,8 @@ class Wtk_Pages_Model_Form extends Wtk_Pages_Model
 
   function fetch($id = null)
   {
-    $id = $id ? $id : $this->getCurrentPageId();
-    return $this->root->getInstance($id);
+    $id = $id ? $id : $this->current;
+    return $this->data->getInstance($id);
   }
 
   /*
@@ -149,7 +167,13 @@ class Wtk_Pages_Model_Form extends Wtk_Pages_Model
    */
   public function count()
   {
-    return $this->current ? 1 : 0;
+    try {
+      $this->data->getInstance($this->current);
+      return 1;
+    }
+    catch (Exception $e) {
+      return 0;
+    }
   }
 
   /*
@@ -163,10 +187,7 @@ class Wtk_Pages_Model_Form extends Wtk_Pages_Model
   // retourne le groupe courant.
   public function current()
   {
-    try {
-      $this->root->getChild($this->current);
-    }
-    catch (Exception $e) { return null; }
+    return $this->data->getInstance($this->current);
   }
 
   /*
