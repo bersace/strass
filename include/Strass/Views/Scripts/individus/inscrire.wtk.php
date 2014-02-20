@@ -12,11 +12,12 @@ class Strass_Pages_Renderer_Inscrire extends Wtk_Pages_Renderer_Form
 
   function renderActuel($g, $f)
   {
-    $f->addDate('actuel/date', '%e-%m-%Y');
     $g = $g->getChild('apps');
     foreach ($g as $i) {
       $f->addCheck($i);
     }
+
+    $f->addDate('actuel/date', '%e-%m-%Y');
 
     try {
       if ($g->count() > 0)
