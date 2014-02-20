@@ -35,6 +35,15 @@
 	width: 100%;
     }
 
+    &.event #event {
+	@include minipage;
+
+	#detail {
+	    width: 100%;
+	    overflow: auto;
+	}
+    }
+
     tr.critical, tr.error {
 	font-weight: bold;
 	color: $critical;
@@ -66,7 +75,9 @@
 	text-transform: uppercase;
     }
 
-    td.level, td.date, td.logger {
+    td.level, td.date, td.logger,
+    tr.level td.valeur, tr.date td.valeur, tr.logger td.valeur, tr.url td.valeur
+    {
 	font-family: monospace;
     }
 }

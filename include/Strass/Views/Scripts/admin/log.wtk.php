@@ -15,12 +15,13 @@ class Strass_Pages_Renderer_Log extends Wtk_Pages_Renderer
   function renderContainer()
   {
     $model = $m = new Wtk_Table_Model('date', 'level', 'logger', 'label', 'url',
-				      'prenom-nom', 'fiche');
+				      'prenom-nom', 'fiche', 'detail-url');
     $table = $t = new Wtk_Table($model, true, 'level');
     $t->addFlags('logs');
 
     $t->addNewColumn("Niveau", new Wtk_Table_CellRenderer_Text('text', 'level'));
-    $t->addNewColumn("Date", new Wtk_Table_CellRenderer_Text('text', 'date'));
+    $t->addNewColumn("Date", new Wtk_Table_CellRenderer_Link('href', 'detail-url',
+							     'label', 'date'));
     $t->addNewColumn("Émetteur", new Wtk_Table_CellRenderer_Text('text', 'logger'));
     $t->addNewColumn("Utilistateur", new Wtk_Table_CellRenderer_Link('href', 'fiche',
 								     'label', 'prenom-nom'));
@@ -37,16 +38,18 @@ class Strass_Pages_Renderer_Log extends Wtk_Pages_Renderer
     if ($u) {
       $i = $u->findParentIndividus();
       $pn = $i->getFullname(false, false);
-      $fiche = $this->view->url(array('controlleur' => 'individus', 'action' => 'fiche',
+      $fiche = $this->view->url(array('controller' => 'individus', 'action' => 'fiche',
 				      'individu' => $i->slug), true);
     }
     else {
       $pn = "Visiteur";
       $fiche = null;
     }
+    $detail_url = $this->view->url(array('controller' => 'admin', 'action' => 'event',
+				      'id' => $event->id), true);
     $m->append($event->date, strtolower($event->level), $event->logger,
 	       wtk_first_words($event->message, 42), $event->url,
-	       $pn, $fiche);
+	       $pn, $fiche, $detail_url);
   }
 }
 

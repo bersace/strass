@@ -126,6 +126,20 @@ class AdminController extends Strass_Controller_Action
     $this->view->events = new Strass_Pages_Model_Rowset($s, 30, $this->_helper->Page());
   }
 
+  function totoAction()
+  {
+  }
+
+  function eventAction()
+  {
+    $t = new Logs;
+    $this->view->event = $event = $t->findOne($this->_getParam('id'));
+
+    $this->metas(array('DC.Title' => 'Évènement'));
+    $this->branche->append("Journal système", array('action' => 'log', 'id' => null));
+    $this->branche->append();
+  }
+
   function parametresAction()
   {
     $this->metas(array('DC.Title' => 'Paramètres'));
