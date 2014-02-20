@@ -224,8 +224,10 @@ class IndividusController extends Strass_Controller_Action
 	$i->addItem($role->id, wtk_ucfirst($role->titre));
     }
 
-    /* Ne préremplir que si la page role va etre affichée */
+    /* Ne préremplir le role que si la page role va etre affichée */
     if ($pm->pageCmp($page, 'role') == 0) {
+      $g = $m->getInstance('role');
+      $i = $g->getChild('role');
       /* Préselection du role */
       $candidats = $individu->findRolesCandidats($unite);
       if ($candidats->count())
@@ -238,8 +240,14 @@ class IndividusController extends Strass_Controller_Action
 	$m->getInstance('role/clore')->set(TRUE);
 	$m->getInstance('role/fin')->set($app->debut);
       }
-      else
-	$m->getInstance('role/fin')->set($m->get('actuel/date'));
+      else {
+	$i = $m->getInstance('actuel/date');
+	$fin = $i->getDateArray();
+	$fin['year'] += 1;
+	$future = $fin['year'] > date('%Y');
+	$m->getInstance('role/clore')->set(!$future);
+	$m->getInstance('role/fin')->set($fin);
+      }
     }
 
     $page = $pm->partialValidate();
@@ -248,9 +256,13 @@ class IndividusController extends Strass_Controller_Action
       $g = $m->getInstance('titre');
       $role = $tr->findOne($m->get('role/role'));
       $titres = $role->findTitres();
-      $i = $g->getChild('predefini');
-      foreach ($titres as $titre)
-	$i->addItem($titre->nom, wtk_ucfirst($titre->nom));
+      if ($titres->count() == 0)
+	$pm->gotoEnd();
+      else {
+	$i = $g->getChild('predefini');
+	foreach ($titres as $titre)
+	  $i->addItem($titre->nom, wtk_ucfirst($titre->nom));
+      }
     }
 
     if ($pm->validate()) {
