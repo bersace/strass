@@ -21,7 +21,7 @@ class Strass_Logger
 		  'user' => $user->id,
 		  'message' => $message,
 		  'url' => $url,
-		  'detail' => var_export($detail, true),
+		  'detail' => serialize($detail),
 		  );
     $t = new Logs;
     return $t->insert($data);

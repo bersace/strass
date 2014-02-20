@@ -15,13 +15,8 @@ class ErrorController extends Strass_Controller_Action implements Strass_Control
       	if ($error->getCode() <= 500)
       	  continue;
 
-      ob_start();
-      var_dump($error);
-      $details = ob_get_contents();
-      ob_end_clean();
-
       try {
-	$this->logger->error($error->getMessage(), null, $details);
+	$this->logger->error($error->getMessage(), null, $error);
       }
       catch (Exception $e) {
 	error_log($error->getMessage());
