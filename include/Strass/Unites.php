@@ -59,8 +59,13 @@ class Unites extends Strass_Db_Table_Abstract
   function fetchAll($where = NULL, $order = NULL, $count = NULL, $offset = NULL)
   {
     $args = func_get_args();
-    if ($args && $args[0] instanceof Zend_Db_Table_Select)
+
+    if (!$args)
+      $args[0] = $this->select()->from($this->_name);
+
+    if ($args[0] instanceof Zend_Db_Table_Select)
       $this->_ordonner($args[0]);
+
     return call_user_func_array(array('parent', 'fetchAll'), $args);
   }
 
@@ -69,7 +74,8 @@ class Unites extends Strass_Db_Table_Abstract
     $select->distinct()
       ->join(array('strass_unite_ordre' => 'unite_type'),
 	     'strass_unite_ordre.id = unite.type'."\n", array())
-      ->order('strass_unite_ordre.ordre');
+      ->order('strass_unite_ordre.ordre')
+      ->order('strass_unite_ordre.id');
   }
 
   protected function _getStatut($ouverte, $where = null) {
