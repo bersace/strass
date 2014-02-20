@@ -141,19 +141,15 @@ EOS
 	continue;
       }
 
-      $tr = Image_Transform::factory('GD');
-      if (PEAR::isError($tr)) Orror::kill((string) $tr);
+      $im = new Imagick($photo);
+      $width = $im->getImageWidth();
+      $height = $im->getImageHeight();
+      $im->setImageCompressionQuality(85);
 
-      $ret = $tr->load($photo);
-      if (Pear::isError($ret)) Orror::kill((string) $ret);
-      list($w, $h) = $tr->getImageSize();
-      $hv = 256;
-      $ratio = $h / $hv;
-      $w /= $ratio;
-      $tr->resize(intval($w), $hv);
-      $ret = @$tr->save($vignette, 'jpeg', $config->photos->quality);
-      if (Pear::isError($ret)) Orror::kill((string) $ret);
-      $tr->free();
+      $MAX = 256;
+      if (min($width, $height) > $MAX)
+	$im->cropThumbnailImage($MAX, $MAX);
+      $im->writeImage($vignette);
     }
 
     $db->exec(<<<'EOS'
