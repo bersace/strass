@@ -30,11 +30,6 @@
 
  * Recherche interne (Lucene)
 
- * Faire une alerte propre en cas de nom ou fonction (CT, CC...) déjà
-   existant pour un membre.
-
- * Associer un titre à un rôle (Bagheera)
-
  * Cohérence des dates d'activités.
 
  * Les photos trop lourdes ne sont pas acceptées. (les compresser, ou

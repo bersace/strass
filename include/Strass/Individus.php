@@ -311,6 +311,18 @@ class Individu extends Strass_Db_Table_Row_Abstract implements Zend_Acl_Role_Int
     unset($image);
   }
 
+  function findEtapesCanditates()
+  {
+    $t = new Etapes;
+    $s = $t->select()
+      ->setIntegrityCheck(false)
+      ->from('etape')
+      ->where("etape.sexe IN ('m', ?)", $this->sexe);
+    if ($age = $this->getAge())
+      $s->where("? >= etape.age_min", $age);
+    return $t->fetchAll($s);
+  }
+
   function findInscriptionsActives()
   {
     $s = $this->getTable()->select()->where('fin IS NULL');

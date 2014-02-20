@@ -92,6 +92,10 @@ class IndividusController extends Strass_Controller_Action
     $m->addString('notes', "Notes", $individu->notes);
     // devrait suffire chez les FSE, et les SUF ?
     $m->addInteger('numero', "Numéro adhérent", $individu->numero, 1, 999999);
+    $p = $individu->findParentEtapes();
+    $i = $m->addEnum('etape', "Progression", $p ? $p->id : null, array(null => 'Aucune'));
+    foreach($individu->findEtapesCanditates() as $e)
+      $i->addItem($e->id, wtk_ucfirst($e->titre));
 
     // contacts;
     if (!$individu->isMember())
@@ -108,7 +112,7 @@ class IndividusController extends Strass_Controller_Action
       try {
 	// contacts
 	$champs = array('nom', 'prenom', 'naissance', 'portable',
-			'fixe', 'adresse', 'notes');
+			'fixe', 'adresse', 'notes', 'etape');
 	try {
 	  $m->getInstance('adelec');
 	  array_push($champs, 'adelec');
@@ -334,74 +338,6 @@ class IndividusController extends Strass_Controller_Action
       }
       else {
 	$this->redirectSimple('fiche', 'individus', null, array('individu' => $i->slug));
-      }
-    }
-  }
-
-  // éditer la progression d'un individu
-  function progressionAction()
-  {
-    $this->view->individu = $i = $this->_helper->Individu();
-    $this->assert(null, $i, 'progresser',
-		  "Vous n'avez pas le droit d'éditer la progression de cet individu");
-    $this->metas(array('DC.Title' => 'Éditer la progression de '.$i->getFullname()));
-
-    $this->view->model = $m = new Wtk_Form_Model('progression');
-    $te = new Etape();
-    $db = $te->getAdapter();
-    $exists = $db->select()
-      ->distinct()
-      ->from('progression')
-      ->where("individu = ?", $i->slug)
-      ->where("etape = depend");
-    $notexists = $db->select()
-      ->distinct()
-      ->from('progression')
-      ->where("individu = ?", $i->slug)
-      ->where('etape = id')
-      ->where('progression.sexe = etapes.sexe');
-    $select = $db->select()
-      ->where("sexe = ? OR sexe = 'm'", $i->sexe)
-      // on ne teste pas l'age pour permettre de
-      // compléter l'historique
-      ->where("depend IS NULL".
-	      ' OR '.
-	      "EXISTS (?)",
-	      new Zend_Db_Expr($exists->__toString()))
-      ->where("NOT EXISTS (?)", new Zend_Db_Expr($notexists->__toString()));
-    $etapes = $te->fetchAll($select);
-    $enum = array();
-    $sexes = array();
-    foreach($etapes as $etape) {
-      $enum[$etape->id] = $etape->titre;
-      $sexes[$etape->id] = $etape->sexe;
-    }
-    end($enum);
-    $m->addEnum('etape', 'Étape de progression', key($enum),$enum);
-    $m->addDate('date', 'Date', strftime("%Y-%m-%d %H:%M:%S"), '%Y-%m-%d');
-    $m->addString('lieu', 'Lieu');
-    $m->addNewSubmission('enregistrer', 'Enregistrer');
-
-
-    if ($m->validate()) {
-      $db->beginTransaction();
-      try {
-	$data = $m->get();
-	$data['individu'] = $i->slug;
-	$data['sexe'] = $sexes[$data['etape']];
-	$tp = new Progression();
-	$tp->insert($data);
-
-	$this->_helper->Log("Progression enregistrée", array($i),
-			    $this->_helper->Url('fiche', 'individus', null, array($i->id)),
-			    (string) $i);
-
-	$db->commit();
-	$this->redirectSimple('fiche');
-      }
-      catch (Exception $e) {
-	$db->rollback();
-	throw $e;
       }
     }
   }

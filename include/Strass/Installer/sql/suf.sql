@@ -7,8 +7,8 @@ VALUES
 ('cr', 'a pris son engagement', 'compagnon-routier', 10, 'h', 16),
 ('rs', 'a pris son départ', 'routier-scout', 11, 'h', 18),
 ('flot-jaune', 'a pris son', 'flot jaune', 10, 'f', 16),
-('flot-vert', 'a pris son', 'flot vert', 11, 'm', 16),
-('ga', 'a pris son', 'flot rouge', 11, 'm', 16);
+('flot-vert', 'a pris son', 'flot vert', 11, 'f', 16),
+('ga', 'a pris son', 'flot rouge', 11, 'f', 16);
 
 INSERT INTO unite_type
 (slug, nom, parent, virtuelle, ordre, sexe, age_min, age_max)

@@ -6,12 +6,12 @@ $f = $this->document->addForm($this->model);
 
 $g = $f->addForm_Fieldset('État civil');
 try {
-	// ces champs ne sont pas forcément présent, soit parce que
-	// seul l'admin peut le corriger, soit parce qu'il faut être
-	// sachem pour y avoir accès.
-	$g->addEntry('prenom', 24);
-	$g->addEntry('nom', 24);
-	$g->addDate('naissance', '%e/%m/%Y');
+  // ces champs ne sont pas forcément présent, soit parce que
+  // seul l'admin peut le corriger, soit parce qu'il faut être
+  // sachem pour y avoir accès.
+  $g->addEntry('prenom', 24);
+  $g->addEntry('nom', 24);
+  $g->addDate('naissance', '%e/%m/%Y');
 } catch(Exception $e){}
 
 $g->addFile('image');
@@ -20,16 +20,20 @@ $g->addFile('image');
 $g = $f->addForm_Fieldset("Scoutisme");
 
 try {
-	$g->addEntry('totem', 24);
+  $g->addEntry('totem', 24);
 } catch(Exception $e){}
 
 try {
-	$g->addEntry('numero', 8);
+  $g->addEntry('numero', 8);
+} catch(Exception $e){}
+
+try {
+  $g->addSelect('etape', true);
 } catch(Exception $e){}
 
 // suppression si vide.
 if (!$g->count())
-	$f->removeChild($g);
+  $f->removeChild($g);
 
 // contacts
 $g = $f->addForm_Fieldset('Contacts');
