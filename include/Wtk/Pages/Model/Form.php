@@ -19,9 +19,9 @@ class Wtk_Pages_Model_Form extends Wtk_Pages_Model
   protected	$root;
   protected	$loop;
 
-  function __construct(Wtk_Form_Model $model, $current = null)
+  function __construct(Wtk_Form_Model $model)
   {
-    parent::__construct($model, 1, $current); // un groupe par page
+    parent::__construct($model, 1, '$$init$$'); // un groupe par page
 
     $this->root = $model->getInstance();
 
@@ -119,7 +119,7 @@ class Wtk_Pages_Model_Form extends Wtk_Pages_Model
 	    $current = $this->pages_id[$i];
 	  else
 	    /* Terminé, il ne reste plus de groupes de champs */
-	    $current = null;
+	    $current = '$$completed$$';
 	}
       }
     }
@@ -130,7 +130,12 @@ class Wtk_Pages_Model_Form extends Wtk_Pages_Model
   function validate()
   {
     $current = $this->partialValidate();
-    $completed = $current === null;
+
+    /* Appliquer un goto explicite */
+    if ($this->current != '$$init$$')
+      $current = $this->current;
+
+    $completed = $current === '$$completed$$';
 
     if (!$completed)
       $this->gotoPage($current);
@@ -148,13 +153,19 @@ class Wtk_Pages_Model_Form extends Wtk_Pages_Model
     $this->current = $page;
   }
 
+  function gotoEnd()
+  {
+    $this->current = '$$completed$$';
+    $this->data->getInstance('$$current$$')->set($this->current);
+  }
+
   /* Compare si une page est postérieure à une autre */
   function pageCmp($a, $b)
   {
-    /* Comparaison avec la page correspondant à l'état terminé : null */
-    if (!$a && $b)
+    /* Comparaison avec la page correspondant à l'état terminé : $$completed$$ */
+    if ($a == '$$completed$$' && $b != '$$completed$$')
       return 1;
-    if ($a && !$b)
+    if ($a != '$$completed$$' && $b == '$$completed$$')
       return -1;
 
     return array_search($a, $this->pages_id) - array_search($b, $this->pages_id);
