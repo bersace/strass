@@ -170,7 +170,7 @@ ul.adminlinks {
 	overflow: hidden;
 	padding-top: 4em;
 
-	h1 {
+	& > h1 {
 	    font-size: 150%;
 	    position: absolute;
 	    top: 0;
