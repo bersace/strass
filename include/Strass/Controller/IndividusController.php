@@ -186,6 +186,7 @@ class IndividusController extends Strass_Controller_Action
 
     if ($unites->count()) {
       $i0 = $g->addBool('inscrire', "Inscrire dans une autre unité ou promouvoir", true)
+	/* Pour un nouveau, on viens forcément pour inscrire */
 	->setReadonly((bool) $apps->count() == 0);
       $i1 = $g->addEnum('unite', "Unité", $default_next);
       foreach($unites as $u)
@@ -210,7 +211,6 @@ class IndividusController extends Strass_Controller_Action
     $tu = new Unites;
     $tr = new Roles;
 
-    /* Prévalidation de la première étape :( */
     $page = $pm->partialValidate();
 
     if ($pm->pageCmp($page, 'role') >= 0) {
@@ -222,26 +222,26 @@ class IndividusController extends Strass_Controller_Action
       $i = $g->getChild('role');
       foreach ($roles as $role)
 	$i->addItem($role->id, wtk_ucfirst($role->titre));
-
-      if ($pm->pageCmp($page, 'role') > 0) {
-	/* Préselection du role */
-	$candidats = $individu->findRolesCandidats($unite);
-	if ($candidats->count())
-	  $i->set($candidats->current()->id);
-
-	/* Présélection de la date */
-	$annee = intval(strtok($m->get('actuel/date'), '/'));
-	if ($app = $individu->findInscriptionSuivante($annee)) {
-	  /* on a trouvé un successeur, donc potentiellement on clot */
-	  $m->getInstance('role/clore')->set(TRUE);
-	  $m->getInstance('role/fin')->set($app->debut);
-	}
-	else
-	  $m->getInstance('role/fin')->set($m->get('actuel/date'));
-      }
     }
 
-    /* Prévalidation de la deuxième étape :( */
+    /* Ne préremplir que si la page role va etre affichée */
+    if ($pm->pageCmp($page, 'role') == 0) {
+      /* Préselection du role */
+      $candidats = $individu->findRolesCandidats($unite);
+      if ($candidats->count())
+	$i->set($candidats->current()->id);
+
+      /* Présélection de la date */
+      $annee = intval(strtok($m->get('actuel/date'), '/'));
+      if ($app = $individu->findInscriptionSuivante($annee)) {
+	/* on a trouvé un successeur, donc potentiellement on clot */
+	$m->getInstance('role/clore')->set(TRUE);
+	$m->getInstance('role/fin')->set($app->debut);
+      }
+      else
+	$m->getInstance('role/fin')->set($m->get('actuel/date'));
+    }
+
     $page = $pm->partialValidate();
 
     if ($pm->pageCmp($page, 'titre') >= 0) {

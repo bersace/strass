@@ -323,7 +323,6 @@ class JournauxController extends Strass_Controller_Action
     $this->actions->append("Supprimer cet article",
 			   array('action' => 'supprimer'),
 			   array(Zend_Registry::get('user'), $a));
-    $this->formats('odt');
   }
 
 
