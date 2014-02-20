@@ -29,33 +29,6 @@ class MembresController extends Strass_Controller_Action implements Zend_Acl_Res
     $this->redirectSimple('index', 'index');
   }
 
-  function editerAction()
-  {
-    $this->assert(null, $this, 'editer',
-		  "Vous n'avez pas le droit d'éditer la fiche d'inscription");
-    $this->metas(array('DC.Title' => "Éditer la fiche d'inscription",
-		       'DC.Subject' => 'livre,or'));
-
-    $this->view->model = $m = new Wtk_Form_Model('fiche');
-    $c = is_readable($this::$cotisation) ? file_get_contents($this::$cotisation) : '';
-    $m->addString('cotisation', "Cotisation", $c);
-    $conf = $this->_helper->Config('strass');
-    $m->addBool('scoutisme', "Demander l'historique du scoutisme de la personne dans le groupe ?", $conf->inscription->scoutisme);
-    $m->addNewSubmission('valider', 'Valider');
-
-    if ($m->validate()) {
-      file_put_contents($c, $m->cotisation);
-      file_put_contents($e, $m->envoi);
-      $conf->inscription->scoutisme = $m->scoutisme;
-      $conf->write();
-
-      $this->_helper->Log("Formulaire d'inscription édité", array(),
-			  $this->_helper->Url('inscription', 'membres'),
-			  "Formulaire d'inscription");
-      $this->redirectSimple('inscription');
-    }
-  }
-
   function inscriptionAction()
   {
     $this->metas(array('DC.Title' => "Fiche d'inscription"));
