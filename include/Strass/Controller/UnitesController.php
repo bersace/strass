@@ -178,7 +178,6 @@ class UnitesController extends Strass_Controller_Action
     $m->addString('presentation', "Message d'accueil", is_readable($w) ? file_get_contents($w) : '');
     $m->addNewSubmission('enregistrer', "Enregistrer");
 
-    // métier;
     if ($m->validate()) {
       $db = Zend_Registry::get('db');
       $db->beginTransaction();
@@ -188,19 +187,10 @@ class UnitesController extends Strass_Controller_Action
 	$u->extra = $m->get('extra');
 	$u->save();
 
-	// photos
+	$u->storePresentation($m->get('presentation'));
 	$i = $m->getInstance('image');
-	if ($i->isUploaded()) {
+	if ($i->isUploaded())
 	  $u->storeImage($i->getTempFilename());
-	}
-
-	// wiki
-	$w = $u->getWiki(null, false);
-	$d = dirname($w);
-	if (!file_exists($d))
-	  mkdir($d, 0755, true);
-
-	file_put_contents($w, trim($m->get('presentation')));
 
 	$this->logger->info("Édition de ".$u->getFullname(),
 			    array('controller' => 'unites', 'action' => 'index', 'unite' => $u->slug));

@@ -277,6 +277,15 @@ class Unite extends Strass_Db_Table_Row_Abstract implements Zend_Acl_Resource_In
     return !$test || is_readable($image) ? $image : null;
   }
 
+  function storePresentation($wiki)
+  {
+    $path = $this->getWiki(null, false);
+    if (!file_exists($d = dirname($path)))
+      mkdir($d, 0700, true);
+
+    file_put_contents($path, trim($wiki));
+  }
+
   public function __toString()
   {
     return $this->getFullName();
