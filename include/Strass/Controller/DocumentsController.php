@@ -26,7 +26,9 @@ class DocumentsController extends Strass_Controller_Action
 
   function envoyerAction()
   {
+    $unite = $this->_helper->Unite(false);
     $this->metas(array('DC.Title' => 'Envoyer un document'));
+    $this->branche->append();
 
     $i = Zend_Registry::get('individu');
 
@@ -43,7 +45,7 @@ class DocumentsController extends Strass_Controller_Action
     $this->view->model = $m = new Wtk_Form_Model('envoyer');
     $m->addNewSubmission('envoyer', "Envoyer");
 
-    $m->addInstance('Enum', 'unite', "Unité concernée", key($envoyables), $envoyables);
+    $m->addInstance('Enum', 'unite', "Unité", $unite->id, $envoyables);
     $m->addInstance('String', 'titre', "Titre");
     $i = $m->addInstance('File', 'document', "Document");
 

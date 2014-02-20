@@ -4,10 +4,10 @@ require_once 'Strass/Unites.php';
 
 class Strass_Controller_Action_Helper_Unite extends Zend_Controller_Action_Helper_Abstract
 {
-  function direct($slug = null, $throw = true)
+  function direct($throw = true)
   {
-    $slug = $slug ? $slug : $this->getRequest()->getParam('unite');
-    $t = new Unites();
+    $slug = $this->getRequest()->getParam('unite');
+    $t = new Unites;
     try {
       if ($slug)
 	$unite = $t->findBySlug($slug);

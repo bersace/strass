@@ -62,7 +62,7 @@ class ActivitesController extends Strass_Controller_Action
   {
     $this->metas(array('DC.Title' => 'Prévoir une nouvelle activité',
 		       'DC.Title.alternate' => 'Prévoir'));
-    $u = $this->_helper->Unite(null, false);
+    $u = $this->_helper->Unite(false);
     $this->branche->append();
 
     $individu = Zend_Registry::get('individu');

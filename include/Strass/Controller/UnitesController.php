@@ -71,7 +71,7 @@ class UnitesController extends Strass_Controller_Action
 
   function fonderAction()
   {
-    $this->view->parente = $unite = $this->_helper->Unite(null, false);
+    $this->view->parente = $unite = $this->_helper->Unite(false);
     $this->assert(null, $unite, 'fonder',
 		  "Pas le droit de fonder une sous-unité !");
 
