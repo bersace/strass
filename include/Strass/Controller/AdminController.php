@@ -201,16 +201,20 @@ class AdminController extends Strass_Controller_Action
 
       $apps = $unite->findAppartenances();
       $actifs = $apps->count();
+      $chef = $unite->findChef();
+      $level = ($actifs == 0 || !$chef) ? 'warn' : null;
       $path = $m->append($ppath,
 			 wtk_ucfirst($unite->getFullname()),
 			 $this->_helper->Url('index', 'unites', null, array('unite' => $unite->slug)),
 			 $unite->isFermee() ? 'fermée' : 'ouverte',
-			 'Inconnu', null,
+			 $chef ? $chef->getFullname() : 'Inconnu',
+			 $chef ? $this->_helper->Url('fiche', 'individus', null,
+						     array('individu' => $chef->slug)) : null,
 			 "${actifs} inscrits",
 			 $this->_helper->Url('supprimer', 'unites', null, array('unite' => $unite->slug)),
 			 array($unite->isFermee() ? 'fermee' : 'ouverte',
 			       $unite->findParentTypesUnite()->slug,
-			       $actifs == 0 ? 'warn' : null,
+			       $level,
 			       )
 			 );
       $pathes[$unite->slug] = $path;
