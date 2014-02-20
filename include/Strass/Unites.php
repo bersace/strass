@@ -705,14 +705,16 @@ class TypeUnite extends Zend_Db_Table_Row_Abstract
   }
 }
 
-class Roles extends Zend_Db_Table_Abstract
+class Roles extends Strass_Db_Table_Abstract
 {
   protected $_name = 'unite_role';
   protected $_rowClass = 'Role';
   protected $_dependentTables = array('Appartenances');
-  protected $_referenceMap = array('TypeUnite' => array('columns' => 'type',
-							'refTableClass' => 'TypesUnite',
-							'refColumns' => 'id'));
+  protected $_referenceMap = array('Type' => array('columns' => 'type',
+						   'refTableClass' => 'TypesUnite',
+						   'refColumns' => 'id',
+						   'onUpdate' => self::CASCADE,
+						   'onDelete' => self::CASCADE));
 }
 
 class Role extends Zend_Db_Table_Row_Abstract
@@ -726,6 +728,17 @@ class Role extends Zend_Db_Table_Row_Abstract
   {
     return $this->titre;
   }
+}
+
+class Titres extends Zend_Db_Table_Abstract
+{
+  protected $_name = 'unite_titre';
+  protected $_dependentTables = array();
+  protected $_referenceMap = array('Role' => array('columns' => 'role',
+						   'refTableClass' => 'Roles',
+						   'refColumns' => 'id',
+						   'onUpdate' => self::CASCADE,
+						   'onDelete' => self::CASCADE));
 }
 
 class DocsUnite extends Zend_Db_Table_Abstract

@@ -10,10 +10,10 @@ class Strass_Pages_Renderer_Inscrire extends Wtk_Pages_Renderer_Form
     $this->view = $view;
   }
 
-  function renderActuel($group, $f)
+  function renderActuel($g, $f)
   {
     $f->addDate('actuel/date', '%e-%m-%Y');
-    $g = $f->getModel()->getInstance('actuel/apps');
+    $g = $g->getChild('apps');
     foreach ($g as $i) {
       $f->addCheck($i);
     }
@@ -26,12 +26,21 @@ class Strass_Pages_Renderer_Inscrire extends Wtk_Pages_Renderer_Form
     catch(Exception $e) {}
   }
 
-  function renderRole($group, $f)
+  function renderRole($g, $f)
   {
     $f->addSelect('role/role', true);
     $c = $f->addForm_Compound();
     $c->addCheck('role/clore')->useLabel(true);
     $c->addDate('role/fin', '%e-%m-%Y');
+  }
+
+  function renderTitre($g, $f)
+  {
+    if ($g->getChild('predefini')->count() > 1)
+      $f->addSelect('titre/predefini', true);
+    else
+      $f->addHidden('titre/predefini');
+    $f->addEntry('titre/autre', 16);
   }
 }
 

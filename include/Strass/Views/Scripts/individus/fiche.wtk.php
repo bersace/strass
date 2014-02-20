@@ -73,10 +73,10 @@ if ($this->historique->count()) {
   $s = $this->document->addSection('historique', "Historique");
   $l = $s->addList();
   foreach($this->historique as $app) {
-    $l->addItem(new Wtk_Container(new Wtk_RawText(ucfirst($app->findParentRoles()->__toString())." dans "),
-				  $this->lienUnite($app->findParentUnites(),
-						   null, array('annee' => $app->getAnnee())),
-				  new Wtk_RawText(" du ".$app->getDebut()." au ".$app->getFin())));
+    $u = $app->findParentUnites();
+    $l->addItem(new Wtk_Container($this->lienUnite($u, wtk_ucfirst($app->getShortDescription()),
+						   array('annee' => $app->getAnnee())),
+				  " du ".$app->getDebut()." au ".$app->getFin()));
   }
 }
 

@@ -360,7 +360,7 @@ class Individu extends Strass_Db_Table_Row_Abstract implements Zend_Acl_Role_Int
     $s = $t->select()
       ->setIntegrityCheck(false)
       ->from('appartenance')
-      ->join('individu', $db->quoteInto('individu.id = ?', $this->id), array())
+      ->where('appartenance.individu = ?', $this->id)
       ->where('appartenance.debut >= ?', $annee.'-09-01')
       ->order('appartenance.debut')
       ->limit(1);
@@ -543,7 +543,11 @@ class Appartient extends Strass_Db_Table_Row_Abstract implements Zend_Acl_Role_I
 
   function getShortDescription()
   {
-    return $this->findParentRoles()->accr.' '.$this->findParentUnites()->getName();
+    if ($this->titre)
+      $accr = $this->titre;
+    else
+      $accr = $this->findParentRoles()->getAccronyme();
+    return $accr.' '.$this->findParentUnites()->getName();
   }
 }
 

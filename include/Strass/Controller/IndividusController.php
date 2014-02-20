@@ -201,39 +201,60 @@ class IndividusController extends Strass_Controller_Action
     $i1 = $g->addDate('fin', "Date de fin", $m->get('actuel/date'));
     $m->addConstraintDepends($i1, $i0);
 
+    $g = $m->addGroup('titre');
+    $i = $g->addEnum('predefini', 'Titre', '$$autre$$', array('$$autre$$' => 'Autre'));
+    $g->addString('autre', 'Autre');
+
     $this->view->model = $pm = new Wtk_Pages_Model_Form($m);
 
-    /* Prévalidation de la première étape :( */
-    $valid = $pm->validate();
+    $tu = new Unites;
+    $tr = new Roles;
 
-    if ($pm->current == 'role') {
+    /* Prévalidation de la première étape :( */
+    $page = $pm->partialValidate();
+
+    if ($pm->pageCmp($page, 'role') >= 0) {
+      $g = $m->getInstance('role');
+
       /* Sélections des rôles ou on peut l'inscrire */
-      $tu = new Unites;
       $unite = $tu->findOne($m->get('actuel/unite'));
       $roles = $unite->findParentTypesUnite()->findRoles();
       $i = $g->getChild('role');
       foreach ($roles as $role)
 	$i->addItem($role->id, wtk_ucfirst($role->titre));
 
-      /* Préselection */
-      $candidats = $individu->findRolesCandidats($unite);
-      if ($candidats->count())
-	$i->set($candidats->current()->id);
+      if ($pm->pageCmp($page, 'role') > 0) {
+	/* Préselection du role */
+	$candidats = $individu->findRolesCandidats($unite);
+	if ($candidats->count())
+	  $i->set($candidats->current()->id);
 
-      /* Présélection de la date */
-      $annee = strtok($m->get('actuel/date'), '/');
-      if ($app = $individu->findInscriptionSuivante($annee)) {
-	/* on a trouvé un successeur, donc potentiellement on clot */
-	$m->getInstance('role/clore')->set(TRUE);
-	$m->getInstance('role/fin')->set($app->debut);
+	/* Présélection de la date */
+	$annee = intval(strtok($m->get('actuel/date'), '/'));
+	if ($app = $individu->findInscriptionSuivante($annee)) {
+	  /* on a trouvé un successeur, donc potentiellement on clot */
+	  $m->getInstance('role/clore')->set(TRUE);
+	  $m->getInstance('role/fin')->set($app->debut);
+	}
+	else
+	  $m->getInstance('role/fin')->set($m->get('actuel/date'));
       }
-      else
-	$m->getInstance('role/fin')->set($m->get('actuel/date'));
     }
 
-    if ($valid) {
+    /* Prévalidation de la deuxième étape :( */
+    $page = $pm->partialValidate();
+
+    if ($pm->pageCmp($page, 'titre') >= 0) {
+      $g = $m->getInstance('titre');
+      $role = $tr->findOne($m->get('role/role'));
+      $titres = $role->findTitres();
+      $i = $g->getChild('predefini');
+      foreach ($titres as $titre)
+	$i->addItem($titre->nom, wtk_ucfirst($titre->nom));
+    }
+
+    if ($pm->validate()) {
       $t = new Appartenances;
-      $tu = new Unites;
 
       $db = $t->getAdapter();
       $db->beginTransaction();
@@ -247,9 +268,14 @@ class IndividusController extends Strass_Controller_Action
 	}
 
 	if ($m->get('actuel/inscrire')) {
+	  $titre = $m->get('titre/predefini');
+	  if ($titre == '$$autre$$')
+	    $titre = $m->get('titre/autre');
+
 	  $data = array('individu' => $individu->id,
 			'unite' => $m->get('actuel/unite'),
 			'role' => $m->get('role/role'),
+			'titre' => $titre,
 			'debut' => $m->get('actuel/date'),
 			);
 	  if ($m->get('role/clore'))
