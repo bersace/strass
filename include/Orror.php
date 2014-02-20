@@ -23,8 +23,6 @@
    * @license	http://www.gnu.org/licenses/gpl.txt GPL
    */
 
-require_once 'Callo.php';
-
 define('E_EXCEPTION', E_ALL*2);
 
 /**
@@ -261,18 +259,18 @@ class Orror {
   static function output($msg, $file, $line, $class, $function, $level, $backtrace, $exception = null)
   {
     // Faut-il distinguer les erreurs sys des erreurs user ?
-    $errors = array(E_NOTICE        => __("Notice"),
-		    E_WARNING       => __("Warning"),
+    $errors = array(E_NOTICE        => "Notice",
+		    E_WARNING       => "Warning",
 		    // E_ERROR ne passe pas par ici ...
-		    E_USER_NOTICE   => __("Notice"),
-		    E_USER_WARNING  => __("Warning"),
-		    E_USER_ERROR    => __("Error"),
-		    E_STRICT	    => __("Strict"),
-		    E_EXCEPTION	    => $exception." ".__("Exception"),
-		    E_DEPRECATED    => __("Deprecated"));
+		    E_USER_NOTICE   => "Notice",
+		    E_USER_WARNING  => "Warning",
+		    E_USER_ERROR    => "Error",
+		    E_STRICT	    => "Strict",
+		    E_EXCEPTION	    => $exception." "."Exception",
+		    E_DEPRECATED    => "Deprecated");
 
     if (defined('E_RECOVERABLE_ERROR')) {
-      $errors[E_RECOVERABLE_ERROR] = __("Recoverable error");
+      $errors[E_RECOVERABLE_ERROR] = "Recoverable error";
     }
 
     if (ini_get('html_errors')) {
@@ -292,7 +290,7 @@ class Orror {
 	  "</span><br/>\n";
 
 	if (count($backtrace)) {
-	  echo "<b>".__("Backtrace:")."</b><br/>\n";
+	  echo "<b>"."Backtrace:"."</b><br/>\n";
 	  foreach ($backtrace as $i => $step) {
 	    if (isset($step['file']) && isset($step['line'])) {
 	      $class = isset($step['class']) ? $step['class']."." : "";
