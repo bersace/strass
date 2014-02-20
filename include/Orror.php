@@ -284,10 +284,10 @@ class Orror {
 	echo $msg."<br/>\n";
 	echo
 	  "<span>".
-	  S_("in %s on line %s.",
-	     "<b>".str_replace(dirname($_SERVER['SCRIPT_FILENAME']).'/', '', $file)."</b>",
-	     "<b>".$line."</b>").
-	  "</span><br/>\n";
+	  sprintf("in %s on line %s.",
+		  "<b>".str_replace(dirname($_SERVER['SCRIPT_FILENAME']).'/', '', $file)."</b>",
+		  "<b>".$line."</b>".
+		  "</span><br/>\n");
 
 	if (count($backtrace)) {
 	  echo "<b>"."Backtrace:"."</b><br/>\n";
