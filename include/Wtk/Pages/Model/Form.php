@@ -83,7 +83,8 @@ class Wtk_Pages_Model_Form extends Wtk_Pages_Model
 	array_push($this->pages_id, $group->id);
 
     $model = $this->data;
-    $submission = $this->partialFormValidate();
+    $valid = $this->partialFormValidate();
+    $submission = $model->sent_submission;
     $current = $this->root->get('$$current$$');
 
     if (!$current)
@@ -137,7 +138,9 @@ class Wtk_Pages_Model_Form extends Wtk_Pages_Model
 
     $completed = $current === '$$completed$$';
 
-    if (!$completed)
+    if ($completed)
+      $this->gotoEnd();
+    else if ($current !== false)
       $this->gotoPage($current);
 
     return !count($this->data->errors) && $completed;
