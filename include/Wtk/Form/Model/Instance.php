@@ -5,7 +5,7 @@ abstract class Wtk_Form_Model_Instance
   public	$id;
   public	$path;
   public	$label;
-  protected	$value;
+  public	$value;
   public	$valid;
   public $readonly;
 

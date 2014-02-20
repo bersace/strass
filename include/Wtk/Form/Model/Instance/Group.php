@@ -102,7 +102,7 @@ class Wtk_Form_Model_Instance_Group extends Wtk_Form_Model_Instance implements I
 	  if ($this->readonly)
 	    return true;
 
-		$valid = FALSE;
+		$valid = true;
 
 		foreach ($this->value as $id => $child) {
 			$chval = $this->value[$id]->retrieve (isset ($values[$id]) ? $values[$id] : NULL);

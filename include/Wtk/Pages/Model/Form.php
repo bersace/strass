@@ -36,6 +36,47 @@ class Wtk_Pages_Model_Form extends Wtk_Pages_Model
     return $this->data;
   }
 
+  /* Valide les pages présentées à l'utilisateur uniquement */
+  function partialFormValidate()
+  {
+    $model = $this->data;
+    $root = $model->instance;
+
+    if (!$values = $model->getRawSubmittedValues())
+      return false;
+
+    $model->errors = array();
+
+    /* Récupérer la page courante */
+    $root->value['$$current$$']->retrieve($values['$$current$$']);
+    $current = $model->get('$$current$$');
+
+    /* Ne récupérer depuis _POST que les valeurs des pages précédentes
+       et actuelle */
+    $valid = true;
+    foreach ($root->value as $id => $child) {
+      if (strpos($id, '$$') === false && $this->pageCmp($id, $current) > 0)
+	continue;
+
+      try {
+	$chval = $root->value[$id]->retrieve(isset ($values[$id]) ? $values[$id] : NULL);
+	$valid = $chval && $valid;
+      }
+      catch (Wtk_Form_Model_Exception $e) {
+	$valid = false;
+	array_push($model->errors, $e);
+      }
+    }
+
+    $validated = $model->get('$$validated$$');
+    $valid = $valid && $model->checkConstraints();
+
+    if (!count($model->errors) && $valid && $validated)
+      return $model->sent_submission;
+    else
+      return false;
+  }
+
   function partialValidate()
   {
     $this->pages_count = $this->root->count() - 1; // minus $$validated$$
@@ -45,7 +86,7 @@ class Wtk_Pages_Model_Form extends Wtk_Pages_Model
 	array_push($this->pages_id, $group->id);
 
     $model = $this->data;
-    $submission = $model->validate();
+    $submission = $this->partialFormValidate();
     $current = $this->root->get('$$current$$');
 
     if (!$current)

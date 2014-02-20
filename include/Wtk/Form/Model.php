@@ -110,10 +110,7 @@ class Wtk_Form_Model
     }
   }
 
-  /*
-   * Wether data has been submitted.
-   */
-  function validate()
+  function getRawSubmittedValues()
   {
     if (!count($this->submissions)) {
       throw new Exception("No submissions set for model ".$this->id);
@@ -127,9 +124,32 @@ class Wtk_Form_Model
       }
     }
 
-    if (!$values) {
+    if (!$values)
       return FALSE;
+    return $values;
+  }
+
+  function checkConstraints()
+  {
+    $valid = true;
+    foreach ($this->constraints as $constraint) {
+      try {
+	$valid  = $valid && $constraint->validate();
+      }
+      catch (Wtk_Form_Model_Exception $e) {
+	array_push ($this->errors, $e);
+      }
     }
+    return $valid;
+  }
+
+  /*
+   * Wether data has been submitted.
+   */
+  function validate()
+  {
+    if (!$values = $this->getRawSubmittedValues())
+      return false;
 
     // retrieve values
     // validate all constraints and gather errors
@@ -142,16 +162,7 @@ class Wtk_Form_Model
       array_push($this->errors, $e);
     }
 
-    $valid = true;
-    foreach ($this->constraints as $constraint) {
-      try {
-	$valid  = $valid && $constraint->validate();
-      }
-      catch (Wtk_Form_Model_Exception $e) {
-	array_push ($this->errors, $e);
-      }
-    }
-
+    $valid = $this->checkConstraints();
     $validated = $this->get('$$validated$$');
 
     if (!count($this->errors) && $valid && $validated)
