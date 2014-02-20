@@ -19,7 +19,8 @@ class Strass_Pages_Renderer_Inscrire extends Wtk_Pages_Renderer_Form
     }
 
     try {
-      $f->addCheck('actuel/inscrire');
+      if ($g->count() > 0)
+	$f->addCheck('actuel/inscrire');
       $f->addSelect('actuel/unite', true);
     }
     catch(Exception $e) {}
@@ -30,7 +31,7 @@ class Strass_Pages_Renderer_Inscrire extends Wtk_Pages_Renderer_Form
     $f->addSelect('role/role', true);
     $c = $f->addForm_Compound();
     $c->addCheck('role/clore')->useLabel(true);
-    $c->addDate('role/fin');
+    $c->addDate('role/fin', '%e-%m-%Y');
   }
 }
 

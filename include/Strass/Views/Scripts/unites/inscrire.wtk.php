@@ -22,9 +22,7 @@ class Strass_Pages_Renderer_UnitesInscrire extends Wtk_Pages_Renderer_Form
     try {
       $f->addSelect('fiche/sexe');
     }
-    catch (Exception $e) {
-      $f->addHidden('fiche/sexe');
-    }
+    catch (Exception $e) {}
     $f->addDate('fiche/naissance');
   }
 

@@ -252,7 +252,7 @@ class UnitesController extends Strass_Controller_Action
     if ($tu->sexe == 'm')
       $g->addEnum('sexe', 'Sexe', null, array('h' => 'Masculin', 'f' => 'Féminin'));
     else
-      $g->addString('sexe', $tu->sexe);
+      $g->addString('sexe', null, $tu->sexe)->setReadonly();
 
     $g->addDate('naissance', 'Date de naissance', ($a - $tu->age_min) . '-01-01');
 

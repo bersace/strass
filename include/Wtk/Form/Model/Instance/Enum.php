@@ -13,18 +13,24 @@ class Wtk_Form_Model_Instance_Enum extends Wtk_Form_Model_Instance implements It
    * @param array	Values => Label array
    * @param boolean	Wether to allow multiple selection
    */
-  function __construct ($path, $label, $value, $enum, $multiple = FALSE)
+  function __construct ($path, $label, $value=null, $enum=array(), $multiple = FALSE)
   {
     parent::__construct ($path, $label, $value);
     $this->enum = $enum;
     $this->multiple = $multiple;
   }
 
+  function addItem($value, $label)
+  {
+    $this->enum[$value] = $label;
+    $this->enum = array_unique ($this->enum);
+  }
+
   function addItems ($value)
   {
     $values = func_get_args ();
     $this->enum = array_merge ($this->enum, $values);
-    $this->enum = array_uniq ($this->enum);
+    $this->enum = array_unique ($this->enum);
   }
 
   function getItems ()

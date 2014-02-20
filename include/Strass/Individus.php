@@ -326,8 +326,11 @@ class Individu extends Strass_Db_Table_Row_Abstract implements Zend_Acl_Role_Int
       ->from('unite')
       ->join('unite_type', "unite_type.id = unite.type\n", array())
       ->where("unite_type.sexe IN ('m', ?)\n", $this->sexe)
-      ->where("unite_type.age_min <= ?\n", $this->getAge())
       ->where("NOT unite_type.virtuelle\n");
+
+    if ($age = $this->getAge())
+      $s->where("unite_type.age_min <= ?\n", $age);
+
     return $t->fetchAll($s);
   }
 

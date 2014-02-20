@@ -21,6 +21,7 @@ abstract class Wtk_Form_Model_Instance
   function setReadonly($ro = true)
   {
     $this->readonly = $ro;
+    return $this;
   }
 
   function setPath ($path)

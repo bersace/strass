@@ -186,32 +186,35 @@ class IndividusController extends Strass_Controller_Action
     }
 
     if ($unites->count()) {
-      $i0 = $g->addBool('inscrire', "Inscrire dans une autre unité ou promouvoir", true);
-      $enum = array();
+      $i0 = $g->addBool('inscrire', "Inscrire dans une autre unité ou promouvoir", true)
+	->setReadonly((bool) $apps->count() == 0);
+      $i1 = $g->addEnum('unite', "Unité", $default_next);
       foreach($unites as $u)
-	$enum[$u->id] = wtk_ucfirst($u->getFullname());
-      $i1 = $g->addEnum('unite', "Unité", $default_next, $enum);
-      $m->addConstraintDepends($i1, $i0);
+	$i1->addItem($u->id, wtk_ucfirst($u->getFullname()));
+      if ($apps->count()) {
+	$m->addConstraintDepends($i1, $i0);
+      }
     }
 
     $g = $m->addGroup('role');
+    $g->addEnum('role', 'Rôle');
     $i0 = $g->addBool('clore', "Ne l'est plus depuis", $apps->count() > 0);
     $i1 = $g->addDate('fin', "Date de fin", $m->get('actuel/date'));
     $m->addConstraintDepends($i1, $i0);
 
     $this->view->model = $pm = new Wtk_Pages_Model_Form($m);
+
+    /* Prévalidation de la première étape :( */
     $valid = $pm->validate();
 
     if ($pm->current == 'role') {
       /* Sélections des rôles ou on peut l'inscrire */
       $tu = new Unites;
       $unite = $tu->findOne($m->get('actuel/unite'));
-      $roles = $u->findParentTypesUnite()->findRoles();
-      $enum = array();
-      foreach ($roles as $role) {
-	$enum[$role->id] = wtk_ucfirst($role->titre);
-      }
-      $i = $g->addEnum('role', 'Rôle', null, $enum);
+      $roles = $unite->findParentTypesUnite()->findRoles();
+      $i = $g->getChild('role');
+      foreach ($roles as $role)
+	$i->addItem($role->id, wtk_ucfirst($role->titre));
 
       /* Préselection */
       $candidats = $individu->findRolesCandidats($unite);
@@ -219,9 +222,12 @@ class IndividusController extends Strass_Controller_Action
 	$i->set($candidats->current()->id);
 
       /* Présélection de la date */
-      $annee = strftime('%Y', $m->getInstance('actuel/date')->getDateArray()['year']);
-      if ($app = $individu->findInscriptionSuivante(null, $annee))
+      $annee = strtok($m->get('actuel/date'), '/');
+      if ($app = $individu->findInscriptionSuivante($annee)) {
+	/* on a trouvé un successeur, donc potentiellement on clot */
+	$m->getInstance('role/clore')->set(TRUE);
 	$m->getInstance('role/fin')->set($app->debut);
+      }
       else
 	$m->getInstance('role/fin')->set($m->get('actuel/date'));
     }
