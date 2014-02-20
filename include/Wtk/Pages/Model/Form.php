@@ -53,23 +53,20 @@ class Wtk_Pages_Model_Form extends Wtk_Pages_Model
 
     /* Ne récupérer depuis _POST que les valeurs des pages précédentes
        et actuelle */
-    $valid = true;
     foreach ($root->value as $id => $child) {
       if (strpos($id, '$$') === false && $this->pageCmp($id, $current) > 0)
 	continue;
 
       try {
-	$chval = $root->value[$id]->retrieve(isset ($values[$id]) ? $values[$id] : NULL);
-	$valid = $chval && $valid;
+	$root->value[$id]->retrieve(isset ($values[$id]) ? $values[$id] : NULL);
       }
       catch (Wtk_Form_Model_Exception $e) {
-	$valid = false;
 	array_push($model->errors, $e);
       }
     }
 
     $validated = $model->get('$$validated$$');
-    $valid = $valid && $model->checkConstraints();
+    $valid = $model->checkConstraints();
 
     if (!count($model->errors) && $valid && $validated)
       return $model->sent_submission;
