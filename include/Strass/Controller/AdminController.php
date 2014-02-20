@@ -141,7 +141,6 @@ class AdminController extends Strass_Controller_Action
     $g->addInteger('creation', 'Date de création du site', $config->metas->creation);
 
     $g = $m->addGroup('system', 'Système');
-    $g->addString('id', 'Identifiant du site', $config->system->id);
     $enum = array();
     foreach(Wtk_Document_Style::listAvailables() as $style) {
       $enum[$style->id] = $style->title;

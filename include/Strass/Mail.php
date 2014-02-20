@@ -18,7 +18,8 @@ class Strass_Mail extends Zend_Mail
       $metas = new Wtk_Metas($metas);
     }
 
-    $title = "[".$config->system->id."] ".$metas->title;
+    $id = $config->get('system/short_title', 'STRASS');
+    $title = "[".$id."] ".$metas->title;
     $this->setSubject($title);
     $this->addTo(null);
 

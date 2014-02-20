@@ -9,7 +9,6 @@ $g->addEntry('author', 24);
 $g->addEntry('creation', 4);
 
 $g = $f->addForm_Fieldset('system');
-$g->addEntry('id', 8);
 if (count($this->model->getInstance('system/style')) > 1)
   $g->addSelect('style');
 else
