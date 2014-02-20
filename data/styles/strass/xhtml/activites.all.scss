@@ -22,8 +22,7 @@
 	font-size: 1.1em;
     }
 
-    #document.prevoir form,
-    #document.modifier form
+    #document form
     {
 	@include minipage;
     }
