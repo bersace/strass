@@ -1,15 +1,11 @@
 
- * Commenter la photo sur sa page
-
  * Export contact, calendrier et photos avec webdav
-
- * Gérer les homonymes
 
  * Début et fin de role via les activités
 
  * Gérer le sexe et l'âge min-max par rôle et non par type d'unité.
 
- * Inscrire un scout sans le mettre dans une patrouille.
+ * Inscrire un scout dans une troupe sans le mettre dans une patrouille.
 
  * Illustration de calendrier data/calendrier/<unite>/<annee>.png
 

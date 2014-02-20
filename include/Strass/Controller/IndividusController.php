@@ -107,7 +107,8 @@ class IndividusController extends Strass_Controller_Action
     $m->addNewSubmission('valider', 'Valider');
 
     if ($m->validate()) {
-      $db = $individu->getTable()->getAdapter();
+      $t = $individu->getTable();
+      $db = $t->getAdapter();
       $db->beginTransaction();
       try {
 	// contacts
@@ -132,7 +133,7 @@ class IndividusController extends Strass_Controller_Action
 
 	$individu->fixe = $this->_helper->Telephone($individu->fixe);
 	$individu->portable = $this->_helper->Telephone($individu->portable);
-	$individu->slug = wtk_strtoid($individu->getFullname(false, false));
+	$individu->slug = $t->createSlug(wtk_strtoid($individu->getFullname(false, false)), $individu->slug);
 	$individu->save();
 
 	$image = $m->getInstance('image');

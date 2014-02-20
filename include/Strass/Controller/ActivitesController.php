@@ -102,6 +102,7 @@ class ActivitesController extends Strass_Controller_Action
     $m->addConstraintRequired($m->getInstance('unites'));
 
     if ($m->validate()) {
+      $t = new Activites;
       $tu = new Unites;
       $data = $m->get();
       $unites = $data['unites'];
@@ -125,12 +126,11 @@ class ActivitesController extends Strass_Controller_Action
 							     $tuple['fin']),
 					  strtotime($tuple['debut']),
 					  strtotime($tuple['fin']));
-      $tuple['slug'] = $slug = wtk_strtoid($intitule);
+      $tuple['slug'] = $slug = $t->createSlug(wtk_strtoid($intitule));
 
       $db = Zend_Registry::get('db');
       $db->beginTransaction();
       try {
-	$t = new Activites;
 	$k = $t->insert($tuple);
 	$a = $t->findOne($k);
 
@@ -217,6 +217,7 @@ class ActivitesController extends Strass_Controller_Action
     $m->addNewSubmission('enregistrer', 'Enregistrer');
 
     if ($m->validate()) {
+      $t = new Activites;
       $tu = new Unites;
       $unites = $tu->getIdSousUnites((array) $m->get('unites'), $a->getAnnee());
 
@@ -231,7 +232,7 @@ class ActivitesController extends Strass_Controller_Action
 	unset($data['unites']);
 	$intitule = $m->get('intitule');
 	$a->intitule = $intitule;
-	$a->slug = wtk_strtoid($a->getIntitule());
+	$a->slug = $t->createSlug(wtk_strtoid($a->getIntitule()), $a->slug);
 	$a->save();
 
 	$tp = new Participations;

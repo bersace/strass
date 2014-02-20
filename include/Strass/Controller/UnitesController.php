@@ -137,7 +137,7 @@ class UnitesController extends Strass_Controller_Action
 	$t = new Unites;
 
 	extract($m->get());
-	$data = array('slug' => wtk_strtoid($types[$type].'-'.$nom),
+	$data = array('slug' => $t->createSlug(wtk_strtoid($types[$type].'-'.$nom)),
 		      'nom' => $nom,
 		      'type' => $type,
 		      'extra' => $extra,
@@ -179,11 +179,12 @@ class UnitesController extends Strass_Controller_Action
     $m->addNewSubmission('enregistrer', "Enregistrer");
 
     if ($m->validate()) {
-      $db = Zend_Registry::get('db');
+      $t = $u->getTable();
+      $db = $t->getAdapter();
       $db->beginTransaction();
       try {
 	$u->nom = $m->get('nom');
-	$u->slug = wtk_strtoid($u->getFullname());
+	$u->slug = $t->createSlug(wtk_strtoid($u->getFullname()), $u->slug);
 	$u->extra = $m->get('extra');
 	$u->save();
 
@@ -294,7 +295,7 @@ class UnitesController extends Strass_Controller_Action
       try {
 	if ($m->get('individu/individu') == '$$nouveau$$') {
 	  $data = $m->get('fiche');
-	  $data['slug'] = wtk_strtoid($data['prenom'].' '.$data['nom']);
+	  $data['slug'] = $ti->createSlug(wtk_strtoid($data['prenom'].' '.$data['nom']));
 	  $k = $ti->insert($data);
 	  $i = $ti->findOne($k);
 	}
