@@ -1,7 +1,5 @@
 <?php /*-*- sql -*-*/
 
-require_once 'Image/Transform.php';
-
 class Strass_Migrate_To17 extends Strass_MigrateHandler {
   function online($db) {
     $db->exec(<<<'EOS'

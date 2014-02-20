@@ -2,8 +2,6 @@
 
 require_once 'Strass/Journaux.php';
 require_once 'Strass/Documents.php';
-require_once 'Image/Transform.php';
-
 
 class Unites extends Strass_Db_Table_Abstract
 {

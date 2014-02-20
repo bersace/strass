@@ -1,7 +1,5 @@
 <?php /*-*- sql -*-*/
 
-require_once 'Image/Transform.php';
-
 class Strass_Migrate_To14 extends Strass_MigrateHandler {
   function online($db) {
     error_log("Unicité des identifiants de photos");

@@ -1,6 +1,5 @@
 <?php
 
-require_once 'Image/Transform.php';
 require_once 'Strass/Individus.php';
 require_once 'Strass/Unites.php';
 
