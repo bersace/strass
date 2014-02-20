@@ -269,20 +269,21 @@ class UnitesController extends Strass_Controller_Action
     $i1 = $g->addDate('fin', 'Fin', ($a+1).'-10-08');
     $m->addConstraintDepends($i1, $i0);
 
-    $validated = $pm->validate();
+    $page = $pm->partialValidate();
+
     if ($m->get('individu/individu') == '$$nouveau$$') {
       /* Proposer un role inoccupé */
       if ($role = $u->findRolesCandidats($u, $a)->current())
 	$m->getInstance('app/role')->set($role->id);
     } else {
-      if ($pm->current == 'fiche') {
+      if ($page == 'fiche') {
 	/* Sauter l'étape fiche si l'individu est déjà en base */
 	if ($m->sent_submission->id == 'continuer')
 	  $pm->gotoPage('app');
 	else if ($m->sent_submission->id == 'precedent')
 	  $pm->gotoPage('individu');
       }
-      else if ($pm->current == 'app') {
+      else if ($pm->pageCmp($page, 'app') >= 0) {
 	/* préremplir l'inscription selon l'individu */
 	$individu = $ti->findOne($m->get('individu/individu'));
 
@@ -297,7 +298,7 @@ class UnitesController extends Strass_Controller_Action
       }
     }
 
-    if ($validated) {
+    if ($pm->validate()) {
       $t = new Appartenances;
       $db->beginTransaction();
       try {
