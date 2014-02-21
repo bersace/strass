@@ -14,7 +14,8 @@ class Strass_Pages_Renderer_Individus extends Wtk_Pages_Renderer
 
   function renderContainer()
   {
-    $model = $m = new Wtk_Table_Model('prenom-nom', 'fiche', 'adelec', 'app', 'app-url', 'statut', 'flags');
+    $model = $m = new Wtk_Table_Model('prenom-nom', 'fiche', 'adelec', 'app', 'app-url', 'statut',
+				      'url-supprimer', 'flags');
     $table = $t = new Wtk_Table($model, true, 'flags');
     $t->addFlags('individus');
 
@@ -27,6 +28,10 @@ class Strass_Pages_Renderer_Individus extends Wtk_Pages_Renderer
     $t->addNewColumn("Inscription", new Wtk_Table_CellRenderer_Link('href', 'app-url',
 								    'label', 'app'));
     $t->addNewColumn("Statut", new Wtk_Table_CellRenderer_Text('text', 'statut'));
+    $t->addNewColumn(null, new Wtk_Table_CellRenderer_Link('href', 'url-supprimer',
+							   'label', 'Supprimer',
+							   'flags', array('adminlink', 'critical')),
+		     'adminlinks');
 
     return $table;
   }
@@ -37,6 +42,8 @@ class Strass_Pages_Renderer_Individus extends Wtk_Pages_Renderer
     $pn = $i->getFullname(false, false);
     $fiche = $this->view->url(array('controller' => 'individus', 'action' => 'fiche',
 				    'individu' => $i->slug), true);
+    $urlsupp = $this->view->url(array('controller' => 'individus', 'action' => 'supprimer',
+				      'individu' => $i->slug), true);
     $u = $i->findUser();
 
     $flags = array();
@@ -64,7 +71,7 @@ class Strass_Pages_Renderer_Individus extends Wtk_Pages_Renderer
 				       'individu' => $i->slug), true);
     }
 
-    $m->append($pn, $fiche, $i->adelec, $appdesc, $appurl, $statut, $flags);
+    $m->append($pn, $fiche, $i->adelec, $appdesc, $appurl, $statut, $urlsupp, $flags);
   }
 }
 
