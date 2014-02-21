@@ -82,10 +82,11 @@ class AdminController extends Strass_Controller_Action
 	       $count, 'notice');
 
     $this->view->log = $m = new Wtk_Table_Model('date', 'level', 'logger', 'label', 'url',
-						'prenom-nom', 'fiche');
+						'prenom-nom', 'fiche', 'detail-url');
     $t = new Logs;
     $events = $t->fetchAll($t->select()->order('date DESC')->limit(20));
     foreach ($events as $e) {
+      $url = $this->_helper->Url('event', null, null, array('id' => $e->id));
       $u = $e->findParentUsers();
       if ($u) {
 	$i = $u->findParentIndividus();
@@ -101,7 +102,8 @@ class AdminController extends Strass_Controller_Action
 		 $e->logger,
 		 wtk_first_words($e->message, 40),
 		 $e->url,
-		 $pn, $fiche);
+		 $pn, $fiche,
+		 $url);
     }
 
     $this->view->connexions = $m = new Wtk_Table_Model('date', 'prenom-nom', 'fiche');
