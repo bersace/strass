@@ -5,10 +5,25 @@
 .admin {
 
     &.parametres form,
+    &.unites table,
     &.membres table,
     &.individus table
     {
 	@include minipage;
+    }
+
+    &.unites table,
+    &.membres table,
+    &.individus table
+    {
+	td {
+	    white-space: nowrap;
+	}
+
+	td.adminlinks {
+	    padding-left: 2em;
+	    padding-right: 2em;
+	}
     }
 
     &.index {
