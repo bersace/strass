@@ -380,7 +380,7 @@ class UnitesController extends Strass_Controller_Action
 			      $this->_helper->Url('index', 'unites'));
 	  $this->_helper->Flash->info($message);
 	  $db->commit();
-	  $this->redirectSimple('index', null, null, null, true);
+	  $this->redirectSimple('unites', 'admin', null, null, true);
 	}
 	catch(Exception $e) {
 	  $db->rollBack();
