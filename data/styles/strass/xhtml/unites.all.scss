@@ -8,7 +8,9 @@
     float: left;
     clear: both;
     text-align: left;
-    width: 60%;
+    box-model: border-box;
+    width: 63%;
+    min-height: 320px;
     margin: 0 2em 2em 0;
     padding: 0;
     background: lighten($alt_background, 10%);
@@ -35,8 +37,11 @@
     float: left;
 }
 
-#document.unites.index #photos {
-    clear: both;
+#document.unites.index
+{
+    #photos {
+	clear: both;
+    }
 }
 
 .contacts.parente tbody:nth-of-type(1) tr.category {

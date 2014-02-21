@@ -168,7 +168,6 @@ ul.adminlinks {
 	border-color: $highlight_color;
 	border-radius: 1ex;
 	overflow: hidden;
-	padding-top: 4em;
 
 	& > h1 {
 	    font-size: 150%;
@@ -177,7 +176,6 @@ ul.adminlinks {
 	    left: 0;
 	    border-radius: 0 0 2em 0;
 	    padding: 1ex 5em 1ex 1em;
-	    margin-bottom: 1em;
 	    background: $highlight_color;
 	    color: $content_background;
 
