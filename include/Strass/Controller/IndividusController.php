@@ -34,19 +34,15 @@ class IndividusController extends Strass_Controller_Action
     $this->view->articles = $individu->findArticles(clone $s);
     $this->view->user = $user = $individu->findUser();
 
-    $this->actions->append("Éditer la fiche",
-			   array('action'	=> 'editer'),
-			   array(null, $individu));
     $this->actions->append("Inscription",
 			   array('action' => 'inscrire'),
 			   array(null, $individu, 'inscrire'));
-    $this->actions->append("Administrer",
-			   array('controller' => 'inscription',
-				 'action' => 'administrer'),
-			   array(null, null, 'admin'));
+    $this->actions->append("Éditer la fiche",
+			   array('action'	=> 'editer'),
+			   array(null, $individu));
 
     $moi = Zend_Registry::get('individu');
-    if ($moi->id != $individu->id) {
+    if ($this->assert(null, $individu, 'sudo')) {
       $this->actions->append("Prendre l'identité",
 			     array('controller'	=> 'membres',
 				   'action' => 'sudo',
