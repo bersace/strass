@@ -1,7 +1,7 @@
 
  * Export contact, calendrier et photos avec webdav
 
- * Début et fin de role via les activités
+ * Début et fin de role via les activités.
 
  * Gérer le sexe et l'âge min-max par rôle et non par type d'unité.
 
@@ -12,24 +12,20 @@
  * Thème CSS des courriels, avec composant *par* courriel, fichiers
    embarqués, (cid:, etc.)
 
- * Présenter une vue par année des informations. Une sorte de trombi
-   des années : chef, équipes, routes, photos ? page "archive",
-   "souvenir".
-
  * Intégration Céphée : import du CSV des effectifs.
 
  * Les vidéos sont elles supportées ? les diapos ? Picasa ? Flickr ?
 
- * Passer à markdown
-
- * Aperçu éditeur pour article, etc.
+ * Passer à dijit/Editor et HTML2TXT
+   https://dojotoolkit.org/reference-guide/1.9/dijit/Editor.html
+   https://github.com/mtibben/html2text/blob/master/lib/Html2Text/Html2Text.php
 
  * Recherche interne (Lucene)
 
- * Cohérence des dates d'activités.
+ * Cohérence des dates d'activités. debut < fin.
 
- * Les photos trop lourdes ne sont pas acceptées. (les compresser, ou
-   indiquer une limitation de taille ?).
+ * Les photos trop lourdes ne sont pas acceptées. Utiliser
+   dojox.form.FileUploader pour photo et documents.
 
  * Paramétrer les photos : qualité, tailles des aperçus, taille des
    photos
@@ -40,6 +36,10 @@
  * Faciliter le développement de style CSS, notamment pour les
    mails. Ex: générer un jeu de pages HTML type (mail, admin, etc.) à
    partir des tests automatiques.
+
+ * Présenter une vue par année des informations. Une sorte de trombi
+   des années : chef, équipes, routes, photos ? page "archive",
+   "souvenir".
 
 
 BUGS :
@@ -62,13 +62,15 @@ BUGS :
 
  * Les NOTICE PHP sont affichés en prod…
 
+
 AUTRES :
 
  * Gérer le type date de SQLite dans l'adapter, pour n'avoir que des epoch
 
  * Profiler les requêtes SQL avec Zend_Db_Profiler
 
- * Passer à ZF 1.12 ? et jQuery ?
+ * Passer à ZF 1.12 et dojo 1.9
+
 
 CAS :
 

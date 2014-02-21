@@ -9,7 +9,15 @@ RÉGRESSIONS
 
  - Fusion de la page Contacts dans la page Mentions légales
 
+ - Abandon des formats tableur et texteur. De toute façon, ça ne
+   fonctionnait pas :x.
+
 NOUVEAUTÉS UTILISATEUR
+
+ - Aperçu des documents PDF.
+
+ - Les homonymes sont acceptés : individus, unités, activités, photos,
+   etc.
 
  - Rafraîchissement de l'interface : plus de liens et d'actions
    contextuelles, menus et formulaires plus simples et
@@ -59,7 +67,7 @@ CHANGEMENTS WEBMESTRE
 
  - Les évènements du journal système ont une source et un niveau
    d'alerte. Les bugs apparaissent dans le journal (autant que
-   possible, bien sûr).
+   possible, bien sûr). Une page détaille chaque évènement.
 
  - Un thème par défaut est proposé.
 
