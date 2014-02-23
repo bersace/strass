@@ -2,10 +2,8 @@
 
 class Strass_Pages_Renderer_Livredor extends Strass_Pages_Renderer
 {
-  function renderContainer()
+  function renderForm($c)
   {
-    $c = parent::renderContainer();
-
     $current = $this->view->page_model->key();
     if ($current > 1)
       return $c;
@@ -17,15 +15,22 @@ class Strass_Pages_Renderer_Livredor extends Strass_Pages_Renderer
       $f->addHidden('auteur');
     else
       $f->addEntry('auteur');
-    $f->addEntry('contenu', 48, 6);
+    $f->addEntry('contenu', 48, 6)->useLabel(false);
     $f->addForm_ButtonBox()->addForm_Submit($this->view->form_model->getSubmission('poster'));
+  }
 
+  function renderContainer()
+  {
+    $c = parent::renderContainer();
+    $this->renderForm($c);
     return $c;
   }
 
   function renderEmpty($container)
   {
-    return $container->addParagraph("Pas de messages")->addFlags('empty');
+    $this->renderForm($container);
+    $container->addParagraph("Pas de messages")->addFlags('empty');
+    return $container;
   }
 
   function render($id, $message, $cont)

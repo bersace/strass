@@ -130,15 +130,12 @@ class LivredorController extends Strass_Controller_Action
 	$db->beginTransaction();
 	try {
 	  $this->logger->warn("Message de {$message->auteur} supprimé",
-			      array('controller' => 'livredor', 'action' => 'index'));
+			      $this->_helper->Url('index', 'livredor', null, null, true));
 	  $this->_helper->flash->info("Message supprimé");
 	  $message->delete();
 	  $db->commit();
 	}
-	catch(Exception $e) {
-	  $db->rollBack();
-	  throw $e;
-	}
+	catch(Exception $e) { $db->rollBack(); throw $e; }
 	$action = $message->public ? 'index' : 'moderer';
       }
 
