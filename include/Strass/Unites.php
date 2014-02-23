@@ -436,20 +436,17 @@ class Unite extends Strass_Db_Table_Row_Abstract implements Zend_Acl_Resource_In
       ->distinct()
       ->from('individu')
       ->join('appartenance', 'appartenance.individu = individu.id', array())
-      ->join('unite_role', 'unite_role.id = appartenance.role', array())
       ->join('unite', 'unite.id = appartenance.unite', array())
+      ->join('unite_role', 'unite_role.id = appartenance.role', array())
       ->join('unite_type', 'unite_type.id = unite.type', array())
-      ->joinLeft(array('soeur' => 'unite'),
-		 'unite_type.virtuelle AND '.
-		 $db->quoteInto('soeur.parent = ?', $this->parent)."\n",
-		 array())
-      ->where(('(unite_type.virtuelle AND '.
-	       $db->quoteInto('appartenance.unite = ?', $this->parent).
-	       ')').' OR '.
-	      'appartenance.unite = ?', $this->id)
       ->where('appartenance.fin IS NULL')
       ->where("unite_role.acl_role = 'chef'")
       ->order('individu.naissance');
+
+    if ($this->findParentTypesUnite()->virtuelle)
+      $select->where('unite.id = ?', $this->parent);
+    else
+      $select->where('unite.id = ?', $this->id);
 
     return $t->fetchAll($select)->current();
   }
