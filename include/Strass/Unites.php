@@ -113,11 +113,7 @@ class Unites extends Strass_Db_Table_Abstract
 
 class Unite extends Strass_Db_Table_Row_Abstract implements Zend_Acl_Resource_Interface, Zend_Acl_Role_Interface
 {
-  protected $terminale = null;
   protected $fermee = null;
-  public	  $abstraite = false;
-  protected static $tu = array();
-  protected static $ssu = array();
   protected $_privileges = array(array('chef',		NULL),
 				 array('assistant',	array('prevoir-activite',
 							      'reporter')),
@@ -130,8 +126,6 @@ class Unite extends Strass_Db_Table_Row_Abstract implements Zend_Acl_Resource_In
     parent::__construct($config);
     $this->initRoleAcl();
     $this->initResourceAcl(array($this));
-    Zend_Registry::set($this->id, $this);
-    $this->abstraite = in_array($this->type, array('hp','aines'));
   }
 
   function _initResourceAcl(&$acl)
