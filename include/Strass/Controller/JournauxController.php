@@ -98,7 +98,6 @@ class JournauxController extends Strass_Controller_Action
   function lireAction()
   {
     $this->view->journal = $j = $this->_helper->Journal();
-    $this->metas(array('DC.Title' => wtk_ucfirst($j->nom)));
     $this->formats('rss', 'atom');
 
     $s = $j->selectArticles();
@@ -108,8 +107,8 @@ class JournauxController extends Strass_Controller_Action
 			   array('action' => 'ecrire',
 				 'journal' => $j->slug),
 			   array(null, $j));
-    $this->actions->append("Modifier",
-			   array('action' => 'modifier',
+    $this->actions->append("Éditer",
+			   array('action' => 'editer',
 				 'journal' => $j->slug),
 			   array(null, $j));
     $brouillons = $j->findArticles('public IS NULL');
@@ -280,162 +279,6 @@ class JournauxController extends Strass_Controller_Action
 			   array(Zend_Registry::get('user'), $a));
   }
 
-
-  function editerAction()
-  {
-    $a = $this->_helper->Article();
-    $j = $this->_helper->Journal();
-
-    $this->metas(array('DC.Title' => "Éditer ".$a->titre,
-		       'DC.Subject' => 'journaux,journal,gazette'));
-
-    // modifier l'auteur
-    $super = $this->assert(null, $j, 'moderer');
-    $publier = $this->assert(null, $j, 'publier');
-
-    $this->assert(null, $a, 'editer', "Vous n'avez pas le droit d'éditer cet article");
-
-    $m = new Wtk_Form_Model('editer');
-    $i = $m->addString('titre', "Titre", $a->titre);
-    $m->addConstraintRequired($i);
-
-    if ($super) {
-      // membres de l'unité
-      $u = $j->findParentUnites();
-      $apps = $u->findAppartenances(null, true);
-      $enum = array();
-      foreach($apps as $app)
-	$enum[$app->individu] = $app->findParentIndividus()->getFullname(true, false);
-
-      // admins
-      $select = Zend_Registry::get('db')->select();
-      $select->distinct()
-	->from('individus')
-	->join('membership',
-	       'membership.username = individus.username'.
-	       ' AND '.
-	       "membership.groupname = 'admins'",
-	       array());
-      $ti = new Individus();
-      $is = $ti->fetchAll($select);
-      foreach($is as $i)
-	$enum[$i->id] = $i->getFullname(true, false);
-      ksort($enum);
-      $m->addEnum('auteur', 'Auteur', $a->auteur, $enum);
-    }
-
-    // rubrique
-    $rubs = $j->findRubriques();
-    $enum = array();
-    foreach($rubs as $rub) {
-      $enum[$rub->id] = $rub->nom;
-    }
-
-    $m->addEnum('rubrique', "Rubrique", $a->rubrique, $enum);
-
-    $m->addEnum('public', 'Publication', intval($a->public),
-		array(null => 'Brouillon',
-		      1 => 'Publier'));
-
-    $m->addString('boulet', "Boulet", $a->boulet);
-    $i = $m->addString('article', "Article", $a->article);
-
-    // fichiers existant : renommer / supprimer
-    $i = $m->addTable('images', "Images",
-		      array('id' => array('String'),
-			    'nom' => array('String', 'Nom')), false);
-    $fichiers = $a->getImages();
-
-    foreach($fichiers as $fichier)
-      $i->addRow(basename($fichier), basename($fichier));
-
-    // envoyer des nouveaux fichiers.
-    $t = $m->addTable('nvimgs', "Images",
-		      array('image' => array('File', "Image"),
-			    'nom' => array('String', "Renommer en")),
-		      false);
-    $t->addRow();
-
-    $m->addNewSubmission('enregistrer', 'Enregistrer');
-
-    if ($m->validate()) {
-      $db = $a->getTable()->getAdapter();
-      $db->beginTransaction();
-      try {
-	$ks = array('titre', 'rubrique', 'boulet', 'article', 'public');
-	if ($super)
-	  $ks[] = 'auteur';
-
-	foreach($ks as $k)
-	  $a->$k = $m->get($k);
-
-	$a->id = wtk_strtoid($a->titre);
-	$a->date = strftime('%Y-%m-%d');
-	$a->heure = strftime('%H:%M:%s');
-	$a->save();
-
-	// renomer les fichiers
-	$dossier = $a->getDossier().'/';
-	$done = array();
-	foreach($m->images as $image) {
-	  $done[] = $image['nom'];
-	  if ($image['id'] == $image['nom'])
-	    continue;
-
-	  if (rename($dossier.$images['id'], $dossier.$images['nom']))
-	    continue;
-
-	  throw new Exception("Impossible de renommer le fichier ".
-			      $images['id']." en ".$images['nom']);
-	}
-
-	// supprimer
-	foreach($fichiers as $fichier) {
-	  if (!in_array(basename($fichier), $done)) {
-	    if (!unlink($fichier))
-	      throw new Exception("Impossible de supprimer le fichier ".
-				  basename($fichier));
-	  }
-	}
-
-	// récupérer les fichiers
-	foreach($t as $i) {
-	  $if = $i->getChild('image');
-	  if ($if->isUploaded()) {
-	    $tmp = $if->getTempFilename();
-	    $nom = $i->get('nom');
-	    $fichier = $nom ? $nom : $if->getBasename();
-	    if (!move_uploaded_file($tmp, $dossier.$fichier)) {
-	      throw new Exception ("Impossible de récupérer le fichier ".$if->getBasename());
-	    }
-	  }
-	}
-
-	$this->_helper->Log("Article édité", array($a, $a->findParentJournaux()),
-			    $this->_helper->Url('consulter', 'journaux', null,
-						array('journal' => $a->journal,
-						      'date' => $a->date,
-						      'article' => $a->id)),
-			    (string)$a);
-
-	$db->commit();
-	$this->redirectSimple('consulter', 'journaux', null,
-			      array('journal' => $a->journal,
-				    'date' => $a->date,
-				    'article' => $a->id));
-
-      }
-      catch(Exception $e) {
-	$db->rollBack();
-	throw $e;
-      }
-    }
-
-    $this->view->journal = $j;
-    $this->view->article = $a;
-    $this->view->model = $m;
-  }
-
   function supprimerAction()
   {
     $a = $this->_helper->Article();
@@ -479,81 +322,36 @@ class JournauxController extends Strass_Controller_Action
   }
 
 
-  function modifierAction()
+  function editerAction()
   {
-    $j = $this->_helper->Journal();
-    $this->assert(null, $j, 'modifier',
+    $this->view->journal = $j = $this->_helper->Journal();
+    $this->metas(array('DC.Title' => "Modifier ".wtk_ucfirst($j->nom)));
+
+    $this->assert(null, $j, 'editer',
 		  "Vous n'avez pas le droit de modifier ce journal");
-    $this->metas(array('DC.Title' => "Modifier ".wtk_ucfirst($j->nom),
-		       'DC.Subject' => 'journaux,journal,gazette'));
 
 
-    $m = new Wtk_Form_Model('journal');
+    $this->view->model = $m = new Wtk_Form_Model('journal');
     $i = $m->addString('nom', 'Nom', $j->nom);
     $m->addConstraintRequired($i);
-    $i = $m->addTable('rubriques', 'Rubriques existantes',
-		      array('id' => array('String'),
-			    'nom' => array('String', 'Nom')), false);
-
-    $rubs = $j->findRubriques();
-    foreach($rubs as $rub)
-      $i->addRow($rub->id, $rub->nom, false);
-
-    $i->addRow();
-
     $m->addNewSubmission('enregistrer', 'Enregistrer');
 
     if ($m->validate()) {
-      $js = $j->getTable();
-      $db = $js->getAdapter();
+      $t = $j->getTable();
+      $db = $t->getAdapter();
       $db->beginTransaction();
       try {
 	$j->nom = $m->get('nom');
-	$j->id = wtk_strtoid($j->nom);
+	$j->slug = $t->createSlug(wtk_strtoid($j->nom), $j->slug);
 	$j->save();
 
-	$tr = new Rubriques();
-	// supprimer les rubriques
-	$rubs = $j->findRubriques();
-
-	$done = array();
-	foreach($m->get('rubriques') as $rub) {
-	  // mise à jour
-	  if ($rub['id'] && !isset($done[$rub['id']])) {
-	    $r = $tr->find($rub['id'], $j->id)->current();
-	    $r->nom = $rub['nom'];
-	    $r->id = $rub['id'] = wtk_strtoid($rub['nom']);
-	    $r->save();
-	  }
-	  // ajout
-	  else if ($rub['nom']) {
-	    $rub['id'] = wtk_strtoid($rub['nom']);
-	    $tr->insert(array('id' => $rub['id'],
-			      'nom' => $rub['nom'],
-			      'journal' => $j->id));
-	  }
-
-	  if ($rub['id'])
-	    $done[$rub['id']] = true;
-	}
-
-	// suppression
-	$rs = $j->findRubriques();
-	foreach($rs as $r)
-	  if (!isset($done[$r->id]))
-	    $r->delete();
-
+	$this->logger->info("Journal édité",
+			    $this->_helper->Url('lire', null, null, array('journal' => $j->slug)));
 	$db->commit();
-	$this->redirectSimple('lire', 'journaux', null,
-			      array('journal' => $j->id));
       }
-      catch(Exception $e) {
-	$db->rollBack();
-	throw $e;
-      }
-    }
+      catch(Exception $e) { $db->rollBack(); throw $e; }
 
-    $this->view->journal = $j;
-    $this->view->model = $m;
+      $this->redirectSimple('lire', null, null, array('journal' => $j->slug));
+    }
   }
 }

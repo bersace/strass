@@ -2,7 +2,8 @@
 
 @import "common";
 
-.fonder form
+.fonder form,
+.editer form
 {
     @include minipage;
 }

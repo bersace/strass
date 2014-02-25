@@ -17,7 +17,8 @@ class Strass_Controller_Action_Helper_Journal extends Zend_Controller_Action_Hel
     }
 
     $this->setBranche($journal);
-    $this->_actionController->metas(array('DC.Subject' => 'journaux,journal,gazette,blog'));
+    $this->_actionController->metas(array('DC.Title' => wtk_ucfirst($journal->nom),
+					  'DC.Subject' => 'journaux,journal,gazette,blog'));
     return $journal;
   }
 
