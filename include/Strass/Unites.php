@@ -525,10 +525,7 @@ class Unite extends Strass_Db_Table_Row_Abstract implements Zend_Acl_Resource_In
 
   function isTerminale()
   {
-    if (is_null($this->terminale)) {
-      $this->terminale = $this->findParentTypesUnite()->isTerminale();
-    }
-    return $this->terminale;
+    return $this->findParentTypesUnite()->isTerminale();
   }
 
 
