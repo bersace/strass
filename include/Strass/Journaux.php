@@ -16,6 +16,12 @@ class Journal extends Strass_Db_Table_Row_Abstract implements Zend_Acl_Resource_
   protected $_privileges = array(array('chef',		null),
 				 array('assistant',	null));
 
+  public function __construct(array $config = array()) {
+    parent::__construct($config);
+
+    $this->initResourceAcl();
+  }
+
   protected function _initResourceAcl(&$acl)
   {
     $u = $this->findParentUnites();
@@ -38,19 +44,16 @@ class Journal extends Strass_Db_Table_Row_Abstract implements Zend_Acl_Resource_
     return 'data/journaux/' . $this->slug;
   }
 
-  function findEditorial($etiquette)
+  function selectArticles()
   {
     $t = new Articles;
-    /* un édito est valable un an, après on archive automatiquement */
     $s = $t->select()
       ->setIntegrityCheck(false)
-      ->join('journal', 'journal.id = article.journal', array())
-      ->join('article_etiquette', 'article_etiquette.article = article.id', array())
-      ->where('etiquette = ?', $etiquette)
-      ->where('journal.id = ?', $this->id)
-      ->where('public is NOT NULL', "date > datetime('now', '-1 year')")
-      ->limit(1);
-    return $t->fetchAll($s)->current();
+      ->from('article')
+      ->join('commentaire', 'commentaire.id = article.commentaires', array())
+      ->where('article.journal = ?', $this->id)
+      ->order('commentaire.date');
+    return $s;
   }
 
   function findArticles($select = null)
@@ -64,8 +67,7 @@ class Journal extends Strass_Db_Table_Row_Abstract implements Zend_Acl_Resource_
 
     $select->setIntegrityCheck(false)
       ->from('article')
-      ->join('journal', 'journal.id = article.journal', array())
-      ->where('journal.id = ?', $this->id);
+      ->where('article.journal = ?', $this->id);
 
     return $t->fetchAll($select);
   }

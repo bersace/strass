@@ -212,7 +212,7 @@ abstract class Strass_Controller_Action extends Zend_Controller_Action implement
     $response->appendBody($output);
   }
 
-  protected function metas(array $metas)
+  function metas(array $metas)
   {
     $metas = new Wtk_Metas($metas);
     $config = Zend_Registry::get('config');

@@ -1,15 +1,13 @@
 <?php
 
-require_once 'Strass/Activites.php';
-
 class Strass_Controller_Action_Helper_Journal extends Zend_Controller_Action_Helper_Abstract
 {
   function direct($throw = true)
   {
     $slug = $this->getRequest()->getParam('journal');
-    $journaux = new Journaux();
+    $t = new Journaux;
     try {
-      $journal = $journaux->findBySlug($slug);
+      $journal = $t->findBySlug($slug);
     }
     catch (Strass_Db_Table_NotFound $e) {
       if ($throw)
@@ -19,11 +17,13 @@ class Strass_Controller_Action_Helper_Journal extends Zend_Controller_Action_Hel
     }
 
     $this->setBranche($journal);
+    $this->_actionController->metas(array('DC.Subject' => 'journaux,journal,gazette,blog'));
     return $journal;
   }
 
   function setBranche($journal)
   {
+    $this->_actionController->_helper->Unite->setBranche($journal->findParentUnites());
     $this->_actionController->branche->append(wtk_ucfirst($journal->nom),
 					      array('controller'=> 'journaux',
 						    'action'	=> 'lire',

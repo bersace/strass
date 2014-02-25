@@ -1,4 +1,6 @@
 
+ * trie des individus par nom. Colonne individu.ordre.
+
  * Export contact, calendrier et photos avec webdav
 
  * Début et fin de role via les activités.
@@ -45,8 +47,6 @@
 BUGS :
 
  * Photo non supprimée du RSS.
-
- * À l'inscription d'un nouveau, ne pas recréer si existant.
 
  * Bandes jaunes pour les cheftaines de meute (à vérifier pour la
    ronde aussi).  Akéla n'a pas sa bande jaune dans les effectifs de

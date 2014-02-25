@@ -1,7 +1,6 @@
 <?php
 
 require_once 'Strass/Journaux.php';
-require_once 'Strass/Unites.php';
 
 /**
  * Cette fonction return une valeur remarquable d'une série. Elle
@@ -58,8 +57,10 @@ class JournauxController extends Strass_Controller_Action
 
   function fonderAction()
   {
-    // tests
-    $u = $this->_helper->Unite();
+    $this->view->unite = $u = $this->_helper->Unite();
+    $this->metas(array('DC.Title' => "Fonder le journal de ".$u->getFullName(),
+		       'DC.Subject' => 'journaux,journal,gazette,blog'));
+
     $tu = $u->findParentTypesUnite();
     if ($tu->isTerminale() && $tu->age_min < 12)
       throw new Strass_Controller_Action_Exception("Impossible de créer un journal d'unité ".
@@ -68,101 +69,55 @@ class JournauxController extends Strass_Controller_Action
     $this->assert(null, $u, 'fonder-journal',
 		  "Vous n'avez pas le droit de fonder le journal de cette unité");
 
-    // métier
-    $m = new Wtk_Form_Model('fonder-journal');
+    $this->view->model = $m = new Wtk_Form_Model('fonder-journal');
     $i = $m->addString('nom', "Nom");
     $m->addConstraintRequired($i);
-    $i = $m->addTable('rubriques', "Rubriques",
-		      array('nom' => array('String', "Nom")));
-    // rubriques proposées
-    $i->addRow(array('nom' => "Éditoriaux"));      // incontournable
-    // un champ vide, au cas où le client ne supporte pas la
-    // javascript, qu'il puisse ajouter au moins deux rubriques :)
-    $i->addRow(array('nom' => ""));
     $m->addNewSubmission('fonder', "Fonder");
 
-
-    // vue
-    $this->view->model = $m;
-    $this->view->unite = $u;
-    $this->metas(array('DC.Title'	=> "Fonder le journal de ".$u->getFullName(),
-		       'DC.Subject' => 'journaux,journal,gazette'));
-
-
-    // interprétation
     if ($m->validate()) {
-      $db = Zend_Registry::get('db');
+      $t = new Journaux;
+      $db = $t->getAdapter();
       $db->beginTransaction();
       try {
-	// fonder le journal
-	$journaux = new Journaux();
-	$id = wtk_strtoid($m->get('nom'));
 	$data = array('nom' => $m->get('nom'),
-		      'id' => $id, 'unite' => $u->id);
-	$journaux->insert($data);
+		      'slug' => $t->createSlug(wtk_strtoid($m->get('nom'))),
+		      'unite' => $u->id);
+	$k = $t->insert($data);
+	$j = $t->findOne($k);
 
-	// ajouter les rubriques
-	$rubs = $m->get('rubriques');
-	$rubriques = new Rubriques();
-	foreach($rubs as $rub) {
-	  if ($rub['nom']) {
-	    $data = array('id' => wtk_strtoid($rub['nom']),
-			  'nom' => $rub['nom'], 'journal' => $id);
-	    $rubriques->insert($data);
-	  }
-	}
-
-	$j = $journaux->find($id)->current();
-	$this->_helper->Log("Nouveau journal d'unité", array($j, $u),
-			    $this->_helper->Url('lire', 'journaux', array('journal' => $id)),
-			    (string)$j);
+	$this->logger->info("Nouveau journal d'unité",
+			    $this->_helper->Url('lire', 'journaux', array('journal' => $j->slug)));
 	$db->commit();
-	$this->redirectSimple('lire', 'journaux', null,
-			      array('journal' => $id));
-
       }
-      catch(Exception $e) {
-	$db->rollBack();
-	throw $e;
-      }
+      catch(Exception $e) { $db->rollBack(); throw $e; }
+      $this->redirectSimple('lire', 'journaux', null,  array('journal' => $j->slug));
     }
   }
 
   /* lire un journal = lister articles */
   function lireAction()
   {
-    $articles = new Articles();
-
     $this->view->journal = $j = $this->_helper->Journal();
-    $this->metas(array('DC.Title' => wtk_ucfirst($j->nom),
-		       'DC.Subject' => 'journaux,journal,gazette'));
+    $this->metas(array('DC.Title' => wtk_ucfirst($j->nom)));
     $this->formats('rss', 'atom');
 
-    $p = $this->_getParam('page');
-    $s = $articles->select()->where('public IS NOT NULL');
-    $this->view->articles = $j->findArticles($s);
-    $this->view->current = $p;
-
-    $config = Zend_Registry::get('config');
-
-    // ÉDITORIAL
-    $this->view->editorial = $e = $j->findEditorial($config->site->rubrique);
+    $s = $j->selectArticles();
+    $this->view->model = new Strass_Pages_Model_Rowset($s, 30, $this->_getParam('page'));
 
     $this->actions->append("Écrire un article",
 			   array('action' => 'ecrire',
-				 'journal' => $j->id),
-			   array(Zend_Registry::get('user'), $j));
+				 'journal' => $j->slug),
+			   array(null, $j));
     $this->actions->append("Modifier",
 			   array('action' => 'modifier',
-				 'journal' => $j->id),
-			   array(Zend_Registry::get('user'), $j));
+				 'journal' => $j->slug),
+			   array(null, $j));
     $brouillons = $j->findArticles('public IS NULL');
     if ($brouillons->count()) {
       $this->actions->append("Brouillons",
 			     array('action' => 'brouillons',
-				   'journal' => $j->id),
-			     array(Zend_Registry::get('user'), $j));
-
+				   'journal' => $j->slug),
+			     array(null, $j));
     }
   }
 

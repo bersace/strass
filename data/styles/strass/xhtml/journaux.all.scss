@@ -1,39 +1,15 @@
 /*-*- css -*-*/
 
+@import "common";
+
+.fonder form
+{
+    @include minipage;
+}
+
 #article .signature
 {
     clear: both;
-}
-
-#rubriques li,
-#rubriques li p
-{
-    display: inline;
-}
-
-li.xl a
-{
-    font-size: 2em;
-}
-
-li.l a
-{
-    font-size: 1.75em;
-}
-
-li.m a
-{
-    font-size: 1.5em;
-}
-
-li.s a
-{
-    font-size: 1.25em;
-}
-
-li.xs a
-{
-    font-size: 1em;
 }
 
 form .check

@@ -1,25 +1,17 @@
 <?php
 
-class Strass_Page_RendererArticle extends Wtk_Pages_Renderer
+class Strass_Page_Renderer_Articles extends Wtk_Pages_Renderer
 {
   protected $view;
-  protected $root;
 
-  function __construct($view, $root)
+  function __construct($view)
   {
-    $href = $view->url(array('journal' => $view->journal->slug,
-			     'page' => '%i'));
+    $href = $view->url(array('page' => '%i'));
     parent::__construct(urldecode($href),
 			true,
 			array('previous' => "Précédents",
 			      'next' => "Suivants"));
     $this->view = $view;
-    $this->root = $root;
-  }
-
-  function renderContainer()
-  {
-    return new Wtk_Container();
   }
 
   function render($id, $article, $root)
@@ -40,32 +32,4 @@ class Strass_Page_RendererArticle extends Wtk_Pages_Renderer
 }
 
 $this->document->addStyleComponents('signature');
-$s = $this->document->addSection('journal');
-if ($this->current < 2 && $this->editorial) {
-  $ss = $s->addSection('editorial', "Édito : ".$this->editorial->titre);
-  $sss = $s->addSection();
-  $sss->addFlags('article');
-  // n'afficher que le résumé si disponible.
-  if($this->editorial->boulet) {
-    $t = $ss->addText($this->editorial->boulet);
-  }
-  // sinon, tout afficher.
-  else {
-    $t = $ss->addText($this->editorial->article);
-  }
-
-  $tw = $t->getTextWiki();
-  $tw->setRenderConf('Xhtml', 'image', 'base', $this->editorial->getDossier());
-
-  $ss->addParagraph($this->signature($this->editorial))->addFlags('signature');
-
-  if ($this->editorial->boulet) {
-    $ss->addParagraph($this->lienArticle($this->editorial, "Lire la suite …"))->addFlags('suite');
-  }
-}
-
-if (count($this->articles)) {
-  $s->addPages(null,
-	       new Wtk_Pages_Model_Iterator($this->articles, 5, $this->current),
-	       new Strass_Page_RendererArticle($this, $s));
-}
+$this->document->addPages(null, $this->model, new Strass_Page_Renderer_Articles($this));
