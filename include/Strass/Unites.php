@@ -407,11 +407,11 @@ class Unite extends Strass_Db_Table_Row_Abstract implements Zend_Acl_Resource_In
       ->join('individu',
 		  "individu.id = appartenance.individu\n",
 		  array())
-      ->order('naissance')
       ->join('unite_role',
 	     'unite_role.id = appartenance.role',
 	     array())
-      ->order('unite_role.ordre');
+      ->order('unite_role.ordre')
+      ->order('naissance');
 
     $where = array_filter($where);
     foreach($where as $clause)
