@@ -434,7 +434,7 @@ class Unite extends Strass_Db_Table_Row_Abstract implements Zend_Acl_Resource_In
     else
       $select->where('unite.id = ?', $this->id);
 
-    if ($annee == false)
+    if ($annee === false)
       $select->where('appartenance.fin IS NULL');
     else if ($annee)
       $select->where("STRFTIME('%Y', appartenance.fin, '-6 months'),  >= ?", $annee);
