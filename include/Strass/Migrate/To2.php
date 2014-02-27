@@ -45,5 +45,7 @@ class Strass_Migrate_To2 extends Strass_MigrateHandler {
     $this::rrmdir('data/images/');
     $this::rrmdir('private/statiques/strass');
     unlink('data/intro.wiki');
+
+    Strass_Version::setInstalled();
   }
 }
