@@ -60,7 +60,7 @@ abstract class Strass_Controller_Action extends Zend_Controller_Action implement
       if ($config->system->short_title)
 	$this->branche->append($config->system->short_title, array(), array(), true);
 
-      if (!$this instanceof Strass_Controller_ErrorController)
+      if (!$this instanceof Strass_Controller_ErrorController && $this->_titreBranche)
 	$this->branche->append($this->_titreBranche,
 			       array('controller' => strtolower($this->_request->getControllerName())),
 			       array(), true);
