@@ -32,8 +32,13 @@ class Strass_Migrate
     error_log("Migration vers la version ".$target.".");
 
     $class = 'Strass_Migrate_To'.$target;
-    $handler = new $class;
-    $handler->run($this->db);
+    if (@class_exists($class)) {
+      $handler = new $class;
+      $handler->run($this->db);
+    }
+    else {
+      error_log("Pas de migration vers la version $target.");
+    }
 
     Strass_Version::save($target);
 
