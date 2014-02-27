@@ -41,7 +41,6 @@ class ActivitesController extends Strass_Controller_Action
 		       'DC.Title.alternative' => 'Calendrier '.$annee.
 		       ' – '.wtk_ucfirst($u->getFullname())));
 
-    // restreindre l'accès aux calendrier futur.
     if ($future)
       $this->assert(null, $u, 'calendrier',
 		    "Vous n'avez pas le droit de voir le calendrier de cette unité.");
@@ -183,7 +182,7 @@ class ActivitesController extends Strass_Controller_Action
 				 'activite' => $a->slug),
 			   array(null, $a));
 
-    /* $this->formats('ics'); */
+    $this->formats('ics');
   }
 
   function editerAction()
