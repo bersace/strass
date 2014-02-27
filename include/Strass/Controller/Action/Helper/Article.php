@@ -18,6 +18,7 @@ class Strass_Controller_Action_Helper_Article extends Zend_Controller_Action_Hel
 	return null;
     }
 
+    $this->_actionController->metas(array('DC.Title' => $article->titre));
     $this->setBranche($article);
 
     return $article;

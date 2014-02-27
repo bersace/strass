@@ -96,7 +96,8 @@ if ($this->articles->count()) {
   $s = $this->document->addSection('articles', "Derniers articles");
   $l = $s->addList();
   foreach($this->articles as $article) {
-    $l->addItem(new Wtk_Container($this->lienArticle($article),
-				  new Wtk_RawText(" le ".strftime("%e-%m-%Y", strtotime($article->date)).".")));
+    $i = $l->addItem();
+    $i->addChild($this->lienArticle($article));
+    $i->addRawText(" le ".strftime("%e-%m-%Y", strtotime($article->getDate())."."));
   }
 }

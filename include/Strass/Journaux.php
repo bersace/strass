@@ -152,6 +152,18 @@ class Article extends Strass_Db_Table_Row_Abstract implements Zend_Acl_Resource_
     return $r . '/' . $data['slug'] . '/';
   }
 
+  function storeImage($tmp, $name)
+  {
+    $dossier = $this->getDossier();
+    if (!is_readable($dossier))
+      mkdir($dossier, 0750, true);
+
+    $target = $dossier.'/'.$name;
+    if (!move_uploaded_file($tmp, $target)) {
+      throw new Exception("Impossible de récupérer l'image");
+    }
+  }
+
   function getImages()
   {
     $dossier = $this->getDossier();
@@ -163,6 +175,11 @@ class Article extends Strass_Db_Table_Row_Abstract implements Zend_Acl_Resource_
       }
     }
     return $images;
+  }
+
+  function getDate()
+  {
+    return $this->findParentCommentaires()->date;
   }
 
   function findAuteur()

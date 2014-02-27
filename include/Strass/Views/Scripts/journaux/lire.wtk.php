@@ -17,7 +17,6 @@ class Strass_Page_Renderer_Articles extends Wtk_Pages_Renderer
   function render($id, $article, $root)
   {
     $s = $root->addSection($article->id, $this->view->lienArticle($article));
-    $s->level = $this->root->level+1; // chaîner avec la section parente.
 
     // n'affiche le boulet ou à défaut le début de l'article.
     $boulet = $article->boulet ? $article->boulet : wtk_first_words($article->article);

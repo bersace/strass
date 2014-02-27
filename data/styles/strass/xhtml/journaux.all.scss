@@ -2,8 +2,9 @@
 
 @import "common";
 
-.fonder form,
-.editer form
+#document form,
+#document > .section,
+#document > .signature
 {
     @include minipage;
 }
@@ -11,6 +12,15 @@
 #article .signature
 {
     clear: both;
+}
+
+.article
+{
+    font-size: 110%;
+}
+
+.boulet {
+    font-weight: bold;
 }
 
 form .check
@@ -21,6 +31,12 @@ form .check
 #actions li.ecrire
 {
     list-style-image: url("icones/ecrire.png");
+}
+
+#document.ecrire .entry.input textarea,
+#document.ecrire textarea
+{
+    width: 100%;
 }
 
 @media print {

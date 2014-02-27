@@ -135,25 +135,14 @@ class JournauxController extends Strass_Controller_Action
 
   function ecrireAction()
   {
-    // init
     $j = $this->_helper->Journal();
+    $this->metas(array('DC.Title' => "Écrire un article"));
     $this->assert(null, $j, 'ecrire',
 		  "Vous n'avez pas le droit d'écrire un nouvel article dans ce journal");
 
-    $this->metas(array('DC.Title' => "Écrire un article – ".$j->nom,
-		       'DC.Subject' => 'journaux,journal,gazette'));
     $publier = $this->assert(null, $j, 'publier');
-    $this->view->rubrique = $r = $this->_helper->Rubrique(false);
 
-    // métier
-    $m = new Wtk_Form_Model('ecrire');
-    $rubs = $j->findRubriques();
-    $enum = array();
-    foreach($rubs as $rub)
-      $enum[$rub->id] = $rub->nom;
-
-    $selected = $r ? $r->id : key($enum);
-    $m->addEnum('rubrique', "Rubrique", $selected, $enum);
+    $this->view->model = $m = new Wtk_Form_Model('ecrire');
     $i = $m->addString('titre', "Titre");
     $m->addConstraintRequired($i);
     if ($publier)
@@ -164,97 +153,58 @@ class JournauxController extends Strass_Controller_Action
     $i = $m->addString('article', "Article");
     $m->addConstraintRequired($i);
     $t = $m->addTable('images', "Images",
-		      array('image' => array('File', "Image"),
-			    'nom' => array('String', "Renommer en")),
-		      false);
+                     array('image' => array('File', "Image"),
+                           'nom' => array('String', "Renommer en")),
+                     false);
     $t->addRow();
     $m->addNewSubmission('poster', "Poster");
 
     if ($m->validate()) {
-      $db = Zend_Registry::get('db');
+      $me = Zend_Registry::get('individu');
+
+      $t = new Articles;
+      $tc = new Commentaires;
+      $db = $t->getAdapter();
       $db->beginTransaction();
       try {
-	$data = $m->get();
-	unset($data['images']);
-	$data+=array('public' => null);
+	$data = array('auteur' => $me->id);
+	$c = $tc->findOne($tc->insert($data));
 
-	$ind = Zend_Registry::get('user');
-	$data = array_merge($data,
-			    array('id' => wtk_strtoid($m->get('titre')),
-				  'journal' => $j->id,
-				  'auteur' => $ind->id,
-				  'date' => strftime('%Y-%m-%d'),
-				  'heure' => strftime('%H:%M')));
-
-	$articles = new Articles();
-	$k = $articles->insert($data);
-	$a = $articles->find($k['id'], $k['date'],
-			     $k['journal'])->current();
+	$data = array('journal' => $j->id,
+		      'slug' => $t->createSlug(wtk_strtoid($m->get('titre'))),
+		      'titre' => $m->get('titre'),
+		      'boulet' => $m->get('boulet'),
+		      'article' => $m->get('article'),
+		      'public' => $m->get('public', null),
+		      'commentaires' => $c->id,
+		      );
+	$a = $t->findOne($t->insert($data));
 
 	// stocker les images
 	$tables = $m->getInstance('images');
-	$dossier = $a->getDossier();
-	if (!is_readable($dossier))
-	  mkdir($dossier, 0755, true);
 
 	foreach($tables as $row) {
 	  $if = $row->getChild('image');
 	  if ($if->isUploaded()) {
 	    $nom = $row->get('nom');
-	    $fichier =
-	      $dossier.($nom ? $nom : $if->getBasename());
-	    if (!move_uploaded_file($if->getTempFilename(), $fichier)) {
-	      throw new Strass_Controller_Action_Exception
-		("Impossible de récupérer l'image ".$if->getBasename());
-	    }
+	    $a->storeImage($if->getTempFilename(), $nom ? $nom : $if->getBasename());
 	  }
 	}
 
-	// envoi d'un courriel aux admis si besoin.
 	if (!$this->assert(null, $j, 'publier')) {
-	  $mail = new Strass_Mail("Nouvel article : ".$data['titre']);
-	  // envoi à tous les chefs
-	  $u = $j->findParentUnites();
-	  $apps = $u->findAppartenances();
-	  foreach($apps as $app) {
-	    $ind = $app->findParentIndividus();
-	    if ($ind->adelec)
-	      $mail->addBcc($ind->adelec,
-			    $ind->getFullName(false, false));
-	  }
-
-	  // article
-	  $d = $mail->getDocument();
-	  $d->addText("L'article suivant a été posté dans ".$j->nom.". ".
-		      "Vous êtes conviés à la modérer.");
-	  $s = $d->addSection(null, $data['titre']);
-	  $s->addText($data['boulet']);
-	  $s->addText($data['article']);
-	  $l = $d->addList();
-	  $l->addItem()->addLink($this->_helper->Url('editer', 'journaux',
-						     array('article' => $data['id'])),
-				 "Éditer ou publier cet article");
+	  $mail = new Strass_Mail_Article($a);
 	  $mail->send();
 	}
 
-	$this->_helper->Log("Nouvel article", array($j),
-			    $this->_helper->Url('consulter', 'journaux', null,
-						array('journal' => $j->id,
-						      'date' => $data['date'],
-						      'article' => $data['id'])),
-			    (string)$data['titre']);
-
+	$this->logger->info("Nouvel article",
+			    $this->_helper->url('consulter', 'journaux', null,
+						array('article' => $a->slug), true));
 
 	$db->commit();
-	$this->redirectSimple('consulter', 'journaux', null,
-			      array('journal' => $j->id,
-				    'date' => $data['date'],
-				    'article' => $data['id']));
       }
-      catch(Exception $e) {
-	$db->rollBack();
-	throw $e;
-      }
+      catch(Exception $e) { $db->rollBack(); throw $e; }
+
+      $this->redirectSimple('consulter', 'journaux', null, array('article' => $a->slug), true);
     }
 
     // vue
@@ -267,24 +217,19 @@ class JournauxController extends Strass_Controller_Action
     $this->view->article = $a = $this->_helper->Article();
     $this->view->auteur = $a->findAuteur();
 
-    $this->metas(array('DC.Title' => $a->titre,
-		       'DC.Subject' => 'journaux,journal,gazette'));
-
-
-    $this->actions->append("Éditer cet article",
-			   array('action' => 'editer'),
-			   array(Zend_Registry::get('user'), $a));
-    $this->actions->append("Supprimer cet article",
+    $this->actions->append("Éditer",
+			   array('action' => 'écrire'),
+			   array(null, $a));
+    $this->actions->append("Supprimer",
 			   array('action' => 'supprimer'),
-			   array(Zend_Registry::get('user'), $a));
+			   array(null, $a));
   }
 
   function supprimerAction()
   {
     $a = $this->_helper->Article();
     $this->assert(null, $a, 'supprimer');
-    $this->metas(array('DC.Title' => "Supprimer ".$a->titre,
-		       'DC.Subject' => 'journaux,journal,gazette'));
+    $this->metas(array('DC.Title' => "Supprimer ".$a->titre));
 
     $m = new Wtk_Form_Model('supprimer');
     $m->addBool('confirmer',
