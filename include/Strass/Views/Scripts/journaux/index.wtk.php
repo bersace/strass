@@ -18,9 +18,7 @@ class Strass_Pages_Renderer_Articles extends Wtk_Pages_Renderer
   {
     $s = $root->addSection($article->id, $this->view->lienArticle($article));
 
-    // n'affiche le boulet ou à défaut le début de l'article.
-    $boulet = $article->boulet ? $article->boulet : wtk_first_words($article->article);
-    $t = $s->addText($boulet);
+    $t = $s->addText($article->getBoulet());
     $tw = $t->getTextWiki();
     $tw->setRenderConf('Xhtml', 'image', 'base', $article->getDossier());
 

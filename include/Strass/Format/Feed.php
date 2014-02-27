@@ -9,7 +9,7 @@ abstract class Strass_Format_Feed extends Strass_Format
 	function _preRender($controller)
 	{
 		$view = $controller->view;
-		$p = $view->page;
+		$p = Zend_Registry::get('page');
 		$m = $p->metas;
 		$view->feed = array('title'	=> wtk_ucfirst($m->get('DC.Title')),
 				    'link'	=> $view->url(array('format' => 'xhtml'), false, true),

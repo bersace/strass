@@ -224,7 +224,6 @@ class JournauxController extends Strass_Controller_Action
     $s = $j->selectArticles();
     $s->where('public IS NULL');
     $this->view->model = new Strass_Pages_Model_Rowset($s, 30, $this->_getParam('page'));
-    $this->formats('rss', 'atom');
   }
 
   function consulterAction()
