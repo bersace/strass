@@ -303,6 +303,86 @@ class IndividusController extends Strass_Controller_Action
     }
   }
 
+  function adminAction()
+  {
+    $this->view->individu = $individu = $this->_helper->Individu();
+
+    $this->assert(null, $individu, 'admin',
+		  "Vous n'avez pas le droit d'administrer ".
+		  "l'inscription de cet individu.");
+
+    $this->metas(array('DC.Title' => 'Administrer '.$individu->getFullname()));
+
+    $this->actions->append("Éditer la fiche",
+			   array('controller' => 'individus', 'action' => 'editer'),
+			   array(null, $individu));
+
+    $as = $individu->findAppartenances(null, 'debut DESC');
+    if (!$as->count()) {
+      $this->view->apps = null;
+    }
+    else {
+      $this->view->apps = $m = new Wtk_Form_Model('apps');
+
+      $tu = new Unites;
+      $us = $tu->fetchAll(null);
+      $eu = array();
+      foreach($us as $u)
+	$eu[$u->id] = mb_substr(wtk_ucfirst($u->getFullName()), 0, 32);
+
+      $tr = new Roles;
+      $rs = $tr->fetchAll(null, 'ordre');
+      $er = array();
+      foreach($rs as $r)
+	$er[$r->id] = substr($r->slug, 0, 7);
+
+      $i = $m->addTable('appartenances', "Appartenances",
+			array('unite'	=> array('Enum',	'Unité',$eu),
+			      'role'	=> array('Enum',	'Role',	$er),
+			      'titre'	=> array('String',	'Titre'),
+			      'debut'	=> array('Date',	'Début'),
+			      'clore'	=> array('Bool',	'Clore', false),
+			      'fin'	=> array('Date',	'Fin')));
+
+      foreach($as as $a)
+	$i->addRow($a->unite, $a->role, $a->titre, $a->debut, (bool) $a->fin, $a->fin);
+
+      $m->addNewSubmission('enregistrer', 'Enregistrer');
+
+      if ($m->validate()) {
+	$t = new Appartenances;
+	$db = $t->getAdapter();
+	$db->beginTransaction();
+	try {
+	  foreach($as as $a)
+	    $a->delete();
+
+	  foreach($i as $row) {
+	    $data = array('individu' => $individu->id,
+			  'unite' => $row->unite,
+			  'role' => $row->role,
+			  'titre' => $row->titre,
+			  'debut' => $row->debut);
+	    if ($row->clore)
+	      $data['fin'] = $row->fin;
+	    else
+	      $data['fin'] = null;
+	    $t->insert($data);
+	  }
+
+	  $this->logger->info("Inscription éditée",
+			      $this->_helper->Url('fiche', 'individus', null,
+						  array('individu' => $individu->slug), true));
+
+	  $db->commit();
+	}
+	catch (Exception $e) { $db->rollBack(); throw $e; }
+
+	$this->redirectSimple('fiche', 'individus', null, array('individu' => $individu->slug));
+      }
+    }
+  }
+
   function supprimerAction()
   {
     $this->view->individu = $i = $this->_helper->Individu();

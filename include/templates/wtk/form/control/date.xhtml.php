@@ -67,7 +67,7 @@ switch ($item) {
  case 'hour':
  case 'min':
  case 'sec':
-   echo "<input type=\"text\" size=\"3\" maxlength=\"2\"";
+   echo "<input type=\"text\" size=\"2\" maxlength=\"2\"";
    wtk_classes($flags, $item);
    wtk_attr ('name', $name.'['.$item.']');
    wtk_attr ('value', $$item);

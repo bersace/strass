@@ -47,3 +47,20 @@
 	width: 100%;
     }
 }
+
+.individus.admin form {
+    width: auto;
+
+    table {
+	width: auto;
+	margin: 0 auto;
+
+	td {
+	    white-space: nowrap;
+
+	    .control.date input {
+		font-size: 80%;
+	    }
+	}
+    }
+}

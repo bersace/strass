@@ -14,15 +14,15 @@
 
     &.unites table,
     &.membres table,
-    &.individus table
+    &.individus table.individus
     {
 	td {
 	    white-space: nowrap;
 	}
 
 	td.adminlinks {
-	    padding-left: 2em;
-	    padding-right: 2em;
+	    padding-left: 1em;
+	    padding-right: 1em;
 	}
     }
 

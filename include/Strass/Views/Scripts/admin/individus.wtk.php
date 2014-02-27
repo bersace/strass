@@ -14,8 +14,8 @@ class Strass_Pages_Renderer_Individus extends Wtk_Pages_Renderer
 
   function renderContainer()
   {
-    $model = $m = new Wtk_Table_Model('prenom-nom', 'fiche', 'adelec', 'app', 'app-url', 'statut',
-				      'url-supprimer', 'flags');
+    $model = $m = new Wtk_Table_Model('prenom-nom', 'fiche', 'adelec', 'app', 'url-app', 'statut',
+				      'url-supprimer', 'url-admin', 'flags');
     $table = $t = new Wtk_Table($model, true, 'flags');
     $t->addFlags('individus');
 
@@ -25,9 +25,14 @@ class Strass_Pages_Renderer_Individus extends Wtk_Pages_Renderer
 					 'label', 'adelec');
     $r->setUrlFormat('mailto:%s');
     $t->addNewColumn("Adélec", $r);
-    $t->addNewColumn("Inscription", new Wtk_Table_CellRenderer_Link('href', 'app-url',
+    $t->addNewColumn("Inscription", new Wtk_Table_CellRenderer_Link('href', 'url-app',
 								    'label', 'app'));
     $t->addNewColumn("Statut", new Wtk_Table_CellRenderer_Text('text', 'statut'));
+
+    $t->addNewColumn(null, new Wtk_Table_CellRenderer_Link('href', 'url-admin',
+							   'label', 'Administrer',
+							   'flags', array('adminlink')),
+		     'adminlinks');
     $t->addNewColumn(null, new Wtk_Table_CellRenderer_Link('href', 'url-supprimer',
 							   'label', 'Supprimer',
 							   'flags', array('adminlink', 'critical')),
@@ -44,6 +49,8 @@ class Strass_Pages_Renderer_Individus extends Wtk_Pages_Renderer
 				    'individu' => $i->slug), true);
     $urlsupp = $this->view->url(array('controller' => 'individus', 'action' => 'supprimer',
 				      'individu' => $i->slug), true);
+    $urladm = $this->view->url(array('controller' => 'individus', 'action' => 'admin',
+				     'individu' => $i->slug), true);
     $u = $i->findUser();
 
     $flags = array();
@@ -60,18 +67,18 @@ class Strass_Pages_Renderer_Individus extends Wtk_Pages_Renderer
     }
 
     if ($app = $i->findAppartenances()->current()) {
-      $appurl = $this->view->url(array('controller' => 'unites', 'action' => 'index',
+      $urlapp = $this->view->url(array('controller' => 'unites', 'action' => 'index',
 				       'unite' => $app->findParentUnites()->slug,
 				       'annee' => $app->getAnnee()), true);
       $appdesc = $app->getShortDescription();
     }
     else {
       $appdesc = 'Non inscrit';
-      $appurl = $this->view->url(array('controller' => 'individus', 'action' => 'inscrire',
+      $urlapp = $this->view->url(array('controller' => 'individus', 'action' => 'inscrire',
 				       'individu' => $i->slug), true);
     }
 
-    $m->append($pn, $fiche, $i->adelec, $appdesc, $appurl, $statut, $urlsupp, $flags);
+    $m->append($pn, $fiche, $i->adelec, $appdesc, $urlapp, $statut, $urlsupp, $urladm, $flags);
   }
 }
 
