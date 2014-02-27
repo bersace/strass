@@ -11,7 +11,7 @@ CREATE TABLE `log` (
        user	INTEGER 	INTEGER REFERENCES user(id),
        logger	CHAR(255)	NOT NULL DEFAULT 'strass',
        level	CHAR(8)		NOT NULL DEFAULT 'info',
-       date	TIMESTAMP	NOT NULL DEFAULT CURRENT_TIMESTAMP,
+       date	DATETIME	NOT NULL DEFAULT CURRENT_TIMESTAMP,
        message	CHAR(255)	NOT NULL,
        url	CHAR(255)	DEFAULT NULL,
        detail	TEXT		DEFAULT NULL
@@ -20,7 +20,7 @@ CREATE TABLE `log` (
 INSERT INTO log
 (user, logger, date, message, url, detail)
 SELECT
-	user.id, 'strass', strftime('%s', date), detail, url, NULL
+	user.id, 'strass', date, detail, url, NULL
 FROM tmp
 LEFT JOIN user ON user.username = tmp.username
 ORDER BY date;
