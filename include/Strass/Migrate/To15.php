@@ -2,7 +2,7 @@
 
 class Strass_Migrate_To15 extends Strass_MigrateHandler {
   function offline() {
-    error_log("Renommage des dossiers d'article");
+    error_log("Renommage des dossiers d'article"); //'
 
     foreach (glob('data/journaux/*/*/*') as $src) {
       $journal = dirname(dirname($src));
@@ -16,7 +16,7 @@ class Strass_Migrate_To15 extends Strass_MigrateHandler {
 --
 CREATE TABLE `journal` (
        id		INTEGER		PRIMARY KEY,
-       slug		CHAR(128)	UNIQUE,
+       slug		CHAR(128)	NOT NULL UNIQUE,
        -- Un seul blog par unité autorisé
        unite		INTEGER		UNIQUE REFERENCES unite(id),
        nom		CHAR(128)	UNIQUE
@@ -38,7 +38,7 @@ JOIN unite ON unite.id = journal.unite;
 
 CREATE TABLE `article` (
        id		INTEGER		PRIMARY KEY,
-       slug		CHAR(256)	UNIQUE,
+       slug		CHAR(256)	NOT NULL UNIQUE,
        journal	 	INTEGER 	REFERENCES journal(id),
        titre    	CHAR(256),
        boulet   	TEXT,
