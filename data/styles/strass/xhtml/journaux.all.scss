@@ -9,18 +9,24 @@
     @include minipage;
 }
 
-#article .signature
-{
-    clear: both;
+.boulet {
+    font-weight: bold;
 }
 
 .article
 {
+    position: relative;
     font-size: 110%;
-}
 
-.boulet {
-    font-weight: bold;
+    img {
+	max-width: 100%;
+	height: auto;
+    }
+
+    .signature
+    {
+	clear: both;
+    }
 }
 
 form .check

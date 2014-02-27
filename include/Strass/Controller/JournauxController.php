@@ -2,57 +2,31 @@
 
 require_once 'Strass/Journaux.php';
 
-/**
- * Cette fonction return une valeur remarquable d'une série. Elle
- * répartie la série en @div intervalles consécutives et stockes les
- * bornes dans un tableau. Elle retourne la position @pos de ce
- * tableau. Si @vals est définie, on prend la valeur dans @vals à la
- * clef calculée.
- *
- * Par défaut, elle calcule simplement a médiane : on divise en deux
- * intervalle et on prend la valeur du milieu (1 est au milieu de
- * (0,1,2)).
- */
-function mediane($serie, $div = 2, $pos = 1, $vals = array())
-{
-  $serie = array_values($serie);
-  $c = count($serie);
-  $i = $pos * (($c - 1) / $div);
-  //   Orror::dump($div.", ".$pos." => ".$i, $serie, $serie[$i], $vals);
-  if (round($i) == $i) {
-    if ($vals) {
-      return $vals[$serie[$i]];
-    }
-    else {
-      return $serie[$i];
-    }
-  }
-  else {
-    $r = round($i);
-    if (!is_int($serie[$r]) && $vals) {
-      return ($vals[$serie[$r - 1]] + $vals[$serie[$r]]) / 2;
-    }
-    else {
-      return ($serie[$r - 1] + $serie[$r]) / 2;
-    }
-  }
-}
-
 class JournauxController extends Strass_Controller_Action
 {
   function indexAction()
   {
-    $this->metas(array('DC.Title' => "Gazette des unités",
-		       'DC.Subject' => 'journaux,journal,gazette'));
-    $journaux = new Journaux();
-    $journaux = $journaux->fetchAll();
-    if ($journaux->count() == 1) {
-      $j = $journaux->current();
-      $this->redirectSimple('lire', 'journaux', null,
-			    array('journal' => $j->slug));
+    $this->view->journal = $j = $this->_helper->Journal();
+    $this->formats('rss', 'atom');
+
+    $s = $j->selectArticles();
+    $this->view->model = new Strass_Pages_Model_Rowset($s, 30, $this->_getParam('page'));
+
+    $this->actions->append("Écrire un article",
+			   array('action' => 'ecrire',
+				 'journal' => $j->slug),
+			   array(null, $j));
+    $this->actions->append("Éditer",
+			   array('action' => 'editer',
+				 'journal' => $j->slug),
+			   array(null, $j));
+    $brouillons = $j->findArticles('public IS NULL');
+    if ($brouillons->count()) {
+      $this->actions->append("Brouillons",
+			     array('action' => 'brouillons',
+				   'journal' => $j->slug),
+			     array(null, $j));
     }
-    $this->view->journaux = $journaux;
-    $this->branche->append('Journaux');
   }
 
   function fonderAction()
@@ -86,51 +60,45 @@ class JournauxController extends Strass_Controller_Action
 	$j = $t->findOne($k);
 
 	$this->logger->info("Nouveau journal d'unité",
-			    $this->_helper->Url('lire', 'journaux', array('journal' => $j->slug)));
+			    $this->_helper->Url('index', 'journaux', array('journal' => $j->slug)));
 	$db->commit();
       }
       catch(Exception $e) { $db->rollBack(); throw $e; }
-      $this->redirectSimple('lire', 'journaux', null,  array('journal' => $j->slug));
+      $this->redirectSimple('index', 'journaux', null,  array('journal' => $j->slug));
     }
   }
 
-  /* lire un journal = lister articles */
-  function lireAction()
+  function editerAction()
   {
     $this->view->journal = $j = $this->_helper->Journal();
-    $this->formats('rss', 'atom');
+    $this->metas(array('DC.Title' => "Modifier ".wtk_ucfirst($j->nom)));
 
-    $s = $j->selectArticles();
-    $this->view->model = new Strass_Pages_Model_Rowset($s, 30, $this->_getParam('page'));
+    $this->assert(null, $j, 'editer',
+		  "Vous n'avez pas le droit de modifier ce journal");
 
-    $this->actions->append("Écrire un article",
-			   array('action' => 'ecrire',
-				 'journal' => $j->slug),
-			   array(null, $j));
-    $this->actions->append("Éditer",
-			   array('action' => 'editer',
-				 'journal' => $j->slug),
-			   array(null, $j));
-    $brouillons = $j->findArticles('public IS NULL');
-    if ($brouillons->count()) {
-      $this->actions->append("Brouillons",
-			     array('action' => 'brouillons',
-				   'journal' => $j->slug),
-			     array(null, $j));
+
+    $this->view->model = $m = new Wtk_Form_Model('journal');
+    $i = $m->addString('nom', 'Nom', $j->nom);
+    $m->addConstraintRequired($i);
+    $m->addNewSubmission('enregistrer', 'Enregistrer');
+
+    if ($m->validate()) {
+      $t = $j->getTable();
+      $db = $t->getAdapter();
+      $db->beginTransaction();
+      try {
+	$j->nom = $m->get('nom');
+	$j->slug = $t->createSlug(wtk_strtoid($j->nom), $j->slug);
+	$j->save();
+
+	$this->logger->info("Journal édité",
+			    $this->_helper->Url('index', null, null, array('journal' => $j->slug)));
+	$db->commit();
+      }
+      catch(Exception $e) { $db->rollBack(); throw $e; }
+
+      $this->redirectSimple('index', null, null, array('journal' => $j->slug));
     }
-  }
-
-  function brouillonsAction()
-  {
-    $this->view->journal = $j = $this->_helper->Journal();
-    $this->assert(null, $j, 'publier',
-		  "Vous n'avez pas le droit de publier des brouillons");
-    $this->metas(array('DC.Title' => "Brouillons – ".$j->nom,
-		       'DC.Subject' => 'journaux,journal,gazette,brouillons'));
-    $b = $j->findArticles('public IS NULL');
-    $this->view->current = $this->_getParam('page');
-    $this->view->brouillons = $b;
-    $this->formats('rss', 'atom');
   }
 
   function ecrireAction()
@@ -167,7 +135,7 @@ class JournauxController extends Strass_Controller_Action
                      false);
     if ($a) {
       foreach ($a->getImages() as $image) {
-	$t->addRow(null, basename($image), basename($image));
+	$t->addRow(null, $image, $image);
       }
     }
     $t->addRow();
@@ -188,6 +156,7 @@ class JournauxController extends Strass_Controller_Action
 	  $a->article = $m->article;
 	  $a->public = $m->public;
 	  $a->save();
+	  $message = "Article édité";
 	}
 	else {
 	  $data = array('auteur' => $me->id);
@@ -202,6 +171,7 @@ class JournauxController extends Strass_Controller_Action
 			'commentaires' => $c->id,
 			);
 	  $a = $t->findOne($t->insert($data));
+	  $message = "Nouvel article";
 	}
 
 	$oldImages = $a->getImages();
@@ -213,27 +183,27 @@ class JournauxController extends Strass_Controller_Action
 	  else {
 	    $if = $row->getChild('image');
 	    if ($if->isUploaded()) {
-	      $nom = $row->get('nom');
+	      $nom = $row->nom;
 	      $a->storeImage($if->getTempFilename(), $nom ? $nom : $if->getBasename());
 	    }
 	  }
 	}
+	$oldImages = array_unique($oldImages);
 	$newImages = $a->getImages();
 
 	/* Nettoyage des images */
 	foreach ($oldImages as $image) {
-	  if (!in_array(basename($image), $newImages))
-	    $a->deleteImage(basename($image));
+	  if (!in_array($image, $newImages))
+	    $a->deleteImage($image);
 	}
+
+	$this->logger->info($message, $this->_helper->url('consulter', 'journaux', null,
+							  array('article' => $a->slug), true));
 
 	if (!$this->assert(null, $j, 'publier')) {
 	  $mail = new Strass_Mail_Article($a);
 	  $mail->send();
 	}
-
-	$this->logger->info("Nouvel article",
-			    $this->_helper->url('consulter', 'journaux', null,
-						array('article' => $a->slug), true));
 
 	$db->commit();
       }
@@ -241,10 +211,19 @@ class JournauxController extends Strass_Controller_Action
 
       $this->redirectSimple('consulter', 'journaux', null, array('article' => $a->slug), true);
     }
+  }
 
-    // vue
-    $this->view->journal = $j;
-    $this->view->model = $m;
+  function brouillonsAction()
+  {
+    $this->view->journal = $j = $this->_helper->Journal();
+    $this->assert(null, $j, 'publier',
+		  "Vous n'avez pas le droit de publier des brouillons");
+    $this->metas(array('DC.Title' => "Brouillons – ".$j->nom,
+		       'DC.Subject' => 'journaux,journal,gazette,brouillons'));
+    $b = $j->findArticles('public IS NULL');
+    $this->view->current = $this->_getParam('page');
+    $this->view->brouillons = $b;
+    $this->formats('rss', 'atom');
   }
 
   function consulterAction()
@@ -262,11 +241,13 @@ class JournauxController extends Strass_Controller_Action
 
   function supprimerAction()
   {
-    $a = $this->_helper->Article();
-    $this->assert(null, $a, 'supprimer');
+    $this->view->article = $a = $this->_helper->Article();
+    $this->assert(null, $a, 'supprimer',
+		 "Vous n'avez pas le droit de supprimer cet article");
     $this->metas(array('DC.Title' => "Supprimer ".$a->titre));
 
-    $m = new Wtk_Form_Model('supprimer');
+    $j = $a->findParentJournaux();
+    $this->view->model = $m = new Wtk_Form_Model('supprimer');
     $m->addBool('confirmer',
 		"Je confirme la suppression de l'article ".$a->titre.".",
 		false);
@@ -277,61 +258,18 @@ class JournauxController extends Strass_Controller_Action
 	$db = $a->getTable()->getAdapter();
 	$db->beginTransaction();
 	try {
-	  $label = (string)$a;
-	  $auteur = $a->findParentIndividus();
-	  $j = $a->findParentJournaux();
 	  $a->delete();
-	  $this->_helper->Log("Article supprimé",
-			      array($j, 'article' => $label, 'auteur' => $auteur),
-			      $this->_helper->Url('lire', 'journaux', null,
-						  array('journal' => $this->_getParam('journal'))),
-			      (string)$j);
+	  $this->logger->info("Article supprimé",
+			      $this->_helper->Url('index', 'journaux', null,
+						  array('journal' => $j->slug), true));
 	  $db->commit();
 	}
-	catch(Exception $e) {
-	  $db->rollBack();
-	  throw $e;
-	}
+	catch(Exception $e) { $db->rollBack(); throw $e; }
+	$this->redirectSimple('index', 'journaux', null, array('journal' => $j->slug), true);
       }
-      $this->redirectSimple('lire', 'journaux', null,
-			    array('journal' => $this->_getParam('journal')));
-    }
-
-    $this->view->article = $a;
-    $this->view->model = $m;
-  }
-
-
-  function editerAction()
-  {
-    $this->view->journal = $j = $this->_helper->Journal();
-    $this->metas(array('DC.Title' => "Modifier ".wtk_ucfirst($j->nom)));
-
-    $this->assert(null, $j, 'editer',
-		  "Vous n'avez pas le droit de modifier ce journal");
-
-
-    $this->view->model = $m = new Wtk_Form_Model('journal');
-    $i = $m->addString('nom', 'Nom', $j->nom);
-    $m->addConstraintRequired($i);
-    $m->addNewSubmission('enregistrer', 'Enregistrer');
-
-    if ($m->validate()) {
-      $t = $j->getTable();
-      $db = $t->getAdapter();
-      $db->beginTransaction();
-      try {
-	$j->nom = $m->get('nom');
-	$j->slug = $t->createSlug(wtk_strtoid($j->nom), $j->slug);
-	$j->save();
-
-	$this->logger->info("Journal édité",
-			    $this->_helper->Url('lire', null, null, array('journal' => $j->slug)));
-	$db->commit();
+      else {
+	$this->redirectSimple('consulter', 'journaux');
       }
-      catch(Exception $e) { $db->rollBack(); throw $e; }
-
-      $this->redirectSimple('lire', null, null, array('journal' => $j->slug));
     }
   }
 }

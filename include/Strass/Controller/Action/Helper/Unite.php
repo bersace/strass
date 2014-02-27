@@ -99,7 +99,7 @@ class Strass_Controller_Action_Helper_Unite extends Zend_Controller_Action_Helpe
     if ($journal)
       $connexes->append(wtk_ucfirst($journal->__toString()),
 			array('controller' => 'journaux',
-			      'action' => 'lire',
+			      'action' => 'index',
 			      'journal' => $journal->slug),
 			array(), true);
   }

@@ -76,7 +76,7 @@ class Journal extends Strass_Db_Table_Row_Abstract implements Zend_Acl_Resource_
 
 class Etiquettes extends Zend_Db_Table_Abstract
 {
-  protected $_name = 'article_etiquettes';
+  protected $_name = 'article_etiquette';
   protected $_referenceMap = array('Articles' => array('columns' => 'article',
 						       'refTableClass' => 'Articles',
 						       'refColumns' => 'id',
@@ -183,7 +183,7 @@ class Article extends Strass_Db_Table_Row_Abstract implements Zend_Acl_Resource_
     $images = array();
     foreach($fichiers as $fichier) {
       if ($fichier != '.' && $fichier != '..') {
-	$images[] = $dossier.'/'.$fichier;
+	$images[] = $fichier;
       }
     }
     return $images;
@@ -239,13 +239,16 @@ class Article extends Strass_Db_Table_Row_Abstract implements Zend_Acl_Resource_
     $dossier = $this->getDossier();
     $fichiers = $this->getImages();
     foreach($fichiers as $fichier) {
-      if (!unlink($fichier)) {
+      if (!file_exists($fichier))
+	continue;
+
+      if (!@unlink($fichier)) {
 	throw new Exception("Impossible de supprimer le fichier ".
 			    $fichier);
       }
     }
     if (file_exists($dossier)) {
-      if (!rmdir($dossier)) {
+      if (!@rmdir($dossier)) {
 	throw new Exception("Impossible de supprimer le dossier ".
 			    $dossier);
       }
