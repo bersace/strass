@@ -9,11 +9,17 @@ class Strass_Migrate_To22 extends Strass_MigrateHandler {
     $new->metas = $old->site->metas;
 
     $system = $old->site->toArray();
-    $system['mouvement'] = $system['association'];
+    if ($system['id'] == 'morel')
+      $mvt = 'fse';
+    else
+      $mvt = 'suf';
+    $system['mouvement'] = $mvt;
 
+    unset($system['id']);
     unset($system['association']);
     unset($system['metas']);
     unset($system['rubrique']);
+    unset($system['sauvegarder']);
 
     $new->system = $system;
     $new->write();
