@@ -4,7 +4,7 @@ class Strass_Migrate_To2 extends Strass_MigrateHandler {
   function offline() {
     if (file_exists('cache'))
       rename('cache', 'private/cache');
-    
+
     // config
     Zend_Registry::set('config_basedir', 'config/');
     $config = array();;
@@ -19,18 +19,27 @@ class Strass_Migrate_To2 extends Strass_MigrateHandler {
     $config['inscription'] = $tmp->toArray();
     $tmp = new Strass_Config_Php('knema/menu');
     $config['menu'] = $tmp->toArray();
-    
+
     Zend_Registry::set('config_basedir', 'private/config/');
     $config = new Strass_Config_Php('strass', $config);
     $config->write();
-    
+
     // Renommages
     rename("resources/styles/".$config->site->style, "data/styles/".$config->site->style);
     shell_exec("rsync -av data/statiques/ private/statiques/");
     $this::rrmdir('data/statiques');
-    
+
+    rename("private/statiques/strass/unites", "private/unites");
+    rename("data/images/strass/unites", "data/unites");
+    rename("data/images/strass/photos/", "data/photos");
+    rename("data/images/strass/individus/", "data/avatars/");
+    rename("data/images/strass/journaux/", "data/journaux");
+
     // Nettoyages
-    shell_exec('rm -rf resources/ config/ data/db/');
+    $this::rrmdir_exec('rm -rf resources/ config/ data/db/');
     unlink('data/intro.wiki');
+    $this::rrmdir('data/images/');
+    unlink('private/statiques/strass/inscription/cotisation.wiki', 'private/cotisation.wiki');
+    $this::rrmdir('private/statiques/strass');
   }
 }
