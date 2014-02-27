@@ -127,9 +127,6 @@ class Strass_Installer
 
   function run()
   {
-    if (!file_exists('private/cache'))
-      mkdir('private/cache', 0700, true);
-
     $this->writeConfig();
     $this->initDb();
     $this->initAdmin();
