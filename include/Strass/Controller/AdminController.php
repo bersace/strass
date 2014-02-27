@@ -201,9 +201,9 @@ class AdminController extends Strass_Controller_Action
 	$ppath = array();
       }
 
-      $apps = $unite->findAppartenances(false);
+      $apps = $unite->findAppartenances(null);
       $inscrits = $apps->count();
-      $chef = $unite->findChef(false);
+      $chef = $unite->findChef(null);
       $level = ($inscrits == 0 || !$chef) ? 'warn' : null;
       $path = $m->append($ppath,
 			 wtk_ucfirst($unite->getFullname()),
