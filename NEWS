@@ -12,6 +12,9 @@ RÉGRESSIONS
  - Abandon des formats tableur et texteur. De toute façon, ça ne
    fonctionnait pas :x.
 
+ - Seul le blog d'unité a gardé son RSS. Les autres RSS ont été
+   abandonnés.
+
 NOUVEAUTÉS UTILISATEUR
 
  - Aperçu des documents PDF.

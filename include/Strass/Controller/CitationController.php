@@ -14,8 +14,6 @@ class CitationController extends Strass_Controller_Action
 
     $this->actions->append("Enregistrer un citation",
 			   array('action' => 'enregistrer'));
-
-    $this->formats('rss', 'atom');
   }
 
   function enregistrerAction()

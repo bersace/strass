@@ -59,8 +59,6 @@ class LivredorController extends Strass_Controller_Action
 	throw $e;
       }
     }
-
-    $this->formats('rss', 'atom');
   }
 
   function modererAction()
