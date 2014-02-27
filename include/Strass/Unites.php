@@ -427,7 +427,7 @@ class Unite extends Strass_Db_Table_Row_Abstract implements Zend_Acl_Resource_In
       ->join('unite_role', 'unite_role.id = appartenance.role', array())
       ->join('unite_type', 'unite_type.id = unite.type', array())
       ->where("unite_role.acl_role = 'chef'")
-      ->order('individu.naissance');
+      ->order('appartenance.debut DESC');
 
     if ($this->findParentTypesUnite()->virtuelle)
       $select->where('unite.id = ?', $this->parent);
