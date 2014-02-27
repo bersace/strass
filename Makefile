@@ -31,6 +31,7 @@ restore:
 ifdef ORIG
 # Restaure un site en version 1
 restore1: restore
+	cd $(ORIG); git reset --hard;
 	cp --archive --link $(ORIG)/config/ $(ORIG)/data $(ORIG)/resources ./
 endif
 
