@@ -203,10 +203,10 @@ class Activite extends Strass_Db_Table_Row_Abstract implements Zend_Acl_Resource
 
     $type = self::findType($debut, $fin);
 
-    $tu = new Unites();
+    $tu = new Unites;
     $eids = Activites::findUnitesParticipantesExplicites($unites);
 
-    $explicites = count($eids) > 1 ? $tu->findMany($eids) : Unite::getInstance($eids[0]);
+    $explicites = count($eids) > 1 ? $tu->findMany($eids) : $tu->findOne($eids[0]);
 
     // on commence toujours par le type d'activité.
     // les camp des routier s'appellent des "routes" (uniquement FSE ?)
