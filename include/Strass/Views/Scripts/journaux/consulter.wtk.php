@@ -1,15 +1,18 @@
 <?php
 
 $this->document->addStyleComponents('signature', 'article');
-$s = $this->document;
-$ss = $s->addSection('boulet');
-$ss->addFlags('article', 'boulet');
-$ss->addText($this->article->boulet);
 
-$ss = $s->addSection('article');
-$ss->addFlags('article');
-$t = $ss->addText($this->article->article);
-$t->getTextWiki();
+$s = $this->document->addSection('boulet');
+$s->addFlags('article', 'boulet');
+$t = $s->addText($this->article->boulet);
+$tw = $t->getTextWiki();
+$tw->setRenderConf('Xhtml', 'image', 'base', $this->article->getDossier());
 
-$p = $s->addParagraph($this->signature($this->article));
+$s = $this->document->addSection('article');
+$s->addFlags('article');
+$t = $s->addText($this->article->article);
+$tw = $t->getTextWiki();
+$tw->setRenderConf('Xhtml', 'image', 'base', $this->article->getDossier());
+
+$p = $this->document->addParagraph($this->signature($this->article));
 $p->addFlags('signature');

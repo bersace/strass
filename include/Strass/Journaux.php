@@ -158,10 +158,22 @@ class Article extends Strass_Db_Table_Row_Abstract implements Zend_Acl_Resource_
     if (!is_readable($dossier))
       mkdir($dossier, 0750, true);
 
-    $target = $dossier.'/'.$name;
+    $target = $dossier.$name;
     if (!move_uploaded_file($tmp, $target)) {
       throw new Exception("Impossible de récupérer l'image");
     }
+  }
+
+  function renameImage($from, $to)
+  {
+    rename($this->getDossier().$from, $this->getDossier().$to);
+  }
+
+  function deleteImage($name)
+  {
+    $path = $this->getDossier().$name;
+    if (file_exists($path))
+      unlink($path);
   }
 
   function getImages()

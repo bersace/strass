@@ -135,7 +135,15 @@ class JournauxController extends Strass_Controller_Action
 
   function ecrireAction()
   {
-    $j = $this->_helper->Journal();
+    if ($this->_getParam('article')) {
+      $a = $this->_helper->Article();
+      $j = $a->findParentJournaux();
+    }
+    else {
+      $a = null;
+      $j = $this->_helper->Journal();
+    }
+
     $this->metas(array('DC.Title' => "Écrire un article"));
     $this->assert(null, $j, 'ecrire',
 		  "Vous n'avez pas le droit d'écrire un nouvel article dans ce journal");
@@ -143,19 +151,25 @@ class JournauxController extends Strass_Controller_Action
     $publier = $this->assert(null, $j, 'publier');
 
     $this->view->model = $m = new Wtk_Form_Model('ecrire');
-    $i = $m->addString('titre', "Titre");
+    $i = $m->addString('titre', "Titre", $a ? $a->titre : null);
     $m->addConstraintRequired($i);
     if ($publier)
-      $m->addEnum('public', 'Publication', null, array(null => 'Brouillon',
-						       1 => 'Publier'));
+      $m->addEnum('public', 'Publication', $a ? $a->public : null,
+		  array(null => 'Brouillon', 1 => 'Publier'));
 
-    $m->addString('boulet', "Boulet");
-    $i = $m->addString('article', "Article");
+    $m->addString('boulet', "Boulet", $a ? $a->boulet : null);
+    $i = $m->addString('article', "Article", $a ? $a->article : null);
     $m->addConstraintRequired($i);
     $t = $m->addTable('images', "Images",
                      array('image' => array('File', "Image"),
-                           'nom' => array('String', "Renommer en")),
+                           'nom' => array('String', "Renommer en"),
+			   'origin' => array('String')),
                      false);
+    if ($a) {
+      foreach ($a->getImages() as $image) {
+	$t->addRow(null, basename($image), basename($image));
+      }
+    }
     $t->addRow();
     $m->addNewSubmission('poster', "Poster");
 
@@ -167,28 +181,49 @@ class JournauxController extends Strass_Controller_Action
       $db = $t->getAdapter();
       $db->beginTransaction();
       try {
-	$data = array('auteur' => $me->id);
-	$c = $tc->findOne($tc->insert($data));
+	if ($a) {
+	  $a->titre = $m->titre;
+	  $a->slug = $t->createSlug(wtk_strtoid($a->titre), $a->slug);
+	  $a->boulet = $m->boulet;
+	  $a->article = $m->article;
+	  $a->public = $m->public;
+	  $a->save();
+	}
+	else {
+	  $data = array('auteur' => $me->id);
+	  $c = $tc->findOne($tc->insert($data));
 
-	$data = array('journal' => $j->id,
-		      'slug' => $t->createSlug(wtk_strtoid($m->get('titre'))),
-		      'titre' => $m->get('titre'),
-		      'boulet' => $m->get('boulet'),
-		      'article' => $m->get('article'),
-		      'public' => $m->get('public', null),
-		      'commentaires' => $c->id,
-		      );
-	$a = $t->findOne($t->insert($data));
+	  $data = array('journal' => $j->id,
+			'slug' => $t->createSlug(wtk_strtoid($m->get('titre'))),
+			'titre' => $m->get('titre'),
+			'boulet' => $m->get('boulet'),
+			'article' => $m->get('article'),
+			'public' => $m->get('public', null),
+			'commentaires' => $c->id,
+			);
+	  $a = $t->findOne($t->insert($data));
+	}
 
-	// stocker les images
-	$tables = $m->getInstance('images');
-
-	foreach($tables as $row) {
-	  $if = $row->getChild('image');
-	  if ($if->isUploaded()) {
-	    $nom = $row->get('nom');
-	    $a->storeImage($if->getTempFilename(), $nom ? $nom : $if->getBasename());
+	$oldImages = $a->getImages();
+	$table = $m->getInstance('images');
+	foreach($table as $row) {
+	  if ($row->origin && $row->origin != $row->nom) {
+	    $a->renameImage($row->origin, $row->nom);
 	  }
+	  else {
+	    $if = $row->getChild('image');
+	    if ($if->isUploaded()) {
+	      $nom = $row->get('nom');
+	      $a->storeImage($if->getTempFilename(), $nom ? $nom : $if->getBasename());
+	    }
+	  }
+	}
+	$newImages = $a->getImages();
+
+	/* Nettoyage des images */
+	foreach ($oldImages as $image) {
+	  if (!in_array(basename($image), $newImages))
+	    $a->deleteImage(basename($image));
 	}
 
 	if (!$this->assert(null, $j, 'publier')) {
@@ -218,7 +253,7 @@ class JournauxController extends Strass_Controller_Action
     $this->view->auteur = $a->findAuteur();
 
     $this->actions->append("Éditer",
-			   array('action' => 'écrire'),
+			   array('action' => 'ecrire'),
 			   array(null, $a));
     $this->actions->append("Supprimer",
 			   array('action' => 'supprimer'),

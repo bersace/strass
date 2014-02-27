@@ -74,6 +74,7 @@ dojo.declare("wtk.form.control.TableRow",[dijit._Widget],{
 			var name = node.getAttribute("name");
 			name = name.replace(/\[\d+\]\[(.*)\]/, "["+i+"][\$1]");
 			node.setAttribute("name", name);
+		    	node.setAttribute("value", null);
 		});
 		if(removing && this.table.domNode.tBodies[0].rows.length == 2)
 			dojo.query("button.remove",this.domNode)[0].setAttribute("disabled","disabled");

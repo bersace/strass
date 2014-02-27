@@ -30,7 +30,7 @@ class Strass_Controller_Action_Helper_Article extends Zend_Controller_Action_Hel
 
     $this->_actionController->branche->append($article->titre,
 					      array('controller'=> 'journaux',
-						    'action'	=> 'lire',
+						    'action'	=> 'consulter',
 						    'article'	=> $article->slug),
 						array(),
 						true);
