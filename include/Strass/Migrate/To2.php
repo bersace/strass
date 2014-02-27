@@ -36,10 +36,14 @@ class Strass_Migrate_To2 extends Strass_MigrateHandler {
     rename("data/images/strass/journaux/", "data/journaux");
 
     // Nettoyages
-    $this::rrmdir_exec('rm -rf resources/ config/ data/db/');
-    unlink('data/intro.wiki');
+    unlink('resources/templates/.htaccess');
+    $this::rrmdir('resources/');
+    unlink('config/.htaccess');
+    $this::rrmdir('config/');
+    unlink('data/db/.htaccess');
+    $this::rrmdir('data/db/');
     $this::rrmdir('data/images/');
-    unlink('private/statiques/strass/inscription/cotisation.wiki', 'private/cotisation.wiki');
     $this::rrmdir('private/statiques/strass');
+    unlink('data/intro.wiki');
   }
 }
