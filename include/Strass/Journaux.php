@@ -186,7 +186,7 @@ class Article extends Strass_Db_Table_Row_Abstract implements Zend_Acl_Resource_
 	$images[] = $fichier;
       }
     }
-    return $images;
+    return array_filter($images);
   }
 
   function getDate()

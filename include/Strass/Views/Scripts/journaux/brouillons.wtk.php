@@ -1,8 +1,33 @@
 <?php
 
-$s = $this->document->addSection('brouillons',
-				new Wtk_Container($this->lienJournal($this->journal)));
-$s->addFlags($this->journal->id);
-$s->addChild(new Wtk_Pages(null,
-			   new Wtk_Pages_Model_Iterator($this->brouillons, 15, $this->current),
-			   new Strass_Page_RendererArticle($this, $s)));
+class Strass_Pages_Renderer_Articles extends Wtk_Pages_Renderer
+{
+  protected $view;
+
+  function __construct($view)
+  {
+    $href = $view->url(array('page' => '%i'));
+    parent::__construct(urldecode($href),
+			true,
+			array('previous' => "Précédents",
+			      'next' => "Suivants"));
+    $this->view = $view;
+  }
+
+  function render($id, $article, $root)
+  {
+    $s = $root->addSection($article->id, $this->view->lienArticle($article, null, 'ecrire'));
+
+    // n'affiche le boulet ou à défaut le début de l'article.
+    $boulet = $article->boulet ? $article->boulet : wtk_first_words($article->article);
+    $t = $s->addText($boulet);
+    $tw = $t->getTextWiki();
+    $tw->setRenderConf('Xhtml', 'image', 'base', $article->getDossier());
+
+    $s->addParagraph($this->view->signature($article), ".")->addFlags('signature');
+    $lien = $this->view->lienArticle($article, 'Lire la suite…', 'ecrire');
+    $s->addParagraph($lien)->addFlags('suite');
+  }
+}
+
+$this->document->addPages(null, $this->model,  new Strass_Pages_Renderer_Articles($this));

@@ -1,6 +1,6 @@
 <?php
 
-class Strass_Page_Renderer_Articles extends Wtk_Pages_Renderer
+class Strass_Pages_Renderer_Articles extends Wtk_Pages_Renderer
 {
   protected $view;
 
@@ -31,4 +31,4 @@ class Strass_Page_Renderer_Articles extends Wtk_Pages_Renderer
 }
 
 $this->document->addStyleComponents('signature');
-$this->document->addPages(null, $this->model, new Strass_Page_Renderer_Articles($this));
+$this->document->addPages(null, $this->model, new Strass_Pages_Renderer_Articles($this));

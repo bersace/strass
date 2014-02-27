@@ -10,6 +10,7 @@ class JournauxController extends Strass_Controller_Action
     $this->formats('rss', 'atom');
 
     $s = $j->selectArticles();
+    $s->where('public IS NOT NULL');
     $this->view->model = new Strass_Pages_Model_Rowset($s, 30, $this->_getParam('page'));
 
     $this->actions->append("Écrire un article",
@@ -216,13 +217,13 @@ class JournauxController extends Strass_Controller_Action
   function brouillonsAction()
   {
     $this->view->journal = $j = $this->_helper->Journal();
+    $this->metas(array('DC.Title' => "Brouillons"));
+    $this->branche->append();
     $this->assert(null, $j, 'publier',
 		  "Vous n'avez pas le droit de publier des brouillons");
-    $this->metas(array('DC.Title' => "Brouillons – ".$j->nom,
-		       'DC.Subject' => 'journaux,journal,gazette,brouillons'));
-    $b = $j->findArticles('public IS NULL');
-    $this->view->current = $this->_getParam('page');
-    $this->view->brouillons = $b;
+    $s = $j->selectArticles();
+    $s->where('public IS NULL');
+    $this->view->model = new Strass_Pages_Model_Rowset($s, 30, $this->_getParam('page'));
     $this->formats('rss', 'atom');
   }
 
