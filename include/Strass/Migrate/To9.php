@@ -4,7 +4,6 @@ class Strass_Migrate_To9 extends Strass_MigrateHandler {
   function online($db) {
     $db->exec(<<<'EOS'
 --
-DROP TABLE tmp;
 
 CREATE TABLE `unite_type`
 (
@@ -41,8 +40,8 @@ VALUES
 
 DROP TABLE types_unite;
 
-CREATE VIEW types AS
-SELECT t.id, t.slug, t.nom, t.virtuelle, t.sexe, t.age_min AS min, t.age_max AS max, p.nom
+CREATE VIEW vtypes AS
+SELECT t.id, t.slug, t.nom, t.virtuelle, t.sexe, t.age_min AS min, t.age_max AS max, p.nom AS parent
 FROM unite_type AS t
 LEFT JOIN unite_type AS p on p.id = t.parent
 ORDER BY t.ordre;
@@ -72,7 +71,7 @@ SET parent = (
 
 DROP TABLE unites;
 
-CREATE VIEW unites AS
+CREATE VIEW vunites AS
 SELECT u.id, u.slug, t.nom AS type, u.nom, u.extra
 FROM unite AS u
 JOIN unite_type AS t ON t.id = u.type;
@@ -110,10 +109,6 @@ SELECT
         (SELECT id FROM unite_type WHERE unite_type.slug = roles.type), id, titre, accr, ordre
 FROM roles;
 
--- suppression des titres (aumônier, bagheera, etc.)
-DELETE FROM unite_role
-WHERE acl_role NOT IN ('chef', 'assistant', '3e', '4e', '5e', '6e', '7e', '8e', 'siz', 'sec');
-
 -- Complément SUF
 INSERT INTO unite_role
 (slug, acl_role, titre, accr, ordre, type)
@@ -133,7 +128,7 @@ UPDATE unite_role SET slug = replace(slug, 'sizainière', 'sizainiere');
 
 DROP TABLE roles;
 
-CREATE VIEW roles AS
+CREATE VIEW vroles AS
 SELECT r.id, r.slug, r.titre, t.nom, accr, acl_role AS acl
 FROM unite_role AS r
 JOIN unite_type AS t ON t.id = r.type
@@ -324,8 +319,8 @@ VALUES
  (SELECT r.id FROM unite_role r JOIN unite_type t ON t.id = r.type
   WHERE r.acl_role = 'assistant' AND t.slug = 'ronde'));
 
-CREATE VIEW titres AS
-SELECT t.id, t.slug, t.nom, unite_role.titre, unite_type.nom
+CREATE VIEW vtitres AS
+SELECT t.id, t.slug, t.nom, unite_role.titre, unite_type.nom AS unite
 FROM unite_titre AS t
 JOIN unite_role ON unite_role.id = t.role
 JOIN unite_type ON unite_type.id = unite_role.type;
@@ -339,7 +334,7 @@ CREATE TABLE `appartenance` (
   id            INTEGER PRIMARY KEY,
   individu      INTEGER REFERENCES individu(id) NOT NULL,
   unite         INTEGER REFERENCES unite(id) NOT NULL,
-  role          INTEGER REFERENCES unite_role(id) NULL,
+  role          INTEGER REFERENCES unite_role(id) NOT NULL,
   titre         CHAR(64),
   debut         DATE NOT NULL,
   fin           DATE DEFAULT NULL
@@ -358,9 +353,14 @@ END) AND unite_role.type = unite.type
 JOIN unite_type ON unite_type.id = unite.type
 LEFT JOIN unite_titre ON unite_titre.slug = appartient.role;
 
-CREATE VIEW appartenances AS
+-- suppression des titres (aumônier, bagheera, etc.)
+UPDATE unite_role SET acl_role = 'membre' WHERE acl_role LIKE '_e' OR acl_role IN ('siz', 'sec');
+DELETE FROM unite_role
+WHERE acl_role NOT IN ('chef', 'assistant', 'membre');
+
+CREATE VIEW vappartenances AS
 SELECT DISTINCT
-  appartenance.id, individu.slug AS individu, appartenance.titre, role.titre, unite.nom
+  appartenance.id, individu.slug AS individu, appartenance.titre, role.titre AS role, unite.nom AS unite
 FROM appartenance
 JOIN individu ON individu.id = appartenance.individu
 JOIN unite_role AS role ON role.id = appartenance.role
