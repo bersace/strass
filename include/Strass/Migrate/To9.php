@@ -2,372 +2,165 @@
 
 class Strass_Migrate_To9 extends Strass_MigrateHandler {
   function online($db) {
+    error_log("Unicité des identifiants de photos");
+    do {
+      $slugs = $db->query("SELECT count(*) AS count, id AS slug FROM photos GROUP BY id HAVING count > 1");
+      $count = 0;
+      foreach ($slugs as $i => $row) {
+	$count += 1;
+	extract($row);
+	$activites = $db->query("SELECT activite FROM photos WHERE id = '${slug}' ORDER BY ROWID");
+	foreach($activites as $i => $arow) {
+	  if (!$i) continue;
+	  extract($arow);
+	  $newslug = "${slug}-${i}";
+	  error_log("Renommage de ${activite}/${slug} en ${newslug}.");
+	  rename("data/photos/${activite}/${slug}.jpeg",
+		 "data/photos/${activite}/${newslug}.jpeg");
+	  rename("data/photos/${activite}/${slug}-vignette.jpeg",
+		 "data/photos/${activite}/${newslug}-vignette.jpeg");
+	  $db->exec(<<<EOS
+UPDATE photos SET id = '${newslug}'
+       WHERE id = '${slug}' AND activite = '${activite}';
+UPDATE commentaires SET photo = '${newslug}'
+       WHERE photo = '${slug}' AND activite = '${activite}';
+EOS
+);
+	}
+      }
+    } while($count);
+
+    error_log("Migration des photos");
     $db->exec(<<<'EOS'
 --
 
-CREATE TABLE `unite_type`
-(
-  id            INTEGER PRIMARY KEY,
-  slug          CHAR(32)        NOT NULL UNIQUE,
-  parent        INTEGER REFERENCES unite_type(id),
-  virtuelle     BOOLEAN DEFAULT 0,
-  nom           CHAR(32)        NOT NULL,
-  ordre         INT(2),
-  sexe          CHAR(1)         NOT NULL,
-  age_min       INT(4)          NOT NULL,
-  age_max       INT(4)          NOT NULL
+CREATE TABLE `commentaire` (
+       id		INTEGER		PRIMARY KEY,
+       auteur		INTEGER		REFERENCES individu(id),
+       parent		INTEGER		REFERENCES commentaire(id),
+       `date`		DATETIME        DEFAULT CURRENT_TIMESTAMP,
+       message	        TEXT,
+       -- Interdire les réponses multiples. Le site ne sert pas à discuter.
+       UNIQUE(auteur, parent)
 );
 
-INSERT INTO unite_type
-(slug, virtuelle, nom, ordre, sexe, age_min, age_max)
-SELECT id AS slug,
-CAST((id IN ('hp', 'aines')) AS BOOLEAN) AS virtuelle,
-t.nom, t.ordre, t.sexe, t.age_min, t.age_max
-FROM types_unite AS t;
+INSERT INTO commentaire
+(`date`, message)
+SELECT photos.`date`, photos.id
+FROM photos
+ORDER BY `date`;
 
-UPDATE unite_type
-SET parent = (
-    SELECT p.id
-    FROM types_unite AS t
-    JOIN unite_type AS p ON p.slug = t.parent
-    WHERE t.id = unite_type.slug);
-
-INSERT INTO unite_type
-(slug, parent, nom, ordre, sexe, age_min, age_max)
-VALUES
-('eqclan', (SELECT id FROM unite_type WHERE slug = 'clan'), 'équipe', 1, 'h', 16, 30),
-('eqfeu', (SELECT id FROM unite_type WHERE slug = 'feu'), 'équipe', 1, 'f', 16, 30);
-
-DROP TABLE types_unite;
-
-CREATE VIEW vtypes AS
-SELECT t.id, t.slug, t.nom, t.virtuelle, t.sexe, t.age_min AS min, t.age_max AS max, p.nom AS parent
-FROM unite_type AS t
-LEFT JOIN unite_type AS p on p.id = t.parent
-ORDER BY t.ordre;
-
-EOS
+CREATE TABLE `photo` (
+       id		INTEGER		PRIMARY KEY,
+       slug     	CHAR(512)	UNIQUE,
+       activite		INTEGER		NOT NULL REFERENCES activite(id),
+       promotion	INTEGER		DEFAULT 0,
+       `date`		DATETIME,
+       titre 		CHAR(512),
+       commentaires     INTEGER         NOT NULL REFERENCES commentaire(id)
 );
 
-    $db->exec(<<<'EOS'
-CREATE TABLE `unite` (
-  id            INTEGER PRIMARY KEY,
-  slug          CHAR(128)       UNIQUE NOT NULL,
-  parent        INTEGER REFERENCES unite(id),
-  nom           CHAR(128)       NOT NULL,
-  `type`        INTEGER REFERENCES unite_type(id),
-  extra         CHAR(128)       NULL   -- cri de pat/équipe/nom de troupe/compagnie/guide
-);
 
-INSERT INTO unite
-(slug, nom, type, extra)
-SELECT id, nom, (SELECT id FROM unite_type WHERE slug = type), extra FROM unites;
+INSERT INTO photo
+(slug, titre, activite, date, commentaires)
+SELECT photos.id, titre, activite.id, photos.date, (
+SELECT id FROM commentaire WHERE commentaire.message = photos.id)
+FROM photos
+JOIN activite ON activite.slug = photos.activite
+ORDER BY activite.debut, photos.date;
 
-UPDATE unite
-SET parent = (
-    SELECT parent.id FROM unites
-    JOIN unite AS parent ON parent.slug = unites.parent
-    WHERE unites.id = unite.slug);
+UPDATE commentaire
+SET message = (SELECT desc FROM photos WHERE photos.id = message);
 
-DROP TABLE unites;
+DROP TABLE photos;
 
-CREATE VIEW vunites AS
-SELECT u.id, u.slug, t.nom AS type, u.nom, u.extra
-FROM unite AS u
-JOIN unite_type AS t ON t.id = u.type;
-EOS
-);
+INSERT INTO commentaire
+(auteur, parent, date, message)
+SELECT individu.id, photo.commentaires, commentaires.date, commentaires.commentaire
+FROM commentaires
+JOIN individu ON individu.slug = commentaires.individu
+JOIN activite ON activite.slug = commentaires.activite
+JOIN photo ON photo.slug = commentaires.photo AND photo.activite = activite.id
+ORDER BY commentaires.date;
 
-    $db->exec(<<<'EOS'
--- chef, assistant, 3e, etc.
-CREATE TABLE `unite_role` (
-  id       INTEGER PRIMARY KEY,
-  slug     CHAR(16) UNIQUE,
-  type     INTEGER REFERENCES unites_type(id),
-  acl_role CHAR(16),
-  titre    CHAR(64),
-  accr     CHAR(6),
-  ordre    INT(2),
-  UNIQUE (slug, type)
-);
+DROP TABLE commentaires;
 
--- préparation des données pour migration
 
-UPDATE roles SET accr = 'CF' WHERE id = 'chef' AND type = 'feu';
-UPDATE roles SET accr = replace(accr, '.', '');
-UPDATE roles SET titre = 'assistant chef de clan', accr = 'ACC' WHERE id = 'assistant' AND titre = 'routier';
-UPDATE roles SET titre = 'cheftaine de compagnie' WHERE accr = 'CCie';
-UPDATE roles SET titre = 'assistante cheftaine de compagnie' WHERE accr = 'ACCie';
-UPDATE roles SET accr = 'ACR' WHERE id = 'assistant' AND type = 'ronde';
-UPDATE roles SET accr = 'GA' WHERE titre = 'guide-aînée';
-
--- Migration des roles, même s'il y a des titres
-INSERT INTO unite_role
-(slug, type, acl_role, titre, accr, ordre)
+CREATE VIEW vphotos AS
 SELECT
-	(CASE WHEN length(roles.accr) > 0 THEN lower(replace(roles.accr, '.', '')) ELSE lower(roles.titre) || '-' || roles.type END),
-        (SELECT id FROM unite_type WHERE unite_type.slug = roles.type), id, titre, accr, ordre
-FROM roles;
+	photo.id, photo.slug,
+	activite.slug AS activite,
+	photo.titre
+FROM photo
+JOIN activite ON activite.id = photo.activite
+ORDER BY activite.debut, photo.date;
 
--- Complément SUF
-INSERT INTO unite_role
-(slug, acl_role, titre, accr, ordre, type)
-VALUES
-('acm', 'assistant', 'Assistante d''Akéla', 'ACM', 2, (SELECT id FROM unite_type WHERE unite_type.slug = 'meute')),
-('acf', 'assistant', 'Assistante cheftaine de feu', 'ACF', 2, (SELECT id FROM unite_type WHERE unite_type.slug = 'feu')),
-('cer', 'chef', 'Chef d''équipe', 'CE', 1, (SELECT id FROM unite_type WHERE slug = 'eqclan')),
-('equipier', 'assistant', 'routier', NULL, 2, (SELECT id FROM unite_type WHERE slug = 'eqclan')),
-('cef', 'chef', 'Cheftaine d''équipe', 'CE', 1, (SELECT id FROM unite_type WHERE slug = 'eqfeu')),
-('equipiere', 'assistant', 'guide-aînée', NULL, 2, (SELECT id FROM unite_type WHERE slug = 'eqfeu'));
-
-UPDATE unite_role SET slug = 'akela' WHERE titre = 'Akéla';
-UPDATE unite_role SET slug = 'guillemette' WHERE titre = 'Guillemette';
-UPDATE unite_role SET slug = replace(slug, 'sizloup', 'louveteau');
-UPDATE unite_role SET slug = replace(slug, 'sizjeannette', 'jeannette');
-UPDATE unite_role SET slug = replace(slug, 'sizainière', 'sizainiere');
-
-DROP TABLE roles;
-
-CREATE VIEW vroles AS
-SELECT r.id, r.slug, r.titre, t.nom, accr, acl_role AS acl
-FROM unite_role AS r
-JOIN unite_type AS t ON t.id = r.type
-ORDER BY t.id, r.id;
-EOS
-);
-
-    $db->exec(<<<'EOS'
--- titre comme Bagheera, Hauviette, aumônier, etc.
-CREATE TABLE `unite_titre` (
-  id            INTEGER PRIMARY KEY,
-  slug		CHAR(128)  NOT NULL,
-  role          INTEGER REFERENCES unite_role(id),
-  nom           CHAR(128)  NOT NULL,
-  UNIQUE (role, nom),
-  UNIQUE (role, slug)
-);
-
-INSERT INTO unite_titre
-(slug, nom, role)
-VALUES
-('aumonier', 'aumônier',
- (SELECT r.id FROM unite_role r JOIN unite_type t ON t.id = r.type
-  WHERE r.acl_role = 'assistant' AND t.slug = 'groupe')),
-('tresorier', 'trésorier',
- (SELECT r.id FROM unite_role r JOIN unite_type t ON t.id = r.type
-  WHERE r.acl_role = 'assistant' AND t.slug = 'groupe')),
-('materialiste', 'matérialiste',
- (SELECT r.id FROM unite_role r JOIN unite_type t ON t.id = r.type
-  WHERE r.acl_role = 'assistant' AND t.slug = 'groupe')),
-('secretaire', 'secrétaire',
- (SELECT r.id FROM unite_role r JOIN unite_type t ON t.id = r.type
-  WHERE r.acl_role = 'assistant' AND t.slug = 'groupe')),
-
-('aumonier', 'aumônier',
- (SELECT r.id FROM unite_role r JOIN unite_type t ON t.id = r.type
-  WHERE r.acl_role = 'assistant' AND t.slug = 'clan')),
-('aumonier', 'aumônier',
- (SELECT r.id FROM unite_role r JOIN unite_type t ON t.id = r.type
-  WHERE r.acl_role = 'assistant' AND t.slug = 'feu')),
-('aumonier', 'aumônier',
- (SELECT r.id FROM unite_role r JOIN unite_type t ON t.id = r.type
-  WHERE r.acl_role = 'assistant' AND t.slug = 'troupe')),
-('aumonier', 'aumônier',
- (SELECT r.id FROM unite_role r JOIN unite_type t ON t.id = r.type
-  WHERE r.acl_role = 'assistant' AND t.slug = 'compagnie')),
-
-('aumonier', 'aumônier',
- (SELECT r.id FROM unite_role r JOIN unite_type t ON t.id = r.type
-  WHERE r.acl_role = 'assistant' AND t.slug = 'meute')),
-('ahdeek', 'Ahdeek',
- (SELECT r.id FROM unite_role r JOIN unite_type t ON t.id = r.type
-  WHERE r.acl_role = 'assistant' AND t.slug = 'meute')),
-('baloo', 'Baloo',
- (SELECT r.id FROM unite_role r JOIN unite_type t ON t.id = r.type
-  WHERE r.acl_role = 'assistant' AND t.slug = 'meute')),
-('bagheera', 'Bagheera',
- (SELECT r.id FROM unite_role r JOIN unite_type t ON t.id = r.type
-  WHERE r.acl_role = 'assistant' AND t.slug = 'meute')),
-('chikai', 'Chikaï',
- (SELECT r.id FROM unite_role r JOIN unite_type t ON t.id = r.type
-  WHERE r.acl_role = 'assistant' AND t.slug = 'meute')),
-('chil', 'Chil',
- (SELECT r.id FROM unite_role r JOIN unite_type t ON t.id = r.type
-  WHERE r.acl_role = 'assistant' AND t.slug = 'meute')),
-('chunchundra', 'Chunchundra',
- (SELECT r.id FROM unite_role r JOIN unite_type t ON t.id = r.type
-  WHERE r.acl_role = 'assistant' AND t.slug = 'meute')),
-('dahinda', 'Dahinda',
- (SELECT r.id FROM unite_role r JOIN unite_type t ON t.id = r.type
-  WHERE r.acl_role = 'assistant' AND t.slug = 'meute')),
-('darzee', 'Darzee',
- (SELECT r.id FROM unite_role r JOIN unite_type t ON t.id = r.type
-  WHERE r.acl_role = 'assistant' AND t.slug = 'meute')),
-('ferao', 'Ferao',
- (SELECT r.id FROM unite_role r JOIN unite_type t ON t.id = r.type
-  WHERE r.acl_role = 'assistant' AND t.slug = 'meute')),
-('gris', 'Frère-Gris',
- (SELECT r.id FROM unite_role r JOIN unite_type t ON t.id = r.type
-  WHERE r.acl_role = 'assistant' AND t.slug = 'meute')),
-('hathi', 'Hathi',
- (SELECT r.id FROM unite_role r JOIN unite_type t ON t.id = r.type
-  WHERE r.acl_role = 'assistant' AND t.slug = 'meute')),
-('jacala', 'jacala',
- (SELECT r.id FROM unite_role r JOIN unite_type t ON t.id = r.type
-  WHERE r.acl_role = 'assistant' AND t.slug = 'meute')),
-('kaa', 'Kaa',
- (SELECT r.id FROM unite_role r JOIN unite_type t ON t.id = r.type
-  WHERE r.acl_role = 'assistant' AND t.slug = 'meute')),
-('keego', 'Keego',
- (SELECT r.id FROM unite_role r JOIN unite_type t ON t.id = r.type
-  WHERE r.acl_role = 'assistant' AND t.slug = 'meute')),
-('keneu', 'Keneu',
- (SELECT r.id FROM unite_role r JOIN unite_type t ON t.id = r.type
-  WHERE r.acl_role = 'assistant' AND t.slug = 'meute')),
-('ko', 'Ko',
- (SELECT r.id FROM unite_role r JOIN unite_type t ON t.id = r.type
-  WHERE r.acl_role = 'assistant' AND t.slug = 'meute')),
-('kotick', 'Kotick',
- (SELECT r.id FROM unite_role r JOIN unite_type t ON t.id = r.type
-  WHERE r.acl_role = 'assistant' AND t.slug = 'meute')),
-('lardaki', 'Lardaki',
- (SELECT r.id FROM unite_role r JOIN unite_type t ON t.id = r.type
-  WHERE r.acl_role = 'assistant' AND t.slug = 'meute')),
-('louie', 'Roi-Louie',
- (SELECT r.id FROM unite_role r JOIN unite_type t ON t.id = r.type
-  WHERE r.acl_role = 'assistant' AND t.slug = 'meute')),
-('mang', 'Mang',
- (SELECT r.id FROM unite_role r JOIN unite_type t ON t.id = r.type
-  WHERE r.acl_role = 'assistant' AND t.slug = 'meute')),
-('mor', 'Mor',
- (SELECT r.id FROM unite_role r JOIN unite_type t ON t.id = r.type
-  WHERE r.acl_role = 'assistant' AND t.slug = 'meute')),
-('mysa', 'Mysa',
- (SELECT r.id FROM unite_role r JOIN unite_type t ON t.id = r.type
-  WHERE r.acl_role = 'assistant' AND t.slug = 'meute')),
-('nag', 'Nag',
- (SELECT r.id FROM unite_role r JOIN unite_type t ON t.id = r.type
-  WHERE r.acl_role = 'assistant' AND t.slug = 'meute')),
-('oo', 'Oo',
- (SELECT r.id FROM unite_role r JOIN unite_type t ON t.id = r.type
-  WHERE r.acl_role = 'assistant' AND t.slug = 'meute')),
-('oonai', 'Oonaï',
- (SELECT r.id FROM unite_role r JOIN unite_type t ON t.id = r.type
-  WHERE r.acl_role = 'assistant' AND t.slug = 'meute')),
-('phao', 'Phao',
- (SELECT r.id FROM unite_role r JOIN unite_type t ON t.id = r.type
-  WHERE r.acl_role = 'assistant' AND t.slug = 'meute')),
-('phaona', 'Phaona',
- (SELECT r.id FROM unite_role r JOIN unite_type t ON t.id = r.type
-  WHERE r.acl_role = 'assistant' AND t.slug = 'meute')),
-('pukeena', 'Pukeena',
- (SELECT r.id FROM unite_role r JOIN unite_type t ON t.id = r.type
-  WHERE r.acl_role = 'assistant' AND t.slug = 'meute')),
-('raksha', 'Raksha',
- (SELECT r.id FROM unite_role r JOIN unite_type t ON t.id = r.type
-  WHERE r.acl_role = 'assistant' AND t.slug = 'meute')),
-('rama', 'Rama',
- (SELECT r.id FROM unite_role r JOIN unite_type t ON t.id = r.type
-  WHERE r.acl_role = 'assistant' AND t.slug = 'meute')),
-('rikki', 'Rikki Tiki Tavi',
- (SELECT r.id FROM unite_role r JOIN unite_type t ON t.id = r.type
-  WHERE r.acl_role = 'assistant' AND t.slug = 'meute')),
-('sahi', 'Sahi',
- (SELECT r.id FROM unite_role r JOIN unite_type t ON t.id = r.type
-  WHERE r.acl_role = 'assistant' AND t.slug = 'meute')),
-('shada', 'Shada',
- (SELECT r.id FROM unite_role r JOIN unite_type t ON t.id = r.type
-  WHERE r.acl_role = 'assistant' AND t.slug = 'meute')),
-('shawshaw', 'Shaw Shaw',
- (SELECT r.id FROM unite_role r JOIN unite_type t ON t.id = r.type
-  WHERE r.acl_role = 'assistant' AND t.slug = 'meute')),
-('singum', 'Singum',
- (SELECT r.id FROM unite_role r JOIN unite_type t ON t.id = r.type
-  WHERE r.acl_role = 'assistant' AND t.slug = 'meute')),
-('sona', 'Sona',
- (SELECT r.id FROM unite_role r JOIN unite_type t ON t.id = r.type
-  WHERE r.acl_role = 'assistant' AND t.slug = 'meute')),
-('tegumai', 'Tegumaï',
- (SELECT r.id FROM unite_role r JOIN unite_type t ON t.id = r.type
-  WHERE r.acl_role = 'assistant' AND t.slug = 'meute')),
-('tha', 'Thâ',
- (SELECT r.id FROM unite_role r JOIN unite_type t ON t.id = r.type
-  WHERE r.acl_role = 'assistant' AND t.slug = 'meute')),
-('thuu', 'Thuu',
- (SELECT r.id FROM unite_role r JOIN unite_type t ON t.id = r.type
-  WHERE r.acl_role = 'assistant' AND t.slug = 'meute')),
-('wontolla', 'Won-Tolla',
- (SELECT r.id FROM unite_role r JOIN unite_type t ON t.id = r.type
-  WHERE r.acl_role = 'assistant' AND t.slug = 'meute')),
-
-('aumonier', 'aumônier',
- (SELECT r.id FROM unite_role r JOIN unite_type t ON t.id = r.type
-  WHERE r.acl_role = 'assistant' AND t.slug = 'ronde')),
-('zabilet', 'Zabilet',
- (SELECT r.id FROM unite_role r JOIN unite_type t ON t.id = r.type
-  WHERE r.acl_role = 'assistant' AND t.slug = 'ronde')),
-('mengette', 'Mengette',
- (SELECT r.id FROM unite_role r JOIN unite_type t ON t.id = r.type
-  WHERE r.acl_role = 'assistant' AND t.slug = 'ronde')),
-('hauviette', 'Hauviette',
- (SELECT r.id FROM unite_role r JOIN unite_type t ON t.id = r.type
-  WHERE r.acl_role = 'assistant' AND t.slug = 'ronde')),
-('isabelette', 'Isabellette',
- (SELECT r.id FROM unite_role r JOIN unite_type t ON t.id = r.type
-  WHERE r.acl_role = 'assistant' AND t.slug = 'ronde')),
-('colette', 'Nicolette',
- (SELECT r.id FROM unite_role r JOIN unite_type t ON t.id = r.type
-  WHERE r.acl_role = 'assistant' AND t.slug = 'ronde'));
-
-CREATE VIEW vtitres AS
-SELECT t.id, t.slug, t.nom, unite_role.titre, unite_type.nom AS unite
-FROM unite_titre AS t
-JOIN unite_role ON unite_role.id = t.role
-JOIN unite_type ON unite_type.id = unite_role.type;
+CREATE VIEW vcommentaires AS
+SELECT
+	commentaire.id,
+	activite.slug AS activite, photo.slug AS photo, individu.slug,
+	commentaire.date, message
+FROM commentaire
+JOIN photo ON photo.commentaires = commentaire.parent
+JOIN activite ON activite.id = photo.activite
+LEFT JOIN individu ON individu.id = commentaire.auteur
+ORDER BY photo.id, commentaire.date;
 
 EOS
 );
 
+    error_log("Écriture de la configuration des photos.");
+    $config = new Strass_Config_Php('strass');
+    $config->photos = array('size' => 2048,
+			    'quality' => 85,
+			    'vignette' => 256);
+    $config->write();
+
+
+    error_log('Regénération des vignettes');
+    $total = $db->query("SELECT count(*) FROM vphotos;")->fetchColumn();
+    $stmt = $db->query("SELECT id, slug, activite FROM vphotos;");
+    $top = microtime(true);
+    foreach ($stmt as $i => $row) {
+      $now = microtime(true);
+      if (intval($now - $top) > 3) {
+	$count = $i + 1;
+	error_log("${count} vignettes sur ${total} regénérées.");
+	$top = microtime(true);
+      }
+      extract($row);
+      $base = 'data/photos/' . $activite . '/' . $slug;
+      $photo = $base . '.jpeg';
+      $vignette = $base . '-vignette.jpeg';
+
+      if (!file_exists($photo)) {
+	error_log("Photo perdue : ${activite}/${slug}");
+	$db->exec("DELETE FROM photo WHERE id = ".$id. ";");
+	continue;
+      }
+
+      $im = new Imagick($photo);
+      $width = $im->getImageWidth();
+      $height = $im->getImageHeight();
+      $im->setImageCompressionQuality(85);
+
+      $MAX = 256;
+      if (min($width, $height) > $MAX)
+	$im->cropThumbnailImage($MAX, $MAX);
+      $im->writeImage($vignette);
+    }
+
     $db->exec(<<<'EOS'
+-- Supprimer les descriptions de photos supprimées
+DELETE FROM commentaire
+WHERE commentaire.parent IS NULL AND NOT EXISTS (
+       SELECT * FROM photo WHERE commentaires = commentaire.id);
 
-CREATE TABLE `appartenance` (
-  id            INTEGER PRIMARY KEY,
-  individu      INTEGER REFERENCES individu(id) NOT NULL,
-  unite         INTEGER REFERENCES unite(id) NOT NULL,
-  role          INTEGER REFERENCES unite_role(id) NOT NULL,
-  titre         CHAR(64),
-  debut         DATE NOT NULL,
-  fin           DATE DEFAULT NULL
-);
+-- Supprimer les commentaires orphelins
+DELETE FROM commentaire
+WHERE commentaire.parent IS NOT NULL AND NOT EXISTS (
+       SELECT * FROM commentaire AS parent WHERE parent.id = commentaire.id);
 
-INSERT INTO appartenance
-(individu, unite, role, titre, debut, fin)
-SELECT DISTINCT individu.id, unite.id, unite_role.id, unite_titre.nom, debut, fin
-FROM appartient
-JOIN individu ON individu.slug = appartient.individu
-JOIN unite ON unite.slug = appartient.unite
-JOIN unite_role ON unite_role.acl_role = (CASE
-WHEN appartient.role IN ('chef', 'routier', '3e', '4e', '5e', '6e', '7e', '8e', 'siz', 'sec') THEN appartient.role
-ELSE 'assistant'
-END) AND unite_role.type = unite.type
-JOIN unite_type ON unite_type.id = unite.type
-LEFT JOIN unite_titre ON unite_titre.slug = appartient.role;
-
--- suppression des titres (aumônier, bagheera, etc.)
-UPDATE unite_role SET acl_role = 'membre' WHERE acl_role LIKE '_e' OR acl_role IN ('siz', 'sec');
-DELETE FROM unite_role
-WHERE acl_role NOT IN ('chef', 'assistant', 'membre');
-
-CREATE VIEW vappartenances AS
-SELECT DISTINCT
-  appartenance.id, individu.slug AS individu, appartenance.titre, role.titre AS role, unite.nom AS unite
-FROM appartenance
-JOIN individu ON individu.id = appartenance.individu
-JOIN unite_role AS role ON role.id = appartenance.role
-JOIN unite ON unite.id = appartenance.unite
-ORDER BY individu.naissance ASC;
-
-DROP TABLE appartient;
 EOS
 );
   }

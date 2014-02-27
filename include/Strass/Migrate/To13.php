@@ -1,6 +1,6 @@
 <?php /*-*- sql -*-*/
 
-class Strass_Migrate_To18 extends Strass_MigrateHandler {
+class Strass_Migrate_To13 extends Strass_MigrateHandler {
   function online($db) {
     $db->exec(<<<'EOS'
 --

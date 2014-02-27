@@ -1,79 +1,95 @@
 <?php /*-*- sql -*-*/
 
 class Strass_Migrate_To10 extends Strass_MigrateHandler {
+  function offline() {
+    error_log("Renommage des dossiers d'article"); //'
+
+    foreach (glob('data/journaux/*/*/*') as $src) {
+      $journal = dirname(dirname($src));
+      $dest = $journal . '/' . basename($src);
+      rename($src,  $dest);
+    }
+  }
+
   function online($db) {
     $db->exec(<<<'EOS'
 --
-
-DROP TABLE apporter;
-
-CREATE TABLE `activite` (
+CREATE TABLE `journal` (
        id		INTEGER		PRIMARY KEY,
-       slug     	CHAR(128)	NOT NULL UNIQUE,
-       type		CHAR(16),
-       intitule 	CHAR(128),
-       accronym		CHAR(8),
-       date		CHAR(16),
-       lieu     	CHAR(128),
-       debut    	DATETIME       	NOT NULL,
-       fin      	DATETIME       	NOT NULL,
-       description	TEXT
+       slug		CHAR(128)	NOT NULL UNIQUE,
+       -- Un seul blog par unité autorisé
+       unite		INTEGER		UNIQUE REFERENCES unite(id),
+       nom		CHAR(128)	UNIQUE
 );
 
+INSERT INTO journal
+(slug, unite, nom)
+SELECT journaux.id, unite.id, journaux.nom
+FROM journaux
+JOIN unite ON unite.slug = journaux.unite;
 
-INSERT INTO activite
-(slug, intitule, lieu, debut, fin, description)
-SELECT id, (CASE
-WHEN intitule LIKE '%sortie%' THEN NULL
-WHEN intitule LIKE '%camp%' THEN NULL
-WHEN intitule LIKE '%week-end%' THEN NULL
-WHEN intitule LIKE '%chasse%' THEN NULL
-ELSE intitule
-END) AS intitule
-, lieu, debut, fin, message
-FROM activites;
+DROP TABLE journaux;
 
-CREATE TABLE `participation` (
+CREATE VIEW vjournaux AS
+SELECT journal.id, journal.slug, unite.slug, journal.nom
+FROM journal
+JOIN unite ON unite.id = journal.unite;
+
+
+CREATE TABLE `article` (
        id		INTEGER		PRIMARY KEY,
-       activite		INTEGER		NOT NULL REFERENCES activite(id),
-       unite		INTEGER		NOT NULL REFERENCES unite(id),
-       UNIQUE(activite, unite)
+       slug		CHAR(256)	NOT NULL UNIQUE,
+       journal	 	INTEGER 	REFERENCES journal(id),
+       titre    	CHAR(256),
+       boulet   	TEXT,
+       article  	TEXT,
+       public   	INT(1)     	DEFAULT 0,
+       commentaires	INTEGER		UNIQUE NOT NULL REFERENCES commentaire(id)
 );
 
-INSERT INTO participation
-(activite, unite)
-SELECT activite.id, unite.id
-FROM participe
-JOIN activite ON activite.slug = participe.activite
-JOIN unite ON unite.slug = participe.unite
-ORDER BY debut;
+INSERT INTO commentaire
+(auteur, message, date)
+SELECT auteur.id, articles.id, articles.date || ' ' || substr(articles.heure, 0, 6)
+FROM articles
+JOIN individu AS auteur ON auteur.slug = articles.auteur;
 
-DROP TABLE participe;
-DROP TABLE activites;
+INSERT INTO `article`
+(slug, journal, titre, boulet, article, public, commentaires)
+SELECT articles.id, journal.id,
+       articles.titre, articles.boulet, articles.article, articles.public,
+       (SELECT id FROM commentaire WHERE message = articles.id)
+FROM articles
+JOIN journal ON journal.slug = articles.journal;
 
-CREATE VIEW vcalendrier AS
-SELECT
-	participation.id, strftime('%Y', debut, '-9 months') AS annee,
-	activite.slug AS activite, unite.slug AS unite, debut, fin
-FROM activite
-JOIN participation ON participation.activite = activite.id
-JOIN unite ON unite.id = participation.unite
-ORDER BY debut;
+CREATE VIEW varticles AS
+SELECT article.id,
+       journal.slug AS journal,
+       article.slug, auteur.slug AS auteur,
+       article.titre, commentaire.date
+FROM article
+JOIN journal ON journal.id = article.journal
+JOIN commentaire ON commentaire.id = article.commentaires
+JOIN individu AS auteur ON auteur.id = commentaire.auteur
+ORDER BY journal.id, commentaire.date;
 
-CREATE TABLE activite_document (
+
+CREATE TABLE `article_etiquette` (
        id		INTEGER		PRIMARY KEY,
-       activite		INTEGER		NOT NULL REFERENCES activite(id),
-       document		CHAR(128),
-       UNIQUE (activite, document)
+       article		INTEGER		NOT NULL REFERENCES article(id),
+       etiquette	CHAR(128)	NOT NULL,
+       UNIQUE(article, etiquette)
 );
 
-INSERT INTO activite_document
-(activite, document)
-SELECT activite.id, document
-FROM doc_activite
-JOIN activite ON activite.slug = activite;
+INSERT INTO article_etiquette
+(article, etiquette)
+SELECT DISTINCT
+       article.id, rubriques.nom
+FROM rubriques
+JOIN articles ON articles.rubrique = rubriques.id AND articles.journal = rubriques.journal
+JOIN article ON article.slug = articles.id;
 
-DROP TABLE doc_activite;
+DROP TABLE articles;
+DROP TABLE rubriques;
 
 EOS
 );
