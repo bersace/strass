@@ -9,7 +9,7 @@ ALTER TABLE livredor RENAME TO tmp;
 CREATE TABLE `livredor` (
        id INTEGER PRIMARY KEY,
        auteur           CHAR(128)	NOT NULL,
-       date             TIMESTAMP	DEFAULT CURRENT_TIMESTAMP,
+       date             DATETIME	DEFAULT CURRENT_TIMESTAMP,
        public           BOOLEAN		DEFAULT 0,
        contenu          TEXT		NOT NULL
 );

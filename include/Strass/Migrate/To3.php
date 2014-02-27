@@ -7,7 +7,7 @@ CREATE TABLE citation (
   id        INTEGER PRIMARY KEY,
   texte     TEXT,
   auteur    CHAR(128),
-  date      CHAR(16)
+  date      DATETIME
 );
 
 INSERT INTO citation
