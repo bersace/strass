@@ -1,14 +1,21 @@
 /*-*- css -*-*/
 
-#document.liens p
-{
-    margin: 0;
+@import "common";
 
-    &.description
-    {
-	font-style: italic;
-	margin: .5ex 0 1ex 1em;
-	font-size: .9em;
-	color: #444;
+#document.liens {
+    ul {
+	@include minipage;
+    }
+
+    p {
+	margin: 0;
+
+	&.description
+	{
+	    font-style: italic;
+	    margin: .5ex 0 1ex 1em;
+	    font-size: .9em;
+	    color: #444;
+	}
     }
 }
