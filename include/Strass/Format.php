@@ -58,7 +58,8 @@ abstract class Strass_Format
 
   function getFilename($view)
   {
-    return wtk_strtoid($view->page->metas->get('DC.Title')).'.'.$this->_suffix;
+    $page = Zend_Registry::get('page');
+    return wtk_strtoid($page->metas->get('DC.Title')).'.'.$this->_suffix;
   }
 
   function renderAddons($controller)
