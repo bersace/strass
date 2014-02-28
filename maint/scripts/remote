@@ -166,7 +166,6 @@ class backup1(object):
         ftp.get('resources/styles')
         ftp.get('config')
         ftp.get('data')
-        ftp.get('robots.txt')
 
 main = Script()
 sys.exit(main())
