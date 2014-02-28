@@ -6,7 +6,7 @@ date_default_timezone_set('Europe/Paris'); // config/knema/site ?
 
 $paths = explode(':', get_include_path());
 array_shift($paths);
-array_unshift($paths,'.', dirname(__FILE__).'/include');
+array_unshift($paths,'.', dirname(dirname(dirname(__FILE__))).'/include');
 set_include_path(implode(':',$paths));
 
 require_once('Orror.php');
