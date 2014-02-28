@@ -60,4 +60,9 @@ migrate:
 	git add --all -- data/ private/ config/ resources/;
 	git commit -m 'MIGRATION';
 
+upgrade:
+	make setmaint
+	$(REMOTE) $@
+	make unsetmaint
+
 .PHONY: all clean setup serve restore restore1 test setmaint unsetmaint backup1
