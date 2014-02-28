@@ -21,14 +21,8 @@ class Strass_Pages_Renderer_Individus extends Wtk_Pages_Renderer
 
     $t->addNewColumn("Utilisateur", new Wtk_Table_CellRenderer_Link('href', 'fiche',
 								    'label', 'prenom-nom'));
-    $r = new Wtk_Table_CellRenderer_Link('href', 'adelec',
-					 'label', 'adelec');
-    $r->setUrlFormat('mailto:%s');
-    $t->addNewColumn("Adélec", $r);
     $t->addNewColumn("Inscription", new Wtk_Table_CellRenderer_Link('href', 'url-app',
 								    'label', 'app'));
-    $t->addNewColumn("Statut", new Wtk_Table_CellRenderer_Text('text', 'statut'));
-
     $t->addNewColumn(null, new Wtk_Table_CellRenderer_Link('href', 'url-admin',
 							   'label', 'Administrer',
 							   'flags', array('adminlink')),

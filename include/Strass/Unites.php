@@ -222,8 +222,10 @@ class Unite extends Strass_Db_Table_Row_Abstract implements Zend_Acl_Resource_In
     $tu = $this->findParentTypesUnite();
     if ($tu->age_max && $tu->age_max < 18 && $this->nom)
       return $this->nom;
-    else
+    else if (!$this->nom)
       return $this->getFullName();
+    else
+      return $this->nom;
   }
 
   public function getFullName()
