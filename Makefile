@@ -52,5 +52,7 @@ unsetmaint:
 backup1:
 	make setmaint
 	$(REMOTE) $@
+	git add data/ resources/ config/;
+	git commit -m 'BACKUP';
 
 .PHONY: all clean setup serve restore restore1 test setmaint unsetmaint backup1
