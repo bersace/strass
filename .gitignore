@@ -3,3 +3,4 @@
 cache/
 include/Strass/Installer/sql/strass.sqlite
 maintenance.html
+maint/strass.conf
