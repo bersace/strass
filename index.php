@@ -9,7 +9,7 @@ set_include_path(implode(':',$paths));
 
 require_once 'Wtk.php';
 require_once 'Orror.php';
-require_once('Zend/Loader/Autoloader.php');
+require_once 'Zend/Loader/Autoloader.php';
 $loader = Zend_Loader_Autoloader::getInstance();
 $loader->registerNamespace('Dio_');
 $loader->registerNamespace('Wtk_');

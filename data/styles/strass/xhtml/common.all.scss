@@ -149,13 +149,13 @@ ul.adminlinks {
 	{
 	    font-size: 3em;
 	    font-family: serif;
+	    text-shadow: 1pt 1pt 2pt rgba(250, 251, 248, .75),
+	    1pt 1pt 4pt rgba(50, 51, 48, .75);
 
 	    a
 	    {
 		color: inherit;
 		text-decoration: inherit;
-		text-shadow: 1pt 1pt 2pt rgba(250, 251, 248, .75),
-		1pt 1pt 4pt rgba(50, 51, 48, .75);
 	    }
 	}
     }

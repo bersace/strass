@@ -2,18 +2,22 @@ SCSS=$(shell find data/styles/ -name "*.scss")
 CSS=$(patsubst %.scss,%.css,$(SCSS))
 INSTDB=include/Strass/Installer/sql/strass.sqlite
 
-all: $(CSS) $(INSTDB)
+all: $(CSS) $(INSTDB) maintenance.html
 
 %.css: %.scss
-	sassc $^ > $@
+	sassc $< > $@
+
+maintenance.html: maintenance $(CSS)
+	./$< > $@
 
 $(INSTDB): include/Strass/Installer/sql/schema.sql
 	rm -vf $@
-	sqlite3 -batch $@ ".read $^"
+	sqlite3 -batch $@ ".read $<"
 
 clean:
 	rm -vf $(CSS)
 	rm -vf $(INSTDB)
+	rm -vf maintenance.html
 
 setup:
 	aptitude install php5-cli php5-sqlite php-pear php5-gd php5-imagick python-pip
@@ -38,4 +42,4 @@ endif
 test:
 	phpunit --bootstrap tests/bootstrap.php tests
 
-.PHONY: all clean serve setup test
+.PHONY: all clean setup serve restore restore1 test

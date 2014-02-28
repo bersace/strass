@@ -1,0 +1,34 @@
+#!/usr/bin/php
+<?php /*-*- php -*-*/
+umask(0022);
+date_default_timezone_set('Europe/Paris');
+
+$_SERVER['HTTP_HOST'] = 'localhost';
+$_SERVER['HTTP_HOST'] = 'localhost';
+
+$paths = explode(':', get_include_path());
+array_shift($paths);
+array_unshift($paths,'.', dirname(__FILE__).'/include');
+set_include_path(implode(':',$paths));
+
+require_once 'Wtk.php';
+require_once 'Zend/Loader/Autoloader.php';
+
+$loader = Zend_Loader_Autoloader::getInstance();
+$loader->registerNamespace('Dio_');
+$loader->registerNamespace('Wtk_');
+$loader->registerNamespace('Strass_');
+
+$config = new Strass_Config_Php('strass');
+
+$document = new Wtk_Document(new Wtk_Metas(array('DC.Title' => 'Site en maintenance')));
+$document->setStyle(new Wtk_Document_Style('strass'));
+$document->addStyleComponents('layout', 'minilayout');
+$document->addFlags($config->system->mouvement);
+$document->embedStyle();
+$document->header->setTitle($config->metas->title);
+$document->header->addFlags($config->system->mouvement);
+$dialog = $document->addDialog();
+$dialog->addParagraph("Le site est actuellement en maintance. Désolé et à bientot !");
+$render = Wtk_Render::factory($document, 'Xhtml');
+echo $render->render();
