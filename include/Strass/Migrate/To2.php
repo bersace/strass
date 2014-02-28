@@ -37,11 +37,11 @@ class Strass_Migrate_To2 extends Strass_MigrateHandler {
     rename("data/intro.wiki", "private/unites/intro.wiki");
 
     // Nettoyages
-    unlink('resources/templates/.htaccess');
+    @unlink('resources/templates/.htaccess');
     $this::rrmdir('resources/');
-    unlink('config/.htaccess');
+    @unlink('config/.htaccess');
     $this::rrmdir('config/');
-    unlink('data/db/.htaccess');
+    @unlink('data/db/.htaccess');
     $this::rrmdir('data/db/');
     $this::rrmdir('data/images/');
     $this::rrmdir('private/statiques/strass');
