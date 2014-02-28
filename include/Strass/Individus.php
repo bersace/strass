@@ -404,13 +404,13 @@ class Individu extends Strass_Db_Table_Row_Abstract implements Zend_Acl_Role_Int
     return $t->fetchAll($s);
   }
 
-  function getImage($id = null, $test = true)
+  function getImage($slug = null, $test = true)
   {
     $ind = Zend_Registry::get('user');
     if (!$ind)
       return null;
-    $id = $id ? $id : $this->id;
-    $image = 'data/avatars/'.$id.'.png';
+    $slug = $slug ? $slug : $this->slug;
+    $image = 'data/avatars/'.$slug.'.png';
     return !$test || is_readable($image) ? $image : null;
   }
 
