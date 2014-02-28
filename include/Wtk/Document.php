@@ -7,7 +7,7 @@ class Wtk_Document extends Wtk_Section
 	protected	$alternatives = array();
 	protected	$template;
 
-	function __construct ($metas)
+	function __construct ($metas = null)
 	{
 		parent::__construct ('document', null);
 		$this->setMetas($metas);
@@ -21,6 +21,9 @@ class Wtk_Document extends Wtk_Section
 
 	function setMetas($metas)
 	{
+	  if (!$metas)
+	    $metas = new Wtk_Metas;
+
 		$this->metas = $metas;
 		$this->setTitle($metas->get('DC.Title'));
 		if (!$metas->has('DC.Title.alternative'))

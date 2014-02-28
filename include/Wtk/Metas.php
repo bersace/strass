@@ -4,7 +4,7 @@ class Wtk_Metas implements Iterator
 {
 	protected	$config;
 
-	function __construct($config)
+	function __construct($config = array())
 	{
 		$this->config = $config;
 	}
