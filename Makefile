@@ -55,4 +55,9 @@ backup1:
 	git add data/ resources/ config/;
 	git commit -m 'BACKUP';
 
+migrate:
+	maint/scripts/migrate;
+	git add --all -- data/ private/ config/ resources/;
+	git commit -m 'MIGRATION';
+
 .PHONY: all clean setup serve restore restore1 test setmaint unsetmaint backup1
