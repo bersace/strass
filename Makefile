@@ -2,7 +2,7 @@ SCSS=$(shell find data/styles/ -name "*.scss")
 CSS=$(patsubst %.scss,%.css,$(SCSS))
 INSTDB=include/Strass/Installer/sql/strass.sqlite
 
-all: $(CSS) $(INSTDB) maintenance.html
+all: $(CSS) $(INSTDB)
 
 %.css: %.scss
 	sassc $< > $@
