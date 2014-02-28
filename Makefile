@@ -42,4 +42,10 @@ endif
 test:
 	phpunit --bootstrap tests/bootstrap.php tests
 
+setmaint: maintenance.html
+	maint/scripts/remote --config maint/strass.conf $@
+
+unsetmaint:
+	maint/scripts/remote --config maint/strass.conf $@
+
 .PHONY: all clean setup serve restore restore1 test

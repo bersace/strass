@@ -1,0 +1,114 @@
+#!/usr/bin/python
+# -*- coding: utf-8 -*-
+
+import sys, os
+import logging
+import argparse
+from ftplib import FTP
+from ConfigParser import SafeConfigParser
+
+
+log = logging.getLogger('strass')
+
+class Script(object):
+    parser = argparse.ArgumentParser(
+        description=u"Gestionnaire de site strass")
+    parser.set_defaults(loglevel=logging.INFO)
+    parser.add_argument(
+        '-v', '--verbose',
+        action='store_const', dest='loglevel', const=logging.DEBUG)
+    parser.add_argument(
+        '-q', '--quiet',
+        action='store_const', dest='loglevel', const=logging.CRITICAL)
+    parser.add_argument(
+        '-c', '--config', default='maint/strass.conf', metavar='FILE')
+
+    subparsers = parser.add_subparsers(metavar='ACTION')
+
+    def __call__(self):
+        args = self.parser.parse_args()
+        format = "%(asctime)s %(levelname)-8s %(name)s: %(message)s" if args.loglevel is logging.DEBUG else "%(levelname)-8s: %(message)s"
+        logging.basicConfig(level=args.loglevel, format=format)
+
+        try:
+            config = SafeConfigParser()
+            with open(args.config) as f:
+                config.readfp(f, args.config)
+
+            return args.action(args, config)
+        except Exception, e:
+            log.exception(e)
+            log.debug("%r", e)
+            log.error("%s", e)
+            return 1
+
+
+def command(cls):
+    parser = Script.subparsers.add_parser(cls.__name__)
+    parser.set_defaults(action=cls(parser))
+    return cls
+
+
+class FTPHelper(object):
+    log = logging.getLogger('strass.ftp')
+
+    def __init__(self, config):
+        self.config = config
+        self.ftp = FTP()
+
+
+    def __del__(self):
+        self.ftp.quit()
+        self.ftp.close()
+
+
+    def connect(self):
+        self.ftp.connect(self.config.get('remote', 'hostname'))
+        self.ftp.login(self.config.get('remote', 'username'),
+                       self.config.get('remote', 'password'))
+        self.ftp.cwd(self.config.get('remote', 'root'))
+        self.log.debug(u"Connecté à %s", self.config.get('remote', 'hostname'))
+
+
+    def put(self, path):
+        self.ftp.storbinary('STOR ' + path, open(path))
+        stat = os.stat(path)
+        self.ftp.sendcmd('SITE CHMOD %o %s' % (stat.st_mode, path))
+        self.log.debug("Envoi de %s", path)
+
+    def delete(self, path):
+        self.ftp.delete(path)
+
+
+@command
+class setmaint(object):
+    log = logging.getLogger('strass.maint')
+
+    def __init__(self, parser):
+        pass
+
+
+    def __call__(self, args, config):
+        ftp = FTPHelper(config)
+        ftp.connect()
+        ftp.put('maintenance.html')
+        ftp.put('include/Strass/Version.php')
+        ftp.put('index.php')
+
+
+@command
+class unsetmaint(object):
+    log = logging.getLogger('strass.maint')
+
+    def __init__(self, parser):
+        pass
+
+
+    def __call__(self, args, config):
+        ftp = FTPHelper(config)
+        ftp.connect()
+        ftp.delete('maintenance.html')
+
+
+main = Script()
+sys.exit(main())
