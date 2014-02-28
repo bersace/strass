@@ -27,7 +27,7 @@ class Wtk_Document extends Wtk_Section
 			$metas->set('DC.Title.alternative',
 				    $metas->get('DC.Title'));
 	}
-  
+
 	function getFooter()
 	{
 		return $this->footer;
@@ -102,8 +102,10 @@ class Wtk_Document extends Wtk_Section
 			$tpl = $this->elementTemplate();
 			$tpl->addChild('header', $this->header->template());
 			$tpl->addChild('content', $this->sectionTemplate());
-			$tpl->addChild('aside', $this->aside->template());
-			$tpl->addChild('footer', $this->footer->template());
+			if (count($this->aside))
+			  $tpl->addChild('aside', $this->aside->template());
+			if (count($this->footer))
+			  $tpl->addChild('footer', $this->footer->template());
 			$this->template = $tpl;
 		}
 

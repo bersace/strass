@@ -5,7 +5,7 @@ $year = date('Y');
 
 $snkp = isset($_SERVER['ORIG_SCRIPT_NAME']) ? 'ORIG_' : '';
 $sn = $_SERVER[$snkp.'SCRIPT_NAME'];
-$baseurl = "http://".$_SERVER['HTTP_HOST'].dirname($sn).'/';
+$baseurl = '/';
 $dojodbg = 'false';
 
 echo "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n";
@@ -71,7 +71,7 @@ else {
 <style type="text/css" media="<?php echo $medium; ?>" title="<?php echo $et; ?>">
 <!--/*--><![CDATA[<!--*/
 
-<?php echo $css; ?>
+  <?php echo str_replace('url("', 'url("'.dirname($files[0]['file']).'/', $css); ?>
 /*]]>*/-->
 </style>
 <?php endforeach; ?>
@@ -90,9 +90,9 @@ dojo.require("dojo.parser");
 <?php endif; ?>
   </head>
   <body>
-    <?php $this->header->output(); ?>
-    <?php $this->content->output (); ?>
-    <?php $this->aside->output(); ?>
-    <?php $this->footer->output(); ?>
+<?php if (isset($this->header)) $this->header->output(); ?>
+<?php if (isset($this->content)) $this->content->output (); ?>
+<?php if (isset($this->aside)) $this->aside->output(); ?>
+<?php if (isset($this->footer)) $this->footer->output(); ?>
   </body>
 </html>
