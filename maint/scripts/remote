@@ -1,11 +1,13 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
-import sys, os
+import sys
+import os.path
 import logging
 import argparse
 from ftplib import FTP
 from ConfigParser import SafeConfigParser
+from datetime import datetime
 
 
 log = logging.getLogger('strass')
@@ -68,6 +70,7 @@ class FTPHelper(object):
                        self.config.get('remote', 'password'))
         self.ftp.cwd(self.config.get('remote', 'root'))
         self.log.debug(u"Connecté à %s", self.config.get('remote', 'hostname'))
+        self.log.debug(self.ftp.getwelcome())
 
 
     def put(self, path):
@@ -75,6 +78,45 @@ class FTPHelper(object):
         stat = os.stat(path)
         self.ftp.sendcmd('SITE CHMOD %o %s' % (stat.st_mode, path))
         self.log.debug("Envoi de %s", path)
+
+
+    def getfile(self, path):
+        parent = os.path.dirname(path)
+        if parent and not os.path.exists(parent):
+            os.makedirs(parent)
+
+        if os.path.exists(path):
+            code, data = self.ftp.sendcmd('MDTM %s' % path).split(None, 1)
+            assert int(code) == 213
+            remote_last_mod = datetime.strptime(data, '%Y%m%d%H%M%S')
+            local_last_mod = datetime.fromtimestamp(os.stat(path).st_mtime)
+            if local_last_mod > remote_last_mod:
+                self.log.debug('%s à jour', path)
+                return
+
+        f = open(path, 'wb')
+        self.ftp.retrbinary('RETR %s' % path, f.write)
+        self.log.debug(u"Réception de %s", path)
+
+
+    def get(self, path):
+        entries = []
+        self.ftp.retrlines('LIST -a %s' % path, entries.append)
+        _, name = entries[0].rsplit(None, 1)
+        if name == '.':
+            for entry in entries[2:]:
+                _, name= entry.rsplit(None, 1)
+                type_ = entry[0]
+                childpath = path + '/' + name
+                if type_ == 'd':
+                    self.get(childpath)
+                elif type_ == '-':
+                    self.getfile(childpath)
+                else:
+                    self.log.info('Ignore %s', childpath)
+        else:
+            self.getfile(path)
+
 
     def delete(self, path):
         self.ftp.delete(path)
@@ -109,6 +151,22 @@ class unsetmaint(object):
         ftp.connect()
         ftp.delete('maintenance.html')
 
+
+@command
+class backup1(object):
+    log = logging.getLogger('strass.backup')
+
+    def __init__(self, parser):
+        pass
+
+
+    def __call__(self, args, config):
+        ftp = FTPHelper(config)
+        ftp.connect()
+        ftp.get('resources/styles')
+        ftp.get('config')
+        ftp.get('data')
+        ftp.get('robots.txt')
 
 main = Script()
 sys.exit(main())
