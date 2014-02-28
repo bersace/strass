@@ -90,3 +90,5 @@ CHANGEMENTS WEBMESTRE
    les données à publier (style, scripts, images, documents,
    etc.). include/ reste. Également, les dossiers de data/ ont été
    étalé en largeur plutôt que multiplier les dossiers fils unique.
+
+ - Gros nettoyage des dépendances. De 35Mo à 13Mo !
