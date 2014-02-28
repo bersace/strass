@@ -30,10 +30,11 @@ class Strass_Migrate_To2 extends Strass_MigrateHandler {
     $this::rrmdir('data/statiques');
 
     rename("private/statiques/strass/unites", "private/unites");
-    rename("data/images/strass/unites", "data/unites");
+    rename("data/images/strass/unites/", "data/unites");
     rename("data/images/strass/photos/", "data/photos");
     rename("data/images/strass/individus/", "data/avatars/");
     rename("data/images/strass/journaux/", "data/journaux");
+    rename("data/intro.wiki", "private/unites/intro.wiki");
 
     // Nettoyages
     unlink('resources/templates/.htaccess');
@@ -44,7 +45,6 @@ class Strass_Migrate_To2 extends Strass_MigrateHandler {
     $this::rrmdir('data/db/');
     $this::rrmdir('data/images/');
     $this::rrmdir('private/statiques/strass');
-    unlink('data/intro.wiki');
 
     Strass_Version::setInstalled();
   }

@@ -101,7 +101,7 @@ UPDATE roles SET titre = 'assistante cheftaine de compagnie' WHERE accr = 'ACCie
 UPDATE roles SET accr = 'ACR' WHERE id = 'assistant' AND type = 'ronde';
 UPDATE roles SET accr = 'GA' WHERE titre = 'guide-aînée';
 
--- Migration des roles, même s'il y a des titres
+-- Migration des roles, même s'il y a des titres '
 INSERT INTO unite_role
 (slug, type, acl_role, titre, accr, ordre)
 SELECT
@@ -370,5 +370,8 @@ ORDER BY individu.naissance ASC;
 DROP TABLE appartient;
 EOS
 );
+
+    $rootslug = $db->query("SELECT slug FROM unite WHERE parent IS NULL LIMIT 1")->fetchColumn();
+    rename('private/unites/intro.wiki', 'private/unites/'.$rootslug.'.wiki');
   }
 }
