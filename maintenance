@@ -3,9 +3,6 @@
 umask(0022);
 date_default_timezone_set('Europe/Paris');
 
-$_SERVER['HTTP_HOST'] = 'localhost';
-$_SERVER['HTTP_HOST'] = 'localhost';
-
 $paths = explode(':', get_include_path());
 array_shift($paths);
 array_unshift($paths,'.', dirname(__FILE__).'/include');
@@ -21,14 +18,15 @@ $loader->registerNamespace('Strass_');
 
 $config = new Strass_Config_Php('strass');
 
-$document = new Wtk_Document(new Wtk_Metas(array('DC.Title' => 'Site en maintenance')));
+$document = new Wtk_Document;
 $document->setStyle(new Wtk_Document_Style('strass'));
 $document->addStyleComponents('layout', 'minilayout');
 $document->addFlags($config->system->mouvement);
 $document->embedStyle();
 $document->header->setTitle($config->metas->title);
 $document->header->addFlags($config->system->mouvement);
-$dialog = $document->addDialog();
-$dialog->addParagraph("Le site est actuellement en maintance. Désolé et à bientot !");
+$dialog = $document->addDialog("Site en maintenance");
+$dialog->addFlags('error');
+$dialog->addSection('aide')->addParagraph("Le site est actuellement en maintance. Désolé et à bientot !");
 $render = Wtk_Render::factory($document, 'Xhtml');
 echo $render->render();
