@@ -7,8 +7,8 @@ all: $(CSS) $(INSTDB) maintenance.html
 %.css: %.scss
 	sassc $< > $@
 
-maintenance.html: maintenance $(CSS)
-	./$< > $@
+maintenance.html: maint/scripts/maintenance $(CSS)
+	$< > $@
 
 $(INSTDB): include/Strass/Installer/sql/schema.sql
 	rm -vf $@
