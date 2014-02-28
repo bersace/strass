@@ -15,6 +15,10 @@ $loader->registerNamespace('Dio_');
 $loader->registerNamespace('Wtk_');
 $loader->registerNamespace('Strass_');
 
+if (Strass_Version::onMaintenance()) {
+  Strass_Version::showMaintenance();
+}
+
 if (!Strass_Version::isInstalled()) {
   Strass_Installer::main();
   return;

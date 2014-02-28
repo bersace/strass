@@ -17,6 +17,17 @@ final class Strass_Version {
     return file_put_contents(self::$install_filename, strftime('%Y-%m-%d %H-%M'));
   }
 
+  static function onMaintenance()
+  {
+    return file_exists('maintenance.html');
+  }
+
+  static function showMaintenance()
+  {
+    include 'maintenance.html';
+    exit(0);
+  }
+
   static function dataCurrent() {
     if (file_exists(self::$version_filename)) {
       return intval(trim(@file_get_contents(self::$version_filename)));
