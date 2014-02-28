@@ -212,6 +212,7 @@ ul.adminlinks {
 	    .h {
 		text-align: center;
 		margin: 1ex;
+		font-size: 140%;
 	    }
 
 	    &.info {
@@ -228,10 +229,6 @@ ul.adminlinks {
 		background-image: url("icones/attention.png");
 		background-position: 1em 1em;
 		background-repeat: no-repeat;
-
-		.h {
-		    font-size: 140%;
-		}
 
 		#aide {
 		    font-size: 120%;
