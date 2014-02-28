@@ -36,8 +36,8 @@ class Wtk_Document_Style {
 		switch ($format) {
 		case 'Xhtml':
 		  $media = array(null, 'all', 'screen', 'print', 'handheld');
-		  foreach($media as $medium) {
-		    foreach($components as $comp) {
+		  foreach($components as $comp) {
+		    foreach($media as $medium) {
 		      $bf = $this->basedir.'/'.$this->id.'/xhtml'.
 			'/'.$comp;
 		      if ($medium) {
