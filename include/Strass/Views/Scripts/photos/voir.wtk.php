@@ -21,7 +21,7 @@ $renderer = new Strass_Pages_Renderer_Photo($this->url(array('photo' => '%i')).'
 $this->document->addPages(null, $this->model, $renderer);
 $description = $this->photo->findParentCommentaires()->message;
 if ($description) {
-  $s->addText($description);
+  $this->document->addText($description);
 }
 
 if ($this->commentaires->count() || $this->com_model) {
