@@ -37,7 +37,7 @@ try {
 
   $p = '([[:alpha:]]+)';
   $f = '(xhtml|ics|vcf|rss|atom|pdf|tex|txt|od[ts]|csv)';
-  $vars = array('controller' => array($p, 'index'),
+  $vars = array('controller' => array($p, 'unites'),
 		'action'     => array($p, 'index'),
 		'format'     => array($f, 'xhtml'),
 		'annee'      => array('([[:digit:]]{4})', null));
