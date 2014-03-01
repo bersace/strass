@@ -51,23 +51,4 @@ abstract class Strass_Db_Table_Row_Abstract extends Zend_Db_Table_Row_Abstract
   protected function _initResourceAcl(&$acl)
   {
   }
-
-  function initRoleAcl()
-  {
-    $acl = Zend_Registry::get('acl');
-    if($acl->hasRole($this))
-      return;
-
-    //$acl->addRole(new Zend_Acl_Role($this->getRoleId()), $this->_parentRoles());
-    $this->_initRoleAcl($acl);
-  }
-
-  protected function _parentRoles()
-  {
-    return array();
-  }
-
-  protected function _initRoleAcl($acl)
-  {
-  }
 }
