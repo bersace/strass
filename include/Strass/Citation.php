@@ -4,14 +4,10 @@ class Citation extends Strass_Db_Table_Abstract implements Zend_Acl_Resource_Int
 {
   protected $_name = 'citation';
 
-  function __construct()
+  function initAclResource($acl)
   {
-    parent::__construct();
-    $acl = Zend_Registry::get('acl');
-    if (!$acl->has($this)) {
-      $acl->add(new Zend_Acl_Resource($this->getResourceId()));
-      $acl->allow('membres', $this, 'enregistrer');
-    }
+    $acl->add(new Zend_Acl_Resource($this->getResourceId()));
+    $acl->allow('membres', $this, 'enregistrer');
   }
 
   function getResourceId()

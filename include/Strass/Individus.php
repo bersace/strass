@@ -57,23 +57,24 @@ class Individu extends Strass_Db_Table_Row_Abstract implements Zend_Acl_Resource
 				 array('assistant', 'editer'),
 				 array(NULL, 'fiche'));
 
-  public function __construct(array $config = array())
-  {
-    parent::__construct($config);
-
-    $this->initResourceAcl($this->findUnites(NULL));
-  }
-
   public function getResourceId()
   {
     return 'individu-'.$this->slug;
   }
 
-  function _initResourceAcl($acl)
+  function initAclResource($acl)
   {
+    $acl->add(new Zend_Acl_Resource($this->getResourceId()));
+
+    $this->initPrivileges($acl, $this->findUnites());
+
     $acl->allow('membres', $this, 'fiche');
     $acl->deny(NULL, $this, 'voir-nom');
     $acl->allow('membres', $this, 'voir-nom');
+    if ($acl->hasRole($this)) {
+      $acl->allow($this, $this, array('editer', 'desinscrire'));
+      $acl->deny($this, $this, 'desinscrire');
+    }
   }
 
   public function getRoleId()
@@ -97,8 +98,6 @@ class Individu extends Strass_Db_Table_Row_Abstract implements Zend_Acl_Resource
       $parents[] = 'sachem';
 
     $acl->addRole($this, $parents);
-    $acl->allow($this, $this, array('editer', 'desinscrire'));
-    $acl->deny($this, $this, 'desinscrire');
   }
 
   function findUser() {
@@ -123,13 +122,7 @@ class Individu extends Strass_Db_Table_Row_Abstract implements Zend_Acl_Resource
 
   function __toString()
   {
-    try {
-      return $this->getFullName();
-    }
-    catch (Exception $e) {
-      error_log((string) $e);
-      return (string) $e;
-    }
+    return $this->getFullName();
   }
 
   /*
@@ -630,11 +623,24 @@ class Users extends Strass_Db_Table_Abstract
 
 class User extends Strass_Db_Table_Row_Abstract implements Zend_Acl_Role_Interface, Zend_Acl_Resource_Interface
 {
-  public function __construct(array $config = array())
-  {
-    parent::__construct($config);
 
-    $this->initResourceAcl();
+  public function getResourceId()
+  {
+    return 'user-'.$this->username;
+  }
+
+  function initAclResource($acl)
+  {
+    $acl->add(new Zend_Acl_Resource($this->getResourceId()));
+    if ($acl->hasRole($this)) {
+      $acl->allow($this, $this, 'parametres');
+      $acl->deny($this, $this, 'sudo');
+    }
+  }
+
+  public function getRoleId()
+  {
+    return 'user-'.$this->username;
   }
 
   function initAclRole($acl)
@@ -649,8 +655,6 @@ class User extends Strass_Db_Table_Row_Abstract implements Zend_Acl_Role_Interfa
     $parents[] = $individu->getRoleId();
 
     $acl->addRole(new Zend_Acl_Role($this->getRoleId()), $parents);
-    $acl->allow($this, $this, 'parametres');
-    $acl->deny($this, $this, 'sudo');
   }
 
   protected $_individu;
@@ -668,16 +672,6 @@ class User extends Strass_Db_Table_Row_Abstract implements Zend_Acl_Role_Interfa
   function isMember()
   {
     return true;
-  }
-
-  public function getRoleId()
-  {
-    return 'user-'.$this->username;
-  }
-
-  public function getResourceId()
-  {
-    return 'user-'.$this->username;
   }
 
   function testPassword($password) {

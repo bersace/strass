@@ -14,24 +14,22 @@ class Journaux extends Strass_Db_Table_Abstract
 class Journal extends Strass_Db_Table_Row_Abstract implements Zend_Acl_Resource_Interface
 {
   protected $_privileges = array(array('chef',		null),
-				 array('assistant',	null));
-
-  public function __construct(array $config = array()) {
-    parent::__construct($config);
-
-    $this->initResourceAcl();
-  }
-
-  protected function _initResourceAcl(&$acl)
-  {
-    $u = $this->findParentUnites();
-    $acl->allow($u, $this, 'ecrire');       // permettre à toute l'unité de poster
-    $acl->allow($u->findSousUnites(), $this, 'ecrire'); // et aux sous-unités
-  }
+				 array('assistant',	null),
+				 array('membre', 'ecrire'));
 
   function getResourceId()
   {
     return 'journal-'.$this->slug;
+  }
+
+  function initAclResource(&$acl)
+  {
+    $acl->add(new Zend_Acl_Resource($this->getResourceId()));
+    $u = $this->findParentUnites();
+    $this->initPrivileges($acl, array($u));
+    // permettre à un scout d'écrire dans le blog de sa troupe
+    foreach($u->findSousUnites() as $u)
+      $acl->allow($u->getRoleId('membre'), $this, 'ecrire');
   }
 
   function __toString()
@@ -121,15 +119,16 @@ class Article extends Strass_Db_Table_Row_Abstract implements Zend_Acl_Resource_
 {
   protected $_privileges = array(array('chef', NULL),
 				 array('assistant', NULL));
-  function __construct($config)
+
+  function getResourceId()
   {
-    parent::__construct($config);
-    $db = $this->getTable()->getAdapter();
-    $this->initResourceAcl(array($this->findParentJournaux()->findParentUnites()));
+    return 'article-'.$this->slug;
   }
 
-  function _initResourceAcl(&$acl)
+  function initAclResource(&$acl)
   {
+    $acl->add(new Zend_Acl_Resource($this->getResourceId()));
+    $this->initPrivileges($acl, array($this->findUnite()));
     // permettre à l'auteur d'éditer ou de supprimer son
     // article (pas de le publier, ça relève du poste dans
     // l'unité).
@@ -137,11 +136,6 @@ class Article extends Strass_Db_Table_Row_Abstract implements Zend_Acl_Resource_
     if ($acl->hasRole($auteur))
       $acl->allow($auteur, $this,
 		  array('editer', 'supprimer'));
-  }
-
-  function getResourceId()
-  {
-    return 'article-'.$this->slug;
   }
 
   function getDossier($data = null)
@@ -209,6 +203,17 @@ class Article extends Strass_Db_Table_Row_Abstract implements Zend_Acl_Resource_
       ->join('article', 'article.commentaires = commentaire.id', array())
       ->where('article.id = ?', $this->id);
 
+    return $t->fetchOne($s);
+  }
+
+  function findUnite()
+  {
+    $t = new Unites;
+    $s = $t->select()
+      ->setIntegrityCheck(false)
+      ->from('unite')
+      ->join('journal', 'journal.unite = unite.id', array())
+      ->where('journal.id = ?', $this->journal);
     return $t->fetchOne($s);
   }
 

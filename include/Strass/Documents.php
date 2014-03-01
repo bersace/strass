@@ -9,14 +9,15 @@ class Documents extends Strass_Db_Table_Abstract {
 
 class Document extends Strass_Db_Table_Row_Abstract implements Zend_Acl_Resource_Interface
 {
-  public function __construct(array $config = array()) {
-    parent::__construct($config);
-    $this->initResourceAcl($this->findUnitesViaDocsUnite());
-  }
-
   public function getResourceId()
   {
     return 'document-'.$this->slug;
+  }
+
+  function initAclResource($acl)
+  {
+    $acl->add(new Zend_Acl_Resource($this->getResourceId()));
+    $this->initPrivileges($acl, $this->UnitesViaDocsUnite());
   }
 
   public function getUri()

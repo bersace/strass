@@ -19,14 +19,9 @@ class Commentaires extends Strass_Db_Table_Abstract
 
 class Commentaire extends Strass_Db_Table_Row_Abstract implements Zend_Acl_Resource_Interface
 {
-  function __construct($config)
+  function initAclResource($acl)
   {
-    parent::__construct($config);
-
-    $this->initResourceAcl(array());
-  }
-
-  function _initResourceAcl($acl) {
+    $acl->add(new Zend_Acl_Resource($this->getResourceId()));
     $auteur = $this->findParentIndividus();
     if ($acl->hasRole($auteur))
       $acl->allow($auteur, $this, 'editer');

@@ -89,14 +89,25 @@ class Activite extends Strass_Db_Table_Row_Abstract implements Zend_Acl_Resource
   {
     parent::__construct($config);
 
-    $this->initResourceAcl($this->findUnitesParticipantesExplicites());
-
     $this->type = self::findType($this->debut, $this->fin);
     $this->annee = intval(date('Y', strtotime($this->debut) - 243 * 24 * 60 * 60));
   }
 
-  protected function _initResourceAcl(&$acl)
+  function __toString()
   {
+    return $this->getIntitule();
+  }
+
+  public function getResourceId()
+  {
+    return 'activite-'.$this->slug;
+  }
+
+  function initAclResource($acl)
+  {
+    $acl->add(new Zend_Acl_Resource($this->getResourceId()));
+    $this->initPrivileges($acl, $this->findUnitesParticipantesExplicites());
+
     // permettre à tous de voir les détails des activités passées.
     if (!$this->isFuture())
       $acl->allow(null, $this, 'consulter');
@@ -110,16 +121,6 @@ class Activite extends Strass_Db_Table_Row_Abstract implements Zend_Acl_Resource
     }
     if ($chefs)
       $acl->allow($chefs, $this, 'envoyer-photo');
-  }
-
-  function __toString()
-  {
-    return $this->getIntitule();
-  }
-
-  public function getResourceId()
-  {
-    return 'activite-'.$this->id;
   }
 
   public function getType()

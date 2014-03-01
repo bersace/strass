@@ -123,24 +123,21 @@ class Unite extends Strass_Db_Table_Row_Abstract implements Zend_Acl_Resource_In
   protected $_privileges = array(array('chef',		NULL),
 				 array('assistant',	array('prevoir-activite',
 							      'reporter')),
-				 array(NULL,		array('consulter',
+				 array('membre',	array('consulter',
 							      'calendrier',
 							      'contacts',
 							      'infos')));
-
-  public function __construct(array $config = array()) {
-    parent::__construct($config);
-    $this->initResourceAcl(array($this));
-  }
 
   public function getResourceId()
   {
     return 'unite-'.$this->slug;
   }
 
-  function _initResourceAcl($acl)
+  function initAclResource($acl)
   {
-    $acl->allow(null, $this, array('index'));
+    $acl->add(new Zend_Acl_Resource($this->getResourceId()));
+    $this->initPrivileges($acl, array($this));
+    $acl->allow(null, $this, 'index');
   }
 
   public function getRoleId($role)
@@ -150,7 +147,6 @@ class Unite extends Strass_Db_Table_Row_Abstract implements Zend_Acl_Resource_In
 
   function initAclRoles($acl, $parent = null)
   {
-    error_log('INITACL '.$this->slug);
     /*
       Les ACL sont un point crucial de Strass. Les rôles sont relatifs
       aux unités. On distingue trois classes de rôles : chef,

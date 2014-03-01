@@ -12,11 +12,10 @@ class Strass_Controller_Plugin_Auth extends Zend_Controller_Plugin_Abstract
   {
     $cache = Zend_Registry::get('cache');
     if (($acl = $cache->load('strass_acl')) === false) {
-      $acl = new Zend_Acl;
+      $acl = new Strass_Acl;
       Zend_Registry::set('acl', $acl);
 
       if ($acl->hasRole('nobody')) {
-	error_log("REINIT ACL ?");
 	return;
       }
 
