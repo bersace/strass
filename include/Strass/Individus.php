@@ -653,6 +653,18 @@ class User extends Strass_Db_Table_Row_Abstract implements Zend_Acl_Role_Interfa
     $acl->deny($this, $this, 'sudo');
   }
 
+  protected $_individu;
+
+  function findParentIndividus()
+  {
+    /* cache pour économiser pas tant la requête individu que les ACL
+       qui vont avec */
+    if (!$this->_individu)
+      $this->_individu = parent::findParentIndividus();
+
+    return $this->_individu;
+  }
+
   function isMember()
   {
     return true;
