@@ -32,7 +32,7 @@ abstract class Strass_Db_Table_Row_Abstract extends Zend_Db_Table_Row_Abstract
       $this->_initResourceAcl($acl);
       foreach ($unites as $unite) {
 	foreach ($this->_privileges as $priv) {
-	  $rid = $unite->getRoleRoleId($priv[0]);
+	  $rid = $unite->getRoleId($priv[0]);
 	  if (is_null($priv[1]) && $acl->hasRole($rid)) {
 	    $acl->allow($rid, $this);
 	  }
@@ -55,11 +55,11 @@ abstract class Strass_Db_Table_Row_Abstract extends Zend_Db_Table_Row_Abstract
   function initRoleAcl()
   {
     $acl = Zend_Registry::get('acl');
-    if(!$acl->hasRole($this)) {
-      $acl->addRole(new Zend_Acl_Role($this->getRoleId()),
-		    $this->_parentRoles());
-      $this->_initRoleAcl($acl);
-    }
+    if($acl->hasRole($this))
+      return;
+
+    //$acl->addRole(new Zend_Acl_Role($this->getRoleId()), $this->_parentRoles());
+    $this->_initRoleAcl($acl);
   }
 
   protected function _parentRoles()

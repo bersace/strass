@@ -100,17 +100,13 @@ class Activite extends Strass_Db_Table_Row_Abstract implements Zend_Acl_Resource
     // permettre à tous de voir les détails des activités passées.
     if (!$this->isFuture())
       $acl->allow(null, $this, 'consulter');
-    // permettre à tout le monde de voir les rapports de cette activité
-    $acl->allow(null, $this, 'rapport');
 
     // permettre à toute les maîtrise d'envoyer des photos.
     $us = $this->findUnitesParticipantes();
     $chefs = array();
     foreach($us as $u) {
-      if ($acl->hasRole($role = $u->getRoleRoleId('chef')))
-	$chefs[] = $role;
-      if ($acl->hasRole($role = $u->getRoleRoleId('assistant')))
-	$chefs[] = $role;
+      $chefs[] = $u->getRoleId('chef');
+      $chefs[] = $u->getRoleId('assistant');
     }
     if ($chefs)
       $acl->allow($chefs, $this, 'envoyer-photo');

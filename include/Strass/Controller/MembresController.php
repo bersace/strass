@@ -13,7 +13,7 @@ class MembresController extends Strass_Controller_Action implements Zend_Acl_Res
       $acl->add($this);
     try {
       $racine = $this->_helper->Unite->racine();
-      $acl->allow($racine->getRoleRoleId('chef'), $this);
+      $acl->allow($racine->getRoleId('chef'), $this);
     }
     catch (Strass_Db_Table_NotFound $e) {}
   }

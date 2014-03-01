@@ -51,7 +51,7 @@ class Individus extends Strass_Db_Table_Abstract
   }
 }
 
-class Individu extends Strass_Db_Table_Row_Abstract implements Zend_Acl_Role_Interface, Zend_Acl_Resource_Interface
+class Individu extends Strass_Db_Table_Row_Abstract implements Zend_Acl_Resource_Interface, Zend_Acl_Role_Interface
 {
   protected $_privileges = array(array('chef',	NULL),
 				 array('assistant', 'editer'),
@@ -64,71 +64,16 @@ class Individu extends Strass_Db_Table_Row_Abstract implements Zend_Acl_Role_Int
     $this->initResourceAcl($this->findUnites(NULL));
   }
 
+  public function getResourceId()
+  {
+    return 'individu-'.$this->slug;
+  }
+
   function _initResourceAcl($acl)
   {
-    $acl->allow('individus', $this, 'fiche');
+    $acl->allow('membres', $this, 'fiche');
     $acl->deny(NULL, $this, 'voir-nom');
     $acl->allow('membres', $this, 'voir-nom');
-  }
-
-  function _initRoleAcl($acl)
-  {
-    $acl->allow($this, $this, array('editer', 'desinscrire'));
-    $acl->deny($this, $this, 'sudo');
-    $acl->deny($this, $this, 'desinscrire');
-  }
-
-  protected function _parentRoles()
-  {
-    // Choix conservateur : si on n'est plus chef, on ne l'est
-    // plus. Donc on perd les privilèges (qui eux, sont
-    // indépendant du temps, le chef d'aujourd'hui peut éditer
-    // tout, mais le chef d'hier ne peut plus rien).
-    $apps = $this->findAppartenances('fin IS NULL');
-    $roles = array('individus');
-
-    foreach($apps as $app) {
-      $u = $app->findParentUnites();
-      // retourne siz pour les sizaine, chef sinon
-      $roles[] = $app->getRoleId();
-      $roles[] = $u->getRoleId();
-      $parente = $u->findParentUnites();
-      // récursif ?
-      if ($parente) {
-	$roles[] = $parente;
-	$grandmere = $parente->findParentUnites();
-	if ($grandmere)
-	  $roles[] = $grandmere;
-      }
-      // Un membre d'une unité est l'équivalent d'un chef d'une
-      // sous-unité. Dans les faits, les membres d'une unités
-      // sont se résument à l'ensemble de la maîtrise de la dite
-      // unité exceptées les unités finales
-      $roles = array_merge($roles, $this->getSousRoles($u));
-    }
-
-    if ($this->findUser()) {
-      $roles[] = 'membres';
-    }
-
-    if ($this->totem)
-      $roles[] = 'sachem';
-
-    return $roles;
-  }
-
-  protected function getSousRoles($unite)
-  {
-    $su = $unite->findUnites();
-    $roles = array();
-    foreach($su as $u) {
-      $role = $u->type == 'sizloup' || $u->type == 'sizjeannette' ? 'siz' : 'chef';
-      $roles[] = $u->getRoleId();
-      $roles[] = $u->getRoleRoleId($role);
-      $roles = array_merge($roles,
-			   $this->getSousRoles($u));
-    }
-    return $roles;
   }
 
   public function getRoleId()
@@ -136,9 +81,25 @@ class Individu extends Strass_Db_Table_Row_Abstract implements Zend_Acl_Role_Int
     return 'individu-'.$this->slug;
   }
 
-  public function getResourceId()
-  {
-    return 'individu-'.$this->slug;
+  function initAclRole($acl) {
+    $parents = array();
+
+    // Choix conservateur : si on n'est plus chef, on ne l'est
+    // plus. Donc on perd les privilèges (qui eux, sont
+    // indépendant du temps, le chef d'aujourd'hui peut éditer
+    // tout, mais le chef d'hier ne peut plus rien).
+    $apps = $this->findInscriptionsActives();
+    foreach($apps as $app) {
+      $parents[] = $app->getRoleId();
+    }
+
+    if ($this->totem)
+      $parents[] = 'sachem';
+
+    $acl->addRole($this, $parents);
+    Orror::dump($this->slug, $parents);
+    $acl->allow($this, $this, array('editer', 'desinscrire'));
+    $acl->deny($this, $this, 'desinscrire');
   }
 
   function findUser() {
@@ -525,12 +486,11 @@ class Appartient extends Strass_Db_Table_Row_Abstract implements Zend_Acl_Role_I
   function __construct($config)
   {
     parent::__construct($config);
-    $this->initRoleAcl();
   }
 
   public function getRoleId()
   {
-    return $this->findParentUnites()->getRoleRoleId($this->findParentRoles()->acl_role);
+    return $this->findParentUnites()->getRoleId($this->findParentRoles()->acl_role);
   }
 
   public function getResourceId()
@@ -672,22 +632,20 @@ class User extends Strass_Db_Table_Row_Abstract implements Zend_Acl_Role_Interfa
     $this->initResourceAcl();
   }
 
-  function _initRoleAcl($acl)
+  function initAclRole($acl)
   {
-    $acl->allow($this, $this, 'parametres');
-  }
-
-  protected function _parentRoles()
-  {
-    $acl = Zend_Registry::get('acl');
-
-    $roles = array('membres');
+    $parents = array('membres');
     // hériter des privilèges de l'utilisateur
     if ($this->admin)
-      $roles[] = 'admins';
-    $roles[] = $this->findParentIndividus();
+      $parents[] = 'admins';
 
-    return $roles;
+    $individu = $this->findParentIndividus();
+    $individu->initAclRole($acl);
+    $parents[] = $individu->getRoleId();
+
+    $acl->addRole(new Zend_Acl_Role($this->getRoleId()), $parents);
+    $acl->allow($this, $this, 'parametres');
+    $acl->deny($this, $this, 'sudo');
   }
 
   function isMember()
@@ -726,20 +684,19 @@ class FakeIndividu implements Zend_Acl_Resource_Interface, Zend_Acl_Role_Interfa
   function __construct($user) {
     $this->user = $user;
     $this->slug = $user->username;
+  }
 
+  function initResourceAcl() {
     $acl = Zend_Registry::get('acl');
     if (!$acl->has($this)) {
       $acl->add($this);
     }
+  }
+
+  function initAclRole($acl) {
     if (!$acl->hasRole($this)) {
       $acl->addRole($this);
     }
-  }
-
-  function initResourceAcl() {
-  }
-
-  function initRoleAcl() {
   }
 
   function findUnites() {
@@ -786,7 +743,7 @@ class Nobody implements Zend_Acl_Resource_Interface, Zend_Acl_Role_Interface {
   function initResourceAcl() {
   }
 
-  function initRoleAcl() {
+  function initAclRole() {
   }
 
   public function getRoleId()

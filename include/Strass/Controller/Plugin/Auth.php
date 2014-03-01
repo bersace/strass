@@ -8,23 +8,48 @@ class Strass_Controller_Plugin_Auth extends Zend_Controller_Plugin_Abstract
   protected $db;
   protected $sudo;
 
-  public function routeStartup()
+  public function initRoles($acl)
+  {
+    $acl->addRole(new Zend_Acl_Role('nobody'));
+    // groupes virtuels
+    $acl->addRole(new Zend_Acl_Role('admins'));
+    $acl->addRole(new Zend_Acl_Role('sachem'));
+    $acl->addRole(new Zend_Acl_Role('membres'));
+
+    $t = new Unites;
+    $racines = $t->findRacines();
+    foreach ($racines as $u) {
+      $u->initAclRoles($acl);
+    }
+  }
+
+  public function initAcl()
   {
     $acl = new Zend_Acl;
     Zend_Registry::set('acl', $acl);
 
-    if (!$acl->hasRole('individus')) {
-      $acl->addRole(new Zend_Acl_Role('individus'));
-      // groupes virtuels
-      $acl->addRole(new Zend_Acl_Role('admins'));
-      $acl->allow('admins');
-      $acl->addRole(new Zend_Acl_Role('sachem'));
-      $acl->allow('sachem', null, 'totem');
-      $acl->addRole(new Zend_Acl_Role('membres'));
-      $acl->add(new Zend_Acl_Resource('membres'));
-      $acl->add(new Zend_Acl_Resource('site'));
-      $nobody = new Nobody;
+    if ($acl->hasRole('nobody')) {
+      error_log("REINIT ACL ?");
+      return;
     }
+
+
+    $acl->add(new Zend_Acl_Resource('membres'));
+    $acl->add(new Zend_Acl_Resource('inscriptions'));
+    $acl->add(new Zend_Acl_Resource('site'));
+
+    $this->initRoles($acl);
+
+    $acl->allow('admins');
+    $acl->allow('sachem', null, 'totem');
+
+    Orror::dump($acl);
+    return $acl;
+  }
+
+  public function routeStartup()
+  {
+    $this->initAcl();
 
     $config = Zend_Registry::get('config');
     try {
@@ -33,7 +58,9 @@ class Strass_Controller_Plugin_Auth extends Zend_Controller_Plugin_Abstract
       Zend_Session::setOptions(array('cookie_path'	=> '/',
 				     'cookie_lifetime'=> $lifetime,
 				     'cache_expire'	=> $lifetime));
-    } catch (Exception $e) {}
+    } catch (Exception $e) {
+      error_log((string) $e);
+    }
 
     // models formulaire
     $m = new Wtk_Form_Model('login');
@@ -170,10 +197,8 @@ class Strass_Controller_Plugin_Auth extends Zend_Controller_Plugin_Abstract
     }
 
     $individu = $user->findParentIndividus();
-    $individu->initRoleAcl();
+    $user->initAclRole(Zend_Registry::get('acl'));
     Zend_Registry::set('individu', $individu);
-
-    $user->initRoleAcl();
     Zend_Registry::set('user', $user);
 
     return $user;
