@@ -162,7 +162,7 @@ function wtk_strtoid($string)
 			      '“' => '"', '”' => '"',
 			      '—' => '-', '–' => '-',
 			      ' ' => ' ', "\t"=> ' ',
-			      '…' => '...');
+			      '…' => '...', '°' => '');
 	return trim(preg_replace('/[[:punct:][:space:]]+/', '-',
 				 str_replace(array_keys($table),
 					     array_values($table),
