@@ -169,6 +169,10 @@ class UnitesController extends Strass_Controller_Action
     $this->metas(array('DC.Title' => 'Éditer '.$u->getFullname()));
 
     $m = new Wtk_Form_Model('unite');
+    $enum = array(null => 'Orpheline');
+    foreach ($u->findParenteCandidates() as $c)
+      $enum[$c->id] = wtk_ucfirst($c->getFullname());
+    $m->addEnum('parente', "Unité parente", $u->parent, $enum);
     $m->addString('nom', "Nom", $u->nom);
     $m->addString('extra',
 		  $u->findParentTypesUnite()->getExtraName(),
@@ -183,6 +187,7 @@ class UnitesController extends Strass_Controller_Action
       $db = $t->getAdapter();
       $db->beginTransaction();
       try {
+	$u->parent = $m->parente;
 	$u->nom = $m->get('nom');
 	$u->slug = $t->createSlug(wtk_strtoid($u->getFullname()), $u->slug);
 	$u->extra = $m->get('extra');

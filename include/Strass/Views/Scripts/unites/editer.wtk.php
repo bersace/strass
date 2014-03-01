@@ -4,6 +4,14 @@ $this->document->setTitle(new Wtk_Container(new Wtk_RawText("Éditer "),
 
 $f = $this->document->addForm($this->model);
 
+$i = $this->model->getInstance('parente');
+if (count($i) > 1) {
+  $f->addSelect('parente', true);
+}
+else {
+  $f->addHidden('parente');
+}
+
 $f->addEntry('nom', 24);
 $i = $this->model->getInstance('extra');
 if ($i->label) {
