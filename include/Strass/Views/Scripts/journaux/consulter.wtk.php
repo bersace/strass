@@ -4,7 +4,7 @@ $this->document->addStyleComponents('signature', 'article');
 
 $s = $this->document->addSection('boulet');
 $s->addFlags('article', 'boulet');
-$t = $s->addText($this->article->boulet);
+$t = $s->addText($this->article->getBoulet());
 $tw = $t->getTextWiki();
 $tw->setRenderConf('Xhtml', 'image', 'base', $this->article->getDossier());
 
