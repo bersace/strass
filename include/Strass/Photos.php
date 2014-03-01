@@ -92,7 +92,18 @@ class Photo extends Strass_Db_Table_Row_Abstract implements Zend_Acl_Resource_In
   function __construct(array $config)
   {
     parent::__construct($config);
-    $this->initResourceAcl($this->findParentActivites()->findUnitesViaParticipations());
+    $this->initResourceAcl($this->findUnites());
+  }
+
+  function findUnites()
+  {
+    $t = new Unites;
+    $s = $t->select()
+      ->setIntegrityCheck(false)
+      ->from('unite')
+      ->join('participation', 'participation.unite = unite.id', array())
+      ->where('participation.activite = ?', $this->activite);
+    return $t->fetchAll($s);
   }
 
   function getResourceId()
