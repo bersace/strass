@@ -5,7 +5,7 @@ require_once 'Strass/Addon.php';
 class Strass_Addon_Menu extends Strass_Addon_Liens
 {
   static $menu = array (array('metas' => array('label' => 'Accueil'),
-			      'url'   => array('controller' => 'index')),
+			      'url'   => array()),
 			array('metas' => array('label' => "Livre d'or"),
 			      'url'   => array('controller' => 'livredor')),
 			array('metas' => array('label' => 'Liens'),

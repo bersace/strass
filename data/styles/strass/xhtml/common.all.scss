@@ -409,7 +409,7 @@ ul.adminlinks {
 
     /* ICÔNES */
 
-    #menu li.index
+    #menu li:first-child
     {
 	background-image: url("icones/accueil.png");
     }
