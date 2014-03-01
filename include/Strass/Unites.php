@@ -604,6 +604,17 @@ class Unite extends Strass_Db_Table_Row_Abstract implements Zend_Acl_Resource_In
     return $t->fetchAll($s);
   }
 
+  function findParenteCandidates()
+  {
+    $t = $this->getTable();
+    $s = $t->select()
+      ->setIntegrityCheck(false)
+      ->distinct()
+      ->from('unite')
+      ->where('unite.type = ?', $this->findParentTypesUnite()->parent);
+    return $t->fetchAll($s);
+  }
+
   /* Liste les candidats à l'inscription dans l'unité pour une année données */
   function findCandidats($annee)
   {
@@ -655,8 +666,16 @@ class Unite extends Strass_Db_Table_Row_Abstract implements Zend_Acl_Resource_In
     return $t->fetchAll($s);
   }
 
+  function _postInsert()
+  {
+    Zend_Registry::get('cache')->remove('strass_acl');
+    /* Est-ce que ça vaut la peine de réinitialiser les ACL ? Vu qu'on
+       va certainement faire un redirect juste après l'insert… */
+  }
+
   function _postDelete()
   {
+    Zend_Registry::get('cache')->remove('strass_acl');
     if ($i = $this->getImage())
       unlink($i);
 
@@ -666,6 +685,7 @@ class Unite extends Strass_Db_Table_Row_Abstract implements Zend_Acl_Resource_In
 
   function _postUpdate()
   {
+    Zend_Registry::get('cache')->remove('strass_acl');
     if ($i = $this->getImage($this->_cleanData['id']))
       rename($i, $this->getImage(null, false));
 

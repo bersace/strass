@@ -8,42 +8,41 @@ class Strass_Controller_Plugin_Auth extends Zend_Controller_Plugin_Abstract
   protected $db;
   protected $sudo;
 
-  public function initRoles($acl)
-  {
-    $acl->addRole(new Zend_Acl_Role('nobody'));
-    // groupes virtuels
-    $acl->addRole(new Zend_Acl_Role('admins'));
-    $acl->addRole(new Zend_Acl_Role('sachem'));
-    $acl->addRole(new Zend_Acl_Role('membres'));
-
-    $t = new Unites;
-    $racines = $t->findRacines();
-    foreach ($racines as $u) {
-      $u->initAclRoles($acl);
-    }
-  }
-
   public function initAcl()
   {
-    $acl = new Zend_Acl;
-    Zend_Registry::set('acl', $acl);
+    $cache = Zend_Registry::get('cache');
+    if (($acl = $cache->load('strass_acl')) === false) {
+      $acl = new Zend_Acl;
+      Zend_Registry::set('acl', $acl);
 
-    if ($acl->hasRole('nobody')) {
-      error_log("REINIT ACL ?");
-      return;
+      if ($acl->hasRole('nobody')) {
+	error_log("REINIT ACL ?");
+	return;
+      }
+
+      $acl->add(new Zend_Acl_Resource('membres'));
+      $acl->add(new Zend_Acl_Resource('inscriptions'));
+      $acl->add(new Zend_Acl_Resource('site'));
+
+      $acl->addRole(new Zend_Acl_Role('nobody'));
+      // groupes virtuels
+      $acl->addRole(new Zend_Acl_Role('admins'));
+      $acl->addRole(new Zend_Acl_Role('sachem'));
+      $acl->addRole(new Zend_Acl_Role('membres'));
+
+      $t = new Unites;
+      $racines = $t->findRacines();
+      foreach ($racines as $u)
+	$u->initAclRoles($acl);
+
+      $acl->allow('admins');
+      $acl->allow('sachem', null, 'totem');
+
+      $cache->save($acl, 'strass_acl');
     }
+    else
+      Zend_Registry::set('acl', $acl, array(), null);
 
-
-    $acl->add(new Zend_Acl_Resource('membres'));
-    $acl->add(new Zend_Acl_Resource('inscriptions'));
-    $acl->add(new Zend_Acl_Resource('site'));
-
-    $this->initRoles($acl);
-
-    $acl->allow('admins');
-    $acl->allow('sachem', null, 'totem');
-
-    Orror::dump($acl);
     return $acl;
   }
 

@@ -97,7 +97,6 @@ class Individu extends Strass_Db_Table_Row_Abstract implements Zend_Acl_Resource
       $parents[] = 'sachem';
 
     $acl->addRole($this, $parents);
-    Orror::dump($this->slug, $parents);
     $acl->allow($this, $this, array('editer', 'desinscrire'));
     $acl->deny($this, $this, 'desinscrire');
   }
@@ -124,7 +123,13 @@ class Individu extends Strass_Db_Table_Row_Abstract implements Zend_Acl_Resource
 
   function __toString()
   {
-    return $this->getFullName();
+    try {
+      return $this->getFullName();
+    }
+    catch (Exception $e) {
+      error_log((string) $e);
+      return (string) $e;
+    }
   }
 
   /*
@@ -743,7 +748,8 @@ class Nobody implements Zend_Acl_Resource_Interface, Zend_Acl_Role_Interface {
   function initResourceAcl() {
   }
 
-  function initAclRole() {
+  function initAclRole($acl) {
+    $this->individu->initAclRole($acl);
   }
 
   public function getRoleId()
