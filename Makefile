@@ -37,6 +37,9 @@ ifdef ORIG
 restore1: restore
 	cd $(ORIG); git reset --hard;
 	cp --archive --link $(ORIG)/config/ $(ORIG)/data $(ORIG)/resources ./
+else
+restore1: restore
+	git checkout resources/ config/
 endif
 
 test:
