@@ -18,8 +18,19 @@ class Strass_Controller_Action_Helper_Document extends Zend_Controller_Action_He
 	return null;
     }
 
-    $this->_actionController->branche->append(wtk_ucfirst($d->titre));
+    $this->setBranche($d);
 
     return $d;
+  }
+
+  function setBranche($d)
+  {
+    try {
+      $u = $d->findUnite();
+      $this->_actionController->_helper->Unite->setBranche($u, 'index', 'documents');
+    }
+    catch (Strass_Db_Table_NotFound $e) {}
+
+    $this->_actionController->branche->append(wtk_ucfirst($d->titre));
   }
 }
