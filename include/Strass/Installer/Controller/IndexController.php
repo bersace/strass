@@ -3,7 +3,7 @@
 class IndexController extends Strass_Installer_Controller_Action
 {
   static $mouvements = array('suf' => 'Scouts unitaires de France',
-			     /* 'fse' => "Association guides et scouts d'Europe", */
+			     'fse' => "Association guides et scouts d'Europe",
 			     );
 
   function indexAction()
