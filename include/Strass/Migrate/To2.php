@@ -45,7 +45,7 @@ class Strass_Migrate_To2 extends Strass_MigrateHandler {
     $this::rrmdir('data/db/');
     $this::rrmdir('data/images/');
     $this::rrmdir('private/statiques/strass');
-    $this::rrmdir('private/statiques/scout');
+    @$this::rrmdir('private/statiques/scout');
 
     Strass_Version::setInstalled();
   }
