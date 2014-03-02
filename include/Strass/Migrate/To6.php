@@ -2,9 +2,10 @@
 
 class Strass_Migrate_To6 extends Strass_MigrateHandler {
   function online($db) {
-    $db->exec(<<<'EOS'
---
+    $config = new Strass_Config_Php('strass');
+    $SUF = $config->get('site/id') == 'suf1520';
 
+    $db->exec(<<<'EOS'
 CREATE TABLE `unite_type`
 (
 	id		INTEGER		PRIMARY KEY,
@@ -31,13 +32,21 @@ SET parent = (
     FROM types_unite AS t
     JOIN unite_type AS p ON p.slug = t.parent
     WHERE t.id = unite_type.slug);
+EOS
+);
 
+    if ($SUF):
+      $db->exec(<<<'EOS'
 INSERT INTO unite_type
 (slug, parent, nom, ordre, sexe, age_min, age_max)
 VALUES
 ('eqclan', (SELECT id FROM unite_type WHERE slug = 'clan'), 'équipe', 1, 'h', 16, 30),
 ('eqfeu', (SELECT id FROM unite_type WHERE slug = 'feu'), 'équipe', 1, 'f', 16, 30);
+EOS
+);
+    endif;
 
+    $db->exec(<<<'EOS'
 DROP TABLE types_unite;
 
 CREATE VIEW vtypes AS
@@ -86,25 +95,45 @@ CREATE TABLE `unite_role` (
 	ordre		INT(2),
 	UNIQUE (slug, type)
 );
+EOS
+);
 
+    if ($SUF):
+      $db->exec(<<<'EOS'
 -- préparation des données pour migration
 
 UPDATE roles SET accr = 'CF' WHERE id = 'chef' AND type = 'feu';
-UPDATE roles SET accr = replace(accr, '.', '');
 UPDATE roles SET titre = 'assistant chef de clan', accr = 'ACC' WHERE id = 'assistant' AND titre = 'routier';
 UPDATE roles SET titre = 'cheftaine de compagnie' WHERE accr = 'CCie';
 UPDATE roles SET titre = 'assistante cheftaine de compagnie' WHERE accr = 'ACCie';
 UPDATE roles SET accr = 'ACR' WHERE id = 'assistant' AND type = 'ronde';
 UPDATE roles SET accr = 'GA' WHERE titre = 'guide-aînée';
+EOS
+);
+    else:
+      $db->exec(<<<'EOS'
+-- préparation des données pour migration
+
+UPDATE roles SET titre = 'chef de clan adjoint', accr = 'CCA' WHERE id = 'assistant' AND type = 'clan';
+EOS
+);
+    endif;
+
+    $db->exec(<<<'EOS'
+UPDATE roles SET accr = replace(accr, '.', '');
 
 -- Migration des roles, même s'il y a des titres '
 INSERT INTO unite_role
 (slug, type, acl_role, titre, accr, ordre)
 SELECT
-	(CASE WHEN length(roles.accr) > 0 THEN lower(replace(roles.accr, '.', '')) ELSE lower(roles.titre) || '-' || roles.type END),
+	(CASE WHEN length(roles.accr) > 0 THEN lower(roles.accr) ELSE lower(roles.titre) || '-' || roles.type END),
         (SELECT id FROM unite_type WHERE unite_type.slug = roles.type), id, titre, accr, ordre
 FROM roles;
+EOS
+);
 
+    if ($SUF):
+      $db->exec(<<<'EOS'
 -- Complément SUF
 INSERT INTO unite_role
 (slug, acl_role, titre, accr, ordre, type)
@@ -121,7 +150,11 @@ UPDATE unite_role SET slug = 'guillemette' WHERE titre = 'Guillemette';
 UPDATE unite_role SET slug = replace(slug, 'sizloup', 'louveteau');
 UPDATE unite_role SET slug = replace(slug, 'sizjeannette', 'jeannette');
 UPDATE unite_role SET slug = replace(slug, 'sizainière', 'sizainiere');
+EOS
+);
+    endif;
 
+    $db->exec(<<<'EOS'
 DROP TABLE roles;
 
 CREATE VIEW vroles AS
@@ -139,7 +172,11 @@ CREATE TABLE `unite_titre` (
 	UNIQUE (role, nom),
 	UNIQUE (role, slug)
 );
+EOS
+);
 
+    if ($SUF):
+      $db->exec(<<<'EOS'
 INSERT INTO unite_titre
 (slug, nom, role)
 VALUES
@@ -311,7 +348,11 @@ VALUES
 ('colette', 'Nicolette',
  (SELECT r.id FROM unite_role r JOIN unite_type t ON t.id = r.type
   WHERE r.acl_role = 'assistant' AND t.slug = 'ronde'));
+EOS
+);
+    endif;
 
+    $db->exec(<<<'EOS'
 CREATE VIEW vtitres AS
 SELECT t.id, t.slug, t.nom, unite_role.titre, unite_type.nom AS unite
 FROM unite_titre AS t
@@ -335,7 +376,8 @@ FROM appartient
 JOIN individu ON individu.slug = appartient.individu
 JOIN unite ON unite.slug = appartient.unite
 JOIN unite_role ON unite_role.acl_role = (CASE
-WHEN appartient.role IN ('chef', 'routier', '3e', '4e', '5e', '6e', '7e', '8e', 'siz', 'sec') THEN appartient.role
+WHEN appartient.role IN ('chef', 'routier', '3e', '4e', '5e', '6e', '7e', '8e', 'siz', 'sec')
+        THEN appartient.role
 ELSE 'assistant'
 END) AND unite_role.type = unite.type
 JOIN unite_type ON unite_type.id = unite.type
