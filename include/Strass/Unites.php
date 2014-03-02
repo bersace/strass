@@ -62,6 +62,15 @@ class Unites extends Strass_Db_Table_Abstract
     return $this->fetchAll($s);
   }
 
+  function findRacine()
+  {
+    $s = $this->select()
+      ->where('unite.parent IS NULL')
+      ->order('unite.id')
+      ->limit(1);
+    return $this->fetchAll($s)->current();
+  }
+
   function fetchAll($where = NULL, $order = NULL, $count = NULL, $offset = NULL)
   {
     $args = func_get_args();

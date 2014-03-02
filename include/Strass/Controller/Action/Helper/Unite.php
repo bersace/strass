@@ -12,7 +12,7 @@ class Strass_Controller_Action_Helper_Unite extends Zend_Controller_Action_Helpe
       if ($slug)
 	$unite = $t->findBySlug($slug);
       else {
-	$unite = $this->racine();
+	$unite = $t->findRacine();
       }
     }
     catch (Strass_Db_Table_NotFound $e) {
@@ -33,13 +33,6 @@ class Strass_Controller_Action_Helper_Unite extends Zend_Controller_Action_Helpe
     $page->metas->set('DC.Creator', $fn);
 
     return $unite;
-  }
-
-  function racine()
-  {
-    $t = new Unites();
-    $s = $t->select()->where('unite.parent IS NULL');
-    return $t->fetchOne($s);
   }
 
   function setBranche($unite, $action=null, $controller=null)
