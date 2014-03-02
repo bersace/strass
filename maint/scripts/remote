@@ -53,6 +53,34 @@ def command(cls):
     return cls
 
 
+class FTPEntry(object):
+    @classmethod
+    def parse(cls, line):
+        self = cls()
+        self.type_ = line[0]
+        self.name = line.split(None, 8)[-1]
+        return self
+
+
+    def __repr__(self):
+        return "%s %s" % (self.type_, self.name)
+
+
+    def __cmp__(self, other):
+        """Très sale, on met . et .. en premier, systématiquement. Sinon tri alphabêtement"""
+        a = self.name
+        b = other.name
+        if a == '.':
+            return -1
+        elif a == '..':
+            return 1 if b == '.' else -1
+        elif b == '.':
+            return 1
+        elif b == '..':
+            return -1 if a == '.' else 1
+        return 0
+
+
 class FTPHelper(object):
     """Implémente des opérations de haut niveaux au dessus de ce foutu protocole FTP"""
 
@@ -90,8 +118,9 @@ class FTPHelper(object):
         self.ftp.retrlines('LIST -a %s' % path, entries.append)
         if not entries:
             return False
-        _, name = entries[0].rsplit(None, 1)
-        if name == '.':
+
+        entries = sorted([FTPEntry.parse(e) for e in entries])
+        if entries[0].name == '.':
             return entries[2:]
         else:
             return False
@@ -99,7 +128,10 @@ class FTPHelper(object):
 
     def mtime(self, path):
         """Retourne la date de dernière modification d'un fichier distant"""
-        ret = self.ftp.sendcmd('MDTM %s' % path)
+        try:
+            ret = self.ftp.sendcmd('MDTM %s' % path)
+        except Exception, e:
+            raise Exception(u"Echec de MDTM sur %s: %s" % (path, str(e)))
         code, data = ret.split(None, 1)
         assert int(code) == 213, ret
         return datetime.strptime(data, '%Y%m%d%H%M%S')
@@ -120,7 +152,7 @@ class FTPHelper(object):
         self.clean(path)
 
 
-    def put(self, path):
+    def put(self, path, force=False):
         """Copie un dossier vers le serveur. Vérifie la date de dernière modification pour économiser."""
 
         if os.path.isdir(path):
@@ -130,14 +162,15 @@ class FTPHelper(object):
             for entry in entries:
                 self.put(os.path.join(path, entry))
         else:
-            try:
-                rmtime = self.mtime(path)
-                lmtime = datetime.fromtimestamp(os.stat(path).st_mtime)
-                if rmtime > lmtime:
-                    self.log.debug('%s à jour', path)
-                    return
-            except Exception, e:
-                pass
+            if not force:
+                try:
+                    rmtime = self.mtime(path)
+                    lmtime = datetime.fromtimestamp(os.stat(path).st_mtime)
+                    if rmtime > lmtime:
+                        self.log.debug('%s à jour', path)
+                        return
+                except Exception, e:
+                    pass
             self.ftp.storbinary('STOR ' + path, open(path))
             self.log.debug("Envoi de %s", path)
 
@@ -147,8 +180,7 @@ class FTPHelper(object):
         entries = self.isdir(path)
         if entries is not False:
             for entry in entries:
-                _, name = entry.rsplit(None, 1)
-                self.remove(os.path.join(path, name))
+                self.remove(os.path.join(path, entry.name))
             self.log.debug("Suppression de %s", path)
             self.ftp.rmd(path)
         elif self.exists(path):
@@ -166,7 +198,7 @@ class FTPHelper(object):
         self.ftp.retrlines('LIST -a %s' % path, remote_entries.append)
         remote_entries = remote_entries[2:]
         for entry in remote_entries:
-            _, name = entry.rsplit(None, 1)
+            name = FTPEntry.parse(entry).name
             if not self._exclude_names([name]):
                 continue
             childpath = os.path.join(path, name)
@@ -193,29 +225,25 @@ class FTPHelper(object):
 
         f = open(path, 'wb')
         self.ftp.retrbinary('RETR %s' % path, f.write)
-        self.log.debug(u"Réception de %s", path)
+        self.log.debug(u"Réception de %s", path.decode('utf-8'))
 
 
     def get(self, path):
         """Copie un dossier local depuis un dossier distant"""
-        entries = []
-        self.ftp.retrlines('LIST -a %s' % path, entries.append)
-        _, name = entries[0].rsplit(None, 1)
-        if name == '.':
-            for entry in entries[2:]:
-                _, name = entry.rsplit(None, 1)
-                childpath = path + '/' + name
-                type_ = entry[0]
-                if type_ == 'd':
+        entries = self.isdir(path)
+        if entries is False:
+            self.getfile(path)
+        else:
+            for entry in entries:
+                childpath = path + '/' + entry.name
+                if entry.type_ == 'd':
                     self.get(childpath)
-                elif type_ == '-':
+                elif entry.type_ == '-':
                     # on appelle directement getfile, plutôt que de
                     # faire une récursion qui coûterait un LIST
                     self.getfile(childpath)
                 else:
                     self.log.info('Ignore %s', childpath)
-        else:
-            self.getfile(path)
 
 
 @command
@@ -286,9 +314,9 @@ class setmaint(object):
     def __call__(self, args, config):
         ftp = FTPHelper(config)
         ftp.connect()
-        ftp.put('maintenance.html')
-        ftp.put('include/Strass/Version.php')
-        ftp.put('index.php')
+        ftp.put('maintenance.html', force=True)
+        ftp.put('include/Strass/Version.php', force=True)
+        ftp.put('index.php', force=True)
 
 
 @command
