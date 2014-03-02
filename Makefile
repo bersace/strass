@@ -4,6 +4,9 @@ INSTDB=include/Strass/Installer/sql/strass.sqlite
 
 all: $(CSS) $(INSTDB)
 
+help:
+	less maint/DOC
+
 %.css: %.scss
 	sassc $< > $@
 
@@ -73,4 +76,4 @@ upgrade:
 	$(REMOTE) $@
 	make unsetmaint
 
-.PHONY: all clean setup serve restore restore1 test setmaint unsetmaint backup1
+.PHONY: all doc clean setup serve restore restore1 test setmaint unsetmaint backup1 migrate upgrade config
