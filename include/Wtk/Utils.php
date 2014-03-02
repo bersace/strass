@@ -71,7 +71,9 @@ function wtk_first_words($full, $length = 512, $ellipse = " […]")
 function wtk_ucfirst($string)
 {
 	$mots = preg_split('`([- ])`', $string, 2, PREG_SPLIT_DELIM_CAPTURE);
-	$mots[0] = mb_convert_case($mots[0], MB_CASE_TITLE);
+	$incipit = $mots[0];
+	if (!preg_match('/[[:digit:]]/', $incipit[0]))
+	  $mots[0] = mb_convert_case($incipit, MB_CASE_TITLE);
 	return implode('', $mots);
 }
 
