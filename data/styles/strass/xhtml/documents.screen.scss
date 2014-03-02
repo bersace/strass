@@ -7,6 +7,16 @@
     @include minipage;
 }
 
+#document li.document {
+    position: relative;
+}
+
+.supprimer #vignette
+{
+    text-align: center;
+    margin: 1em auto;
+}
+
 #actions li.envoyer
 {
   list-style-image: url("icones/envoyer.png");

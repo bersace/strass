@@ -1,9 +1,10 @@
 <?php
 
-$s = $this->document->addSection('supprimer', "Supprimer un document");
+$v = $this->document->addSection('vignette');
+$v->addChild($this->vignetteDocument($this->doc));
+$v->addFlags('vignette');
 
-$f = $s->addForm($this->model);
-$f->addSelect('documents', true);  // compact
-
+$f = $this->document->addForm($this->model);
+$f->addCheck('confirmer');
 
 $f->addForm_ButtonBox()->addForm_Submit($this->model->getSubmission('supprimer'));

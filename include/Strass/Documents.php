@@ -17,7 +17,7 @@ class Document extends Strass_Db_Table_Row_Abstract implements Zend_Acl_Resource
   function initAclResource($acl)
   {
     $acl->add(new Zend_Acl_Resource($this->getResourceId()));
-    $this->initPrivileges($acl, $this->UnitesViaDocsUnite());
+    $this->initPrivileges($acl, $this->findUnitesViaDocsUnite());
   }
 
   public function getUri()
@@ -48,11 +48,12 @@ class Document extends Strass_Db_Table_Row_Abstract implements Zend_Acl_Resource
     if (!move_uploaded_file($tmp, $fichier))
       throw new Exception("Impossible de copier le fichier !");
 
-    if ($this->suffixe != 'pdf')
-      return;
-
     $vignette = $this->getCheminVignette();
-    $im = new Imagick($fichier . '[0]');
+    $load = $fichier;
+    if ($this->suffixe == 'pdf')
+      $load .= '[0]';
+
+    $im = new Imagick($load);
     $im->setImageAlphaChannel(Imagick::ALPHACHANNEL_RESET);
     $im->setImageFormat('png');
     $im->setBackgroundColor('white');
@@ -86,5 +87,16 @@ class Document extends Strass_Db_Table_Row_Abstract implements Zend_Acl_Resource
       $count+= call_user_func(array($this, $func))->count();
     }
     return $count;
+  }
+
+  function findUnite()
+  {
+    $t = new Unites;
+    $s = $t->select()
+      ->setIntegrityCheck(false)
+      ->from('unite')
+      ->join('unite_document', 'unite_document.unite = unite.id', array())
+      ->where('unite_document.document = ?', $this->id);
+    return $t->fetchOne($s);
   }
 }

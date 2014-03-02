@@ -92,45 +92,35 @@ class DocumentsController extends Strass_Controller_Action
 
   function supprimerAction()
   {
-    $this->assert(null, null, null,
-		  "Vous devez être identifier pour envoyer un document");
+    $this->view->doc = $d = $this->_helper->Document();
+    $this->assert(null, $d, 'supprimer',
+		  "Vous n'avez pas le droit de supprimer ce document.");
 
-    $m = new Wtk_Form_Model('supprimer');
-    $m->addNewSubmission('supprimer', 'Supprimer');
-    $us = $this->unitesEnvoyables();
-    $td = new Documents();
-    $tdu = new DocsUnite();
-    $ds = $tdu->fetchAll('unite = "'.implode('" OR unite = "',
-					     array_keys($us)).'"');
-    $enum = array();
-    foreach($ds as $d)
-      $enum[$d->document] = $d->findParentDocuments()->titre;
-
-    $m->addEnum('documents', 'Documents', null, $enum, true);       // multiple
-
-    if ($m->validate()) {
-      $db = Zend_Registry::get('db');
-      $db->beginTransaction();
-      try {
-	$ids = $m->get('documents');
-	$docs = $td->find($ids);
-	foreach($docs as $doc)
-	  $doc->delete();
-
-	$this->_helper->Log("Documents supprimés", array("documents" => $ids),
-			    $this->_helper->Url(null, 'documents'),
-			    "Documents");
-
-	$db->commit();
-	$this->redirectSimple('index');
-      }
-      catch(Exception $e) {
-	$db->rollBack();
-	throw $e;
-      }
+    try {
+      $u = $d->findUnite();
+      $urlArgs = array('index', 'documents', null, array('unite' => $u->slug), true);
+    }
+    catch (Strass_Db_Table_NotFound $e) {
+      $urlArgs = array('index', 'documents', null, null, true);
     }
 
-    $this->metas(array('DC.Title' => 'Supprimer un document'));
-    $this->view->model = $m;
+    $this->view->model = $m = new Wtk_Form_Model('supprimer');
+    $m->addBool('confirmer', "Je confirme la suppression de ce document", false);
+    $m->addNewSubmission('supprimer', 'Supprimer');
+    if ($m->validate()) {
+      $db = $d->getTable()->getAdapter();
+      $db->beginTransaction();
+      try {
+	$d->delete();
+
+	$this->logger->warn($d->titre . " supprimé",
+			    call_user_func_array(array($this->_helper, 'Url'), $urlArgs));
+
+	$db->commit();
+      }
+      catch(Exception $e) { $db->rollBack(); throw $e; }
+
+      call_user_func_array(array($this, 'redirectSimple'), $urlArgs);
+    }
   }
 }
