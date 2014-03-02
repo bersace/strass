@@ -456,7 +456,8 @@ class Appartenances extends Strass_Db_Table_Abstract
 					'Unite'		=> array('columns'		=> 'unite',
 								 'refTableClass'	=> 'Unites',
 								 'refColumns'		=> 'id',
-								 'onUpdate'		=> self::CASCADE),
+								 'onUpdate'		=> self::CASCADE,
+								 'onDelete' => self::CASCADE),
 					'Role'		=> array('columns'		=> 'role',
 								 'refTableClass'	=> 'Roles',
 								 'refColumns'		=> 'id'));
