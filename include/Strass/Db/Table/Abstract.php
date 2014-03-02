@@ -5,6 +5,11 @@ class Strass_Db_Table_NotFound extends Zend_Db_Table_Exception {}
 
 abstract class Strass_Db_Table_Abstract extends Zend_Db_Table_Abstract
 {
+  function getColumns()
+  {
+    return $this->_cols;
+  }
+
   function createSlug($base, $current=null)
   {
     if ($current && strpos($current, $base) === 0)
