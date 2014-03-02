@@ -9,6 +9,8 @@ class Documents extends Strass_Db_Table_Abstract {
 
 class Document extends Strass_Db_Table_Row_Abstract implements Zend_Acl_Resource_Interface
 {
+  protected $_tableClass = 'Documents';
+
   public function getResourceId()
   {
     return 'document-'.$this->slug;

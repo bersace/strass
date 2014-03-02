@@ -61,43 +61,30 @@ class DocumentsController extends Strass_Controller_Action
 	throw new Exception("Fichier manquant");
 
       $t = new Documents;
-      $tdu = new DocsUnite();
       $db = $t->getAdapter();
       $db->beginTransaction();
       try {
 	if ($d) {
-	  $d->titre = $m->titre;
-	  $d->slug = $t->createSlug(wtk_strtoid($m->titre), $d->slug);
-	  $d->save();
-
 	  $message = "Document modifié";
-
 	  $du = $d->findDocsUnite()->current();
-	  $du->unite = $m->unite;
-	  $du->save();
 	}
-	else {
-	  $data = $m->get();
-	  $data['suffixe'] =
-	    strtolower(end(explode('.', $data['document']['name'])));
-	  unset($data['document']);
-	  $data['slug'] = $t->createSlug(wtk_strtoid($data['titre']));
-	  $data['date'] = strftime('%Y-%m-%d');
-	  $unite = $data['unite'];
-	  unset($data['unite']);
-	  $k = $t->insert($data);
-	  $d = $t->findOne($k);
-
-	  $data = array('unite' => $unite,
-			'document' => $d->id);
-	  $k = $tdu->insert($data);
-	  $du = $tdu->findOne($k);
-
+	else if (!$d) {
 	  $message = "Document envoyé";
+	  $d = new Document;
+	  $du = new DocUnite;
 	}
+
+	$d->slug = $t->createSlug(wtk_strtoid($m->titre), $d->slug);
+	$d->titre = $m->titre;
+	$d->suffixe =strtolower(end(explode('.', $m->document['name'])));
+	$d->save();
 
 	if ($i->isUploaded())
 	  $d->storeFile($i->getTempFilename());
+
+	$du->document = $d->id;
+	$du->unite = $m->unite;
+	$du->save();
 
 	$this->logger->info($message,
 			    $this->_helper->Url('index', null, null,
@@ -133,10 +120,11 @@ class DocumentsController extends Strass_Controller_Action
       $db = $d->getTable()->getAdapter();
       $db->beginTransaction();
       try {
+	$message = $d->titre. " supprimé";
 	$d->delete();
 
-	$this->logger->warn($d->titre . " supprimé",
-			    call_user_func_array(array($this->_helper, 'Url'), $urlArgs));
+	$this->logger->warn($message, call_user_func_array(array($this->_helper, 'Url'), $urlArgs));
+	$this->_helper->Flash->info($message);
 
 	$db->commit();
       }

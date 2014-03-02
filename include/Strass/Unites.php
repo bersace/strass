@@ -800,6 +800,7 @@ class Titres extends Strass_Db_Table_Abstract
 class DocsUnite extends Strass_Db_Table_Abstract
 {
   protected $_name = 'unite_document';
+  protected $_rowClass = 'DocUnite';
   protected $_referenceMap = array('Document' => array('columns' => 'document',
 						       'refTableClass' => 'Documents',
 						       'refColumns' => 'id',
@@ -810,4 +811,9 @@ class DocsUnite extends Strass_Db_Table_Abstract
 						    'refColumns' => 'id',
 						    'onUpdate' => self::CASCADE,
 						    'onDelete' => self::CASCADE));
+}
+
+class DocUnite extends Strass_Db_Table_Row_Abstract
+{
+  protected $_tableClass = 'DocsUnite';
 }

@@ -164,7 +164,7 @@ CREATE TABLE `document` (
 	slug		CHAR(128)	NOT NULL UNIQUE,
 	titre		CHAR(128)	NOT NULL,
 	suffixe		CHAR(8),
-	date		DATETIME
+	date		DATETIME	DEFAULT CURRENT_TIMESTAMP
 );
 
 CREATE TABLE `unite_document` (
