@@ -27,10 +27,14 @@ class Document extends Strass_Db_Table_Row_Abstract implements Zend_Acl_Resource
     return '/'.$this->getFichier();
   }
 
-  function getCheminVignette($data = null)
+  function getCheminVignette($data = null, $test = true)
   {
     if (!$data) $data = $this->_cleanData;
-    return 'data/documents/'.$data['slug'].'-vignette.jpeg';
+    $path = 'data/documents/'.$data['slug'].'-vignette.jpeg';
+    if ($test && !file_exists($path))
+      return null;
+    else
+      return $path;
   }
 
   function getFichier($data = null)
@@ -50,12 +54,18 @@ class Document extends Strass_Db_Table_Row_Abstract implements Zend_Acl_Resource
     if (!move_uploaded_file($tmp, $fichier))
       throw new Exception("Impossible de copier le fichier !");
 
-    $vignette = $this->getCheminVignette();
+    $vignette = $this->getCheminVignette(null, false);
     $load = $fichier;
     if ($this->suffixe == 'pdf')
       $load .= '[0]';
 
-    $im = new Imagick($load);
+    try {
+      $im = new Imagick($load);
+    }
+    catch (ImagickException $e) {
+      /* pas supporté par Imagick */
+      return;
+    }
     $im->setImageAlphaChannel(Imagick::ALPHACHANNEL_RESET);
     $im->setImageFormat('png');
     $im->setBackgroundColor('white');
@@ -74,8 +84,8 @@ class Document extends Strass_Db_Table_Row_Abstract implements Zend_Acl_Resource
   {
     rename($this->getFichier($this->_cleanData),
 	   $this->getFichier());
-    rename($this->getCheminVignette($this->_cleanData),
-	   $this->getCheminVignette());
+    if ($from = $this->getCheminVignette($this->_cleanData))
+      rename($from, $this->getCheminVignette());
   }
 
   function countLiaisons($tables = null)
