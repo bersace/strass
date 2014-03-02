@@ -42,7 +42,12 @@ endif
 test:
 	phpunit --bootstrap tests/bootstrap.php tests
 
+
 REMOTE=maint/scripts/remote --verbose --config maint/strass.conf
+
+config:
+	$(REMOTE) config
+
 setmaint: maintenance.html
 	$(REMOTE) $@
 

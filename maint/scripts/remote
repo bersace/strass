@@ -9,6 +9,7 @@ from ftplib import FTP
 from ConfigParser import SafeConfigParser
 from datetime import datetime
 import fnmatch
+from getpass import getpass
 
 
 log = logging.getLogger('strass')
@@ -73,7 +74,6 @@ class FTPHelper(object):
         self.ftp.login(self.config.get('remote', 'username'),
                        self.config.get('remote', 'password'))
         self.ftp.cwd(self.config.get('remote', 'root'))
-        self.ftp.sendcmd('OPTS UTF8 ON')
         self.log.debug(u"Connecté à %s", self.config.get('remote', 'hostname'))
         self.log.debug(self.ftp.getwelcome())
 
@@ -216,6 +216,62 @@ class FTPHelper(object):
                     self.log.info('Ignore %s', childpath)
         else:
             self.getfile(path)
+
+
+@command
+class config(object):
+    """Assistant de configuration des outils de mise en prod"""
+    log = logging.getLogger('strass.config')
+
+    def __init__(self, parser):
+        pass
+
+    def prompt_config(self, config, name, label):
+        default = config.get('remote', name)
+        if default:
+            prompt = "%s [%s] : " % (label, default)
+        else:
+            prompt = "%s : " % (label,)
+        value = raw_input(prompt)
+        if not value:
+            value = default
+
+        config.set('remote', name, value)
+        return value
+
+
+    def prompt_config_password(self, config, name, label):
+        default = config.get('remote', name)
+        if default:
+            prompt = "%s [%s] : " % (label, 6 * '*')
+        else:
+            prompt = "%s : " % (label,)
+        value = getpass(prompt)
+        if not value:
+            value = default
+
+        config.set('remote', name, value)
+        return value
+
+
+    def __call__(self, args, config):
+        print """
+
+Pour vous assister dans la maintenance de votre site, Strass a besoin
+de connaître votre accès FTP.
+
+"""
+        self.prompt_config(config, 'hostname', "Serveur")
+        self.prompt_config(config, 'username', "Identifiant")
+        self.prompt_config_password(config, 'password', "Mot de passe")
+        self.prompt_config(config, 'root', "Dossier")
+
+        ftp = FTPHelper(config)
+        ftp.connect()
+
+        config.write(open(args.config, 'w'))
+        os.chmod(args.config, 0600)
+        self.log.info('Strass est prêt !')
 
 
 @command
