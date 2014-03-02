@@ -15,11 +15,11 @@ class Strass_Migrate_To10 extends Strass_MigrateHandler {
     $db->exec(<<<'EOS'
 --
 CREATE TABLE `journal` (
-       id		INTEGER		PRIMARY KEY,
-       slug		CHAR(128)	NOT NULL UNIQUE,
-       -- Un seul blog par unité autorisé
-       unite		INTEGER		UNIQUE REFERENCES unite(id),
-       nom		CHAR(128)	UNIQUE
+	id		INTEGER		PRIMARY KEY,
+	slug		CHAR(128)	NOT NULL UNIQUE,
+	-- Un seul blog par unité autorisé
+	unite		INTEGER		UNIQUE REFERENCES unite(id),
+	nom		CHAR(128)	UNIQUE
 );
 
 INSERT INTO journal
@@ -37,14 +37,14 @@ JOIN unite ON unite.id = journal.unite;
 
 
 CREATE TABLE `article` (
-       id		INTEGER		PRIMARY KEY,
-       slug		CHAR(256)	NOT NULL UNIQUE,
-       journal	 	INTEGER 	REFERENCES journal(id),
-       titre    	CHAR(256),
-       boulet   	TEXT,
-       article  	TEXT,
-       public   	INT(1)     	DEFAULT 0,
-       commentaires	INTEGER		UNIQUE NOT NULL REFERENCES commentaire(id)
+	id		INTEGER		PRIMARY KEY,
+	slug		CHAR(256)	NOT NULL UNIQUE,
+	journal		INTEGER		REFERENCES journal(id),
+	titre		CHAR(256),
+	boulet		TEXT,
+	article		TEXT,
+	public		INT(1)		DEFAULT 0,
+	commentaires	INTEGER		UNIQUE NOT NULL REFERENCES commentaire(id)
 );
 
 INSERT INTO commentaire
@@ -74,10 +74,10 @@ ORDER BY journal.id, commentaire.date;
 
 
 CREATE TABLE `article_etiquette` (
-       id		INTEGER		PRIMARY KEY,
-       article		INTEGER		NOT NULL REFERENCES article(id),
-       etiquette	CHAR(128)	NOT NULL,
-       UNIQUE(article, etiquette)
+	id		INTEGER		PRIMARY KEY,
+	article		INTEGER		NOT NULL REFERENCES article(id),
+	etiquette	CHAR(128)	NOT NULL,
+	UNIQUE(article, etiquette)
 );
 
 INSERT INTO article_etiquette

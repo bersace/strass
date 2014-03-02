@@ -8,16 +8,16 @@ class Strass_Migrate_To7 extends Strass_MigrateHandler {
 DROP TABLE apporter;
 
 CREATE TABLE `activite` (
-       id		INTEGER		PRIMARY KEY,
-       slug     	CHAR(128)	NOT NULL UNIQUE,
-       type		CHAR(16),
-       intitule 	CHAR(128),
-       accronym		CHAR(8),
-       date		CHAR(16),
-       lieu     	CHAR(128),
-       debut    	DATETIME       	NOT NULL,
-       fin      	DATETIME       	NOT NULL,
-       description	TEXT
+	id		INTEGER		PRIMARY KEY,
+	slug		CHAR(128)	NOT NULL UNIQUE,
+	type		CHAR(16),
+	intitule	CHAR(128),
+	accronym	CHAR(8),
+	date		CHAR(16),
+	lieu		CHAR(128),
+	debut		DATETIME	NOT NULL,
+	fin		DATETIME	NOT NULL,
+	description	TEXT
 );
 
 
@@ -34,10 +34,10 @@ END) AS intitule
 FROM activites;
 
 CREATE TABLE `participation` (
-       id		INTEGER		PRIMARY KEY,
-       activite		INTEGER		NOT NULL REFERENCES activite(id),
-       unite		INTEGER		NOT NULL REFERENCES unite(id),
-       UNIQUE(activite, unite)
+	id		INTEGER		PRIMARY KEY,
+	activite	INTEGER		NOT NULL REFERENCES activite(id),
+	unite		INTEGER		NOT NULL REFERENCES unite(id),
+	UNIQUE(activite, unite)
 );
 
 INSERT INTO participation

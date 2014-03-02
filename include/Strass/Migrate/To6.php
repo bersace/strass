@@ -7,15 +7,15 @@ class Strass_Migrate_To6 extends Strass_MigrateHandler {
 
 CREATE TABLE `unite_type`
 (
-  id            INTEGER PRIMARY KEY,
-  slug          CHAR(32)        NOT NULL UNIQUE,
-  parent        INTEGER REFERENCES unite_type(id),
-  virtuelle     BOOLEAN DEFAULT 0,
-  nom           CHAR(32)        NOT NULL,
-  ordre         INT(2),
-  sexe          CHAR(1)         NOT NULL,
-  age_min       INT(4)          NOT NULL,
-  age_max       INT(4)          NOT NULL
+	id		INTEGER		PRIMARY KEY,
+	slug		CHAR(32)	NOT NULL UNIQUE,
+	parent		INTEGER		REFERENCES unite_type(id),
+	virtuelle	BOOLEAN		DEFAULT 0,
+	nom		CHAR(32)	NOT NULL,
+	ordre		INT(2),
+	sexe		CHAR(1),
+	age_min	INT(4),
+	age_max	INT(4)
 );
 
 INSERT INTO unite_type
@@ -41,22 +41,21 @@ VALUES
 DROP TABLE types_unite;
 
 CREATE VIEW vtypes AS
-SELECT t.id, t.slug, t.nom, t.virtuelle, t.sexe, t.age_min AS min, t.age_max AS max, p.nom AS parent
+SELECT
+	t.id, t.slug, t.nom, t.virtuelle, t.sexe,
+	t.age_min AS min, t.age_max AS max, p.nom AS parent
 FROM unite_type AS t
 LEFT JOIN unite_type AS p on p.id = t.parent
 ORDER BY t.ordre;
 
-EOS
-);
-
-    $db->exec(<<<'EOS'
 CREATE TABLE `unite` (
-  id            INTEGER PRIMARY KEY,
-  slug          CHAR(128)       UNIQUE NOT NULL,
-  parent        INTEGER REFERENCES unite(id),
-  nom           CHAR(128)       NOT NULL,
-  `type`        INTEGER REFERENCES unite_type(id),
-  extra         CHAR(128)       NULL   -- cri de pat/équipe/nom de troupe/compagnie/guide
+	id		INTEGER		PRIMARY KEY,
+	slug		CHAR(128)	UNIQUE NOT NULL,
+	parent		INTEGER		REFERENCES unite(id),
+	nom		CHAR(128)	NOT NULL,
+	`type`		INTEGER		REFERENCES unite_type(id),
+	-- cri de pat/équipe/nom de troupe/compagnie/guide
+	extra		CHAR(128)	NULL
 );
 
 INSERT INTO unite
@@ -75,20 +74,17 @@ CREATE VIEW vunites AS
 SELECT u.id, u.slug, t.nom AS type, u.nom, u.extra
 FROM unite AS u
 JOIN unite_type AS t ON t.id = u.type;
-EOS
-);
 
-    $db->exec(<<<'EOS'
 -- chef, assistant, 3e, etc.
 CREATE TABLE `unite_role` (
-  id       INTEGER PRIMARY KEY,
-  slug     CHAR(16) UNIQUE,
-  type     INTEGER REFERENCES unites_type(id),
-  acl_role CHAR(16),
-  titre    CHAR(64),
-  accr     CHAR(6),
-  ordre    INT(2),
-  UNIQUE (slug, type)
+	id		INTEGER		PRIMARY KEY,
+	slug		CHAR(16)	UNIQUE,
+	type		INTEGER		REFERENCES unites_type(id),
+	acl_role	CHAR(16),
+	titre		CHAR(64),
+	accr		CHAR(6),
+	ordre		INT(2),
+	UNIQUE (slug, type)
 );
 
 -- préparation des données pour migration
@@ -133,18 +129,15 @@ SELECT r.id, r.slug, r.titre, t.nom, accr, acl_role AS acl
 FROM unite_role AS r
 JOIN unite_type AS t ON t.id = r.type
 ORDER BY t.id, r.id;
-EOS
-);
 
-    $db->exec(<<<'EOS'
 -- titre comme Bagheera, Hauviette, aumônier, etc.
 CREATE TABLE `unite_titre` (
-  id            INTEGER PRIMARY KEY,
-  slug		CHAR(128)  NOT NULL,
-  role          INTEGER REFERENCES unite_role(id),
-  nom           CHAR(128)  NOT NULL,
-  UNIQUE (role, nom),
-  UNIQUE (role, slug)
+	id		INTEGER		PRIMARY KEY,
+	slug		CHAR(128)	NOT NULL,
+	role		INTEGER		REFERENCES unite_role(id),
+	nom		CHAR(128)	NOT NULL,
+	UNIQUE (role, nom),
+	UNIQUE (role, slug)
 );
 
 INSERT INTO unite_titre
@@ -325,19 +318,14 @@ FROM unite_titre AS t
 JOIN unite_role ON unite_role.id = t.role
 JOIN unite_type ON unite_type.id = unite_role.type;
 
-EOS
-);
-
-    $db->exec(<<<'EOS'
-
 CREATE TABLE `appartenance` (
-  id            INTEGER PRIMARY KEY,
-  individu      INTEGER REFERENCES individu(id) NOT NULL,
-  unite         INTEGER REFERENCES unite(id) NOT NULL,
-  role          INTEGER REFERENCES unite_role(id) NOT NULL,
-  titre         CHAR(64),
-  debut         DATE NOT NULL,
-  fin           DATE DEFAULT NULL
+	id		INTEGER		PRIMARY KEY,
+	individu	INTEGER		REFERENCES individu(id) NOT NULL,
+	unite		INTEGER		REFERENCES unite(id) NOT NULL,
+	role		INTEGER		REFERENCES unite_role(id) NOT NULL,
+	titre		CHAR(64),
+	debut		DATE		NOT NULL,
+	fin		DATE		DEFAULT NULL
 );
 
 INSERT INTO appartenance
@@ -360,7 +348,8 @@ WHERE acl_role NOT IN ('chef', 'assistant', 'membre');
 
 CREATE VIEW vappartenances AS
 SELECT DISTINCT
-  appartenance.id, individu.slug AS individu, appartenance.titre, role.titre AS role, unite.nom AS unite
+	appartenance.id, individu.slug AS individu,
+	appartenance.titre, role.titre AS role, unite.nom AS unite
 FROM appartenance
 JOIN individu ON individu.id = appartenance.individu
 JOIN unite_role AS role ON role.id = appartenance.role

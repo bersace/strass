@@ -4,10 +4,10 @@ class Strass_Migrate_To3 extends Strass_MigrateHandler {
   function online($db) {
     $db->exec(<<<'EOS'
 CREATE TABLE citation (
-  id        INTEGER PRIMARY KEY,
-  texte     TEXT,
-  auteur    CHAR(128),
-  date      DATETIME
+	id	INTEGER		PRIMARY KEY,
+	texte	TEXT,
+	auteur	CHAR(128),
+	date	DATETIME
 );
 
 INSERT INTO citation

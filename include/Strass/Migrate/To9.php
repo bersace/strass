@@ -35,13 +35,13 @@ EOS
 --
 
 CREATE TABLE `commentaire` (
-       id		INTEGER		PRIMARY KEY,
-       auteur		INTEGER		REFERENCES individu(id),
-       parent		INTEGER		REFERENCES commentaire(id),
-       `date`		DATETIME        DEFAULT CURRENT_TIMESTAMP,
-       message	        TEXT,
-       -- Interdire les réponses multiples. Le site ne sert pas à discuter.
-       UNIQUE(auteur, parent)
+	id		INTEGER		PRIMARY KEY,
+	auteur		INTEGER		REFERENCES individu(id),
+	parent		INTEGER		REFERENCES commentaire(id),
+	`date`		DATETIME	DEFAULT CURRENT_TIMESTAMP,
+	message		TEXT,
+	-- Interdire les réponses multiples. Le site ne sert pas à discuter.
+	UNIQUE(auteur, parent)
 );
 
 INSERT INTO commentaire
@@ -51,13 +51,13 @@ FROM photos
 ORDER BY `date`;
 
 CREATE TABLE `photo` (
-       id		INTEGER		PRIMARY KEY,
-       slug     	CHAR(512)	UNIQUE,
-       activite		INTEGER		NOT NULL REFERENCES activite(id),
-       promotion	INTEGER		DEFAULT 0,
-       `date`		DATETIME,
-       titre 		CHAR(512),
-       commentaires     INTEGER         NOT NULL REFERENCES commentaire(id)
+	id		INTEGER		PRIMARY KEY,
+	slug		CHAR(512)	UNIQUE,
+	activite	INTEGER		NOT NULL REFERENCES activite(id),
+	promotion	INTEGER		DEFAULT 0,
+	`date`		DATETIME,
+	titre		CHAR(512),
+	commentaires	INTEGER		NOT NULL REFERENCES commentaire(id)
 );
 
 

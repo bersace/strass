@@ -7,14 +7,14 @@ class Strass_Migrate_To14 extends Strass_MigrateHandler {
 
 ALTER TABLE log RENAME TO tmp;
 CREATE TABLE `log` (
-       id	INTEGER		PRIMARY KEY,
-       user	INTEGER 	INTEGER REFERENCES user(id),
-       logger	CHAR(255)	NOT NULL DEFAULT 'strass',
-       level	CHAR(8)		NOT NULL DEFAULT 'info',
-       date	DATETIME	NOT NULL DEFAULT CURRENT_TIMESTAMP,
-       message	CHAR(255)	NOT NULL,
-       url	CHAR(255)	DEFAULT NULL,
-       detail	TEXT		DEFAULT NULL
+	id	INTEGER		PRIMARY KEY,
+	user	INTEGER		INTEGER REFERENCES user(id),
+	logger	CHAR(255)	NOT NULL DEFAULT 'strass',
+	level	CHAR(8)		NOT NULL DEFAULT 'info',
+	date	DATETIME	NOT NULL DEFAULT CURRENT_TIMESTAMP,
+	message	CHAR(255)	NOT NULL,
+	url	CHAR(255)	DEFAULT NULL,
+	detail	TEXT		DEFAULT NULL
 );
 
 INSERT INTO log

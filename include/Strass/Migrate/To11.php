@@ -21,11 +21,12 @@ ORDER BY ROWID;
 
 DROP TABLE documents;
 
-CREATE TABLE `unite_document` (
-       id		INTEGER		PRIMARY KEY,
-       unite    	INTEGER		NOT NULL REFERENCES unite(id),
-       document		INTEGER		NOT NULL REFERENCES document(id),
-       UNIQUE (unite, document)
+CREATE TABLE `document` (
+	id		INTEGER		PRIMARY KEY,
+	slug		CHAR(128)	NOT NULL UNIQUE,
+	titre		CHAR(128)	NOT NULL,
+	suffixe		CHAR(8),
+	date		DATETIME
 );
 
 INSERT INTO `unite_document`
@@ -47,10 +48,10 @@ ORDER BY document.date;
 ALTER TABLE activite_document RENAME TO tmp;
 
 CREATE TABLE `activite_document` (
-       id		INTEGER		PRIMARY KEY,
-       activite		INTEGER		NOT NULL REFERENCES activite(id),
-       document		INTEGER		NOT NULL REFERENCES document(id),
-       UNIQUE (activite, document)
+	id		INTEGER		PRIMARY KEY,
+	activite	INTEGER		NOT NULL REFERENCES activite(id),
+	document	INTEGER		NOT NULL REFERENCES document(id),
+	UNIQUE (activite, document)
 );
 
 INSERT INTO activite_document

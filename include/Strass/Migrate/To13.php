@@ -6,15 +6,15 @@ class Strass_Migrate_To13 extends Strass_MigrateHandler {
 --
 
 CREATE TABLE `inscription` (
-       id               INTEGER         PRIMARY KEY,
-       date             TIMESTAMP	DEFAULT CURRENT_TIMESTAMP,
-       nom              CHAR(64),
-       prenom           CHAR(64),
-       sexe             CHAR(1)         NOT NULL,
-       naissance        DATE            NOT NULL,
-       adelec           CHAR(64)        NOT NULL UNIQUE,
-       password         CHAR(32)        NOT NULL,
-       presentation     TEXT
+	id		INTEGER		PRIMARY KEY,
+	date		TIMESTAMP	DEFAULT CURRENT_TIMESTAMP,
+	nom		CHAR(64),
+	prenom		CHAR(64),
+	sexe		CHAR(1)		NOT NULL,
+	naissance	DATE		NOT NULL,
+	adelec		CHAR(64)	NOT NULL UNIQUE,
+	password	CHAR(32)	NOT NULL,
+	presentation	TEXT
 );
 
 -- Valider les inscriptions avant de migrer ;-)
