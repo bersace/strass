@@ -32,7 +32,10 @@ abstract class Strass_Views_PagesRenderer_Historique extends Wtk_Pages_Renderer
 	break;
       case 'meute':
       case 'ronde':
-	return $chef->voirNom() ? $chef->prenom : $chef->getName();
+	if (Zend_Registry::get('acl')->isAllowed(null, $chef, 'voir-nom'))
+	  return $chef->prenom;
+	else
+	  return $chef->getName();
 	break;
       default:
 	return $chef->prenom;

@@ -125,12 +125,6 @@ class Individu extends Strass_Db_Table_Row_Abstract implements Zend_Acl_Resource
     return $this->getFullName();
   }
 
-  public function voirNom()
-  {
-    $acl = Zend_Registry::get('acl');
-    return $acl->isAllowed(null, $this, 'voir-nom');
-  }
-
   function capitalizedLastname($compact=false)
   {
     $noms = preg_split("`[ '-]`", $this->nom);
@@ -162,42 +156,35 @@ class Individu extends Strass_Db_Table_Row_Abstract implements Zend_Acl_Resource
 
   function getFullName($compute = true, $totem = true)
   {
-    $ind = Zend_Registry::get('individu');
-    if ($compute && !$ind)
-      // aux inconnus, on n'affiche que les initiales.
-      return $this->getName();
+    $acl = Zend_Registry::get('acl');
 
     // si je suis un sachem
-    if (($compute && $totem) && $this->totem) {
+    if ($this->totem && ($compute && $totem)) {
       // et que l'utilisateur est un sachem/admin
-      $acl = Zend_Registry::get('acl');
       if ($acl->isAllowed(null, $this, 'totem')) {
 	// montrer mon totem
 	return wtk_ucfirst($this->totem);
       }
     }
 
-    if ($this->voirNom()) {
+    if ($acl->isAllowed(null, $this, 'voir-nom'))
       return trim(wtk_ucfirst($this->prenom)." ".$this->capitalizedLastname());
-    }
-    else if ($compute && $app = $this->findAppartenances()->current()) {
+    else if ($compute && $app = $this->findAppartenances()->current())
       return $app->findParentRoles()->titre;
-    }
-    else {
-      return 'Nom inconnu';
-    }
+    else
+      return 'Nom masqué';
   }
 
   function getName()
   {
-    if ($this->voirNom()) {
+    if (Zend_Registry::get('acl')->isAllowed(null, $this, 'voir-nom')) {
       return $this->prenom.' '.$this->capitalizedLastname(true);
     }
     else if ($app = $this->findAppartenances()->current()) {
       return $app->findParentRoles()->titre;
     }
     else {
-      return 'Nom masqué';
+      return 'Masqué';
     }
   }
 
