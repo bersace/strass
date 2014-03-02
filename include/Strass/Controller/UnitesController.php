@@ -131,30 +131,25 @@ class UnitesController extends Strass_Controller_Action
     $m->addNewSubmission('fonder', 'Fonder');
 
     if ($m->validate()) {
-      $db = Zend_Registry::get('db');
+      $t = new Unites;
+      $db = $t->getAdapter();
       $db->beginTransaction();
       try {
-	$t = new Unites;
-
-	extract($m->get());
-	$data = array('slug' => $t->createSlug(wtk_strtoid($types[$type].'-'.$nom)),
-		      'nom' => $nom,
-		      'type' => $type,
-		      'extra' => $extra,
-		      'parent' => $unite ? $unite->id : null);
-	$k = $t->insert($data);
-	$u = $t->findOne($k);
+	$u = new Unite;
+	$u->slug = $t->createSlug(wtk_strtoid($types[$m->type].'-'.$m->nom));
+	$u->nom = $m->nom;
+	$u->type = $m->type;
+	$u->extra = $m->extra;
+	$u->parent = $unite ? $unite->id : null;
+	$u->save();
 
 	$this->logger->info("Fondation de ".$u->getFullname(),
 			    $this->_helper->Url('index', 'unites', null, array('unite' => $u->slug), true));
 
 	$db->commit();
-	$this->redirectSimple('index', 'unites', null, array('unite' => $u->slug), true);
       }
-      catch(Exception $e) {
-	$db->rollBack();
-	throw $e;
-      }
+      catch(Exception $e) { $db->rollBack(); throw $e; }
+      $this->redirectSimple('index', 'unites', null, array('unite' => $u->slug), true);
     }
 
     $this->view->model = $m;
@@ -380,7 +375,7 @@ class UnitesController extends Strass_Controller_Action
 	try {
 	  $nom = (string) $u;
 	  $u->delete();
-	  $message = $nom." supprimé";
+	  $message = wtk_ucfirst($nom)." supprimé";
 	  $this->logger->warn($message,
 			      $this->_helper->Url('index', 'unites'));
 	  $this->_helper->Flash->info($message);

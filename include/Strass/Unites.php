@@ -120,6 +120,7 @@ class Unites extends Strass_Db_Table_Abstract
 class Unite extends Strass_Db_Table_Row_Abstract implements Zend_Acl_Resource_Interface
 {
   protected $fermee = null;
+  protected $_tableClass = 'Unites';
   protected $_privileges = array(array('chef',		NULL),
 				 array('assistant',	array('prevoir-activite',
 							      'reporter')),
