@@ -16,13 +16,14 @@ abstract class Strass_Format_Wtk extends Strass_Format
     $an = strtolower($request->getActionName());
     $mn = strtolower($request->getModuleName());
 
+    $mouvement = $config->get('system/mouvement');
+
     $view = $controller->view;
     $document = new Wtk_Document($page->metas);
     $document->addFlags($mn, $cn, $an);
     $document->setStyle(new Wtk_Document_Style($config->get('system/style', 'strass'), 'data/styles/'));
-    $document->addStyleComponents('layout', $cn, $mn);
+    $document->addStyleComponents('layout', $cn, $mn, $mouvement);
 
-    $mouvement = $config->get('system/mouvement');
     $document->addFlags($mouvement);
     $document->header->addFlags($mouvement);
     $document->footer->addFlags($mouvement);
