@@ -89,7 +89,7 @@ dojo.require("dojo.parser");
 </script>
 <?php endif; ?>
   </head>
-  <body>
+<body<?php wtk_classes($flags); ?>>
 <?php if (isset($this->header)) $this->header->output(); ?>
 <?php if (isset($this->content)) $this->content->output (); ?>
 <?php if (isset($this->aside)) $this->aside->output(); ?>
