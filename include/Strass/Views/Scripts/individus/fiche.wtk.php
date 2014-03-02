@@ -24,10 +24,9 @@ $info = array('adelec'		=> "**Adélec :** [mailto:%s %s]",
 	      );
 
 $acl = Zend_Registry::get('acl');
-$ind = Zend_Registry::get('user');
 if ($this->etape)
   $info['etape'] = "**".wtk_ucfirst($this->etape->titre)."**";
-if ($acl->isAllowed($ind, $this->individu, 'totem'))
+if ($acl->isAllowed(null, $this->individu, 'totem'))
   $info['totem'] = '**Totem :** %s';
 
 if ($this->chef) {

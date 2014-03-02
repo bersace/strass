@@ -19,8 +19,7 @@ class Strass_View_Helper_LienIndividu
     }
 
     $acl = Zend_Registry::get('acl');
-    if ($acl->isAllowed(Zend_Registry::get('user'),
-			$individu, $action)) {
+    if ($acl->isAllowed(null, $individu, $action)) {
       $lien =  $this->view->lien(array('action' => $action,
 				       'individu' => $individu->slug,
 				       'controller' => $controller),

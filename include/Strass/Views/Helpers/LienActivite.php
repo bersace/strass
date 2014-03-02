@@ -31,8 +31,7 @@ class Strass_View_Helper_LienActivite {
 
 
     $acl = Zend_Registry::get('acl');
-    $i = Zend_Registry::get('user');
-    if ($acl->isAllowed($i, $resource, $action)) {
+    if ($acl->isAllowed(null, $resource, $action)) {
       return $this->view->lien(array('activite' => $activite->slug,
 				     'action' => $action,
 				     'controller' => $controller,

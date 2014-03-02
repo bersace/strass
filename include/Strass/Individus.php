@@ -125,14 +125,10 @@ class Individu extends Strass_Db_Table_Row_Abstract implements Zend_Acl_Resource
     return $this->getFullName();
   }
 
-  /*
-   * retourne si $i a le droit de voir le nom de $this
-   */
-  public function voirNom($i = null)
+  public function voirNom()
   {
     $acl = Zend_Registry::get('acl');
-    $ind = Zend_Registry::get('individu');
-    return $acl->isAllowed($ind, $this, 'voir-nom');
+    return $acl->isAllowed(null, $this, 'voir-nom');
   }
 
   function capitalizedLastname($compact=false)
@@ -175,7 +171,7 @@ class Individu extends Strass_Db_Table_Row_Abstract implements Zend_Acl_Resource
     if (($compute && $totem) && $this->totem) {
       // et que l'utilisateur est un sachem/admin
       $acl = Zend_Registry::get('acl');
-      if ($acl->isAllowed($ind, $this, 'totem')) {
+      if ($acl->isAllowed(null, $this, 'totem')) {
 	// montrer mon totem
 	return wtk_ucfirst($this->totem);
       }

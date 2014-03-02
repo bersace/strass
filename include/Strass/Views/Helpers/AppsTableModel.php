@@ -47,7 +47,7 @@ class Strass_View_Helper_AppsTableModel
       $role = $app->findParentRoles();
       $unite = $app->findParentUnites();
 
-      if ($acl->isAllowed($ind, $individu, 'fiche'))
+      if ($acl->isAllowed(null, $individu, 'fiche'))
 	$url_fiche = $this->view->urlIndividu($individu, 'fiche', 'individus', true);
       else {
 	$url_fiche = null;
