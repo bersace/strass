@@ -64,13 +64,16 @@ class Document extends Strass_Db_Table_Row_Abstract implements Zend_Acl_Resource
 
   function _postDelete()
   {
-    unlink($this->getFichier());
+    @unlink($this->getFichier());
+    @unlink($this->getCheminVignette());
   }
 
   function _postUpdate()
   {
     rename($this->getFichier($this->_cleanData),
 	   $this->getFichier());
+    rename($this->getCheminVignette($this->_cleanData),
+	   $this->getCheminVignette());
   }
 
   function countLiaisons($tables = null)

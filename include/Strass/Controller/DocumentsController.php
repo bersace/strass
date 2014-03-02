@@ -27,57 +27,79 @@ class DocumentsController extends Strass_Controller_Action
   function envoyerAction()
   {
     $unite = $this->_helper->Unite(false);
-    $this->metas(array('DC.Title' => 'Envoyer un document'));
-    $this->branche->append();
+    $this->view->doc = $d = $this->_helper->Document(false);
+    if ($d) {
+      $this->metas(array('DC.Title' => 'Éditer'));
+      $unite = $d->findUnite();
+    }
+    else {
+      $this->metas(array('DC.Title' => 'Envoyer un document'));
+      $this->branche->append();
+    }
 
-    $i = Zend_Registry::get('individu');
-
-    $unites = $i->findUnites(null, true);
+    $t = new Unites;
+    $unites = $t->fetchAll();
     $envoyables = array();
     foreach($unites as $u)
       if ($this->assert(null, $u, 'envoyer-document'))
 	$envoyables[$u->id] = wtk_ucfirst($u->getFullName());
 
     if (!count($envoyables))
-      throw new Strass_Controller_Exception
+      throw new Strass_Controller_Action_Exception_Forbidden
 	("Vous n'avez le droit d'envoyer de document pour aucune unité");
 
     $this->view->model = $m = new Wtk_Form_Model('envoyer');
     $m->addNewSubmission('envoyer', "Envoyer");
 
     $m->addInstance('Enum', 'unite', "Unité", $unite->id, $envoyables);
-    $m->addInstance('String', 'titre', "Titre");
+    $m->addInstance('String', 'titre', "Titre", $d ? $d->titre : null);
     $i = $m->addInstance('File', 'document', "Document");
 
     if ($m->validate()) {
       $i = $m->getInstance('document');
-      if (!$i->isUploaded())
+      if (!$d && !$i->isUploaded())
 	throw new Exception("Fichier manquant");
 
       $t = new Documents;
-      $data = $m->get();
-      $data['suffixe'] =
-	strtolower(end(explode('.', $data['document']['name'])));
-      unset($data['document']);
-      $data['slug'] = $t->createSlug(wtk_strtoid($data['titre']));
-      $data['date'] = strftime('%Y-%m-%d');
-      $unite = $data['unite'];
-      unset($data['unite']);
-
+      $tdu = new DocsUnite();
       $db = $t->getAdapter();
       $db->beginTransaction();
       try {
-	$k = $t->insert($data);
-	$d = $t->findOne($k);
-	$d->storeFile($i->getTempFilename());
+	if ($d) {
+	  $d->titre = $m->titre;
+	  $d->slug = $t->createSlug(wtk_strtoid($m->titre), $d->slug);
+	  $d->save();
 
-	$tdu = new DocsUnite();
-	$data = array('unite' => $unite,
-		      'document' => $d->id);
-	$k = $tdu->insert($data);
-	$du = $tdu->findOne($k);
+	  $message = "Document modifié";
 
-	$this->logger->info("Document envoyé",
+	  $du = $d->findDocsUnite()->current();
+	  $du->unite = $m->unite;
+	  $du->save();
+	}
+	else {
+	  $data = $m->get();
+	  $data['suffixe'] =
+	    strtolower(end(explode('.', $data['document']['name'])));
+	  unset($data['document']);
+	  $data['slug'] = $t->createSlug(wtk_strtoid($data['titre']));
+	  $data['date'] = strftime('%Y-%m-%d');
+	  $unite = $data['unite'];
+	  unset($data['unite']);
+	  $k = $t->insert($data);
+	  $d = $t->findOne($k);
+
+	  $data = array('unite' => $unite,
+			'document' => $d->id);
+	  $k = $tdu->insert($data);
+	  $du = $tdu->findOne($k);
+
+	  $message = "Document envoyé";
+	}
+
+	if ($i->isUploaded())
+	  $d->storeFile($i->getTempFilename());
+
+	$this->logger->info($message,
 			    $this->_helper->Url('index', null, null,
 						array('unite' => $du->findParentUnites()->slug)));
 

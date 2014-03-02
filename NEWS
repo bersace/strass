@@ -17,42 +17,37 @@ RÉGRESSIONS
 
  - Les URL sont pétées, ça impacte notamment dans le log système.
 
+ - Il faut renseigner son mot de passe pour changer d'adresse électronique.
+
 NOUVEAUTÉS UTILISATEUR
 
- - Aperçu des documents PDF.
-
- - Les homonymes sont acceptés : individus, unités, activités, photos,
-   etc.
+ - La page d'accueil est remplacée par la page d'accueil de l'unité
+   racine. L'accès aux citations se fait en cliquant sur le titre «
+   Citation » de la barre latérale.
 
  - Rafraîchissement de l'interface : plus de liens et d'actions
    contextuelles, menus et formulaires plus simples et
-   concrets. (Ergonomie de nazi®).
+   concrets. (Ergonomie de nazi®, less is more, distractive free,
+   lol).
+
+ - Les homonymes sont acceptés : individus, unités, activités, photos,
+   documents, etc.
 
  - Possibilité de réinitialiser son mot de passe sans passer par
    l'admin :-)
 
- - Il faut renseigner son mot de passe pour changer d'adresse électronique.
-
  - Par défaut, c'est l'adélec qui est utilisée pour s'identifier. Les
    anciens comptes peuvent migrer dans les paramètres de comptes.
 
- - La page d'accueil est remplacée par la page d'accueil de l'unité
-   racine.
-
- - La pagination par années (Les années Dupont…) a été aménagée pour
-   index, effectifs, calendrier et photos des unités.
+ - La pagination par années (Les années Dupont, L'année Martin, …) a
+   été aménagée pour index, effectifs, calendrier et photos des
+   unités.
 
  - Les photos sont affichés par unités et par années comme les
    effectifs et le calendrier.
 
- - L'accès aux citations se fait en cliquant sur le titre « Citation »
-   de la barre latérale.
-
- - Les admins peuvent éditer et supprimer les citations.
-
- - Les admins peuvent éditer et supprimer les messages du livre d'or,
-   avant ou après modération. Les messages du livre d'or peuvent
-   repasser en modération.
+ - Aperçu des documents. Édition des documents : changement d'unité,
+   renvoi du document, renommage.
 
  - Les pages d'erreurs ont maintenant tout les menus et la console
    utilisateur. La trace d'exception est masquée par défaut.
@@ -63,6 +58,12 @@ CHANGEMENTS WEBMESTRE
 
  - Un assistant d'installation est proposé permettant d'initialiser la
    base et de créer le premier compte.
+
+ - Les admins peuvent éditer et supprimer les citations.
+
+ - Les admins peuvent éditer et supprimer les messages du livre d'or,
+   avant ou après modération. Les messages du livre d'or peuvent
+   repasser en modération.
 
  - Un tableau de bord d'administration présente des indicateurs, le
    journal système, les dernières connexions.

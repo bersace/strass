@@ -9,7 +9,7 @@ if ($this->docs->count()) {
       ->addFlags('vignette', 'document');
     $al = $i->addList()->addFlags('adminlinks');
     $al->addItem()->addChild($this->lien(array('controller' => 'documents',
-					       'action' => 'editer',
+					       'action' => 'envoyer',
 					       'document' => $doc->slug),
 					 "Éditer", true));
     $al->addItem()->addChild($this->lien(array('controller' => 'documents',
