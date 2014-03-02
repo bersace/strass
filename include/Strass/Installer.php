@@ -4,7 +4,7 @@ require_once 'Strass/Individus.php';
 
 class Strass_Installer
 {
-  const VERSION = 18;
+  const VERSION = 15;
 
   function __construct($data, $dbname = 'private/strass.sqlite')
   {
@@ -55,27 +55,23 @@ class Strass_Installer
 
   function writeConfig()
   {
-    $config = array('site' => array ('metas' => array ('title' => null,
-						       'author' => null,
-						       'organization' => null,
-						       'creation' => strftime('%Y'),
-						       'subject' => 'scout,' . $this->data['site']['mouvement'],
-						       ),
-				     'association' => $this->data['site']['mouvement'],
-				     'short_title' => null,
-				     'id' => 'strass',
-				     'realm' => $this->generateRealm(),
-				     'realm_suffixe' => '',
-				     'duree_connexion' => 2678400,
-				     'admin' => $this->data['admin']['adelec'],
-				     'mail' => array('enable' => true,
-						     'smtp' => '',
-						     ),
-				     'style' => 'strass',
-				     'rubrique' => null,
-				     ),
-		    'inscription' => array('scoutisme' => false, ),
-		    );
+    $config = array ('metas' => array ('title' => null,
+				       'author' => null,
+				       'creation' => strftime('%Y'),
+				       'subject' => 'scout,' . $this->data['site']['mouvement'],
+				       ),
+		     'system' => array ('short_title' => null,
+					'mouvement' => $this->data['site']['mouvement'],
+					'realm' => $this->generateRealm(),
+					'realm_suffixe' => '',
+					'duree_connexion' => 2678400,
+					'admin' => $this->data['admin']['adelec'],
+					'mail' => array('enable' => true,
+							'smtp' => '',
+							),
+					'style' => 'strass',
+					),
+		     );
     $config = new Strass_Config_Php('strass', $config);
     $config->write();
     Zend_Registry::set('config', $config);
