@@ -110,7 +110,7 @@ class FTPHelper(object):
     """Implémente des opérations de haut niveaux au dessus de ce foutu protocole FTP"""
 
     log = logging.getLogger('strass.ftp')
-    exclude = ['*~', 'zend_cache*', '*.xcf', 'README', 'LICENSE']
+    exclude = ['*~', 'zend_cache*', '*.xcf', '*.scss', 'README', 'LICENSE']
 
     def __init__(self, config):
         self.config = config
