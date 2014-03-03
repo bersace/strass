@@ -56,6 +56,12 @@ NOUVEAUTÉS UTILISATEUR
 
 CHANGEMENTS WEBMESTRE
 
+ - Outils de gestions d'un site distant à partir d'un mirroir
+   local. Des règles Make backup, restore, migrate, upgrade,
+   etc. permettent de mettre le site en maintenance, de faire des
+   opérations dessus, et de sauvegarder les données dans git. Voir
+   make help pour ça.
+
  - Un assistant d'installation est proposé permettant d'initialiser la
    base et de créer le premier compte.
 
