@@ -54,11 +54,36 @@ def command(cls):
 
 
 class FTPEntry(object):
+    log = logging.getLogger('strass.ftp')
+
+    def __init__(self, ftp):
+        self.ftp = ftp
+
+
+    def list_(self):
+        entries = []
+        self.log.debug("Listage de %s", self.path)
+        self.ftp.retrlines('LIST -a %s' % self.path, entries.append)
+        return sorted([self.parse(e, self.path, ftp=self.ftp) for e in entries])[2:]
+
+
+    def remove(self):
+        if self.type_ == 'd':
+            for entry in self.list_():
+                entry.remove()
+            self.log.debug("Suppression de %s", self.path)
+            self.ftp.rmd(self.path)
+        else:
+            self.log.debug("Suppression de %s", self.path)
+            self.ftp.delete(self.path)
+
+
     @classmethod
-    def parse(cls, line):
-        self = cls()
+    def parse(cls, line, parent, ftp):
+        self = cls(ftp)
         self.type_ = line[0]
         self.name = line.split(None, 8)[-1]
+        self.path = os.path.join(parent, self.name)
         return self
 
 
@@ -85,7 +110,7 @@ class FTPHelper(object):
     """Implémente des opérations de haut niveaux au dessus de ce foutu protocole FTP"""
 
     log = logging.getLogger('strass.ftp')
-    exclude = ['*~', 'zend_cache*']
+    exclude = ['*~', 'zend_cache*', '*.xcf', 'README', 'LICENSE']
 
     def __init__(self, config):
         self.config = config
@@ -115,11 +140,12 @@ class FTPHelper(object):
     def isdir(self, path):
         """Retourne la liste des entrées si c'est un dossier, False sinon"""
         entries = []
+        self.log.debug("Listage de %s", path)
         self.ftp.retrlines('LIST -a %s' % path, entries.append)
         if not entries:
             return False
 
-        entries = sorted([FTPEntry.parse(e) for e in entries])
+        entries = sorted([FTPEntry.parse(e, path, ftp=self.ftp) for e in entries])
         if entries[0].name == '.':
             return entries[2:]
         else:
@@ -171,8 +197,8 @@ class FTPHelper(object):
                         return
                 except Exception, e:
                     pass
-            self.ftp.storbinary('STOR ' + path, open(path))
             self.log.debug("Envoi de %s", path)
+            self.ftp.storbinary('STOR ' + path, open(path))
 
 
     def remove(self, path):
@@ -180,7 +206,7 @@ class FTPHelper(object):
         entries = self.isdir(path)
         if entries is not False:
             for entry in entries:
-                self.remove(os.path.join(path, entry.name))
+                entry.remove()
             self.log.debug("Suppression de %s", path)
             self.ftp.rmd(path)
         elif self.exists(path):
@@ -194,21 +220,17 @@ class FTPHelper(object):
             local_entries = self._exclude_names(os.listdir(path))
         except OSError, e:
             local_entries = []
-        remote_entries = []
-        self.ftp.retrlines('LIST -a %s' % path, remote_entries.append)
-        remote_entries = remote_entries[2:]
+        remote_entries = self.isdir(path)
         for entry in remote_entries:
-            name = FTPEntry.parse(entry).name
-            if not self._exclude_names([name]):
+            if not self._exclude_names([entry.name]):
                 continue
-            childpath = os.path.join(path, name)
+            childpath = os.path.join(path, entry.name)
 
-            type_ = entry[0]
-            if type_ == 'd':
+            if entry.type_ == 'd':
                 self.clean(childpath)
 
-            if name not in local_entries:
-                self.remove(childpath)
+            if entry.name not in local_entries:
+                entry.remove()
 
 
     def getfile(self, path):
@@ -223,9 +245,9 @@ class FTPHelper(object):
                 self.log.debug('%s à jour', path)
                 return
 
+        self.log.debug(u"Réception de %s", path.decode('utf-8'))
         f = open(path, 'wb')
         self.ftp.retrbinary('RETR %s' % path, f.write)
-        self.log.debug(u"Réception de %s", path.decode('utf-8'))
 
 
     def get(self, path):
