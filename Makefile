@@ -13,6 +13,8 @@ help:
 maintenance.html: maint/scripts/maintenance $(CSS)
 	$< > $@
 
+.INTERMEDIATE: maintenance.html
+
 $(INSTDB): include/Strass/Installer/sql/schema.sql
 	rm -vf $@
 	sqlite3 -batch $@ ".read $<"
