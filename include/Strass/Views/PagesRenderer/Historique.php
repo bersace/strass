@@ -57,10 +57,6 @@ abstract class Strass_Views_PagesRenderer_Historique extends Wtk_Pages_Renderer
 
   function renderLinks($pages, $model)
   {
-    $count = $model->pagesCount();
-    if ($count == 1)
-      return;
-
     $ss = $pages->addSection('historique', "Historique");
     $ss->addFlags('pagelinks');
     $sss = null;
