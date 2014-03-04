@@ -157,13 +157,13 @@ class UnitesController extends Strass_Controller_Action
 
   function editerAction()
   {
-    $u = $this->_helper->Unite();
+    $this->view->unite = $u = $this->_helper->Unite();
     $this->assert(null, $u, 'editer',
 		  "Vous n'avez pas le droit de modifier cette unité");
 
     $this->metas(array('DC.Title' => 'Éditer '.$u->getFullname()));
 
-    $m = new Wtk_Form_Model('unite');
+    $this->view->model = $m = new Wtk_Form_Model('unite');
     $enum = array(null => 'Orpheline');
     foreach ($u->findParenteCandidates() as $c)
       $enum[$c->id] = wtk_ucfirst($c->getFullname());
@@ -197,18 +197,11 @@ class UnitesController extends Strass_Controller_Action
 			    array('controller' => 'unites', 'action' => 'index', 'unite' => $u->slug));
 
 	$db->commit();
-	$this->redirectSimple('index', 'unites', null,
-			      array('unite' => $u->slug));
       }
-      catch(Exception $e) {
-	$db->rollBack();
-	throw $e;
-      }
-    }
+      catch(Exception $e) { $db->rollBack(); throw $e; }
 
-    // vue
-    $this->view->unite = $u;
-    $this->view->model = $m;
+      $this->redirectSimple('index', 'unites', null, array('unite' => $u->slug));
+    }
   }
 
   function inscrireAction()
@@ -218,6 +211,9 @@ class UnitesController extends Strass_Controller_Action
     $this->branche->append(null, array('annee' => false));
     $this->view->annee = $a = $this->_helper->Annee();
     $this->metas(array('DC.Title' => "Inscrire pour l'année $a-".($a+1)));
+
+    $this->assert(null, $u, 'inscrire',
+		  "Vous n'avez pas le droit d'inscrire dans cette unité");
 
     $ti = new Individus;
     $db = $ti->getAdapter();
@@ -343,12 +339,10 @@ class UnitesController extends Strass_Controller_Action
 			    $this->_helper->Url('index', 'unites', null, array('unite' => $u->id)),
 			    (string) $u);
 	$db->commit();
-	$this->redirectSimple('index');
       }
-      catch(Exception $e) {
-	$db->rollBack();
-	throw $e;
-      }
+      catch(Exception $e) { $db->rollBack(); throw $e; }
+
+      $this->redirectSimple('index');
     }
 
     $this->view->unite = $u;
@@ -380,12 +374,10 @@ class UnitesController extends Strass_Controller_Action
 			      $this->_helper->Url('index', 'unites'));
 	  $this->_helper->Flash->info($message);
 	  $db->commit();
-	  $this->redirectSimple('unites', 'admin', null, null, true);
 	}
-	catch(Exception $e) {
-	  $db->rollBack();
-	  throw $e;
-	}
+	catch(Exception $e) { $db->rollBack(); throw $e; }
+
+	$this->redirectSimple('unites', 'admin', null, null, true);
       }
       else
 	$this->redirectSimple('index', null, null, array('unite' => $u->slug));
