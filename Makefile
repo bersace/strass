@@ -1,6 +1,5 @@
 SCSS=$(shell find data/styles/ -name "*.scss")
 CSS=$(patsubst %.scss,%.css,$(SCSS))
-INSTDB=include/Strass/Installer/sql/strass.sqlite
 
 all: $(CSS) $(INSTDB)
 
@@ -15,6 +14,7 @@ maintenance.html: maint/scripts/maintenance $(CSS)
 
 .INTERMEDIATE: maintenance.html
 
+INSTDB=include/Strass/Installer/sql/strass.sqlite
 $(INSTDB): include/Strass/Installer/sql/schema.sql
 	rm -vf $@
 	sqlite3 -batch $@ ".read $<"
@@ -37,19 +37,29 @@ restore:
 	git clean --force -d data/ private/
 	rm -f private/cache/*
 
-ifdef ORIG
 # Restaure un site en version 1
+ifdef ORIG
+# depuis un dossier autre
 restore1: restore
 	cd $(ORIG); git reset --hard;
 	cp --archive --link $(ORIG)/config/ $(ORIG)/data $(ORIG)/resources ./
 else
+# depuis HEAD
 restore1: restore
 	git checkout resources/ config/
 endif
 
-test:
-	phpunit --bootstrap tests/bootstrap.php tests
+TESTDB=tests/strass.sqlite
+$(TESTDB): include/Strass/Installer/sql/schema.sql
+	rm -vf $@
+	sqlite3 -batch $@ ".read $<"
+.INTERMEDIATE: $(TESTDB)
 
+ifdef TESTDB
+test: $(TESTDB)
+	rm -rf private/cache
+	phpunit --bootstrap tests/bootstrap.php tests
+endif
 
 REMOTE=maint/scripts/remote --verbose --config maint/strass.conf
 
@@ -68,7 +78,7 @@ backup1:
 	git add data/ resources/ config/;
 	git commit -m 'BACKUP';
 
-migrate:
+migrate: all
 	maint/scripts/migrate;
 	git add --all -- data/ private/ config/ resources/;
 	git commit -m 'MIGRATION';

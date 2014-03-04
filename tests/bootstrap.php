@@ -16,4 +16,4 @@ $loader->registerNamespace('Wtk_');
 $loader->registerNamespace('Strass_');
 
 Orror::init(E_ALL | E_STRICT);
-Strass_Db::setup(':memory:');
+Strass_Db::setup('tests/strass.sqlite');
