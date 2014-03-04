@@ -29,7 +29,8 @@ abstract class Strass_Controller_Action extends Zend_Controller_Action implement
       }
       else {
 	try {
-	  $racine = $this->_helper->Unite->racine();
+	  $t = new Unites;
+	  $racine = $t->findRacine();
 	  $site = wtk_ucfirst($racine->getName());
 	}
 	catch (Strass_Db_Table_NotFound $e) {
@@ -38,7 +39,7 @@ abstract class Strass_Controller_Action extends Zend_Controller_Action implement
       }
 
       $page = new Strass_Page(new Wtk_Metas(array('DC.Title'		=> $metas->title,
-						  'DC.Title.alternative'	=> $metas->title,
+						  'DC.Title.alternative'=> $metas->title,
 						  'DC.Subject'		=> $metas->subject,
 						  'DC.Language'		=> $metas->language,
 						  'DC.Creator'		=> $metas->author,

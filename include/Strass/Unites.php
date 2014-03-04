@@ -68,7 +68,11 @@ class Unites extends Strass_Db_Table_Abstract
       ->where('unite.parent IS NULL')
       ->order('unite.id')
       ->limit(1);
-    return $this->fetchAll($s)->current();
+    $racines = $this->fetchAll($s);
+    if (!$racines->count()) {
+      throw new Strass_Db_Table_NotFound("Pas d'unité racine");
+    }
+    return $racines->current();
   }
 
   function fetchAll($where = NULL, $order = NULL, $count = NULL, $offset = NULL)
@@ -529,7 +533,6 @@ class Unite extends Strass_Db_Table_Row_Abstract implements Zend_Acl_Resource_In
   {
     return $this->findParentTypesUnite()->isTerminale();
   }
-
 
   // retourne les années où l'unité fut ouverte.
   function getAnneesOuverte()
