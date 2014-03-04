@@ -22,7 +22,7 @@
 
 @media screen {
 
-    #document form,
+    #document > form,
     #document.inscriptions table
     {
 	@include minipage;
