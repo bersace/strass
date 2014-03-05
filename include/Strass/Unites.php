@@ -416,7 +416,7 @@ class Unite extends Strass_Db_Table_Row_Abstract implements Zend_Acl_Resource_In
       // avant le 24 août de l'année suivante …
       $select->where('STRFTIME("%Y-%m-%d", debut) <= ?'."\n", ($annee+1).'-08-24');
       // … toujours en exercice ou en exercice au moins jusqu'au 1er janvier de l'année suivante.
-      $select->where('fin IS NULL OR STRFTIME("%Y-%m-%d", fin) >= ?'."\n", $annee.'-08-25');
+      $select->where('fin IS NULL OR STRFTIME("%Y-%m-%d", fin) >= ?'."\n", ($annee+1).'-01-01');
     }
 
     return $t->fetchAll($select);
