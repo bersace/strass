@@ -104,7 +104,8 @@ td.numero
     #document.fonder form,
     #document.editer form,
     #document.supprimer form,
-    #document.inscrire form
+    #document.inscrire form,
+    #document.fermer form
     {
 	@include minipage;
     }

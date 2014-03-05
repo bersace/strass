@@ -324,29 +324,31 @@ class UnitesController extends Strass_Controller_Action
 
   function fermerAction()
   {
-    $u = $this->_helper->Unite();
-    $m = new Wtk_Form_Model('fermer');
+    $this->view->unite = $u = $this->_helper->Unite();
+    $this->metas(array('DC.Title' => 'Fermer '.$u->getFullname(),
+		       'DC.Title.alternative' => 'Fermer'));
+    $this->branche->append();
+
+    $this->assert(null, $u, 'fermer',
+		  "Vous n'avez pas le droit de fermer cette unité");
+
+    $this->view->model = $m = new Wtk_Form_Model('fermer');
     $m->addDate('fin', 'Date de fermeture');
     $m->addNewSubmission('continuer', 'Continuer');
-    $this->metas(array('DC.Title' => 'Fermer '.$u->getFullname()));
 
     if ($m->validate()) {
       $db = $u->getTable()->getAdapter();
       $db->beginTransaction();
       try {
-	$u->fermer($m->get('fin'));
-	$this->_helper->Log("Fermeture de l'unité ".$u, array($u),
-			    $this->_helper->Url('index', 'unites', null, array('unite' => $u->id)),
-			    (string) $u);
+	$u->fermer($m->fin);
+	$this->logger->warn("Fermeture de l'unité ".$u,
+			    $this->_helper->Url('index', 'unites', null, array('unite' => $u->slug)));
 	$db->commit();
       }
       catch(Exception $e) { $db->rollBack(); throw $e; }
 
       $this->redirectSimple('index');
     }
-
-    $this->view->unite = $u;
-    $this->view->model = $m;
   }
 
   function supprimerAction()

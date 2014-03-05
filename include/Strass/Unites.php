@@ -477,9 +477,12 @@ class Unite extends Strass_Db_Table_Row_Abstract implements Zend_Acl_Resource_In
 
   function fermer($fin, $recursif = true) {
 
-    $ta = new Appartenances;
-    $s = $ta->select()->where('fin IS NULL');
-    $apps = $this->findAppartenances($s);
+    $t = new Appartenances;
+    $s = $t->select()
+      ->from('appartenance')
+      ->where('fin IS NULL')
+      ->where('appartenance.unite = ?', $this->id);
+    $apps = $t->fetchAll($s);
     foreach($apps as $app) {
       $app->fin = $fin;
       $app->save();
