@@ -30,6 +30,27 @@ VALUES
 ('ronde',		'ronde',		1,	0, 5,  'f', 17, 30),
 ('sizjeannette',	'sizaine',		15,	0, 6,  'f', 7, 12);
 
+UPDATE unite_type SET accr_we = 'WEG', nom_we = 'Weekend de groupe' WHERE slug = 'groupe';
+UPDATE unite_type SET accr_we = 'WEA', nom_we = 'Weekend ainés' WHERE slug = 'aines';
+UPDATE unite_type SET accr_we = 'WEC', nom_we = 'Weekend de clan' WHERE slug = 'clan';
+UPDATE unite_type SET accr_we = 'WEE', nom_we = 'Weekend d''équipe' WHERE slug IN ('eqclan', 'eqfeu', 'equipe');
+UPDATE unite_type SET accr_we = 'WEF', nom_we = 'Weekend de feu' WHERE slug = 'feu';
+UPDATE unite_type SET accr_we = 'WET', nom_we = 'Weekend de troupe' WHERE slug = 'troupe';
+UPDATE unite_type SET accr_we = 'WEHP', nom_we = 'Weekend HP' WHERE slug = 'hp';
+UPDATE unite_type SET accr_we = 'WEP', nom_we = 'Weekend de patrouille' WHERE slug = 'patrouille';
+UPDATE unite_type SET accr_we = 'WECie', nom_we = 'Weekend de compagnie' WHERE slug = 'compagnie';
+UPDATE unite_type SET accr_we = 'WEHE', nom_we = 'Weekend HE' WHERE slug = 'he';
+
+UPDATE unite_type SET nom_camp = 'Route' WHERE slug = 'clan';
+UPDATE unite_type SET nom_camp = 'Camp HP' WHERE slug = 'hp';
+UPDATE unite_type SET nom_camp = 'Camp HE' WHERE slug = 'he';
+UPDATE unite_type SET nom_sortie = 'Chasse', nom_we = 'Grand chasse', nom_camp = 'Grande chasse'
+WHERE slug = 'meute';
+
+UPDATE unite_type SET extra = 'Cri de pat' WHERE slug IN ('hp', 'patrouille', 'he', 'equipe');
+UPDATE unite_type SET extra = 'Saint patron'
+WHERE slug IN ('groupe', 'aines', 'clan', 'eqclan', 'feu', 'eqfeu', 'troupe', 'compagnie');
+
 INSERT INTO unite_role
 (slug, titre, accr, type, acl_role, ordre)
 VALUES

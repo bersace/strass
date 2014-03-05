@@ -76,10 +76,24 @@ CREATE TABLE `unite_type`
 	parent		INTEGER		REFERENCES unite_type(id),
 	virtuelle	BOOLEAN		DEFAULT 0,
 	nom		CHAR(32)	NOT NULL,
+	-- Comment s'appelle l'extra ? Cri de pat ? Saint patron ?
+	extra		CHAR(32)	DEFAULT NULL,
 	ordre		INT(2),
 	sexe		CHAR(1),
 	age_min	INT(4),
-	age_max	INT(4)
+	age_max	INT(4),
+	nom_reunion	CHAR(16)	DEFAULT 'Réunion',
+	nom_sortie	CHAR(16)	DEFAULT 'Sortie',
+	nom_we		CHAR(16)	DEFAULT 'Weekend',
+	nom_camp	CHAR(16)	DEFAULT 'Camp',
+	accr_reunion	CHAR(8)		DEFAULT 'Réunion',
+	accr_sortie	CHAR(8)		DEFAULT 'Sortie',
+	accr_we		CHAR(8)		DEFAULT 'WE',
+	accr_camp	CHAR(8)		DEFAULT 'Camp',
+	datefmt_reunion	CHAR(8)		DEFAULT '%d %b %Y',
+	datefmt_sortie	CHAR(8)		DEFAULT '%b %Y',
+	datefmt_we	CHAR(8)		DEFAULT '%b %Y',
+	datefmt_camp	CHAR(8)		DEFAULT '%Y'
 );
 
 CREATE VIEW vtypes AS
@@ -117,7 +131,7 @@ CREATE TABLE `unite_role` (
 );
 
 CREATE VIEW vroles AS
-SELECT r.id, r.slug, r.titre, t.nom, accr, acl_role AS acl
+SELECT r.id, r.slug, r.titre, t.nom, r.accr, acl_role AS acl
 FROM unite_role AS r
 JOIN unite_type AS t ON t.id = r.type
 ORDER BY t.id, r.id;

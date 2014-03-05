@@ -1,5 +1,6 @@
 SCSS=$(shell find data/styles/ -name "*.scss")
 CSS=$(patsubst %.scss,%.css,$(SCSS))
+INSTDB=include/Strass/Installer/sql/strass.sqlite
 
 all: $(CSS) $(INSTDB)
 
@@ -14,7 +15,6 @@ maintenance.html: maint/scripts/maintenance $(CSS)
 
 .INTERMEDIATE: maintenance.html
 
-INSTDB=include/Strass/Installer/sql/strass.sqlite
 $(INSTDB): include/Strass/Installer/sql/schema.sql
 	rm -vf $@
 	sqlite3 -batch $@ ".read $<"

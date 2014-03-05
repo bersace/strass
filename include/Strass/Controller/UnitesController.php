@@ -93,7 +93,7 @@ class UnitesController extends Strass_Controller_Action
     $ens = array();
     $enum = array();
     foreach($soustypes as $type) {
-      $en = $type->getExtraName();
+      $en = $type->extra;
       if ($en)
 	array_push($ens, $en);
 
@@ -170,7 +170,7 @@ class UnitesController extends Strass_Controller_Action
     $m->addEnum('parente', "Unité parente", $u->parent, $enum);
     $m->addString('nom', "Nom", $u->nom);
     $m->addString('extra',
-		  $u->findParentTypesUnite()->getExtraName(),
+		  $u->findParentTypesUnite()->extra,
 		  $u->extra);
     $m->addFile('image', "Image");
     $w = $u->getWiki(null, false);

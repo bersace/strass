@@ -725,51 +725,88 @@ class TypesUnite extends Strass_Db_Table_Abstract
 
   function getTypesRacine()
   {
-    $select = $this->getAdapter()->select()
-      ->where('parent IS NULL');
+    $select = $this->getAdapter()->select()->where('parent IS NULL');
     return $this->fetchAll($select);
   }
 }
 
-class TypeUnite extends Zend_Db_Table_Row_Abstract
+class TypeUnite extends Strass_Db_Table_Row_Abstract
 {
-  protected static $roles = array();
-  protected $terminale = null;
+  protected $_tableClass = 'TypesUnite';
+
+  static function cleanIntitule($intitule)
+  {
+    return trim(preg_replace('/ +/', ' ', $intitule));
+  }
+
+  function getIntituleCourtActivite($activite)
+  {
+    if ($activite->intitule)
+      $i = $activite->intitule;
+    else {
+      $type = $activite->getType();
+      $i = $this->{'accr_'.$type}.' '.$activite->lieu;
+    }
+
+    return self::cleanIntitule($i);
+  }
+
+  function getIntituleActivite($activite)
+  {
+    if ($activite->intitule)
+      $i = $activite->intitule;
+    else {
+      $type = $activite->getType();
+      $i = $this->{'nom_'.$type};
+      if ($type == 'camp') {
+	$mois = substr($activite->debut, 5, 2);
+	switch($mois) {
+	case '03':
+	case '04':
+	  $i.= ' de Pâques';
+	  break;
+	}
+      }
+      $i.= ' '.$activite->lieu;
+    }
+
+    return self::cleanIntitule($i);
+  }
+
+  function getIntituleCompletActivite($activite)
+  {
+    if ($activite->intitule) {
+      $i = $activite->intitule;
+      $datefmt = '%Y';
+    }
+    else {
+      $type = $activite->getType();
+      $i = $this->{'nom_'.$type};
+      $datefmt = $this->{'datefmt_'.$type};
+      if ($type == 'camp') {
+	$mois = substr($activite->debut, 5, 2);
+	switch($mois) {
+	case '03':
+	case '04':
+	  $i.= ' de Pâques';
+	  break;
+	}
+      }
+      $i.= ' '.$activite->lieu;
+    }
+    $i .= ' '.strftime($datefmt, strtotime($activite->debut));
+
+    return self::cleanIntitule($i);
+  }
 
   function __toString()
   {
     return $this->nom;
   }
 
-  function getExtraName()
-  {
-    switch ($this->id) {
-    case 'groupe':
-    case 'sizaine':
-      return null;
-    case 'clan':
-    case 'eqclan':
-    case 'feu':
-    case 'eqfeu':
-    case 'troupe':
-    case 'compagnie':
-    case 'meute':
-    case 'ronde':
-      return 'Patronage';
-    case 'patrouille':
-    case 'equipage':
-    case 'equipe':
-    case 'hp':
-      return 'Cri de pat\'';
-    }
-  }
-
   function isTerminale()
   {
-    if (is_null($this->terminale)) {
-      $this->terminale = $this->findTypesUnite()->count() == 0;
-    }
-    return $this->terminale;
+    return $this->findTypesUnite()->count() == 0;
   }
 }
 

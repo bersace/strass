@@ -43,9 +43,7 @@ class Strass_Controller_Action_Helper_Album extends Zend_Controller_Action_Helpe
     $urlOptions = array('controller' => 'photos',
 			'action' => 'consulter',
 			'album'	=> $activite->slug);
-    $this->_actionController->branche->append(wtk_ucfirst($activite->getIntitule(false)),
-					      $urlOptions,
-					      array(),
-					      true);
+    $this->_actionController->branche->append($activite->getIntitule(),
+					      $urlOptions, array(), true);
   }
 }

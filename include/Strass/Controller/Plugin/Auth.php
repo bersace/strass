@@ -39,8 +39,9 @@ class Strass_Controller_Plugin_Auth extends Zend_Controller_Plugin_Abstract
 
       $cache->save($acl, 'strass_acl');
     }
-    else
+    else {
       Zend_Registry::set('acl', $acl, array(), null);
+    }
 
     return $acl;
   }

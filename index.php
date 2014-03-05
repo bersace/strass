@@ -1,6 +1,7 @@
 <?php /*-*- php -*-*/
 umask(0022);
 date_default_timezone_set('Europe/Paris');
+setlocale(LC_TIME, 'fr', 'fr_FR', 'fr_FR.utf8', 'fr_FR@euro', 'fr-FR', 'fra');
 
 $paths = explode(':', get_include_path());
 array_shift($paths);

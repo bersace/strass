@@ -76,7 +76,7 @@ class PhotosController extends Strass_Controller_Action
     $enum = array();
     foreach($as as $a)
       if ($this->assert(null, $a, 'envoyer-photo'))
-	$enum[$a->id] = wtk_ucfirst($a->getIntitule());
+	$enum[$a->id] = $a->getIntituleComplet();
     if (!$enum)
       throw new Strass_Controller_Action_Exception_Forbidden("Vous ne pouvez envoyer de photos ".
 							     "dans aucune activité.");
@@ -214,7 +214,7 @@ class PhotosController extends Strass_Controller_Action
     $enum = array();
     foreach($as as $a)
       if ($this->assert(null, $a, 'envoyer-photo'))
-	$enum[$a->id] = wtk_ucfirst($a->getIntitule());
+	$enum[$a->id] = $a->getIntituleComplet();
 
     $m->addEnum('activite', "Album", $p->activite, $enum);
     $m->addFile('photo', "Photo");

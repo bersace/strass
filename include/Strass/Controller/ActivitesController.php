@@ -103,35 +103,28 @@ class ActivitesController extends Strass_Controller_Action
     if ($m->validate()) {
       $t = new Activites;
       $tu = new Unites;
-      $data = $m->get();
-      $unites = $data['unites'];
-      $keys = array('debut', 'fin', 'lieu');
-      $tuple = array();
-      foreach($keys as $k)
-	$tuple[$k] = $m->$k;
+
+      $a = new Activite;
+      $a->debut = $m->debut;
+      $a->fin = $m->fin;
+      $a->lieu = $m->lieu;
 
       // Sélectionner les sous unités des unités sélectionné à l'année de l'activité
+      $unites = $m->unites;
       $annee = intval(date('Y', strtotime($m->get('debut')) - 243 * 24 * 60 * 60));
       $participantes = $tu->getIdSousUnites((array) $unites, $annee);
 
       // génération de l'intitulé
       $unites = $tu->find(array_values($participantes));
-      $intitule = $m->get('intitule');
-      $tuple['intitule'] = $intitule;
-      if (!$intitule)
-	$intitule = Activite::generateIntitule($tuple, $unites, false);
-      $intitule .= Activite::generateDate($intitule,
-					  Activite::findType($tuple['debut'],
-							     $tuple['fin']),
-					  strtotime($tuple['debut']),
-					  strtotime($tuple['fin']));
-      $tuple['slug'] = $slug = $t->createSlug(wtk_strtoid($intitule));
+      $type = $unites[0]->findParentTypesUnite();
+      $a->intitule = $m->intitule;
+      $intitule = $type->getIntituleCompletActivite($a);
+      $a->slug = $slug = $t->createSlug(wtk_strtoid($intitule));
 
-      $db = Zend_Registry::get('db');
+      $db = $t->getAdapter();
       $db->beginTransaction();
       try {
-	$k = $t->insert($tuple);
-	$a = $t->findOne($k);
+	$a->save();
 
 	$tp = new Participations;
 	$tp->updateActivite($a, $participantes);
@@ -229,9 +222,8 @@ class ActivitesController extends Strass_Controller_Action
 
 	$data = $m->get();
 	unset($data['unites']);
-	$intitule = $m->get('intitule');
-	$a->intitule = $intitule;
-	$a->slug = $t->createSlug(wtk_strtoid($a->getIntitule()), $a->slug);
+	$a->intitule = $m->intitule;
+	$a->slug = $t->createSlug(wtk_strtoid($a->getIntituleComplet()), $a->slug);
 	$a->save();
 
 	$tp = new Participations;
@@ -250,7 +242,6 @@ class ActivitesController extends Strass_Controller_Action
       }
     }
   }
-
 
   function annulerAction()
   {

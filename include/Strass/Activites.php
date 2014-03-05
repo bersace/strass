@@ -53,49 +53,16 @@ class Activites extends Strass_Db_Table_Abstract
 
 class Activite extends Strass_Db_Table_Row_Abstract implements Zend_Acl_Resource_Interface
 {
-  static protected $us = array();
-
-  static protected $types = array('diner' => 'Dîner',
-				  'sortie' => 'Sortie',
-				  'chasse' => 'Chasse',
-				  'we' => 'Week-end',
-				  'camp' => 'Camp');
-
-  static protected $type_accr = array('we' => 'WE');
-
-  static $mois = array('January' => 'janvier',
-		       'February' => 'février',
-		       'March' => 'mars',
-		       'April' => 'avril',
-		       'May' => 'mai',
-		       'June' => 'juin',
-		       'July' => 'juillet',
-		       'August' => 'août',
-		       'September' => 'septembre',
-		       'October' => 'octobre',
-		       'November' => 'novembre',
-		       'December' => 'décembre');
-
-
+  protected $_tableClass = 'Activites';
   protected $_privileges = array(array('chef', NULL),
 				 array('assistant', array('editer',
 							  'envoyer-photo',
 							  'dossier')),
 				 array(NULL, 'consulter'));
-  protected $type;
-  protected $annee;
-
-  public function __construct(array $config = array())
-  {
-    parent::__construct($config);
-
-    $this->type = self::findType($this->debut, $this->fin);
-    $this->annee = intval(date('Y', strtotime($this->debut) - 243 * 24 * 60 * 60));
-  }
 
   function __toString()
   {
-    return $this->getIntitule();
+    return $this->getIntituleComplet();
   }
 
   public function getResourceId()
@@ -125,33 +92,21 @@ class Activite extends Strass_Db_Table_Row_Abstract implements Zend_Acl_Resource
 
   public function getType()
   {
-    return $this->type;
-  }
+    $dt = strtotime($this->debut);
+    $ft = strtotime($this->fin);
+    $longueur = $ft - $dt;
 
-  public function getAnnee()
-  {
-    return $this->annee;
-  }
-
-  public function getTypeName()
-  {
-    return self::$types[$this->type];
-  }
-
-  public static function findType($debut, $fin)
-  {
-    $dt = strtotime($debut);
-    $ft = strtotime($fin);
-    $jt = 60 * 60 * 20;     // secondes par "jour"
-    if ($ft - $dt < $jt) {
+    /* On considère qu'une sortie dure moins de 12 heures */
+    if ($longueur < 12 * 3600) {
       if (date('H', $dt) >= 16 && date('H', $ft) >= 20) {
-	$type = 'diner';
+	$type = 'reunion';
       }
       else {
 	$type = 'sortie';
       }
     }
-    else if ($ft - $dt < 2 * $jt) {
+    /* on considère un camp à partir de deux nuits, 36 heures */
+    else if ($longueur < 36 * 3600) {
       $type = 'we';
     }
     else {
@@ -160,251 +115,68 @@ class Activite extends Strass_Db_Table_Row_Abstract implements Zend_Acl_Resource
     return $type;
   }
 
-  public function getIntitule($date = true, $lieu = true, $compact = false)
+  function getIntitule()
   {
-    // Si l'intitulé est défini, alors ne pas le regénérer.
-    if ($this->intitule) {
-      $intitule = $this->intitule;
-    }
-    else {
-      $intitule = self::generateIntitule($this->_data,
-					 $this->findUnitesParticipantes(),
-					 false, $lieu, $compact);
-    }
-
-    if ($date) {
-      $dt = strtotime($this->debut);
-      $ft = strtotime($this->fin);
-      $gdate = self::generateDate($intitule, self::findType($this->debut, $this->fin),
-				  $dt,$ft);
-      // s'il est imposé, alors ajouter l'année (ou pas).
-      $intitule.= $gdate;
-    }
-
-    return $intitule;
+    return $this->findTypeUnite()->getIntituleActivite($this);
   }
 
-  protected function getGeneratedIntitule()
+  function getIntituleCourt()
   {
-    return self::generateIntitule($this->toArray(),
-				  $this->findUnitesParticipantes());
+    return $this->findTypeUnite()->getIntituleCourtActivite($this);
   }
 
-
-  public static function generateIntitule(array $data, $unites,
-					  $date = true, $location = true, $compact = false)
+  function getIntituleComplet()
   {
-    extract($data);
-    $dt = strtotime($debut);
-    $ft = strtotime($fin);
-
-    $type = self::findType($debut, $fin);
-
-    $tu = new Unites;
-    $eids = Activites::findUnitesParticipantesExplicites($unites);
-
-    $explicites = count($eids) > 1 ? $tu->findMany($eids) : $tu->findOne($eids[0]);
-
-    // on commence toujours par le type d'activité.
-    // les camp des routier s'appellent des "routes" (uniquement FSE ?)
-    $first = $explicites instanceof Countable ? $explicites->current() : $explicites;
-    if ($type == 'camp' && ($first->type == 'clan' || $first->type == 'eqcclan')) {
-      $i = 'Route';
-    }
-    else if ($compact) {
-      switch ($type) {
-      case 'we':
-	$i = 'WE';
-	break;
-      default:
-	$i = self::$types[$type];
-	break;
-      }
-    }
-    else
-      $i = self::$types[$type];
-
-    // type des unités participante
-    if ($explicites instanceof Countable) {   // inter unités
-      $types = array();
-      foreach($explicites as $unite) {
-	array_push($types, $unite->getTypeName());
-      }
-      $types = array_unique($types);
-      if (count($types) == 1) {   // unités de même types
-	$i.= " inter-".$types[0];
-      }
-    }
-    else {                  // unité unique
-      $unite = $explicites;
-      $typu = $unite->findParentTypesUnite()->slug;
-
-      if ($compact && $type == 'we') {
-	switch ($typu) {
-	case 'groupe':
-	  $i.= "G";
-	  break;
-	case 'clan':
-	  $i.= 'C';
-	  break;
-	case 'feu':
-	  $i.= 'F';
-	  break;
-	case 'aines':
-	  $i.= 'CA';
-	  break;
-	case 'troupe':
-	  $i.= "T ".$unite->nom;
-	  break;
-	case 'hp':
-	  $i.= 'HP';
-	  break;
-	case 'patrouille':
-	  $i.= "P ".$unite->getName();
-	  break;
-	case 'compagnie':
-	  $i.= 'Cie';
-	  break;
-	case 'equipe':
-	case 'eqclan':
-	  $i.= "E ".$unite->getFullname();
-	  break;
-	default:
-	  $i.= " de ".$unite->getTypeName();
-	  break;
-	}
-
-      }
-      else {
-	switch ($type) {
-	case 'camp':
-	  if ($typu == 'hp') {
-	    $i.= ' HP';
-	  }
-	  else {
-	    // été/noël/hiver ?
-	    switch(strftime('%m', $dt)) {
-	    case 12:
-	    case 1:
-	      $i.= ' de Noël';
-	      break;
-	    case 2:
-	    case 3:
-	      $i.= " d'hiver";
-	      break;
-	    case 4:
-	    case 5:
-	      $i.= " de Pâques";
-	      break;
-	    case 7:
-	    case 8:
-	      $i.= " d'été";
-	      break;
-	    default:
-	      break;
-	    }
-	  }
-	  break;
-	default:
-	  switch ($typu) {
-	  case 'hp':
-	    $i.= ' HP';
-	    break;
-	  case 'patrouille':
-	    $i.= " de ".$unite->getFullname();
-	    break;
-	  case 'equipe':
-	  case 'eqclan':
-	    $i.= " d'".$unite->getTypeName();
-	    break;
-	  default:
-	    $i.= " de ".$unite->getTypeName();
-	    break;
-	  }
-	}
-      }
-    }
-
-    if ($lieu && $location) {
-      if ($compact || $type == 'camp')
-	$i.= ' '.$lieu;
-      else
-	$i.= ' à '.$lieu;
-    }
-
-    if ($date)
-      $i.= self::generateDate($intitule, $type, $dt, $ft);
-
-    return $i;
+    return $this->findTypeUnite()->getIntituleCompletActivite($this);
   }
 
-  static function generateDate($intitule, $type, $dt, $ft)
+  function getDate()
   {
-    $i = "";
-
-    // gruik
-    if (strpos($intitule, 'Rentr') === 0)
-      return strftime(' %Y', $ft);
-
-    switch ($type) {
-    case 'diner':
-    case 'sortie':
-      $i.= " du ".trim(strftime("%e/%m/%Y", $dt));
-      break;
-    case 'we':
-      $i.= (" du ".
-	    trim(strftime("%e", $dt)).' - '.trim(strftime("%e", $ft)).
-	    ' '.self::$mois[strftime('%B', $dt)].' '.strftime('%Y', $dt));
-      break;
-    case 'camp':
-    default:
-      $i.= (" ".strftime("%Y", $dt));
-      break;
-    }
-
-    return $i;
-  }
-
-  /**
-   * Si $unique, alors la date est complète et préfixé d'un article : les 4/5
-   * juin 2009.
-   */
-  function getDate($unique = true) {
     $dt = strtotime($this->debut);
     $ft = strtotime($this->fin);
+    $monomois = substr($this->debut, 5, 2) == substr($this->fin, 5, 2);
 
     switch ($this->getType()) {
-    case 'diner':
+    case 'reunion':
     case 'sortie':
-      return
-	(!$unique ? "" : "le ").
-	strftime('%e', $dt).' '.
-	self::$mois[strftime('%B', $dt)].' '.
-	(!$unique ? '' :
-	 strftime('%Y', $dt).
-	 ' de '.strftime('%H:%M', $dt).' à '.strftime('%H:%M', $ft));
-      break;
+      return strftime('%e %B', $dt);
     case 'we':
-      return
-	(!$unique ? "" : "les ").
-	trim(strftime('%e', $dt)).' - '.
-	trim(strftime('%e', $ft)).' '.
-	self::$mois[strftime('%B', $dt)].
-	(!$unique ? '' : strftime(' %Y', $dt));
-      break;
+      if ($monomois)
+	return strftime('%e', $dt).' - '.strftime('%e %B', $ft);
+      else
+	return strftime('%e %B', $dt).' - '.strftime('%e %B', $ft);
     case 'camp':
-      return
-	strftime((!$unique ? '%e - ' : 'du %e au '), $dt).
-	strftime('%e ', $ft).
-	self::$mois[strftime('%B', $dt)].' '.
-	(!$unique ? '' : strftime(' %Y', $dt));
-      break;
+      if ($monomois)
+	return strftime('du %e au ', $dt).strftime('%e %B', $ft);
+      else
+	return strftime('du %e %B au ', $dt).strftime('%e %B', $ft);
     }
+  }
+
+  public function getAnnee()
+  {
+    return strftime('%Y', strtotime($this->debut) - 8 * 30 * 24 * 3600);
   }
 
   function isFuture()
   {
     return strtotime($this->debut) > time();
+  }
+
+  function findTypeUnite()
+  {
+    $t = new TypesUnite;
+    $s = $t->select()
+      ->setIntegrityCheck(false)
+      ->distinct()
+      ->from('unite_type')
+      ->join('unite', 'unite.type = unite_type.id', array())
+      ->join('participation', 'participation.unite = unite.id', array())
+      ->where('participation.activite = ?', $this->id)
+      ->order('unite_type.ordre')
+      ->limit(1);
+
+    return $t->fetchAll($s)->current();
   }
 
   function getDossierPhoto($slug = NULL)
