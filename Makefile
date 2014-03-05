@@ -28,7 +28,7 @@ setup:
 	aptitude install php5-cli php5-sqlite php-pear php5-gd php5-imagick python-pip
 	pip install libsass
 
-serve:
+serve: all
 	php -S localhost:8000 devel.php
 
 # Restaure les données uniquement. Pour tester la migration.
