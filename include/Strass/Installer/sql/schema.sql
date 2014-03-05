@@ -89,11 +89,7 @@ CREATE TABLE `unite_type`
 	accr_reunion	CHAR(8)		DEFAULT 'Réunion',
 	accr_sortie	CHAR(8)		DEFAULT 'Sortie',
 	accr_we		CHAR(8)		DEFAULT 'WE',
-	accr_camp	CHAR(8)		DEFAULT 'Camp',
-	datefmt_reunion	CHAR(8)		DEFAULT '%d %b %Y',
-	datefmt_sortie	CHAR(8)		DEFAULT '%b %Y',
-	datefmt_we	CHAR(8)		DEFAULT '%b %Y',
-	datefmt_camp	CHAR(8)		DEFAULT '%Y'
+	accr_camp	CHAR(8)		DEFAULT 'Camp'
 );
 
 CREATE VIEW vtypes AS

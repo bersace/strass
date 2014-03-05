@@ -9,16 +9,12 @@ class ActivitesTest extends PHPUnit_Framework_TestCase
     $troupe = new TypeUnite;
     $troupe->accr_reunion = 'Réunion';
     $troupe->nom_reunion = 'Réunion';
-    $troupe->datefmt_reunion = '%e %b %Y';
     $troupe->accr_sortie = 'Sortie';
     $troupe->nom_sortie = 'Sortie de troupe';
-    $troupe->datefmt_sortie = '%b %Y';
     $troupe->accr_we = 'WET';
     $troupe->nom_we = 'Weekend de troupe';
-    $troupe->datefmt_we = '%b %Y';
     $troupe->accr_camp = 'Camp';
     $troupe->nom_camp = 'Camp';
-    $troupe->datefmt_camp = '%Y';
 
     return array(array($troupe,
 		       '2014-03-01 19:30:00', '2014-03-01 22:00:00', null, null,

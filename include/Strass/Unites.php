@@ -775,14 +775,23 @@ class TypeUnite extends Strass_Db_Table_Row_Abstract
 
   function getIntituleCompletActivite($activite)
   {
+    /* Pas en base car ça ne dépend pas du type d'activité */
+    static $datefmts = array('reunion' => '%e %b %Y',
+			    'sortie' => '%b %Y',
+			    'we' => '%b %Y',
+			    'camp' => '%Y',
+			    );
     if ($activite->intitule) {
       $i = $activite->intitule;
+      /* On considère les intitulés explicites comme annuels, même si
+	 ce sont des sorties ou des we. Par exemple : Rentrée, JN,
+	 RNR, etc. */
       $datefmt = '%Y';
     }
     else {
       $type = $activite->getType();
       $i = $this->{'nom_'.$type};
-      $datefmt = $this->{'datefmt_'.$type};
+      $datefmt = $datefmts[$type];
       if ($type == 'camp') {
 	$mois = substr($activite->debut, 5, 2);
 	switch($mois) {
