@@ -85,13 +85,16 @@ class Individu extends Strass_Db_Table_Row_Abstract implements Zend_Acl_Resource
   function initAclRole($acl) {
     $parents = array();
 
-    // Choix conservateur : si on n'est plus chef, on ne l'est
-    // plus. Donc on perd les privilèges (qui eux, sont
-    // indépendant du temps, le chef d'aujourd'hui peut éditer
-    // tout, mais le chef d'hier ne peut plus rien).
-    $apps = $this->findInscriptionsActives();
+    $apps = $this->findAppartenances();
     foreach($apps as $app) {
-      $parents[] = $app->getRoleId();
+      // Choix conservateur : si on n'est plus chef, on ne l'est plus
+      // et deviens un simple membre. Donc on perd les privilèges (qui
+      // eux, sont indépendant du temps, le chef d'aujourd'hui peut
+      // éditer tout, mais le chef d'hier ne peut plus rien).
+      if ($app->fin)
+	$parents[] = $app->findParentUnites()->getRoleId('membre');
+      else
+	$parents[] = $app->getRoleId();
     }
 
     if ($this->totem)
