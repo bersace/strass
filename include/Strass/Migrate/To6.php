@@ -13,10 +13,20 @@ CREATE TABLE `unite_type`
 	parent		INTEGER		REFERENCES unite_type(id),
 	virtuelle	BOOLEAN		DEFAULT 0,
 	nom		CHAR(32)	NOT NULL,
+	-- Comment s'appelle l'extra ? Cri de pat ? Saint patron ?
+	extra		CHAR(32)	DEFAULT NULL,
 	ordre		INT(2),
 	sexe		CHAR(1),
 	age_min	INT(4),
-	age_max	INT(4)
+	age_max	INT(4),
+	nom_reunion	CHAR(16)	DEFAULT 'Réunion',
+	nom_sortie	CHAR(16)	DEFAULT 'Sortie',
+	nom_we		CHAR(16)	DEFAULT 'Weekend',
+	nom_camp	CHAR(16)	DEFAULT 'Camp',
+	accr_reunion	CHAR(8)		DEFAULT 'Réunion',
+	accr_sortie	CHAR(8)		DEFAULT 'Sortie',
+	accr_we		CHAR(8)		DEFAULT 'WE',
+	accr_camp	CHAR(8)		DEFAULT 'Camp'
 );
 
 INSERT INTO unite_type
@@ -40,13 +50,60 @@ EOS
 INSERT INTO unite_type
 (slug, parent, nom, ordre, sexe, age_min, age_max)
 VALUES
-('eqclan', (SELECT id FROM unite_type WHERE slug = 'clan'), 'équipe', 1, 'h', 16, 30),
-('eqfeu', (SELECT id FROM unite_type WHERE slug = 'feu'), 'équipe', 1, 'f', 16, 30);
+('eqclan', (SELECT id FROM unite_type WHERE slug = 'clan'), 'Équipe', 1, 'h', 16, 30),
+('eqfeu', (SELECT id FROM unite_type WHERE slug = 'feu'), 'Équipe', 1, 'f', 16, 30),
+('he', (SELECT id FROM unite_type WHERE slug = 'compagnie'), 'Haute-Équipe', 1, NULL, NULL, NULL);
+
+UPDATE unite_type SET virtuelle = 1 WHERE slug = 'he';
+
+-- Capitalisation
+UPDATE unite_type SET nom = 'Groupe' WHERE slug = 'groupe';
+UPDATE unite_type SET nom = 'Communauté des aînés' WHERE slug = 'aines';
+UPDATE unite_type SET nom = 'Clan' WHERE slug = 'clan';
+UPDATE unite_type SET nom = 'Équipe' WHERE slug IN ('eqclan', 'eqfeu', 'equipe');
+UPDATE unite_type SET nom = 'Feu' WHERE slug = 'feu';
+UPDATE unite_type SET nom = 'Troupe' WHERE slug = 'troupe';
+UPDATE unite_type SET nom = 'Haute-Patrouille' WHERE slug = 'hp';
+UPDATE unite_type SET nom = 'Patrouille' WHERE slug = 'patrouille';
+UPDATE unite_type SET nom = 'Compagnie' WHERE slug = 'compagnie';
+UPDATE unite_type SET nom = 'Meute' WHERE slug = 'meute';
+UPDATE unite_type SET nom = 'Sizaine' WHERE slug LIKE 'siz%';
+UPDATE unite_type SET nom = 'Ronde' WHERE slug = 'ronde';
+
+UPDATE unite_type SET accr_we = 'WEG', nom_we = 'Weekend de groupe' WHERE slug = 'groupe';
+UPDATE unite_type SET accr_we = 'WEA', nom_we = 'Weekend aînés' WHERE slug = 'aines';
+UPDATE unite_type SET accr_we = 'WEC', nom_we = 'Weekend de clan', nom_camp = 'Route' WHERE slug = 'clan';
+UPDATE unite_type SET accr_we = 'WEF', nom_we = 'Weekend de feu' WHERE slug = 'feu';
+UPDATE unite_type SET accr_we = 'WEE', nom_we = 'Weekend d''équipe' WHERE slug IN ('eqclan', 'eqfeu', 'equipe');
+UPDATE unite_type SET accr_we = 'WET', nom_we = 'Weekend de troupe' WHERE slug = 'troupe';
+UPDATE unite_type SET accr_we = 'WEHP', nom_we = 'Weekend HP', nom_camp = 'Camp HP' WHERE slug = 'hp';
+UPDATE unite_type SET accr_we = 'WEP', nom_we = 'Weekend de patrouille' WHERE slug = 'patrouille';
+UPDATE unite_type SET accr_we = 'WECie', nom_we = 'Weekend de compagnie' WHERE slug = 'compagnie';
+UPDATE unite_type SET accr_we = 'WEHE', nom_we = 'Weekend HE', nom_camp = 'Camp HE' WHERE slug = 'he';
+UPDATE unite_type SET nom_sortie = 'Chasse', nom_we = 'Grand chasse', nom_camp = 'Grande chasse'
+WHERE slug = 'meute';
+
+UPDATE unite_type SET ordre = 0 WHERE slug = 'groupe';
+UPDATE unite_type SET ordre = 10 WHERE slug IN ('aines');
+UPDATE unite_type SET ordre = 11 WHERE slug IN ('clan', 'feu');
+UPDATE unite_type SET ordre = 12 WHERE slug IN ('eqclan', 'eqfeu');
+UPDATE unite_type SET ordre = 20 WHERE slug IN ('troupe', 'compagnie');
+UPDATE unite_type SET ordre = 21 WHERE slug IN ('hp', 'he');
+UPDATE unite_type SET ordre = 22 WHERE slug IN ('patrouille', 'equipe');
+UPDATE unite_type SET ordre = 30 WHERE slug IN ('meute', 'ronde');
+UPDATE unite_type SET ordre = 31 WHERE slug IN ('sizloup', 'sizjeannette');
+
+UPDATE unite_type SET extra = 'Cri de pat' WHERE slug IN ('hp', 'patrouille', 'he', 'equipe');
+UPDATE unite_type SET extra = 'Saint patron'
+WHERE slug IN ('groupe', 'aines', 'clan', 'eqclan', 'feu', 'eqfeu', 'troupe', 'compagnie');
+
 EOS
 );
     endif;
 
     $db->exec(<<<'EOS'
+UPDATE unite_type SET age_min = NULL, age_max = NULL, sexe = NULL where virtuelle;
+
 DROP TABLE types_unite;
 
 CREATE VIEW vtypes AS
