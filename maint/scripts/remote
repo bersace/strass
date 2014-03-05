@@ -6,7 +6,7 @@ import os.path
 import logging
 import argparse
 from ftplib import FTP
-from ConfigParser import SafeConfigParser
+from ConfigParser import RawConfigParser
 from datetime import datetime
 import fnmatch
 from getpass import getpass
@@ -27,7 +27,7 @@ class Script(object):
     parser.add_argument(
         '-c', '--config', default='maint/strass.conf', metavar='FILE')
 
-    subparsers = parser.add_subparsers(metavar='ACTION')
+    subparsers = parser.add_subparsers(metavar='ACTION', help=u'Opération avec le site distant')
 
     def __call__(self):
         args = self.parser.parse_args()
@@ -35,7 +35,7 @@ class Script(object):
         logging.basicConfig(level=args.loglevel, format=format)
 
         try:
-            config = SafeConfigParser()
+            config = RawConfigParser()
             with open(args.config) as f:
                 config.readfp(f, args.config)
 
@@ -55,6 +55,7 @@ def command(cls):
 
 class FTPEntry(object):
     log = logging.getLogger('strass.ftp')
+
 
     def __init__(self, ftp):
         self.ftp = ftp
@@ -111,6 +112,7 @@ class FTPHelper(object):
 
     log = logging.getLogger('strass.ftp')
     exclude = ['*~', 'zend_cache*', '*.xcf', '*.scss', 'README', 'LICENSE']
+
 
     def __init__(self, config):
         self.config = config
@@ -273,8 +275,10 @@ class config(object):
     """Assistant de configuration des outils de mise en prod"""
     log = logging.getLogger('strass.config')
 
+
     def __init__(self, parser):
         pass
+
 
     def prompt_config(self, config, name, label):
         default = config.get('remote', name)
@@ -329,6 +333,7 @@ class setmaint(object):
     """Met le site distant en maintenance"""
     log = logging.getLogger('strass.maint')
 
+
     def __init__(self, parser):
         pass
 
@@ -345,6 +350,7 @@ class setmaint(object):
 class unsetmaint(object):
     """Met le site distant en production"""
     log = logging.getLogger('strass.maint')
+
 
     def __init__(self, parser):
         pass
@@ -378,8 +384,10 @@ class upgrade(object):
     """Met à jour un site strass v2 depuis le dossier courant."""
     log = logging.getLogger('strass.upgrade')
 
+
     def __init__(self, parser):
         pass
+
 
     def __call__(self, args, config):
         ftp = FTPHelper(config)
