@@ -4,44 +4,61 @@ require_once 'Zend/Auth/Result.php';
 
 class Strass_Auth_Adapter_Sudo implements Zend_Auth_Adapter_Interface
 {
-	public $current;
-	public $actual;
-	public $target;
+  public $unsudo = false;
+  public $target;
 
-	function __construct($current)
-	{
-		$this->actual = $current;
-		$session = new Zend_Session_Namespace;
-		$t = new Users;
-		$this->actual = isset($session->actual_user) ? $t->findByUsername($session->actual_user) : $current;
-		$this->current = $current;
-		$this->target = null;
-	}
+  function authenticate()
+  {
+    /* On stocke dans la session l'identifiant de l'utilisateur original */
+    $session = new Zend_Session_Namespace;
 
-	function authenticate()
-	{
-		$acl = Zend_Registry::get('acl');
-		if (!$acl->isAllowed($this->actual, $this->target, 'admin'))
-			return Zend_Auth_Result(Zend_Auth_Result::FAILURE,
-						$this->current,
-						"Vous n'avez pas le droit de prendre cette identité.");
+    if ($session->sudoer) {
+      if ($this->unsudo) {
+	$sudoer = Zend_Registry::get('sudoer');
+	$identity = $sudoer->getIdentity();
 
-		$this->current = $this->target;
-		$session = new Zend_Session_Namespace;
-		$session->actual_user = $this->actual->username;
+	$instance = Zend_Registry::getInstance();
+	$instance->offsetUnset('sudoer');
 
-		return new Zend_Auth_Result(Zend_Auth_Result::SUCCESS, $this->current->getIdentity());
-	}
+	$session->sudoer = null;
+      }
+      else {
+	/* Charger l'utilisateur original */
+	extract($session->sudoer);
+	$t = new Users;
+	$sudoer = $t->findByUsername($username);
+	Zend_Registry::set('sudoer', $sudoer);
 
-	function unsudo()
-	{
-		$unsudo = $this->current != $this->actual;
+	error_log('SUDOER '.join('@', $sudoer->getIdentity()));
 
-		$this->current = $this->actual;
-		$this->target = null;
-		$session = new Zend_Session_Namespace;
-		$session->actual_user = $this->actual->username;
+	/* NOOP */
+	$identity = Zend_Registry::get('user')->getIdentity();
+      }
+    }
+    else if ($this->target) {
+      /* sudo effectif */
+      $sudoer = Zend_Registry::get('user');
+      Zend_Registry::set('sudoer', $sudoer);
+      /* Changer l'identité */
+      $identity = $this->target->getIdentity();
+      $session->sudoer = $sudoer->getIdentity();
+      error_log('SUDO '.join('@', $identity));
+    }
+    else {
+      /* On considère l'authentification comme un succès s'il n'y a
+	 pas de sudo, ou le sudo est déjà dans la session. C'est un
+	 NOOP */
+      $current = Zend_Registry::get('user');
+      if ($current->isMember())
+	$identity = $current->getIdentity();
+      else
+	$identity = null;
+    }
 
-		return $unsudo;
-	}
+    if ($identity) {
+      return new Zend_Auth_Result(Zend_Auth_Result::SUCCESS, $identity);
+    }
+    else
+      return new Zend_Auth_Result(Zend_Auth_Result::FAILURE_UNCATEGORIZED, $identity);
+  }
 }

@@ -4,9 +4,9 @@ require_once 'Strass/Individus.php';
 
 class Strass_Controller_Plugin_Auth extends Zend_Controller_Plugin_Abstract
 {
-  protected $http;
-  protected $db;
-  protected $sudo;
+  public $http;
+  public $db;
+  public $sudo;
 
   public function initAcl()
   {
@@ -78,7 +78,7 @@ class Strass_Controller_Plugin_Auth extends Zend_Controller_Plugin_Abstract
 
     // initialise la session.
     $auth = Zend_Auth::getInstance();
-    error_log(join('@', (array) $auth->getIdentity()));
+    error_log('AUTH '.join('@', (array) $auth->getIdentity()));
 
     // DB AUTH
     $this->db = new Strass_Auth_Adapter_DbTable($db, 'user', 'username', 'password');
@@ -97,7 +97,7 @@ class Strass_Controller_Plugin_Auth extends Zend_Controller_Plugin_Abstract
 
     $this->form();
     $this->getUser();
-    /* $this->sudo(); */
+    $this->sudo();
   }
 
   /* Authentification via formulaire */
@@ -109,7 +109,6 @@ class Strass_Controller_Plugin_Auth extends Zend_Controller_Plugin_Abstract
       $om = Zend_Registry::get('logout_model');
 
       if ($im->validate()) {
-	error_log('LOGIN');
 	$username = $im->username;
 	// Regénérer le digest à partir du username original
 	$config = Zend_Registry::get('config');
@@ -135,6 +134,8 @@ class Strass_Controller_Plugin_Auth extends Zend_Controller_Plugin_Abstract
 	    break;
 	  }
 	}
+	else
+	  error_log('FORM '.join('@', $auth->getIdentity()));
       }
       else if ($om->validate()) {
 	error_log('LOGOUT');
@@ -170,17 +171,19 @@ class Strass_Controller_Plugin_Auth extends Zend_Controller_Plugin_Abstract
 	error_log('exit');
 	exit();
       }
+      else
+	error_log('DIGEST '.join('@', $auth->getIdentity()));
+
     }
     return $this->getUser();
   }
 
-  function sudo($target)
+  /* Prise de privilège */
+  function sudo()
   {
     $auth = Zend_Auth::getInstance();
-    $this->sudo->target = $target;
     $result = $auth->authenticate($this->sudo);
-    Zend_Registry::set('user', $this->sudo->current);
-    Zend_Registry::set('actual_user', $this->sudo->actual);
+    return $this->getUser();
   }
 
   function getUser()
@@ -213,7 +216,10 @@ class Strass_Controller_Plugin_Auth extends Zend_Controller_Plugin_Abstract
     }
 
     $individu = $user->findParentIndividus();
-    $user->initAclRole(Zend_Registry::get('acl'));
+    $acl = Zend_Registry::get('acl');
+    if (!$acl->hasRole($user)) {
+      $user->initAclRole($acl);
+    }
     Zend_Registry::set('individu', $individu);
     Zend_Registry::set('user', $user);
 

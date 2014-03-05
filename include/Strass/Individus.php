@@ -742,6 +742,11 @@ class Nobody implements Zend_Acl_Resource_Interface, Zend_Acl_Role_Interface {
     $this->individu->initAclRole($acl);
   }
 
+  function getIdentity()
+  {
+    return array('username' => 'nobody', 'realm' => null);
+  }
+
   public function getRoleId()
   {
     return $this->username;

@@ -19,6 +19,8 @@ RÉGRESSIONS
 
  - Il faut renseigner son mot de passe pour changer d'adresse électronique.
 
+ - On ne peut plus sudoer un non-membre
+
 NOUVEAUTÉS UTILISATEUR
 
  - La page d'accueil est remplacée par la page d'accueil de l'unité

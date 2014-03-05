@@ -506,30 +506,27 @@ class MembresController extends Strass_Controller_Action implements Zend_Acl_Res
 
   function sudoAction()
   {
-    $i = $this->_helper->Individu();
+    $cible = $this->_helper->Individu();
 
-    $moi = Zend_Registry::get('user');
-    $acl = Zend_Registry::get('acl');
-    $this->assert(null, null, null,
+    $this->assert(null, $cible, 'sudo',
 		  "Vous n'avez pas le droit de prendre l'identité de cet individu.");
 
-    $this->_helper->Auth->sudo($i->findUser());
+    $this->_helper->Auth->sudo($cible->findUser());
 
     $this->redirectSimple('fiche', 'individus', null,
-			  array('individu' => $i->slug), true);
+			  array('individu' => $cible->slug), true);
   }
 
   function unsudoAction()
   {
-    $user = Zend_Registry::get('actual_user');
-    $this->_helper->Auth->sudo($user);
-    $this->redirectSimple('index', 'index', null, array(), true);
+    $this->_helper->Auth->unsudo();
+    $this->redirectSimple(null, null, null, array(), true);
   }
 
   function logoutAction()
   {
     $auth = Zend_Auth::getInstance();
     $auth->clearIdentity();
-    $this->redirectSimple('index', 'index', null, array(), true);
+    $this->redirectSimple(null, null, null, array(), true);
   }
 }

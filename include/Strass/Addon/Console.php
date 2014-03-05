@@ -17,7 +17,6 @@ class Strass_Addon_Console extends Strass_Addon_Liens
 
     $acl = Zend_Registry::get('acl');
     $user = Zend_Registry::get('user');
-    $actual = Zend_Registry::get('actual_user');
 
     if ($user->isMember()) {
       $this->append('Votre fiche',
@@ -27,11 +26,12 @@ class Strass_Addon_Console extends Strass_Addon_Liens
     }
 
 
-    if ($actual && $user->username != $actual->username) {
-      $this->append('Redevenir '.$actual->username,
-		    array('controller' => 'membres',
-			  'action'	=> 'unsudo'));
+    try {
+      $sudoer = Zend_Registry::get('sudoer');
+      $this->append('Redevenir '.$sudoer->username,
+    		    array('controller' => 'membres', 'action' => 'unsudo'));
     }
+    catch (Zend_Exception $e) {}
 
     parent::initView($view);
   }

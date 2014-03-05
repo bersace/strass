@@ -2,28 +2,34 @@
 
 class Strass_Controller_Action_Helper_Auth extends Zend_Controller_Action_Helper_Abstract
 {
-	protected $plugin;
+  protected $plugin;
 
-	public function init()
-	{
-		$fc = Zend_Controller_Front::getInstance();
-		$this->plugin = $fc->getPlugin('Strass_Controller_Plugin_Auth');
-	}
+  public function init()
+  {
+    $fc = Zend_Controller_Front::getInstance();
+    $this->plugin = $fc->getPlugin('Strass_Controller_Plugin_Auth');
+  }
 
-	function sudo($target)
-	{
-		return $this->plugin->sudo($target);
-	}
+  function sudo($target)
+  {
+    $this->plugin->sudo->target = $target;
+    return $this->plugin->sudo();
+  }
 
-	/* Authentification via HTTP.
-	 */
-	function http()
-	{
-		return $this->plugin->http();
-	}
+  function unsudo()
+  {
+    $this->plugin->sudo->unsudo = true;
+    return $this->plugin->sudo();
+  }
 
-	function direct()
-	{
-		return $this->plugin->getUser();
-	}
+  /* Authentification via HTTP. */
+  function http()
+  {
+    return $this->plugin->http();
+  }
+
+  function direct()
+  {
+    return $this->plugin->getUser();
+  }
 }
