@@ -93,7 +93,7 @@ class Document extends Strass_Db_Table_Row_Abstract implements Zend_Acl_Resource
     $count = 0;
 
     if (is_null($tables))
-      $tables = $this->getTable()->getDependentTablesName();
+      $tables = $this->getTable()->getDependentTables();
     if (is_string($tables))
       $tables = array($tables);
 

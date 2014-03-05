@@ -245,28 +245,27 @@ class ActivitesController extends Strass_Controller_Action
 
   function annulerAction()
   {
-    $a = $this->_helper->Activite();
-    $this->assert(Zend_Registry::get('user'), $a, 'annuler',
-		  "Vous n'avez pas le droit d'annuler cette activités");
-
+    $this->view->activite = $a = $this->_helper->Activite();
     $this->metas(array('DC.Title' => 'Annuler '.$a->getIntitule()));
+    $this->assert(null, $a, 'annuler',
+		  "Vous n'avez pas le droit d'annuler cette activité");
 
 
-    $m = new Wtk_Form_Model('annuler');
+    $this->view->model = $m = new Wtk_Form_Model('annuler');
     $m->addBool('confirmer',
-		"Je confirme la destruction de toute informations relative à l'activite ".
-		$a->intitule.".", false);
+		"Je confirme la destruction de toute informations relative à l'activité ".
+		$a->getIntituleCourt().".", false);
     $m->addNewSubmission('continuer', 'Continuer');
 
     if ($m->validate()) {
-      if ($m->get('confirmer')) {
+      if ($m->confirmer) {
 	$db = $a->getTable()->getAdapter();
 	$db->beginTransaction();
 	try {
 	  // desctruction des documents
 	  // liés *uniquement* à cette
 	  // activité.
-	  $das = $a->findDocsActivite();
+	  $das = $a->findPiecesJointes();
 	  foreach($das as $da) {
 	    $doc = $da->findParentDocuments();
 	    if ($doc->countLiaisons() == 1)
@@ -274,32 +273,23 @@ class ActivitesController extends Strass_Controller_Action
 	  }
 	  // destruction de l'activité.
 	  $unite = $a->findUnitesParticipantesExplicites()->current();
-	  $intitule = (string) $a;
+	  $intitule = $a->getIntituleComplet();
 	  $a->delete();
-	  $this->_helper->Log("Activité annulé", array(),
-			      $this->_helper->url->Url(array('action' => 'calendrier',
-							     'unite' => $unite->slug)),
-			      $intitule);
-
+	  $this->logger->warn("Activité annulée",
+			      $this->_helper->Url('calendrier', 'activites',
+						  null, array('unite' => $unite->slug)));
+	  $this->_helper->Flash->info("Activité annulée");
 	  $db->commit();
-	  $this->redirectSimple('index', 'activites');
 	}
-	catch(Exception $e) {
-	  $db->rollBack();
-	  throw $e;
-	}
+	catch(Exception $e) { $db->rollBack(); throw $e; }
+
+	$this->redirectSimple('index', 'activites');
       }
       else {
 	$this->redirectSimple('consulter', 'activites', null,
 			      array('activite' => $a->slug));
       }
     }
-
-    $this->branche->append(ucfirst($a->intitule),
-			   array('action' => 'consulter'));
-
-    $this->view->activite = $a;
-    $this->view->model = $m;
   }
 
   // HELPER
