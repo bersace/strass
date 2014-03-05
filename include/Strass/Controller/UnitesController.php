@@ -182,10 +182,10 @@ class UnitesController extends Strass_Controller_Action
       $db = $t->getAdapter();
       $db->beginTransaction();
       try {
-	$u->parent = $m->parente;
-	$u->nom = $m->get('nom');
+	$u->parent = $m->parente ? $m->parent : null;
+	$u->nom = $m->nom;
 	$u->slug = $t->createSlug(wtk_strtoid($u->getFullname()), $u->slug);
-	$u->extra = $m->get('extra');
+	$u->extra = $m->extra;
 	$u->save();
 
 	$u->storePresentation($m->get('presentation'));
