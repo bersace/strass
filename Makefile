@@ -33,7 +33,7 @@ serve:
 
 # Restaure les données uniquement. Pour tester la migration.
 restore:
-	git checkout data/
+	git checkout -- data/ private/
 	git clean --force -d data/ private/
 	rm -f private/cache/*
 
