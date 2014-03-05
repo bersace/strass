@@ -88,19 +88,16 @@ class Strass_Controller_Plugin_Auth extends Zend_Controller_Plugin_Abstract
 		    'realm'	     => $config->system->realm,
 		    'digest_domains' => '/',
 		    'nonce_timeout'  => $config->system->duree_connexion);
-
     $this->http = new Zend_Auth_Adapter_Http($config);
+    $resolver = new Strass_Auth_Adapter_Http_Resolver_DbTable($db, 'user', 'username', 'password');
+    $this->http->setDigestResolver($resolver);
 
-    $db = new Strass_Auth_Adapter_Http_Resolver_DbTable($db, 'user', 'username', 'password');
-    $this->http->setDigestResolver($db);
+    // SUDO AUTH
+    $this->sudo = new Strass_Auth_Adapter_Sudo;
 
     $this->form();
     $this->getUser();
-
-    // SUDO AUTH
-    $this->sudo = new Strass_Auth_Adapter_Sudo(Zend_Registry::get('user'));
-    Zend_Registry::set('user', $this->sudo->current);
-    Zend_Registry::set('actual_user', $this->sudo->actual);
+    /* $this->sudo(); */
   }
 
   /* Authentification via formulaire */
@@ -160,6 +157,19 @@ class Strass_Controller_Plugin_Auth extends Zend_Controller_Plugin_Abstract
       $this->http->setRequest($this->getRequest());
       $this->http->setResponse($this->getResponse());
       $result = $auth->authenticate($this->http);
+
+      if (!$result->isValid()) {
+	// Close session, if started
+	if (class_exists('Zend_Session', false) && Zend_Session::isStarted()) {
+	  Zend_Session::writeClose();
+	} elseif (isset($_SESSION)) {
+	  session_write_close();
+	}
+
+	$this->getResponse()->sendHeaders();
+	error_log('exit');
+	exit();
+      }
     }
     return $this->getUser();
   }
@@ -185,7 +195,7 @@ class Strass_Controller_Plugin_Auth extends Zend_Controller_Plugin_Abstract
     }
 
     if ($username) {
-      $t = new Users();
+      $t = new Users;
       try {
 	$user = $t->findByUsername($username);
 	$user->last_login = new Zend_Db_Expr('CURRENT_TIMESTAMP');

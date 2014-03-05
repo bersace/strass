@@ -102,12 +102,15 @@ abstract class Strass_Controller_Action extends Zend_Controller_Action implement
 				 'exit' => true));
   }
 
+  /* Si le message est défini, une page d'erreur est définie. Sinon
+     retourne un booléen */
   function assert($role = null, $resource = null, $action = null, $message = null)
   {
     $role = $role ? $role : Zend_Registry::get('user');
 
-    if ($role->username == 'nobody' && $message) {
-      $this->_helper->Auth->http();
+    if (!$role->isMember() && $message) {
+      /* Déclencher l'authentification HTTP Digest */
+      $res = $this->_helper->Auth->http();
       $role = Zend_Registry::get('user');
     }
     $acl = Zend_Registry::get('acl');
