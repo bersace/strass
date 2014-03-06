@@ -497,6 +497,65 @@ class Unite extends Strass_Db_Table_Row_Abstract implements Zend_Acl_Resource_In
     }
   }
 
+  function findPhotoAleatoire()
+  {
+    // Une photos aléatoire d'une activité où l'unité à
+    // participé et où les autres unités sont des
+    // sous-unités
+    $t = new Photos;
+    $db = $t->getAdapter();
+    $s = $t->select()
+      ->setIntegrityCheck(false)
+      ->from('photo')
+      ->join('activite',
+	     'activite.id = photo.activite', array())
+      ->join('participation',
+	     'participation.activite = activite.id'.
+	     ' AND '.
+	     $db->quoteInto('participation.unite = ?', intval($this->id)),
+	     array())
+      ->join('unite',
+	     'unite.id = participation.unite',
+	     array())
+      ->joinLeft(array('parent_participation' => 'participation'),
+		 "parent_participation.activite = activite.id\n".
+		 ' AND '.
+		 "parent_participation.unite = unite.parent\n",
+		 array())
+      ->where('parent_participation.unite IS NULL')
+      ->order('RANDOM()')
+      ->limit(1);
+    return $t->fetchAll($s)->current();
+  }
+
+  function findPhotosAleatoires($annee)
+  {
+    // Une photos aléatoire d'une activité où l'unité à participé
+
+    $t = new Photos;
+    $db = $t->getAdapter();
+    $select = $t->select()
+      ->setIntegrityCheck(false)
+      ->distinct()
+      ->from('photo')
+      ->join('activite',
+	     'activite.id = photo.activite', array())
+      ->joinLeft(array('fille' => 'unite'),
+		 $db->quoteInto('fille.parent = ?', $this->id),
+		 array())
+      ->joinLeft(array('petitefille' => 'unite'), 'petitefille.parent = fille.id', array())
+      ->join('participation',
+	     'participation.activite = activite.id'.
+	     ' AND '.
+	     $db->quoteInto('participation.unite IN (?, fille.id, petitefille.id)', intval($this->id))."\n",
+	     array())
+      ->where("strftime('%Y', activite.debut, '-8 months') = ?", strval($annee))
+      ->limit(6) // paramétrable ?
+      ->order('participation.unite') // Les unités parentes en priorité
+      ->order("RANDOM()\n");
+    return $t->fetchAll($select);
+  }
+
   function getDerniereAnnee()
   {
     $u = $this->type == 'hp' ? $this->findParentUnites() : $this;

@@ -3,7 +3,6 @@
 class Strass_Views_PagesRenderer_Unites_Accueil extends Strass_Views_PagesRenderer_Historique
 {
   function renderUnites($list, $unites, $annee) {
-    $photos = new Photos;
     foreach ($unites as $unite) {
       $label = $unite->getName();
 
@@ -12,9 +11,9 @@ class Strass_Views_PagesRenderer_Unites_Accueil extends Strass_Views_PagesRender
 	$image = new Wtk_Image($src, "Photo d'unité", $label);
       }
       else {
-	$photo = $photos->findPhotoAleatoireUnite($unite);
+	$photo = $unite->findPhotoAleatoire();
 	if (!$photo)
-	  $photo = $photos->findPhotoAleatoireUnite($unite->findParentUnites());
+	  $photo = $unite->findParentUnites()->findPhotoAleatoire();
 	if ($photo)
 	  $image = new Wtk_Image($photo->getCheminVignette(),
 				 $photo->titre.' '.$this->view->page->metas->get('DC.Subject'),
