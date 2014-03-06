@@ -19,6 +19,10 @@ $(INSTDB): include/Strass/Installer/sql/schema.sql
 	rm -vf $@
 	sqlite3 -batch $@ ".read $<"
 
+suf.sqlite: $(INSTDB) include/Strass/Installer/sql/suf.sql
+	cp $< $@
+	sqlite3 $@ ".read include/Strass/Installer/sql/suf.sql"
+
 clean:
 	rm -vf $(CSS)
 	rm -vf $(INSTDB)
