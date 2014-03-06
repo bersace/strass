@@ -36,8 +36,9 @@ class Script(object):
 
         try:
             config = RawConfigParser()
-            with open(args.config) as f:
-                config.readfp(f, args.config)
+            if os.path.exists(args.config):
+                with open(args.config) as f:
+                    config.readfp(f, args.config)
 
             return args.action(args, config)
         except Exception, e:
@@ -281,10 +282,10 @@ class config(object):
 
 
     def prompt_config(self, config, name, label):
-        default = config.get('remote', name)
-        if default:
+        try:
+            default = config.get('remote', name)
             prompt = "%s [%s] : " % (label, default)
-        else:
+        except Exception, e:
             prompt = "%s : " % (label,)
         value = raw_input(prompt)
         if not value:
@@ -295,10 +296,10 @@ class config(object):
 
 
     def prompt_config_password(self, config, name, label):
-        default = config.get('remote', name)
-        if default:
+        try:
+            default = config.get('remote', name)
             prompt = "%s [%s] : " % (label, 6 * '*')
-        else:
+        except Exception, e:
             prompt = "%s : " % (label,)
         value = getpass(prompt)
         if not value:
@@ -315,6 +316,7 @@ Pour vous assister dans la maintenance de votre site, Strass a besoin
 de connaître votre accès FTP.
 
 """
+        config.add_section('remote')
         self.prompt_config(config, 'hostname', "Serveur")
         self.prompt_config(config, 'username', "Identifiant")
         self.prompt_config_password(config, 'password', "Mot de passe")
