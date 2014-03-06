@@ -380,33 +380,35 @@ class Unite extends Strass_Db_Table_Row_Abstract implements Zend_Acl_Resource_In
       ->join('unite_type', $db->quoteInto('unite_type.id = ?', $this->type), array())
       ->joinLeft(array('soeur' => 'unite'),
 		 'unite_type.virtuelle AND '.
-		 $db->quoteInto('soeur.parent = ?', $this->parent)."\n",
+		 $db->quoteInto('soeur.parent = ?', $this->parent ? $this->parent : null),
 		 array());
 
-    if ($recursive && !$this->findParentTypesUnite()->virtuelle) {
+    $virtuelle = $this->findParentTypesUnite()->virtuelle;
+    if ($recursive && !$virtuelle) {
       $in = $db->select()
 	->from(array('filles' => 'unite'), 'id')
 	->where("? IN (filles.id, filles.parent)", intval($this->id));
       $select->where('appartenance.unite IN (?)'."\n",
 		     new Zend_Db_Expr($in->__toString()));
     }
-    else {
+    else if ($virtuelle) {
       $select->where('(unite_type.virtuelle AND '."\n".
 		     ('(appartenance.unite = soeur.id OR '.
-		      $db->quoteInto('appartenance.unite = ?', $this->parent).')').
+		      $db->quoteInto('appartenance.unite = ?', $this->parent ? $this->parent : null).')').
 		     "AND unite_role.acl_role IN ('chef', 'assistant')) OR ".
 		     'appartenance.unite = ?', $this->id);
     }
 
     $select
-      ->order('appartenance.unite')
       ->join('individu',
-		  "individu.id = appartenance.individu\n",
+		  "individu.id = appartenance.individu",
 		  array())
       ->join('unite_role',
 	     'unite_role.id = appartenance.role'."\n",
 	     array())
+      ->order('appartenance.unite')
       ->order('unite_role.ordre')
+      ->order('appartenance.titre')
       ->order('naissance');
 
     if ($annee === false)

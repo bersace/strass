@@ -20,7 +20,7 @@ class Strass_View_Helper_TableEffectifs
 
   function tableEffectifs($unite, $model, $fiches=true, $colonnes=array())
   {
-    $t = new Wtk_Table($model, true, array('role', 'etape'));
+    $t = new Wtk_Table($model, true, array('acl', 'role', 'etape'));
 
     $type = $unite->findParentTypesUnite();
     $t->addFlags('contacts', $type->slug);
@@ -30,9 +30,6 @@ class Strass_View_Helper_TableEffectifs
       $t->addFlags('terminale');
     else
       $t->addFlags('parente');
-
-    $acl = Zend_Registry::get('acl');
-    $moi = Zend_Registry::get('user');
 
     $colonnes = array_merge(array('accr', 'prenom-nom'), $colonnes);
     $headers = array();
