@@ -130,7 +130,7 @@ CREATE VIEW vroles AS
 SELECT r.id, r.slug, r.titre, t.nom, r.accr, acl_role AS acl
 FROM unite_role AS r
 JOIN unite_type AS t ON t.id = r.type
-ORDER BY t.id, r.id;
+ORDER BY t.ordre, t.id, r.ordre;
 
 CREATE TABLE `unite_titre` (
 	id		INTEGER		PRIMARY KEY,

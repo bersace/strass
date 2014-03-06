@@ -58,56 +58,80 @@ UPDATE unite_type SET extra = 'Saint patron'
 WHERE slug IN ('groupe', 'aines', 'clan', 'eqclan', 'feu', 'eqfeu', 'troupe', 'compagnie');
 
 INSERT INTO unite_role
-(slug, titre, accr, type, acl_role, ordre)
+(slug, titre, accr, type, acl_role)
 VALUES
-('cg',		'chef de groupe',		'CG',	1,	'chef',		0),	-- 1
-('acg',		'assistant chef de groupe',	'ACG',	1,	'assistant',	1),
-('cc',		'chef de clan',			'CC',	3,	'chef',		10),
-('acc',		'assistant chef de clan',	'ACC',	3,	'assistant',	11),
-('routier',	'routier',			'SR',	3,	'assistant',	12),	-- 5
-('cer',		'Chef d''équipe',		'CE',	4,	'chef',		11),
-('equipier',	'routier',			'SR',	4,	'assistant',	12),
-('cf',		'cheftaine de feu',		'CF',	5,	'chef',		10),
-('acf',		'Assistante cheftaine de feu',	'ACF',	5,	'chef',		11),
-('ga',		'guide-aînée',			'GA',	5,	'assistant',	12),	-- 10
-('cef',		'Cheftaine d''équipe',		'CE',	6,	'chef',		11),
-('equipiere',	'guide-aînée',			'GA',	6,	'assistant',	12),
-('ct',		'chef de troupe',		'CT',	7,	'chef',		20),
-('act',		'assistant chef de troupe',	'ACT',	7,	'assistant',	21),
-('cp',		'chef de patrouille',		'CP',	9,	'chef',		40),	-- 15
-('sp',		'second de patrouille',		'SP',	9,	'assistant',	41),
-('3e-patrouille','3e',				NULL,	9,	'membre',	42),
-('4e-patrouille','4e',				NULL,	9,	'membre',	43),
-('5e-patrouille','5e',				NULL,	9,	'membre',	44),
-('6e-patrouille','6e',				NULL,	9,	'membre',	45),	-- 20
-('7e-patrouille','7e',				NULL,	9,	'membre',	46),
-('8e-patrouille','8e',				NULL,	9,	'membre',	46),
-('ccie',	'cheftaine de compagnie',	'CCie',	10,	'chef',		20),
-('accie',	'assistante cheftaine de compagnie','ACCie',10,	'chef',		21),
-('ce',		'cheftaine d''équipe',		'CE',	12,	'chef',		40),	-- 25
-('se',		'seconde d''équipe',		'SE',	12,	'assistant',	41),
-('3e-equipe',	'3e',				NULL,	12,	'membre',	42),
-('4e-equipe',	'4e',				NULL,	12,	'membre',	43),
-('5e-equipe',	'5e',				NULL,	12,	'membre',	44),
-('6e-equipe',	'6e',				NULL,	12,	'membre',	45),	-- 30
-('7e-equipe',	'7e',				NULL,	12,	'membre',	46),
-('8e-equipe',	'8e',				NULL,	12,	'membre',	47),
-('akela',	'Akéla',			NULL,	13, 	'chef',		30),
-('acm',		'Assistante d''Akéla',		'ACM',	13,	'chef',		31),
-('sizainier-louveteau','sizainier',		NULL,	14,	'membre',	50),	-- 35
-('second-louveteau','second',			NULL,	14,	'membre',	51),
-('3e-louveteau','3e',				NULL,	14,	'membre',	52),
-('4e-louveteau','4e',				NULL,	14,	'membre',	53),
-('5e-louveteau','5e',				NULL,	14,	'membre',	54),
-('6e-louveteau','6e',				NULL,	14,	'membre',	55),	-- 40
-('guillemette',	'Guillemette',			NULL,	15,	'chef',		30),
-('acr',		'assistante de Guillemette',	NULL,	15,	'chef',		31),
-('sizainiere-jeannette','sizainière',		NULL,	16,	'membre',	50),
-('seconde-jeannette','seconde',			NULL,	16,	'membre',	51),
-('3e-jeannette','3e',				NULL,	16,	'membre',	52),	-- 45
-('4e-jeannette','4e',				NULL,	16,	'membre',	53),
-('5e-jeannette','5e',				NULL,	16,	'membre',	54),
-('6e-jeannette','6e',				NULL,	16,	'membre',	55);
+('cg',		'chef de groupe',		'CG',	1,	'chef'),	-- 1
+('acg',		'assistant chef de groupe',	'ACG',	1,	'assistant'),
+('cc',		'chef de clan',			'CC',	3,	'chef'),
+('acc',		'assistant chef de clan',	'ACC',	3,	'assistant'),
+('routier',	'routier',			'SR',	3,	'assistant'),	-- 5
+('cer',		'Chef d''équipe',		'CE',	4,	'chef'),
+('equipier',	'routier',			'SR',	4,	'assistant'),
+('cf',		'cheftaine de feu',		'CF',	5,	'chef'),
+('acf',		'Assistante cheftaine de feu',	'ACF',	5,	'chef'),
+('ga',		'guide-aînée',			'GA',	5,	'assistant'),	-- 10
+('cef',		'Cheftaine d''équipe',		'CE',	6,	'chef'),
+('equipiere',	'guide-aînée',			'GA',	6,	'assistant'),
+('ct',		'chef de troupe',		'CT',	7,	'chef'),
+('act',		'assistant chef de troupe',	'ACT',	7,	'assistant'),
+('cp',		'chef de patrouille',		'CP',	9,	'chef'),	-- 15
+('sp',		'second de patrouille',		'SP',	9,	'assistant'),
+('3e-patrouille','3e',				NULL,	9,	'membre'),
+('4e-patrouille','4e',				NULL,	9,	'membre'),
+('5e-patrouille','5e',				NULL,	9,	'membre'),
+('6e-patrouille','6e',				NULL,	9,	'membre'),	-- 20
+('7e-patrouille','7e',				NULL,	9,	'membre'),
+('8e-patrouille','8e',				NULL,	9,	'membre'),
+('ccie',	'cheftaine de compagnie',	'CCie',	10,	'chef'),
+('accie',	'assistante cheftaine de compagnie','ACCie',10,	'chef'),
+('ce',		'cheftaine d''équipe',		'CE',	12,	'chef'),	-- 25
+('se',		'seconde d''équipe',		'SE',	12,	'assistant'),
+('3e-equipe',	'3e',				NULL,	12,	'membre'),
+('4e-equipe',	'4e',				NULL,	12,	'membre'),
+('5e-equipe',	'5e',				NULL,	12,	'membre'),
+('6e-equipe',	'6e',				NULL,	12,	'membre'),	-- 30
+('7e-equipe',	'7e',				NULL,	12,	'membre'),
+('8e-equipe',	'8e',				NULL,	12,	'membre'),
+('akela',	'Akéla',			NULL,	13, 	'chef'),
+('acm',		'Assistante d''Akéla',		'ACM',	13,	'chef'),
+('sizainier-louveteau','sizainier',		NULL,	14,	'membre'),	-- 35
+('second-louveteau','second',			NULL,	14,	'membre'),
+('3e-louveteau','3e',				NULL,	14,	'membre'),
+('4e-louveteau','4e',				NULL,	14,	'membre'),
+('5e-louveteau','5e',				NULL,	14,	'membre'),
+('6e-louveteau','6e',				NULL,	14,	'membre'),	-- 40
+('guillemette',	'Guillemette',			NULL,	15,	'chef'),
+('acr',		'assistante de Guillemette',	NULL,	15,	'chef'),
+('sizainiere-jeannette','sizainière',		NULL,	16,	'membre'),
+('seconde-jeannette','seconde',			NULL,	16,	'membre'),
+('3e-jeannette','3e',				NULL,	16,	'membre'),	-- 45
+('4e-jeannette','4e',				NULL,	16,	'membre'),
+('5e-jeannette','5e',				NULL,	16,	'membre'),
+('6e-jeannette','6e',				NULL,	16,	'membre');
+
+UPDATE unite_role SET ordre = 0 WHERE slug = 'cg';
+UPDATE unite_role SET ordre = 1 WHERE slug = 'acg';
+UPDATE unite_role SET ordre = 10 WHERE slug IN ('cc', 'cf');
+UPDATE unite_role SET ordre = 11 WHERE slug IN ('acc', 'acf', 'cer', 'cef');
+UPDATE unite_role SET ordre = 12 WHERE slug IN ('routier', 'equipier', 'ga', 'equipiere');
+UPDATE unite_role SET ordre = 20 WHERE slug IN ('ct', 'ccie');
+UPDATE unite_role SET ordre = 21 WHERE slug IN ('act', 'accie');
+UPDATE unite_role SET ordre = 30 WHERE slug IN ('akela', 'guillemette');
+UPDATE unite_role SET ordre = 31 WHERE slug IN ('acm', 'acr');
+UPDATE unite_role SET ordre = 40 WHERE slug IN ('cp', 'ce');
+UPDATE unite_role SET ordre = 41 WHERE slug IN ('sp', 'se');
+UPDATE unite_role SET ordre = 42 WHERE slug IN ('3e-patrouille', '3e-equipe');
+UPDATE unite_role SET ordre = 43 WHERE slug IN ('4e-patrouille', '4e-equipe');
+UPDATE unite_role SET ordre = 44 WHERE slug IN ('5e-patrouille', '5e-equipe');
+UPDATE unite_role SET ordre = 45 WHERE slug IN ('6e-patrouille', '6e-equipe');
+UPDATE unite_role SET ordre = 46 WHERE slug IN ('7e-patrouille', '7e-equipe');
+UPDATE unite_role SET ordre = 47 WHERE slug IN ('8e-patrouille', '8e-equipe');
+UPDATE unite_role SET ordre = 50 WHERE slug IN ('sizainier-louveteau', 'sizainiere-jeannette');
+UPDATE unite_role SET ordre = 51 WHERE slug IN ('second-louveteau', 'seconde-jeannette');
+UPDATE unite_role SET ordre = 52 WHERE slug IN ('3e-louveteau', '3e-jeannette');
+UPDATE unite_role SET ordre = 53 WHERE slug IN ('4e-louveteau', '4e-jeannette');
+UPDATE unite_role SET ordre = 54 WHERE slug IN ('5e-louveteau', '5e-jeannette');
+UPDATE unite_role SET ordre = 55 WHERE slug IN ('6e-louveteau', '6e-jeannette');
 
 INSERT INTO unite_titre
 (slug, nom, role)

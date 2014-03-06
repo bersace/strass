@@ -193,20 +193,44 @@ EOS
       $db->exec(<<<'EOS'
 -- Complément SUF
 INSERT INTO unite_role
-(slug, acl_role, titre, accr, ordre, type)
+(slug, acl_role, titre, accr, type)
 VALUES
-('acm', 'assistant', 'Assistante d''Akéla', 'ACM', 2, (SELECT id FROM unite_type WHERE unite_type.slug = 'meute')),
-('acf', 'assistant', 'Assistante cheftaine de feu', 'ACF', 2, (SELECT id FROM unite_type WHERE unite_type.slug = 'feu')),
-('cer', 'chef', 'Chef d''équipe', 'CE', 1, (SELECT id FROM unite_type WHERE slug = 'eqclan')),
-('equipier', 'assistant', 'routier', NULL, 2, (SELECT id FROM unite_type WHERE slug = 'eqclan')),
-('cef', 'chef', 'Cheftaine d''équipe', 'CE', 1, (SELECT id FROM unite_type WHERE slug = 'eqfeu')),
-('equipiere', 'assistant', 'guide-aînée', NULL, 2, (SELECT id FROM unite_type WHERE slug = 'eqfeu'));
+('acm', 'assistant', 'Assistante d''Akéla', 'ACM', (SELECT id FROM unite_type WHERE unite_type.slug = 'meute')),
+('acf', 'assistant', 'Assistante cheftaine de feu', 'ACF', (SELECT id FROM unite_type WHERE unite_type.slug = 'feu')),
+('cer', 'chef', 'Chef d''équipe', 'CE', (SELECT id FROM unite_type WHERE slug = 'eqclan')),
+('equipier', 'assistant', 'routier', NULL, (SELECT id FROM unite_type WHERE slug = 'eqclan')),
+('cef', 'chef', 'Cheftaine d''équipe', 'CE', (SELECT id FROM unite_type WHERE slug = 'eqfeu')),
+('equipiere', 'assistant', 'guide-aînée', NULL, (SELECT id FROM unite_type WHERE slug = 'eqfeu'));
 
 UPDATE unite_role SET slug = 'akela' WHERE titre = 'Akéla';
 UPDATE unite_role SET slug = 'guillemette' WHERE titre = 'Guillemette';
-UPDATE unite_role SET slug = replace(slug, 'sizloup', 'louveteau');
-UPDATE unite_role SET slug = replace(slug, 'sizjeannette', 'jeannette');
-UPDATE unite_role SET slug = replace(slug, 'sizainière', 'sizainiere');
+UPDATE unite_role SET slug = 'sizainier-louveteau' WHERE slug = 'sizloup';
+UPDATE unite_role SET slug = 'sizainiere-jeannette' WHERE slug = 'sizjeanette';
+
+UPDATE unite_role SET ordre = 0 WHERE slug = 'cg';
+UPDATE unite_role SET ordre = 1 WHERE slug = 'acg';
+UPDATE unite_role SET ordre = 10 WHERE slug IN ('cc', 'cf');
+UPDATE unite_role SET ordre = 11 WHERE slug IN ('acc', 'acf', 'cer', 'cef');
+UPDATE unite_role SET ordre = 12 WHERE slug IN ('routier', 'equipier', 'ga', 'equipiere');
+UPDATE unite_role SET ordre = 20 WHERE slug IN ('ct', 'ccie');
+UPDATE unite_role SET ordre = 21 WHERE slug IN ('act', 'accie');
+UPDATE unite_role SET ordre = 30 WHERE slug IN ('akela', 'guillemette');
+UPDATE unite_role SET ordre = 31 WHERE slug IN ('acm', 'acr');
+UPDATE unite_role SET ordre = 40 WHERE slug IN ('cp', 'ce');
+UPDATE unite_role SET ordre = 41 WHERE slug IN ('sp', 'se');
+UPDATE unite_role SET ordre = 42 WHERE slug IN ('3e-patrouille', '3e-equipe');
+UPDATE unite_role SET ordre = 43 WHERE slug IN ('4e-patrouille', '4e-equipe');
+UPDATE unite_role SET ordre = 44 WHERE slug IN ('5e-patrouille', '5e-equipe');
+UPDATE unite_role SET ordre = 45 WHERE slug IN ('6e-patrouille', '6e-equipe');
+UPDATE unite_role SET ordre = 46 WHERE slug IN ('7e-patrouille', '7e-equipe');
+UPDATE unite_role SET ordre = 47 WHERE slug IN ('8e-patrouille', '8e-equipe');
+UPDATE unite_role SET ordre = 50 WHERE slug IN ('sizainier-louveteau', 'sizainiere-jeannette');
+UPDATE unite_role SET ordre = 51 WHERE slug IN ('second-louveteau', 'seconde-jeannette');
+UPDATE unite_role SET ordre = 52 WHERE slug IN ('3e-louveteau', '3e-jeannette');
+UPDATE unite_role SET ordre = 53 WHERE slug IN ('4e-louveteau', '4e-jeannette');
+UPDATE unite_role SET ordre = 54 WHERE slug IN ('5e-louveteau', '5e-jeannette');
+UPDATE unite_role SET ordre = 55 WHERE slug IN ('6e-louveteau', '6e-jeannette');
+
 EOS
 );
     endif;
@@ -215,10 +239,10 @@ EOS
 DROP TABLE roles;
 
 CREATE VIEW vroles AS
-SELECT r.id, r.slug, r.titre, t.nom, accr, acl_role AS acl
+SELECT r.id, r.slug, r.titre, t.nom, r.accr, acl_role AS acl
 FROM unite_role AS r
 JOIN unite_type AS t ON t.id = r.type
-ORDER BY t.id, r.id;
+ORDER BY t.ordre, r.ordre;
 
 -- titre comme Bagheera, Hauviette, aumônier, etc.
 CREATE TABLE `unite_titre` (
