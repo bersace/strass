@@ -28,7 +28,7 @@ class MembresController extends Strass_Controller_Action implements Zend_Acl_Res
   function indexAction()
   {
     $this->assert(null, $this, 'fiche', "Vous devez être identifié.");
-    $this->redirectSimple('index', 'index');
+    $this->redirectSimple(null, null, null, null, true);
   }
 
   function inscriptionAction()
