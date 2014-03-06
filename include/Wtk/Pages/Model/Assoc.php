@@ -10,8 +10,14 @@ class Wtk_Pages_Model_Assoc extends Wtk_Pages_Model
 		parent::__construct($data, 1, $current);
 		$this->pages_id	= array_keys($data);
 		$this->current = null;
-		if ($this->pages_id)
-		  $this->current = in_array($current, $this->pages_id) ? $current : reset($this->pages_id);
+		if ($this->pages_id) {
+		  if (in_array($current, $this->pages_id))
+		    $this->current = $current;
+		  else if ($current > ($last = end($this->pages_id)))
+		    $this->current = $last;
+		  else
+		    $this->current = reset($this->pages_id);
+		}
 	}
 
 	function getPagesIds()
