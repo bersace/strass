@@ -10,6 +10,7 @@ from ConfigParser import RawConfigParser
 from datetime import datetime
 import fnmatch
 from getpass import getpass
+import subprocess
 
 
 log = logging.getLogger('strass')
@@ -108,6 +109,16 @@ class FTPEntry(object):
         return 0
 
 
+def localmtime(path):
+    try:
+        timestamp = int(subprocess.check_output([
+            'git', 'log', '--max-count=1', '--format=format:%at', path]))
+    except Exception, e:
+        timestamp = os.stat(path).st_mtime
+
+    return datetime.fromtimestamp(timestamp)
+
+
 class FTPHelper(object):
     """Implémente des opérations de haut niveaux au dessus de ce foutu protocole FTP"""
 
@@ -194,7 +205,7 @@ class FTPHelper(object):
             if not force:
                 try:
                     rmtime = self.mtime(path)
-                    lmtime = datetime.fromtimestamp(os.stat(path).st_mtime)
+                    lmtime = localmtime(path)
                     if rmtime > lmtime:
                         self.log.debug('%s à jour', path)
                         return
@@ -243,7 +254,7 @@ class FTPHelper(object):
 
         if os.path.exists(path):
             remote_last_mod = self.mtime(path)
-            local_last_mod = datetime.fromtimestamp(os.stat(path).st_mtime)
+            local_last_mod = localmtime(path)
             if local_last_mod > remote_last_mod:
                 self.log.debug('%s à jour', path)
                 return
