@@ -132,6 +132,9 @@ class FTPHelper(object):
 
 
     def __del__(self):
+        if not self.ftp:
+            return
+
         self.ftp.quit()
         self.ftp.close()
 
