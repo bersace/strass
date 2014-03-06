@@ -316,7 +316,10 @@ Pour vous assister dans la maintenance de votre site, Strass a besoin
 de connaître votre accès FTP.
 
 """
-        config.add_section('remote')
+        try:
+            config.add_section('remote')
+        except Exception, e:
+            pass
         self.prompt_config(config, 'hostname', "Serveur")
         self.prompt_config(config, 'username', "Identifiant")
         self.prompt_config_password(config, 'password', "Mot de passe")
