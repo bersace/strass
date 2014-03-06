@@ -33,21 +33,16 @@ class ActivitesController extends Strass_Controller_Action
      liens vers chacune des années où l'unité a participé à des activités. */
   function calendrierAction()
   {
-    $u = $this->_helper->Unite();
-    $annee = $this->_helper->Annee();
-    $future = $annee >= date('Y', time()-243*24*60*60);
-
+    $this->view->unite = $u = $this->_helper->Unite();
+    $this->view->model = new Strass_Pages_Model_Calendrier($u, $this->_helper->Annee());
+    $this->_helper->Annee->setBranche($this->view->annee = $annee = $this->view->model->current);
     $this->metas(array('DC.Title' => 'Calendrier '.$annee,
 		       'DC.Title.alternative' => 'Calendrier '.$annee.
 		       ' – '.$u->getFullname()));
 
-    if ($future)
+    if ($annee >= date('Y', time()-243*24*60*60))
       $this->assert(null, $u, 'calendrier',
 		    "Vous n'avez pas le droit de voir le calendrier de cette unité.");
-
-    $this->view->model = new Strass_Pages_Model_Calendrier($u, $annee);
-    $this->view->unite = $u;
-    $this->view->annee = $annee;
 
     $this->actions->append("Nouvelle activité",
 			   array('action' => 'prevoir'),

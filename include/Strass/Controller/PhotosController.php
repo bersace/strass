@@ -7,12 +7,10 @@ class PhotosController extends Strass_Controller_Action
   function indexAction()
   {
     $this->view->unite = $this->_helper->Unite();
-    $annee = $this->_helper->Annee();
-
+    $this->view->model = new Strass_Pages_Model_Photos($this->view->unite, $this->_helper->Annee());
+    $this->_helper->Annee->setBranche($annee = $this->view->model->current);
     $this->metas(array('DC.Title' => 'Albums photos '.$annee,
 		       'DC.Subject' => 'albums,photos,'.$annee));
-
-    $this->view->model = new Strass_Pages_Model_Photos($this->view->unite, $annee);
 
     if (Zend_Registry::get('user')->isMember())
       $this->actions->append("Envoyer une photo",

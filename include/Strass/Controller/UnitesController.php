@@ -8,11 +8,8 @@ class UnitesController extends Strass_Controller_Action
   function indexAction()
   {
     $this->view->unite = $u = $this->_helper->Unite();
-    $this->view->annee = $a = $this->_helper->Annee();
-    $this->view->model = new Strass_Pages_Model_AccueilUnite($u, $a,
-							     $this->_helper->Annee->cetteAnnee(),
-							     $this->assert(null, $u, 'calendrier'));
-
+    $this->view->model = new Strass_Pages_Model_AccueilUnite($u, $this->_helper->Annee());
+    $this->_helper->Annee->setBranche($this->view->annee = $a = $this->view->model->current);
     $this->metas(array('DC.Title' => $u->getFullname().' '.$a));
 
     $this->view->fiches = (bool) Zend_Registry::get('user');
@@ -49,12 +46,13 @@ class UnitesController extends Strass_Controller_Action
     $this->metas(array('DC.Title.alternative' => 'Effectifs'));
     $this->view->unite = $u = $this->_helper->Unite();
     $this->branche->append(null, array('annee' => false));
-    $this->view->annee = $a = $this->_helper->Annee();
+
+    $this->view->model = new Strass_Pages_Model_Contacts($u, $this->_helper->Annee());
+    $this->_helper->Annee->setBranche($this->view->annee = $a = $this->view->model->current);
     $this->metas(array('DC.Title' => 'Effectifs '.$a));
 
     $this->assert(null, $u, null,
 		  "Vous n'avez pas le droit de voir les contacts de l'unité");
-    $this->view->model = new Strass_Pages_Model_Contacts($u, $a);
 
     $i = Zend_Registry::get('user');
     // si l'individu est connecté, on propose le lien.
@@ -77,12 +75,10 @@ class UnitesController extends Strass_Controller_Action
 
     $ttu = new TypesUnite;
     // sous types possibles
-    if ($unite) {
+    if ($unite)
       $soustypes = $unite->getSousTypes();
-    }
-    else {
+    else
       $soustypes = $ttu->fetchAll($ttu->select()->where('virtuelle = 0'));
-    }
 
     $st = $soustypes->count() > 1 ? 'sous-unité' : $soustypes->rewind()->current();
     if ($unite)
