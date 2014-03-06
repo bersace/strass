@@ -15,7 +15,7 @@ class Strass_View_Helper_LienJournal
 			      $controller = 'journaux',
 			      $reset = true)
   {
-    $label = $label ? $label : ucfirst($journal->nom);
+    $label = $label ? $label : $journal;
     return $this->view->lien(array('journal' => $journal->slug,
 				   'action' => $action,
 				   'controller' => $controller),

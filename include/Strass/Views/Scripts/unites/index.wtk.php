@@ -5,7 +5,7 @@ class Strass_Views_PagesRenderer_Unites_Accueil extends Strass_Views_PagesRender
   function renderUnites($list, $unites, $annee) {
     $photos = new Photos;
     foreach ($unites as $unite) {
-      $label = wtk_ucfirst($unite->getName());
+      $label = $unite->getName();
 
       $src = $unite->getImage();
       if ($src) {
@@ -55,7 +55,7 @@ class Strass_Views_PagesRenderer_Unites_Accueil extends Strass_Views_PagesRender
       $ss = $s->addSection('presentation');
 
       if ($src) {
-	$ss->addImage($src, "Photos d'unité", wtk_ucfirst($unite->getFullname()));
+	$ss->addImage($src, "Photos d'unité", $unite->getFullname());
       }
 
       if ($texte) {

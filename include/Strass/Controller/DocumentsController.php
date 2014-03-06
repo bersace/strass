@@ -42,7 +42,7 @@ class DocumentsController extends Strass_Controller_Action
     $envoyables = array();
     foreach($unites as $u)
       if ($this->assert(null, $u, 'envoyer-document'))
-	$envoyables[$u->id] = wtk_ucfirst($u->getFullName());
+	$envoyables[$u->id] = $u->getFullName();
 
     if (!count($envoyables))
       throw new Strass_Controller_Action_Exception_Forbidden

@@ -13,7 +13,7 @@ class UnitesController extends Strass_Controller_Action
 							     $this->_helper->Annee->cetteAnnee(),
 							     $this->assert(null, $u, 'calendrier'));
 
-    $this->metas(array('DC.Title' => wtk_ucfirst($u->getFullname()).' '.$a));
+    $this->metas(array('DC.Title' => $u->getFullname().' '.$a));
 
     $this->view->fiches = (bool) Zend_Registry::get('user');
 
@@ -166,7 +166,7 @@ class UnitesController extends Strass_Controller_Action
     $this->view->model = $m = new Wtk_Form_Model('unite');
     $enum = array(null => 'Orpheline');
     foreach ($u->findParenteCandidates() as $c)
-      $enum[$c->id] = wtk_ucfirst($c->getFullname());
+      $enum[$c->id] = $c->getFullname();
     $m->addEnum('parente', "Unité parente", $u->parent, $enum);
     $m->addString('nom', "Nom", $u->nom);
     $m->addString('extra',

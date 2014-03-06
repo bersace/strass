@@ -60,7 +60,7 @@ class Strass_View_Helper_AppsTableModel
       // insertion du tuple
       $m->append($unite->slug,
 		 $unite->findParentTypesUnite()->slug,
-		 wtk_ucfirst($unite->getName()),
+		 $unite->getName(),
 		 $url_unite,
 		 $individu->getFullname(true, false),
 		 $role->slug,

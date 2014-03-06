@@ -61,7 +61,7 @@ if ($this->appactives->count()) {
   $s = $this->document->addSection('activites', "Actuellement");
   $l = $s->addList();
   foreach($this->appactives as $app) {
-    $l->addItem(new Wtk_Container(new Wtk_RawText(ucfirst($app->findParentRoles()->__toString())." dans "),
+    $l->addItem(new Wtk_Container(new Wtk_RawText($app->findParentRoles()." dans "),
 				  $this->lienUnite($app->findParentUnites()),
 				  new Wtk_RawText(" depuis le ".$app->getDebut())));
   }

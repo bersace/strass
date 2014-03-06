@@ -18,6 +18,6 @@ class Strass_View_Helper_LienPhoto
 					       'action' => 'voir',
 					       'photo' => $photo->slug),
 					 true),
-			ucfirst($photo->titre), ucfirst($photo->titre));
+			$photo->titre, $photo->titre);
   }
 }

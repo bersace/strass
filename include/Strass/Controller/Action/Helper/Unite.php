@@ -27,7 +27,7 @@ class Strass_Controller_Action_Helper_Unite extends Zend_Controller_Action_Helpe
     $this->liensConnexes($unite);
 
     $page = Zend_Registry::get('page');
-    $fn = wtk_ucfirst($unite->getFullname());
+    $fn = $unite->getFullname();
     if (!$page->metas->get('DC.Title'))
       $page->metas->set('DC.Title', $fn);
     $page->metas->set('DC.Creator', $fn);
@@ -51,7 +51,7 @@ class Strass_Controller_Action_Helper_Unite extends Zend_Controller_Action_Helpe
     }
 
     foreach($us as $u) {
-      $this->_actionController->branche->append(wtk_ucfirst($u->getName()),
+      $this->_actionController->branche->append($u->getName(),
 						array('controller' => $controller,
 						      'action' => $action,
 						      'unite' => $u->slug),
@@ -68,7 +68,7 @@ class Strass_Controller_Action_Helper_Unite extends Zend_Controller_Action_Helpe
     $connexes = $this->_actionController->connexes;
     $connexes->titre = $this->_actionController->view->lien(array('controller' => 'unites',
 								  'action' => 'index'),
-							    wtk_ucfirst($unite->getTypeName()), true);
+							    $unite->getTypeName(), true);
 
     $connexes->append("Photos",
 		      array('controller' => 'photos',
@@ -90,7 +90,7 @@ class Strass_Controller_Action_Helper_Unite extends Zend_Controller_Action_Helpe
 
     $journal = $unite->findJournaux()->current();
     if ($journal)
-      $connexes->append(wtk_ucfirst($journal->__toString()),
+      $connexes->append($journal->__toString(),
 			array('controller' => 'journaux',
 			      'action' => 'index',
 			      'journal' => $journal->slug),

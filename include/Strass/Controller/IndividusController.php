@@ -190,7 +190,7 @@ class IndividusController extends Strass_Controller_Action
 	->setReadonly((bool) $apps->count() == 0);
       $i1 = $g->addEnum('unite', "Unité", $default_next);
       foreach($unites as $u)
-	$i1->addItem($u->id, wtk_ucfirst($u->getFullname()));
+	$i1->addItem($u->id, $u->getFullname());
       if ($apps->count()) {
 	$m->addConstraintDepends($i1, $i0);
       }
@@ -330,7 +330,7 @@ class IndividusController extends Strass_Controller_Action
       $us = $tu->fetchAll(null);
       $eu = array();
       foreach($us as $u)
-	$eu[$u->id] = mb_substr(wtk_ucfirst($u->getFullName()), 0, 32);
+	$eu[$u->id] = mb_substr($u->getFullName(), 0, 32);
 
       $tr = new Roles;
       $rs = $tr->fetchAll(null, 'ordre');

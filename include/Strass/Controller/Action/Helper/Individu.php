@@ -4,34 +4,37 @@ require_once 'Strass/Individus.php';
 
 class Strass_Controller_Action_Helper_Individu extends Zend_Controller_Action_Helper_Abstract
 {
-	function param()
-	{
-		$args = func_get_args();
-		return call_user_func_array(array($this, 'direct'), $args);
-	}
+  function param()
+  {
+    $args = func_get_args();
+    return call_user_func_array(array($this, 'direct'), $args);
+  }
 
-	function direct($throw = true, $reset = true)
-	{
-		$id = $this->getRequest()->getParam('individu');
-		$ti = new Individus;
-		$individu = $ti->findBySlug($id);
+  function direct($throw = true)
+  {
+    $slug = $this->getRequest()->getParam('individu');
+    $t = new Individus;
+    try {
+      $individu = $t->findBySlug($slug);
+    }
+    catch (Strass_Db_Table_NotFound $e) {
+      if ($throw)
+	throw new Strass_Controller_Action_Exception_Notice("Individu ".$slug." inconnu.");
+      else
+	return null;
+    }
 
-		if (!$individu && $throw)
-			throw new Strass_Controller_Action_Exception_Notice("Individu ".$id." inconnu.");
+    $this->setBranche($individu);
 
-		if ($individu) {
-			if ($reset) {
-				$this->_actionController->branche->append(wtk_ucfirst($individu->getFullname()),
-									  array('controller'	=> 'individus',
-										'action'	=> 'fiche',
-										'individu'	=> $id),
-									  array(),
-									  true);
-			}
-			else
-				$this->_actionController->branche->append(wtk_ucfirst($individu->getFullname()));
-		}
+    return $individu;
+  }
 
-		return $individu;
-	}
+  function setBranche($individu)
+  {
+    $this->_actionController->branche->append(wtk_ucfirst($individu->getFullname()),
+					      array('controller'	=> 'individus',
+						    'action'	=> 'fiche',
+						    'individu'	=> $individu->slug),
+					      array(), true);
+  }
 }

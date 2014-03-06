@@ -206,7 +206,7 @@ class AdminController extends Strass_Controller_Action
       $chef = $unite->findChef(null);
       $level = ($inscrits == 0 || !$chef) ? 'warn' : null;
       $path = $m->append($ppath,
-			 wtk_ucfirst($unite->getFullname()),
+			 $unite->getFullname(),
 			 $this->_helper->Url('index', 'unites', null, array('unite' => $unite->slug)),
 			 $unite->isFermee() ? 'fermée' : 'ouverte',
 			 $chef ? $chef->getFullname() : 'Inconnu',

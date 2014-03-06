@@ -39,7 +39,7 @@ class ActivitesController extends Strass_Controller_Action
 
     $this->metas(array('DC.Title' => 'Calendrier '.$annee,
 		       'DC.Title.alternative' => 'Calendrier '.$annee.
-		       ' – '.wtk_ucfirst($u->getFullname())));
+		       ' – '.$u->getFullname()));
 
     if ($future)
       $this->assert(null, $u, 'calendrier',
@@ -83,7 +83,7 @@ class ActivitesController extends Strass_Controller_Action
     $this->view->model = $m = new Wtk_Form_Model('prevoir');
     $enum = array();
     foreach($programmables as $unite)
-      $enum[$unite->id] = wtk_ucfirst($unite->getFullname());
+      $enum[$unite->id] = $unite->getFullname();
     $default = $u ? $u->id : null;
     $m->addEnum('unites', 'Unités participantes',
 		$default, $enum, true);        // multiple
@@ -153,7 +153,7 @@ class ActivitesController extends Strass_Controller_Action
     $this->assert(null, $a, 'consulter',
 		  "Vous n'avez pas le droit de consulter les détails de cette activité");
 
-    $this->metas(array('DC.Title' => wtk_ucfirst($a->getIntitule())));
+    $this->metas(array('DC.Title' => $a->getIntitule()));
 
     $this->view->documents = $a->findPiecesJointes();
     $i = Zend_Registry::get('individu');
@@ -197,7 +197,7 @@ class ActivitesController extends Strass_Controller_Action
 
     $enum = array();
     foreach($programmables as $unite)
-      $enum[$unite->id] = wtk_ucfirst($unite->getFullname());
+      $enum[$unite->id] = $unite->getFullname();
     $this->view->model = $m = new Wtk_Form_Model('activite');
     $i = $m->addEnum('unites', 'Unités participantes', $explicites, $enum, true);    // multiple
     $m->addConstraintRequired($i);
@@ -290,32 +290,5 @@ class ActivitesController extends Strass_Controller_Action
 			      array('activite' => $a->slug));
       }
     }
-  }
-
-  // HELPER
-  function findUnitesProgrammable($assert = TRUE) {
-    $unites = array();
-    $individu = Zend_Registry::get('individu');
-    if ($this->assert()) {
-      // Sélectionner toutes les unites pour les admin !
-      $table = new Unites;
-      $rows = $table->fetchAll();
-      foreach($rows as $row)
-	$unites[$row->id] = wtk_ucfirst($row->getFullname());
-    }
-    else {
-      // Sélectionner les unité où l'individu est ou a été inscrit
-      // et dont il a le droit de prévoir une activité.
-      $us = $individu->findUnites(null, true);
-      foreach($us as $u)
-	if ($this->assert(null, $u, 'prevoir-activite'))
-	  $unites[$u->id] = wtk_ucfirst($u->getFullname());
-    }
-
-    if (!count($unites) && $assert) {
-      throw new Strass_Controller_Action_Exception
-	("Vous n'avez le droit de prévoir d'activité pour aucune unités !");
-    }
-    return $unites;
   }
 }
