@@ -5,9 +5,9 @@
 <?php echo "<h".$level." ";
 $flags[1] = "h";
 wtk_classes($flags);
-echo "><span>";
+echo ">";
 $this->title->output();
-echo "</span></h".$level.">"; ?>
+echo "</h".$level.">"; ?>
 
 <?php endif; ?>
 <?php $this->outputChildren(); ?>

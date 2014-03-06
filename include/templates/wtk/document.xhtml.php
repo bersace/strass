@@ -91,7 +91,7 @@ dojo.require("dojo.parser");
   </head>
 <body<?php wtk_classes($flags); ?>>
 <?php if (isset($this->header)) $this->header->output(); ?>
-<?php if (isset($this->content)) $this->content->output (); ?>
+<div id="contentwrapper"><?php if (isset($this->content)) $this->content->output (); ?></div>
 <?php if (isset($this->aside)) $this->aside->output(); ?>
 <?php if (isset($this->footer)) $this->footer->output(); ?>
   </body>
