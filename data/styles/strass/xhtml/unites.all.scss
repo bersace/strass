@@ -127,84 +127,68 @@ td.numero
 	background-repeat: no-repeat;
     }
 
-    .groupe tr.chef td.accr
-    {
-	background-image: url("postes/cg.png");
-    }
-
-    .groupe tr.aumonier td.accr
+    tr.aumonier td.accr
     {
 	background-image: url("postes/aumonier.png");
     }
 
-    .groupe tr.assistant td.accr,
-    .groupe tr.tresorier td.accr,
-    .groupe tr.secretaire td.accr
+    tbody.groupe tr.chef td.accr
+    {
+	background-image: url("postes/cg.png");
+    }
+
+    tbody.groupe tr.assistant td.accr
     {
 	background-image: url("postes/acg.png");
     }
 
-    .clan tr.chef td.accr
+    tbody.clan tr.chef td.accr
     {
 	background-image: url("postes/cc.png");
     }
 
-    .troupe tr.chef td.accr,
-    .compagnie tr.chef td.accr
+    tbody.troupe tr.chef td.accr,
+    tbody.compagnie tr.chef td.accr
     {
 	background-image: url("postes/ct.png");
     }
 
-    .troupe tr.assistant td.accr,
-    .compagnie tr.assistant td.accr
+    tbody.troupe tr.assistant td.accr,
+    tbody.compagnie tr.assistant td.accr
     {
 	background-image: url("postes/act.png");
     }
 
-
-    .patrouille tr.chef td.accr,
-    .equipe tr.chef td.accr
+    tbody.patrouille tr.chef td.accr,
+    tbody.equipe tr.chef td.accr
     {
 	background-image: url("postes/cp.png");
     }
 
-    .patrouille > tr.assistant td.accr,
-    .equipe > tr.assistant td.accr
+    tbody.patrouille > tr.assistant td.accr,
+    tbody.equipe > tr.assistant td.accr
     {
 	background-image: url("postes/sp.png");
     }
 
-
-    .meute tr.chef td.accr,
-    .ronde tr.chef td.accr
+    tbody.meute tr.chef td.accr,
+    tbody.ronde tr.chef td.accr
     {
 	background-image: url("postes/akela.png");
     }
 
-    .meute tr.bagheera td.accr,
-    .meute tr.baloo td.accr,
-    .meute tr.raksha td.accr,
-    .meute tr.chil td.accr,
-    .meute tr.kaa td.accr,
-    .meute tr.hathi td.accr,
-    .meute tr.wontolla td.accr,
-    .meute tr.rama td.accr,
-    .meute tr.rikkitikitavi td.accr,
-    .meute tr.chuchundra td.accr,
-    .meute tr.gris td.accr,
-    .meute tr.sahi td.accr,
-    .meute tr.fauvette td.accr
+    tbody.meute tr.assistant td.accr,
+    tbody.ronde tr.assistant td.accr
     {
 	background-image: url("postes/bagheera.png");
     }
 
-
-    .effectifs tr.siz td.accr
+    tbody.sizloup tr.siz td.accr
     {
 	background-image: url("postes/siz.png");
     }
 
-    .effectifs tr.sec td.accr
+    tbody.sizloup tr.sec td.accr
     {
 	background-image: url("postes/sec.png");
     }
