@@ -19,12 +19,12 @@ $loader->registerNamespace('Strass_');
 $config = new Strass_Config_Php('strass');
 
 $document = new Wtk_Document(new Wtk_Metas(array('DC.Title' => 'Maintenance')));
-$document->setStyle(new Wtk_Document_Style('strass'));
-$document->addStyleComponents('layout', 'minilayout');
+$document->setStyle(new Wtk_Document_Style($config->system->style));
+$document->addStyleComponents('layout', 'minilayout', 'common');
 $mouvement = $config->get('system/mouvement', null);
 $document->addFlags($mouvement);
 $document->embedStyle();
-$document->header->setTitle($config->get('metas/title', null));
+$document->header->setTitle(new Wtk_Link('/', $config->get('metas/title', null)));
 $document->header->addFlags($mouvement);
 $dialog = $document->addDialog("Webmestre au travail !");
 $dialog->addFlags('error');

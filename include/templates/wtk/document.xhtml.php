@@ -67,11 +67,12 @@ else {
 <?php endforeach; ?>
 <?php endforeach; ?>
 
+  <?php $cssbaseurl = dirname($files[0]['file']).'/'; ?>
 <?php foreach($embeded as $medium => $css): ?>
 <style type="text/css" media="<?php echo $medium; ?>" title="<?php echo $et; ?>">
 <!--/*--><![CDATA[<!--*/
 
-  <?php echo str_replace('url("', 'url("'.dirname($files[0]['file']).'/', $css); ?>
+  <?php echo str_replace('url("', 'url("'.$cssbaseurl, $css); ?>
 /*]]>*/-->
 </style>
 <?php endforeach; ?>
