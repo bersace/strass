@@ -7,7 +7,7 @@ class DocumentsController extends Strass_Controller_Action
 {
   function indexAction()
   {
-    $unite = $this->_helper->Unite();
+    $this->view->unite = $unite = $this->_helper->Unite();
 
     $this->view->docs = $unite->findDocuments();
     $this->metas(array('DC.Title' => 'Documents'));
@@ -26,7 +26,7 @@ class DocumentsController extends Strass_Controller_Action
 
   function envoyerAction()
   {
-    $unite = $this->_helper->Unite(false);
+    $this->view->unite = $unite = $this->_helper->Unite(false);
     $this->view->doc = $d = $this->_helper->Document(false);
     if ($d) {
       $this->metas(array('DC.Title' => 'Éditer'));
@@ -106,7 +106,7 @@ class DocumentsController extends Strass_Controller_Action
 		  "Vous n'avez pas le droit de supprimer ce document.");
 
     try {
-      $u = $d->findUnite();
+      $this->view->unite = $u = $d->findUnite();
       $urlArgs = array('index', 'documents', null, array('unite' => $u->slug), true);
     }
     catch (Strass_Db_Table_NotFound $e) {

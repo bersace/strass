@@ -24,6 +24,21 @@ abstract class Strass_Format_Wtk extends Strass_Format
     $document->setStyle(new Wtk_Document_Style($config->get('system/style', 'strass'), 'data/styles/'));
     $document->addStyleComponents('layout', $cn, $mn, $mouvement);
 
+    if ($view->unite)
+      $unite = $view->unite;
+    else {
+      $t = new Unites;
+      try {
+	$unite = $t->findRacine();
+      }
+      catch (Strass_Db_Table_NotFound $e) {
+	$unite = null;
+      }
+    }
+
+    if ($unite)
+      $document->addFlags($unite->slug, $unite->findParentTypesUnite()->slug);
+
     $document->addFlags($mouvement);
     $document->header->addFlags($mouvement);
     $document->footer->addFlags($mouvement);
