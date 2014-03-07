@@ -178,7 +178,7 @@ class UnitesController extends Strass_Controller_Action
       $db = $t->getAdapter();
       $db->beginTransaction();
       try {
-	$u->parent = $m->parente ? $m->parent : null;
+	$u->parent = $m->parente ? $m->parente : null;
 	$u->nom = $m->nom;
 	$u->slug = $t->createSlug(wtk_strtoid($u->getFullname()), $u->slug);
 	$u->extra = $m->extra;
