@@ -37,9 +37,6 @@ class Strass_Views_PagesRenderer_Unites_Accueil extends Strass_Views_PagesRender
 	$item->addFlags('unite');
       else
 	$item->addFlags('vignette');
-
-      // insérer les sous unités ouverte à la suite
-      //$this->renderUnites($list, $unite->findSousUnites(false, $annee), $annee);
     }
   }
 

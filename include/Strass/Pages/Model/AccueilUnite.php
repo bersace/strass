@@ -6,7 +6,7 @@ class Strass_Pages_Model_AccueilUnite extends Strass_Pages_Model_Historique
   {
     $u = $this->unite;
     $w = $u->getWiki();
-    $unites = $u->findSousUnites(false, $annee);
+    $unites = $u->findSousUnites($annee, false);
     return array('unite' => $u,
 		 'texte' => $w ? file_get_contents($w) : '',
 		 'sousunites' => $unites,

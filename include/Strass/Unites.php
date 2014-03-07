@@ -36,7 +36,7 @@ class Unites extends Strass_Db_Table_Abstract
     // sélectionner *toutes* les sous-unités.
     $unites = $ids_parent;
     foreach($rows as $unite) {
-      $sus = $unite->findSousUnites(true, $annee);
+      $sus = $unite->findSousUnites($annee, true);
       foreach($sus as $su)
 	$unites[] = $su->id;
     }
@@ -305,27 +305,38 @@ class Unite extends Strass_Db_Table_Row_Abstract implements Zend_Acl_Resource_In
   }
 
   // retourne les sous-unités, récursivement ou non
-  public function findSousUnites($recursif = true, $annee = null) {
-    $unites = array();
-    $db = $this->getTable()->getAdapter();
+  public function findSousUnites($annee = null, $recursif = true)
+  {
+    $t = $this->getTable();
+    $db = $t->getAdapter();
     $select = $this->getTable()->select()
       ->setIntegrityCheck(false)
       ->from('unite')
-      ->where('unite.parent = ?'."\n", $this->id)
       ->join('unite_type', 'unite_type.id = unite.type', array())
       ->order('unite_type.virtuelle DESC');
 
+    if ($recursif) {
+      $select
+	->joinLeft(array('fille' => 'unite'), $db->quoteInto('fille.parent = ?', $this->id), array())
+	->where('unite.parent IN (?, fille.id)'."\n", $this->id);
+    }
+    else {
+      $select
+	->where('unite.parent = ?'."\n", $this->id);
+    }
+
     if ($annee) {
       $select
+	->joinLeft(array('petitefille' => 'unite'), 'petitefille.parent = unite.id', array())
 	->joinLeft(array('actif' => 'appartenance'),
-		   'actif.unite = unite.id'."\n".
+		   'actif.unite IN (unite.id, petitefille.id)'."\n".
 		   ' OR '.
 		   ("(unite_type.virtuelle".
 		    " AND ".
 		    " actif.unite = unite.parent)"),
 		   array())
 	->joinLeft(array('inactif' => 'appartenance'),
-		   'inactif.unite = unite.id'."\n".
+		   'inactif.unite IN (unite.id, petitefille.id)'."\n".
 		   ' OR '.
 		   ("(unite_type.virtuelle".
 		    " AND ".
@@ -334,21 +345,10 @@ class Unite extends Strass_Db_Table_Row_Abstract implements Zend_Acl_Resource_In
 		   array());
       $date = ($annee+1).'-06-01';
       $select->where("(actif.debut < ? AND (actif.fin IS NULL OR ?<= actif.fin))".
-		     " OR inactif.ID IS NULL", $date);
+		     " OR inactif.id IS NULL", $date);
     }
 
-    $su = $this->getTable()->fetchAll($select);
-    foreach($su as $u) {
-      $unites[] = $u;
-      if ($recursif) {
-	$sousunites = $u->findSousUnites($recursif, $annee);
-	if ($sousunites) {
-	  $unites = array_merge($unites, $sousunites);
-	}
-      }
-    }
-
-    return $unites;
+    return $t->fetchAll($select);
   }
 
   function findSoeursVirtuelles()
