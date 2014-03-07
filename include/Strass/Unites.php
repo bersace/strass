@@ -458,18 +458,20 @@ class Unite extends Strass_Db_Table_Row_Abstract implements Zend_Acl_Resource_In
       $s = $t->select()
 	->distinct()
 	->from('appartenance')
+	->joinLeft(array('fille' => 'unite'), $db->quoteInto('fille.parent = ?', $this->id), array())
+	->joinLeft(array('petitefille' => 'unite'), 'petitefille.parent = fille.id', array())
 	->where('fin IS NULL')
-	->where('unite = ?', $this->id);
+	->where('appartenance.unite IN (?, fille.id, petitefille.id)', $this->id);
       $actives = $t->countRows($s);
       $s = $t->select()
 	->distinct()
 	->from('appartenance')
+	->joinLeft(array('fille' => 'unite'), $db->quoteInto('fille.parent = ?', $this->id), array())
+	->joinLeft(array('petitefille' => 'unite'), 'petitefille.parent = fille.id', array())
 	->where('fin IS NOT NULL')
-	->where('unite = ?', $this->id);
+	->where('appartenance.unite IN (?, fille.id, petitefille.id)', $this->id);
       $inactives = $t->countRows($s);
       $this->fermee = $actives == 0 && $inactives > 0;
-      if ($this->fermee && !$this->isTerminale())
-	$this->fermee = count($this->findSousUnites(null, false)) == 0;
     }
     return $this->fermee;
   }
