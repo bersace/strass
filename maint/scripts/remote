@@ -111,6 +111,9 @@ class FTPEntry(object):
 
 def localmtime(path):
     try:
+        subprocess.check_output([
+            'git', 'ls-files', '--error-unmatch', path],
+                                stderr=subprocess.PIPE)
         timestamp = int(subprocess.check_output([
             'git', 'log', '--max-count=1', '--format=format:%at', path]))
     except Exception, e:
