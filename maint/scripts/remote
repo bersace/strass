@@ -11,6 +11,7 @@ from datetime import datetime
 import fnmatch
 from getpass import getpass
 import subprocess
+from collections import OrderedDict
 
 
 log = logging.getLogger('strass')
@@ -19,6 +20,9 @@ class Script(object):
     parser = argparse.ArgumentParser(
         description=u"Gestionnaire de site strass")
     parser.set_defaults(loglevel=logging.INFO)
+    parser.add_argument(
+        '-d', '--debug',
+        action='store_true', dest='debug')
     parser.add_argument(
         '-v', '--verbose',
         action='store_const', dest='loglevel', const=logging.DEBUG)
@@ -46,6 +50,8 @@ class Script(object):
             log.exception(e)
             log.debug("%r", e)
             log.error("%s", e)
+            if args.debug:
+                import pdb; pdb.post_mortem()
             return 1
 
 
@@ -55,237 +61,429 @@ def command(cls):
     return cls
 
 
-class FTPEntry(object):
-    log = logging.getLogger('strass.ftp')
-
-
-    def __init__(self, ftp):
-        self.ftp = ftp
-
-
-    def list_(self):
-        entries = []
-        self.log.debug("Listage de %s", self.path)
-        self.ftp.retrlines('LIST -a %s' % self.path, entries.append)
-        return sorted([self.parse(e, self.path, ftp=self.ftp) for e in entries])[2:]
-
-
-    def remove(self):
-        if self.type_ == 'd':
-            for entry in self.list_():
-                entry.remove()
-            self.log.debug("Suppression de %s", self.path)
-            self.ftp.rmd(self.path)
-        else:
-            self.log.debug("Suppression de %s", self.path)
-            self.ftp.delete(self.path)
-
-
-    @classmethod
-    def parse(cls, line, parent, ftp):
-        self = cls(ftp)
-        self.type_ = line[0]
-        self.name = line.split(None, 8)[-1]
-        self.path = os.path.join(parent, self.name)
-        return self
+class FileType(object):
+    def __init__(self, repr_):
+        self.repr_ = repr_
 
 
     def __repr__(self):
-        return "%s %s" % (self.type_, self.name)
+        return self.repr_
+
+
+class FTPOperation(object):
+    def __init__(self, path):
+        self.path = path
+
+
+    def __repr__(self):
+        return '%s %s' % (self.__class__.__name__, self.path)
 
 
     def __cmp__(self, other):
-        """Très sale, on met . et .. en premier, systématiquement. Sinon tri alphabêtement"""
-        a = self.name
-        b = other.name
-        if a == '.':
-            return -1
-        elif a == '..':
-            return 1 if b == '.' else -1
-        elif b == '.':
-            return 1
-        elif b == '..':
-            return -1 if a == '.' else 1
-        return 0
+        return cmp(self.__class__, other.__class__) * cmp(self.path, other.path)
 
 
-def localmtime(path):
-    try:
-        subprocess.check_output([
-            'git', 'ls-files', '--error-unmatch', path],
-                                stderr=subprocess.PIPE)
-        timestamp = int(subprocess.check_output([
-            'git', 'log', '--max-count=1', '--format=format:%at', path]))
-    except Exception, e:
-        timestamp = os.stat(path).st_mtime
-
-    return datetime.fromtimestamp(timestamp)
+    def __eq__(self, other):
+        return self.__class__ is other.__class__ and self.path == other.path
 
 
-class FTPHelper(object):
-    """Implémente des opérations de haut niveaux au dessus de ce foutu protocole FTP"""
+    def __hash__(self):
+        return hash((self.__class__.__name__, self.path))
 
+
+class MKD(FTPOperation):
+    def __call__(self, client):
+        client.mkd(self.path)
+
+
+class STOR(FTPOperation):
+    def __call__(self, client):
+        client.storbinary('STOR ' + self.path, open(self.path))
+
+
+class RETR(FTPOperation):
+    def __call__(self, client):
+        f = open(self.path, 'wb')
+        client.retrbinary('RETR %s' % self.path, f.write)
+
+
+class RMD(FTPOperation):
+    def __call__(self, client):
+        client.rmd(self.path)
+
+
+class DELE(FTPOperation):
+    def __call__(self, client):
+        client.delete(self.path)
+
+
+class FTPEntry(object):
     log = logging.getLogger('strass.ftp')
     exclude = ['*~', 'zend_cache*', '*.xcf', '*.scss', 'README', 'LICENSE']
 
+    TYPE_UNKNOWN = FileType('Inconnu')
+    TYPE_FILE = FileType('Fichier')
+    TYPE_DIR = FileType('Dossier')
+
+
+    def __init__(self, client, parent, fullpath, type_=None):
+        self.client = client
+        self.path = os.path.normpath(fullpath)
+        self.name = os.path.basename(self.path)
+        self.parent = parent
+        self._children = None
+        self._type = type_
+        self._localmtime = None
+        self._remotemtime = None
+        self._remoteexists = None
+
+
+    def __repr__(self):
+        return "%s %s" % (self.type_, self.path,)
+
+
+    def __iter__(self):
+        if self.type_ is self.TYPE_FILE:
+            raise ValueError("Impossible de lister le fichier %s" % self.path)
+
+        if not self._children:
+            self._children = OrderedDict()
+            # listage local
+            if os.path.exists(self.path):
+                for name in os.listdir(self.path):
+                    if self.isignored(name):
+                        continue
+
+                    entry = self.__class__(self.client, fullpath=os.path.join(self.path, name), parent=self)
+                    # On met par défaut à False, car on va tester juste après
+                    entry._remoteexists = False
+                    self._children[entry.name] = entry
+
+            # listage distant
+            lines = []
+            self.log.info('ITER')
+            self.client.retrlines('LIST -a %s' % self.path, lines.append)
+            self._remoteexists = len(lines) > 0
+            for line in lines:
+                try:
+                    entry = self.__class__.parse(self.client, self, line)
+                except ValueError:
+                    continue
+
+                if self.isignored(entry.name):
+                    continue
+
+                entry = self._children.setdefault(entry.name, entry)
+                entry._remoteexists = True
+
+        for child in self._children.values():
+            yield child
+
+
+    def __getitem__(self, path):
+        if self.isdir():
+            list(iter(self))
+            path = os.path.normpath(path)
+            members = list(path.split(os.sep))
+            name = members.pop(0)
+            try:
+                child = self._children[name]
+            except KeyError:
+                child = self.__class__(self.client, parent=self, fullpath=os.path.join(self.path, name))
+                if len(members):
+                    child._type = self.TYPE_DIR
+                self._children[name] = child
+
+            if len(members):
+                return child[os.path.join(*members)]
+            else:
+                return child
+        elif self.type_ is self.TYPE_FILE:
+            raise ValueError("Impossible de lister le fichier %r" % os.path.join(self.path, path))
+        else:
+            raise KeyError("Fichier %r inexistant" % os.path.join(self.path, path))
+
+
+    @classmethod
+    def parse(cls, client, parent, line):
+        parts = line.split()
+        name = ' '.join(parts[8:])
+
+        if name in ('.', '..'):
+            raise ValueError("Fichier ignoré")
+
+        fullpath = os.path.join(parent.path, name)
+
+        if line[0] == 'd':
+            type_ = cls.TYPE_DIR
+        elif line[0] == '-':
+            type_ = cls.TYPE_FILE
+        else:
+            raise Exception("Type %s inconnu: %s" (line[0], line))
+
+        self = cls(client, fullpath=fullpath, type_=type_, parent=parent)
+        self._remoteexists = True
+        return self
+
+
+    @classmethod
+    def isignored(cls, name):
+        for pattern in cls.exclude:
+            if fnmatch.fnmatch(name, pattern):
+                return True
+        return False
+
+
+    @property
+    def type_(self):
+        if not self._type:
+            if os.path.exists(self.path):
+                if os.path.isdir(self.path):
+                    self._type = self.TYPE_DIR
+                else:
+                    self._type = self.TYPE_FILE
+            else:
+                lines = []
+                self.log.info('TYPE')
+                self.client.retrlines('LIST -a %s' % self.path, lines.append)
+                if not lines:
+                    self._remoteexists = False
+                    self._type = self.TYPE_UNKNOWN
+                else:
+                    import pdb; pdb.set_trace()
+        return self._type
+
+
+    @property
+    def remoteexists(self):
+        if self._remoteexists is None:
+            if self.type_ is self.TYPE_FILE:
+                lines = []
+                self.log.info('REMOTEEXISTS')
+                self.client.retrlines('LIST -a %s' % self.path, lines.append)
+                self._remoteexists = len(lines) > 0
+            elif self.type_ is self.TYPE_DIR:
+                list(iter(self))
+
+        return self._remoteexists
+
+
+    def isdir(self):
+        return self.type_ is self.TYPE_DIR
+
+
+    def outdated(self, reverse=False):
+        """Teste si la version en ligne est obsolète. L'inverse si reverse est à True"""
+
+        if not self._localmtime:
+            if not os.path.exists(self.path):
+                return reverse
+
+            try:
+                subprocess.check_output([
+                    'git', 'ls-files', '--error-unmatch', self.path],
+                                        stderr=subprocess.PIPE)
+            except Exception, e:
+                timestamp = os.stat(self.path).st_mtime
+            else:
+                timestamp = int(subprocess.check_output([
+                    'git', 'log', '--max-count=1', '--format=format:%at', self.path]))
+
+            self._localmtime = datetime.fromtimestamp(timestamp)
+
+        if not self._remotemtime:
+            if not self.remoteexists:
+                return not reverse
+
+            ret = self.client.sendcmd('MDTM %s' % self.path)
+            code, data = ret.split(None, 1)
+            assert int(code) == 213, ret
+            self._remotemtime = datetime.strptime(data, '%Y%m%d%H%M%S')
+
+        if reverse:
+            return self._remotemtime > self._localmtime
+        else:
+            return self._remotemtime < self._localmtime
+
+
+    def remove(self):
+        if not self.remoteexists:
+            return
+
+        if self.isdir():
+            yield RMD(self.path)
+        else:
+            yield DELE(self.path)
+
+
+    def mkdir(self):
+        if self.parent:
+            for op in self.parent.mkdir():
+                yield op
+
+        if not self.remoteexists:
+            yield MKD(self.path)
+
+
+    def download(self):
+        if self.isdir():
+            for op in self.mkdir():
+                yield op
+
+
+            for child in self:
+                if not child._remoteexists:
+                    # Ne traiter que les enfants venant de la commande
+                    # LIST
+                    continue
+
+                for op in child.download():
+                    yield op
+        else:
+            if not self.outdated(reverse=True):
+                yield RETR(self.path)
+
+
+    def upload(self, force=False, clean=False):
+        if self.isdir():
+            for op in self.mkdir():
+                yield op
+
+            for child in self:
+                for op in child.upload(force=force, clean=clean):
+                    yield op
+        else:
+            if clean and not os.path.exists(self.path):
+                for op in self.remove():
+                    yield op
+            elif force or not self.remoteexists or self.outdated():
+                if self.parent:
+                    for op in self.parent.mkdir():
+                        yield op
+                yield STOR(self.path)
+
+
+class FTPLogger(object):
+    log = logging.getLogger('strass.ftp')
+
+    def __init__(self, client):
+        self.client = client
+
+
+    def _log(self, cmd, *args):
+        self.log.debug(">>> %r", cmd % args)
+
+
+    def mkd(self, path):
+        self._log("MKD %s", path)
+        self.client.mkd(path)
+
+
+    def rmd(self, path):
+        self._log("RMD %s", path)
+        self.client.rmd(path)
+
+
+    def delete(self, path):
+        self._log("DELE %s", path)
+        self.client.delete(path)
+
+
+    def sendcmd(self, cmd):
+        self._log(cmd)
+        return self.client.sendcmd(cmd)
+
+
+    def retrlines(self, cmd, *args, **kwargs):
+        self._log(cmd)
+        return self.client.retrlines(cmd, *args, **kwargs)
+
+
+    def retrbinary(self, cmd, *args, **kwargs):
+        self._log(cmd)
+        return self.client.retrbinary(cmd, *args, **kwargs)
+
+
+    def storbinary(self, cmd, *args):
+        self._log(cmd)
+        return self.client.storbinary(cmd, *args)
+
+
+    def __getattr__(self, name):
+        return getattr(self.client, name)
+
+
+class FTPQueue(OrderedDict):
+    log = logging.getLogger('strass.ftp')
+
+
+    def add(self, op):
+        if op not in self:
+            self.log.debug("Mise en file de %s", op)
+            self[op] = op
+
+
+class FTPManager(object):
+    log = logging.getLogger('strass.ftp')
 
     def __init__(self, config):
+        self.operations = FTPQueue()
+
         self.config = config
-        self.ftp = FTP()
+        self.client = FTPLogger(FTP())
+        self.client.connect(self.config.get('remote', 'hostname'))
+        self.client.login(self.config.get('remote', 'username'),
+                       self.config.get('remote', 'password'))
+        self.client.cwd(self.config.get('remote', 'root'))
+        self.log.debug(u"Connecté à %s", self.config.get('remote', 'hostname'))
+        self.log.debug(self.client.getwelcome())
+
+        self.tree = FTPEntry(client=self.client, parent=None, fullpath='.')
 
 
     def __del__(self):
-        if not self.ftp:
-            return
-
-        self.ftp.quit()
-        self.ftp.close()
+        self.client.quit()
+        self.client.close()
 
 
-    def connect(self):
-        self.ftp.connect(self.config.get('remote', 'hostname'))
-        self.ftp.login(self.config.get('remote', 'username'),
-                       self.config.get('remote', 'password'))
-        self.ftp.cwd(self.config.get('remote', 'root'))
-        self.log.debug(u"Connecté à %s", self.config.get('remote', 'hostname'))
-        self.log.debug(self.ftp.getwelcome())
+    def upload(self, *pathes):
+        for path in pathes:
+            entry = self.tree[path]
+            for op in entry.upload(force=True):
+                self.operations.add(op)
 
 
-    def exists(self, path):
-        entries = []
-        self.ftp.retrlines('LIST -a %s' % path, entries.append)
-        return len(entries) > 0
+    def download(self, *pathes):
+        for path in pathes:
+            entry = self.tree[path]
+            for op in entry.download():
+                self.operations.add(op)
 
 
-    def isdir(self, path):
-        """Retourne la liste des entrées si c'est un dossier, False sinon"""
-        entries = []
-        self.log.debug("Listage de %s", path)
-        self.ftp.retrlines('LIST -a %s' % path, entries.append)
-        if not entries:
-            return False
-
-        entries = sorted([FTPEntry.parse(e, path, ftp=self.ftp) for e in entries])
-        if entries[0].name == '.':
-            return entries[2:]
-        else:
-            return False
+    def mirror(self, *pathes):
+        for path in pathes:
+            entry = self.tree[path]
+            for op in entry.upload(clean=True):
+                self.operations.add(op)
 
 
-    def mtime(self, path):
-        """Retourne la date de dernière modification d'un fichier distant"""
-        try:
-            ret = self.ftp.sendcmd('MDTM %s' % path)
-        except Exception, e:
-            raise Exception(u"Echec de MDTM sur %s: %s" % (path, str(e)))
-        code, data = ret.split(None, 1)
-        assert int(code) == 213, ret
-        return datetime.strptime(data, '%Y%m%d%H%M%S')
+    def remove(self, *pathes):
+        for path in pathes:
+            entry = self.tree[path]
+            for op in entry.remove():
+                self.operations.add(op)
 
 
-    def _exclude_names(self, names):
-        for pattern in self.exclude:
-            for name in names[:]:
-                if not fnmatch.fnmatch(name, pattern):
-                    continue
-                names.remove(name)
-        return sorted(names)
-
-
-    def mirror(self, path):
-        """Recopie un chemin local à distance, en nettoyant le dossier distant de fichiers supprimé"""
-        self.put(path)
-        self.clean(path)
-
-
-    def put(self, path, force=False):
-        """Copie un dossier vers le serveur. Vérifie la date de dernière modification pour économiser."""
-
-        if os.path.isdir(path):
-            if not self.exists(path):
-                self.ftp.mkd(path)
-            entries = self._exclude_names(os.listdir(path))
-            for entry in entries:
-                self.put(os.path.join(path, entry))
-        else:
-            if not force:
-                try:
-                    rmtime = self.mtime(path)
-                    lmtime = localmtime(path)
-                    if rmtime > lmtime:
-                        self.log.debug('%s à jour', path)
-                        return
-                except Exception, e:
-                    pass
-            self.log.debug("Envoi de %s", path)
-            self.ftp.storbinary('STOR ' + path, open(path))
-
-
-    def remove(self, path):
-        """Supprime un fichier ou un dossier, récursivement"""
-        entries = self.isdir(path)
-        if entries is not False:
-            for entry in entries:
-                entry.remove()
-            self.log.debug("Suppression de %s", path)
-            self.ftp.rmd(path)
-        elif self.exists(path):
-            self.log.debug("Suppression de %s", path)
-            self.ftp.delete(path)
-
-
-    def clean(self, path):
-        """Nettoye un dossier distant de fichiers supprimés localement"""
-        try:
-            local_entries = self._exclude_names(os.listdir(path))
-        except OSError, e:
-            local_entries = []
-        remote_entries = self.isdir(path)
-        for entry in remote_entries:
-            if not self._exclude_names([entry.name]):
-                continue
-            childpath = os.path.join(path, entry.name)
-
-            if entry.type_ == 'd':
-                self.clean(childpath)
-
-            if entry.name not in local_entries:
-                entry.remove()
-
-
-    def getfile(self, path):
-        parent = os.path.dirname(path)
-        if parent and not os.path.exists(parent):
-            os.makedirs(parent)
-
-        if os.path.exists(path):
-            remote_last_mod = self.mtime(path)
-            local_last_mod = localmtime(path)
-            if local_last_mod > remote_last_mod:
-                self.log.debug('%s à jour', path)
-                return
-
-        self.log.debug(u"Réception de %s", path.decode('utf-8'))
-        f = open(path, 'wb')
-        self.ftp.retrbinary('RETR %s' % path, f.write)
-
-
-    def get(self, path):
-        """Copie un dossier local depuis un dossier distant"""
-        entries = self.isdir(path)
-        if entries is False:
-            self.getfile(path)
-        else:
-            for entry in entries:
-                childpath = path + '/' + entry.name
-                if entry.type_ == 'd':
-                    self.get(childpath)
-                elif entry.type_ == '-':
-                    # on appelle directement getfile, plutôt que de
-                    # faire une récursion qui coûterait un LIST
-                    self.getfile(childpath)
-                else:
-                    self.log.info('Ignore %s', childpath)
+    def run(self):
+        total = len(self.operations)
+        print "0%\r",
+        for done, op in enumerate(self.operations):
+            try:
+                op(self.client)
+            except Exception, e:
+                self.log.warn(u"Échec de l'opération %s: %s", op, e)
+            print "%d%%\r" % (100. * total / (done+1)),
+        print u"Terminé"
 
 
 @command
@@ -361,11 +559,9 @@ class setmaint(object):
 
 
     def __call__(self, args, config):
-        ftp = FTPHelper(config)
-        ftp.connect()
-        ftp.put('maintenance.html', force=True)
-        ftp.put('include/Strass/Version.php', force=True)
-        ftp.put('index.php', force=True)
+        ftp = FTPManager(config)
+        ftp.upload('maintenance.html', 'include/Strass/Version.php', 'index.php')
+        ftp.run()
 
 
 @command
@@ -379,9 +575,9 @@ class unsetmaint(object):
 
 
     def __call__(self, args, config):
-        ftp = FTPHelper(config)
-        ftp.connect()
+        ftp = FTPManager(config)
         ftp.remove('maintenance.html')
+        ftp.run()
 
 
 @command
@@ -394,11 +590,11 @@ class backup1(object):
 
 
     def __call__(self, args, config):
-        ftp = FTPHelper(config)
-        ftp.connect()
-        ftp.get('resources/styles')
-        ftp.get('config')
-        ftp.get('data')
+        ftp = FTPManager(config)
+        self.log.info("Préparation de la sauvegarde")
+        ftp.download('resources/styles', 'config/', 'data/')
+        self.log.info("Démarrage de la sauvegarde")
+        ftp.run()
 
 
 @command
@@ -412,16 +608,13 @@ class upgrade(object):
 
 
     def __call__(self, args, config):
-        ftp = FTPHelper(config)
-        ftp.connect()
-        ftp.mirror('private/')
-        ftp.mirror('data/')
-        ftp.mirror('include/')
-        ftp.put('index.php')
+        ftp = FTPManager(config)
+        self.log.info("Préparation de la mise à jour")
+        ftp.mirror('index.php', 'private/', 'include/', 'data/')
         # nettoyage v1
-        ftp.remove('resources/')
-        ftp.remove('config/')
-        ftp.remove('cache/')
+        ftp.remove('resources/', 'config/', 'cache/')
+        self.log.info("Démarrage de la mise à jour")
+        ftp.run()
 
 
 main = Script()
