@@ -510,6 +510,16 @@ class Appartient extends Strass_Db_Table_Row_Abstract implements Zend_Acl_Role_I
   {
     return $this->getAccronyme().' '.$this->findParentUnites()->getName();
   }
+
+  function _postInsert()
+  {
+    $this->findParentUnites()->clearCacheSousUnites();
+  }
+
+  function _postDelete()
+  {
+    $this->findParentUnites()->clearCacheSousUnites();
+  }
 }
 
 

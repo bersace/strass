@@ -307,8 +307,8 @@ class Unite extends Strass_Db_Table_Row_Abstract implements Zend_Acl_Resource_In
   // retourne les sous-unités, récursivement ou non
   public function findSousUnites($annee = null, $recursif = true)
   {
-    $c = Strass_Db_Table_Abstract::$_rowCache;
-    $id = 'sous-unites-'.$this->slug.'-'.$annee.'-'.$recursif;
+    $c = Zend_Registry::get('cache');
+    $id = str_replace('-', '_', trim('sous-unites-'.$this->slug.'-'.$annee.'-'.$recursif, '-'));
     if (($su = $c->load($id)) === false) {
       $t = $this->getTable();
       $db = $t->getAdapter();
@@ -351,10 +351,9 @@ class Unite extends Strass_Db_Table_Row_Abstract implements Zend_Acl_Resource_In
 		       " OR inactif.id IS NULL", $date);
       }
       $su = $t->fetchAll($select);
-      $c->save($su, $id);
+      $tags = array('sous_unites');
+      $c->save($su, $id, $tags);
     }
-    else
-      error_log('CACHE de sous unités');
 
     return $su;
   }
@@ -757,16 +756,32 @@ class Unite extends Strass_Db_Table_Row_Abstract implements Zend_Acl_Resource_In
     return $t->fetchAll($s);
   }
 
+  function clearCacheSousUnites()
+  {
+    $cache = Zend_Registry::get('cache');
+
+    $tags = array('sous_unites');
+    foreach($cache->getIdsMatchingTags($tags) as $id) {
+      $cache->remove($id);
+    }
+  }
+
   function _postInsert()
   {
+    $this->clearCacheSousUnites();
+
     Zend_Registry::get('cache')->remove('strass_acl');
     /* Est-ce que ça vaut la peine de réinitialiser les ACL ? Vu qu'on
        va certainement faire un redirect juste après l'insert… */
+
   }
 
   function _postDelete()
   {
+    $this->clearCacheSousUnites();
+
     Zend_Registry::get('cache')->remove('strass_acl');
+
     if ($i = $this->getImage())
       unlink($i);
 
@@ -776,7 +791,9 @@ class Unite extends Strass_Db_Table_Row_Abstract implements Zend_Acl_Resource_In
 
   function _postUpdate()
   {
+    $this->clearCacheSousUnites();
     Zend_Registry::get('cache')->remove('strass_acl');
+
     if ($i = $this->getImage($this->_cleanData['id']))
       rename($i, $this->getImage(null, false));
 
