@@ -5,6 +5,8 @@ class Strass_Db_Table_NotFound extends Zend_Db_Table_Exception {}
 
 abstract class Strass_Db_Table_Abstract extends Zend_Db_Table_Abstract
 {
+  static $_rowCache = null;
+
   function getColumns()
   {
     return $this->_cols;

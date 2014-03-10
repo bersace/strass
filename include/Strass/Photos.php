@@ -36,6 +36,17 @@ class Photo extends Strass_Db_Table_Row_Abstract implements Zend_Acl_Resource_In
     $this->initPrivileges($acl, $this->findUnites());
   }
 
+  function findParentActivites()
+  {
+    $cache = Strass_Db_Table_Abstract::$_rowCache;
+    $id = 'activites-'.$this->activite;
+    if (($a = $cache->load($id)) === false) {
+      $a = parent::findParentActivites();
+      $cache->save($a, $id);
+    }
+    return $a;
+  }
+
   function findUnites()
   {
     $t = new Unites;

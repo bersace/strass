@@ -22,6 +22,8 @@ class Strass_Db extends Zend_Db {
     }
     Zend_Db_Table_Abstract::setDefaultMetadataCache($cache);
 
+    Strass_Db_Table_Abstract::$_rowCache = new Strass_Cache;
+
     return $db;
   }
 }

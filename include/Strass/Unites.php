@@ -307,48 +307,56 @@ class Unite extends Strass_Db_Table_Row_Abstract implements Zend_Acl_Resource_In
   // retourne les sous-unités, récursivement ou non
   public function findSousUnites($annee = null, $recursif = true)
   {
-    $t = $this->getTable();
-    $db = $t->getAdapter();
-    $select = $this->getTable()->select()
-      ->setIntegrityCheck(false)
-      ->from('unite')
-      ->join('unite_type', 'unite_type.id = unite.type', array())
-      ->order('unite_type.virtuelle DESC');
+    $c = Strass_Db_Table_Abstract::$_rowCache;
+    $id = 'sous-unites-'.$this->slug.'-'.$annee.'-'.$recursif;
+    if (($su = $c->load($id)) === false) {
+      $t = $this->getTable();
+      $db = $t->getAdapter();
+      $select = $this->getTable()->select()
+	->setIntegrityCheck(false)
+	->from('unite')
+	->join('unite_type', 'unite_type.id = unite.type', array())
+	->order('unite_type.virtuelle DESC');
 
-    if ($recursif) {
-      $select
-	->joinLeft(array('fille' => 'unite'), $db->quoteInto('fille.parent = ?', $this->id), array())
-	->where('unite.parent IN (?, fille.id)'."\n", $this->id);
-    }
-    else {
-      $select
-	->where('unite.parent = ?'."\n", $this->id);
-    }
+      if ($recursif) {
+	$select
+	  ->joinLeft(array('fille' => 'unite'), $db->quoteInto('fille.parent = ?', $this->id), array())
+	  ->where('unite.parent IN (?, fille.id)'."\n", $this->id);
+      }
+      else {
+	$select
+	  ->where('unite.parent = ?'."\n", $this->id);
+      }
 
-    if ($annee) {
-      $select
-	->joinLeft(array('petitefille' => 'unite'), 'petitefille.parent = unite.id', array())
-	->joinLeft(array('actif' => 'appartenance'),
-		   'actif.unite IN (unite.id, petitefille.id)'."\n".
-		   ' OR '.
-		   ("(unite_type.virtuelle".
-		    " AND ".
+      if ($annee) {
+	$select
+	  ->joinLeft(array('petitefille' => 'unite'), 'petitefille.parent = unite.id', array())
+	  ->joinLeft(array('actif' => 'appartenance'),
+		     'actif.unite IN (unite.id, petitefille.id)'."\n".
+		     ' OR '.
+		     ("(unite_type.virtuelle".
+		      " AND ".
 		    " actif.unite = unite.parent)"),
-		   array())
-	->joinLeft(array('inactif' => 'appartenance'),
-		   'inactif.unite IN (unite.id, petitefille.id)'."\n".
-		   ' OR '.
-		   ("(unite_type.virtuelle".
-		    " AND ".
+		     array())
+	  ->joinLeft(array('inactif' => 'appartenance'),
+		     'inactif.unite IN (unite.id, petitefille.id)'."\n".
+		     ' OR '.
+		     ("(unite_type.virtuelle".
+		      " AND ".
 		    " inactif.unite = unite.parent)").
-		   ' AND inactif.fin IS NOT NULL',
-		   array());
-      $date = ($annee+1).'-06-01';
-      $select->where("(actif.debut < ? AND (actif.fin IS NULL OR ?<= actif.fin))".
-		     " OR inactif.id IS NULL", $date);
+		     ' AND inactif.fin IS NOT NULL',
+		     array());
+	$date = ($annee+1).'-06-01';
+	$select->where("(actif.debut < ? AND (actif.fin IS NULL OR ?<= actif.fin))".
+		       " OR inactif.id IS NULL", $date);
+      }
+      $su = $t->fetchAll($select);
+      $c->save($su, $id);
     }
+    else
+      error_log('CACHE de sous unités');
 
-    return $t->fetchAll($select);
+    return $su;
   }
 
   function findSoeursVirtuelles()
