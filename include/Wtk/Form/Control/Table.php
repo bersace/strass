@@ -2,8 +2,7 @@
 
 class Wtk_Form_Control_Table extends Wtk_Form_Control implements Wtk_Container_Interface
 {
-	protected	$model;
-	protected	$table;
+  public	$table;
 
 	function __construct ($instance, $model)
 	{

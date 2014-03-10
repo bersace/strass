@@ -2,9 +2,9 @@
 
 class Wtk_Form_Model_Instance_String extends Wtk_Form_Model_Instance
 {
-  function __construct ($path, $label, $value = '')
+  function __construct ($path, $label, $value = '', $readonly = false)
   {
-    parent::__construct ($path, $label, $value);
+    parent::__construct ($path, $label, $value, $readonly);
   }
 
   function retrieve ($value)

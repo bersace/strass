@@ -58,11 +58,13 @@ class Wtk_Form_Fieldset extends Wtk_Container {
 		if ($args) {
 		  /* Tenter de résoudre le chemin relativement au groupe */
 		  $path = $args[0];
-		  try {
-		    $instance = $model->getInstance($this->title . '/' . $path);
-		    $args[0] = $instance;
+		  if (is_string($path)) {
+		    try {
+		      $instance = $model->getInstance($this->title . '/' . $path);
+		      $args[0] = $instance;
+		    }
+		    catch (Exception $e) { }
 		  }
-		  catch (Exception $e) {}
 		}
 
 		$cb = array($form, $method);

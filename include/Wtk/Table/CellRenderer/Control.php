@@ -17,12 +17,23 @@ class Wtk_Table_CellRenderer_Control extends Wtk_Table_CellRenderer
 
 	function element($data)
 	{
-		$class = 'Wtk_Form_Control_'.$this->class;
-
 		$args = $this->args;
 		$i = $data['instance'];
-		$i->label = NULL;
-		array_unshift($args, $i);
+
+		$class = 'Wtk_Form_Control_'.$this->class;
+		if (@class_exists($class)) {
+		  $i->label = NULL;
+		  array_unshift($args, $i);
+		}
+		else {
+		  array_unshift($args, $i->value);
+		  $class = 'Wtk_'.$this->class;
+		}
+
+		if (!@class_exists($class))
+		  $class = $this->class;
+		if (!@class_exists($class))
+		  throw new Exception("Impossible de trouver le widget ".$this->class);
 
 		return wtk_new($class, $args);
 	}

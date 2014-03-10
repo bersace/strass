@@ -11,7 +11,7 @@ class Wtk_Form_Model_Instance_Group extends Wtk_Form_Model_Instance implements I
 	function setPath ($path)
 	{
 		parent::setPath ($path);
-		foreach ($this->value as $child) {
+		foreach ((array) $this->value as $child) {
 			$child->setPath ($this->path.'/'.$child->id);
 		}
 	}
