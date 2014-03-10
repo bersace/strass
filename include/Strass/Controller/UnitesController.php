@@ -35,6 +35,10 @@ class UnitesController extends Strass_Controller_Action
 			   array('controller' => 'unites', 'action' => 'editer', 'unite' => $u->slug),
 			   array(null, $u));
 
+    $this->actions->append("Paramètres",
+			   array('controller' => 'unites', 'action' => 'parametres', 'unite' => $u->slug),
+			   array(null, $u));
+
     if (!$u->isFermee())
       $this->actions->append("Fermer l'unité",
 			     array('action' => 'fermer'),
@@ -196,6 +200,47 @@ class UnitesController extends Strass_Controller_Action
       }
       catch(Exception $e) { $db->rollBack(); throw $e; }
 
+      $this->redirectSimple('index', 'unites', null, array('unite' => $u->slug));
+    }
+  }
+
+  function parametresAction()
+  {
+    static $blocs = array('unites' => 'Les unités',
+			  'photos' => 'Photos aléatoires',
+			  );
+
+    $this->view->unite = $u = $this->_helper->Unite();
+    $this->assert(null, $u, 'parametres',
+		  "Vous n'avez pas le droit de modifier cette unité");
+
+    $this->metas(array('DC.Title' => 'Paramètres '.$u->getFullname()));
+
+    $this->view->model = $m = new Wtk_Form_Model('parametres');
+    $config = new Strass_Config_Php($u->slug);
+    $t = $m->addTable('blocs', "Blocs de la page d'accueil",
+		      array('id' => array('String'),
+			    'nom' => array('String', 'Bloc', true),
+			    'enable' => array('Bool', 'Actif')),
+		      true, false);
+
+    foreach($config->blocs as $k => $v)
+      $r = $t->addRow($k, $blocs[$k], $config->get('blocs/'.$k, false));
+
+    /* nouveau blocs */
+    foreach($blocs as $k => $v)
+      if (!array_key_exists($k, $config->blocs->toArray()))
+	$r = $t->addRow($k, $v, false);
+
+    $m->addNewSubmission('enregistrer', "Enregistrer");
+
+    if ($m->validate()) {
+      $blocs = array();
+      foreach ($m->blocs as $row)
+	if ($row['enable'))
+	  array_push($blocs, $row['id']);
+      $config->blocs = $blocs;
+      $config->write();
       $this->redirectSimple('index', 'unites', null, array('unite' => $u->slug));
     }
   }
