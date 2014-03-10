@@ -14,7 +14,8 @@ class UnitesController extends Strass_Controller_Action
 
     $this->view->fiches = (bool) Zend_Registry::get('user');
     $config = new Strass_Config_Php($u->slug);
-    $this->view->blocs = $config->blocs->toArray();
+    $default = $u->isTerminale() ? array('photos') : array('unites');
+    $this->view->blocs = $config->get('blocs', $default);
 
     if (!$u->findParentTypesUnite()->virtuelle)
       $this->actions->append(array('label' => "Inscrire"),
@@ -249,6 +250,7 @@ class UnitesController extends Strass_Controller_Action
 	  array_push($blocs, $row['id']);
       $config->blocs = $blocs;
       $config->write();
+      $this->logger->info("Configuration de page d'accueil");
       $this->redirectSimple('index', 'unites', null, array('unite' => $u->slug));
     }
   }
