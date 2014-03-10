@@ -13,6 +13,8 @@ class UnitesController extends Strass_Controller_Action
     $this->metas(array('DC.Title' => $u->getFullname().' '.$a));
 
     $this->view->fiches = (bool) Zend_Registry::get('user');
+    $config = new Strass_Config_Php($u->slug);
+    $this->view->blocs = $config->blocs->toArray();
 
     if (!$u->findParentTypesUnite()->virtuelle)
       $this->actions->append(array('label' => "Inscrire"),
@@ -224,12 +226,18 @@ class UnitesController extends Strass_Controller_Action
 			    'enable' => array('Bool', 'Actif')),
 		      true, false);
 
-    foreach($config->blocs as $k => $v)
-      $r = $t->addRow($k, $blocs[$k], $config->get('blocs/'.$k, false));
+    $enabled = $config->blocs;
+    if ($enabled)
+      $enabled = $enabled->toArray();
+    else
+      $enabled = array();
+
+    foreach($enabled as $k)
+      $r = $t->addRow($k, $blocs[$k], true);
 
     /* nouveau blocs */
     foreach($blocs as $k => $v)
-      if (!array_key_exists($k, $config->blocs->toArray()))
+      if (!in_array($k, $enabled))
 	$r = $t->addRow($k, $v, false);
 
     $m->addNewSubmission('enregistrer', "Enregistrer");
@@ -237,7 +245,7 @@ class UnitesController extends Strass_Controller_Action
     if ($m->validate()) {
       $blocs = array();
       foreach ($m->blocs as $row)
-	if ($row['enable'))
+	if ($row['enable'])
 	  array_push($blocs, $row['id']);
       $config->blocs = $blocs;
       $config->write();

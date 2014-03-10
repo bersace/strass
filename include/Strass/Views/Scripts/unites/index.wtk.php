@@ -40,7 +40,6 @@ class Strass_Views_PagesRenderer_Unites_Accueil extends Strass_Views_PagesRender
     }
   }
 
-
   function render($annee, $data, $s)
   {
     extract($data);
@@ -59,7 +58,18 @@ class Strass_Views_PagesRenderer_Unites_Accueil extends Strass_Views_PagesRender
       }
     }
 
-    // Section les unités
+    foreach ($this->view->blocs as $bloc) {
+      $method = 'bloc'.$bloc;
+      if (!method_exists($this, $method))
+	throw new Exception("Impossible de générer le bloc ".$bloc);
+      call_user_func_array(array($this, $method), array($annee, $data, $s));
+    }
+  }
+
+  function blocUnites($annee, $data, $s)
+  {
+    extract($data);
+
     if (!$unite->isTerminale()) {
       $this->view->document->addStyleComponents('vignette');
       $ss = $s->addSection('unites', 'Les '.$unite->getSousTypeName(true));
@@ -73,8 +83,12 @@ class Strass_Views_PagesRenderer_Unites_Accueil extends Strass_Views_PagesRender
 	  ->addInline("Pas d'unités actives !");
       }
     }
+  }
 
-    // Photos
+  function blocPhotos($annee, $data, $s)
+  {
+    extract($data);
+
     $this->view->document->addStyleComponents('vignette');
     $ss = $s->addSection('photos',
 			 $this->view->lien(array('controller' => 'photos',
