@@ -1,0 +1,15 @@
+#!/usr/bin/python
+
+import csv
+import pprint
+
+data = []
+with open('sql-profile.csv') as csvfile:
+    reader = csv.reader(csvfile, delimiter=",", quotechar='"')
+    for row in reader:
+        seconds, sql = row
+        data.append(("%f" % float(seconds), sql))
+
+data.sort(lambda a, b: cmp(a[0], b[0]))
+
+pprint.pprint(data)

@@ -8,10 +8,12 @@ class Strass_Db extends Zend_Db {
 
 
     $db = Zend_Db::factory('Pdo_SQLite', array ('dbname' => $dbname));
+    @$db->getProfiler()->setEnabled(strpos($_SERVER['QUERY_STRING'], 'PROFILE') !== false);
+
     Zend_Db_Table_Abstract::setDefaultAdapter($db);
     Zend_Registry::set('db', $db);
     try {
-      $cache = Zend_Registry::get('cache_manager');
+      $cache = Zend_Registry::get('cache');
     }
     catch (Exception $e) {
       $cache = Zend_Cache::factory('Core', 'File',

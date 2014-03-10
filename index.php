@@ -88,3 +88,15 @@ catch (Exception $e) {
   error_log(strtok($e->getMessage(), "\n"));
   Orror::kill(strip_tags($msg));
 }
+
+if (@strpos($_SERVER['QUERY_STRING'], 'PROFILE') !== false) {
+  $db = Zend_Registry::get('db');
+  $profiler = $db->getProfiler();
+  $fd = fopen('sql-profile.csv', 'w');
+  foreach ($profiler->getQueryProfiles() as $query) {
+    $sql = str_replace("\n", " ", $query->getQuery());
+    $time = $query->getElapsedSecs();
+    fputcsv($fd, array($time, $sql));
+  }
+  fclose($fd);
+}

@@ -33,7 +33,10 @@ setup:
 	pip install libsass
 
 serve: all
-	php -S localhost:8000 devel.php
+	php -S localhost:8000 \
+	-d xdebug.profiler_output_dir=$$(pwd) \
+	-d xdebug.profiler_enable_trigger=1 \
+	devel.php
 
 # Restaure les données uniquement. Pour tester la migration.
 restore:
