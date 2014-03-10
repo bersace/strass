@@ -42,11 +42,18 @@ migrate :
 	fois la migration valider, utiliser la commande upgrade pour
 	mettre à jour le site en production.
 
-upgrade :
+
+mirror :
 
 	Met à jour le site distant à partir de la copie
 	locale. Attention, les données distantes qui n'ont pas été
 	sauvegardées sont perdues !
+
+
+upgrade :
+
+	Met à jour le code d'un site distant à partir de la copie
+	locale.
 
 
 setmaint, unsetmaint :

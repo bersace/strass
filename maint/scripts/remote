@@ -161,7 +161,6 @@ class FTPEntry(object):
 
             # listage distant
             lines = []
-            self.log.info('ITER')
             self.client.retrlines('LIST -a %s' % self.path, lines.append)
             self._remoteexists = len(lines) > 0
             for line in lines:
@@ -244,7 +243,6 @@ class FTPEntry(object):
                     self._type = self.TYPE_FILE
             else:
                 lines = []
-                self.log.info('TYPE')
                 self.client.retrlines('LIST -a %s' % self.path, lines.append)
                 if not lines:
                     self._remoteexists = False
@@ -259,7 +257,6 @@ class FTPEntry(object):
         if self._remoteexists is None:
             if self.type_ is self.TYPE_FILE:
                 lines = []
-                self.log.info('REMOTEEXISTS')
                 self.client.retrlines('LIST -a %s' % self.path, lines.append)
                 self._remoteexists = len(lines) > 0
             elif self.type_ is self.TYPE_DIR:
@@ -599,8 +596,26 @@ class backup1(object):
 
 @command
 class upgrade(object):
-    """Met à jour un site strass v2 depuis le dossier courant."""
+    """Met à jour le code d'un site strass v2 depuis le dossier courant."""
     log = logging.getLogger('strass.upgrade')
+
+
+    def __init__(self, parser):
+        pass
+
+
+    def __call__(self, args, config):
+        ftp = FTPManager(config)
+        self.log.info("Préparation de la mise à jour")
+        ftp.mirror('index.php', 'include/Strass/', 'include/Wtk/', 'data/styles/', 'data/scripts/wtk/')
+        self.log.info("Démarrage de la mise à jour")
+        ftp.run()
+
+
+@command
+class mirror(object):
+    """Envoie une mise-à-jour complète du site."""
+    log = logging.getLogger('strass.mirror')
 
 
     def __init__(self, parser):

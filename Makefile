@@ -96,4 +96,10 @@ upgrade:
 	$(REMOTE) $@
 	make unsetmaint
 
-.PHONY: all doc clean setup serve restore restore1 test setmaint unsetmaint backup1 migrate upgrade config
+mirror:
+	make setmaint
+	$(REMOTE) $@
+	make unsetmaint
+
+.PHONY: all doc clean setup serve restore restore1 test
+.PHONY: config setmaint unsetmaint backup1 migrate mirror upgrade
