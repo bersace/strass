@@ -11,6 +11,7 @@ class Strass_Pages_Model_AccueilUnite extends Strass_Pages_Model_Historique
 		 'texte' => $w ? file_get_contents($w) : '',
 		 'sousunites' => $unites,
 		 'photos' => $u->findPhotosAleatoires($annee),
+		 'activites' => $u->findActivitesMarquantes($annee),
 		 );
   }
 }

@@ -563,6 +563,26 @@ class Unite extends Strass_Db_Table_Row_Abstract implements Zend_Acl_Resource_In
     return $t->fetchAll($select);
   }
 
+  function findActivitesMarquantes($annee, $count = 4)
+  {
+    $t = new Activites;
+    $db = $t->getAdapter();
+    $select = $t->select()
+      ->setIntegrityCheck(false)
+      ->distinct()
+      ->from('activite')
+      ->join('participation', 'participation.activite = activite.id', array())
+      ->where('participation.unite = ?', $this->id)
+      ->where("strftime('%Y', activite.debut, '-8 months') = ?", strval($annee))
+      ->join('photo', 'photo.activite = participation.activite', array('photos' => 'COUNT(photo.id)'))
+      ->group('activite.id')
+      ->having('photos > 4')
+      ->order('photos', 'activite.debut')
+      ->limit($count);
+
+    return $t->fetchAll($select);
+  }
+
   function getDerniereAnnee()
   {
     $u = $this->type == 'hp' ? $this->findParentUnites() : $this;

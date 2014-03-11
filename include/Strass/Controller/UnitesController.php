@@ -211,6 +211,7 @@ class UnitesController extends Strass_Controller_Action
   {
     static $blocs = array('unites' => 'Les unités',
 			  'photos' => 'Photos aléatoires',
+			  'activites' => 'Activités marquantes',
 			  );
 
     $this->view->unite = $u = $this->_helper->Unite();

@@ -109,6 +109,36 @@ class Strass_Views_PagesRenderer_Unites_Accueil extends Strass_Views_PagesRender
 	->addInline("Pas de photos d'activités ".$annee." !");
     }
   }
+
+  function blocActivites($annee, $data, $s)
+  {
+    extract($data);
+
+    $this->view->document->addStyleComponents('vignette');
+    $ss = $s->addSection('activites',
+			 $this->view->lien(array('controller' => 'activites',
+						 'action' => 'calendrier',
+						 'unite' => $unite->slug,
+						 'annee' => $annee),
+					   'Activités marquantes', true));
+    if ($activites->count()) {
+      $l = $ss->addList();
+      $l->addFlags('vignettes', 'activites');
+      foreach($activites as $activite) {
+	$i = $l->addItem($this->view->vignettePhoto($activite->getPhotoAleatoire(),
+						    $activite->getIntituleCourt(),
+						    array('action'		=> 'consulter',
+							  'controller'	=> 'photos',
+							  'album'	=> $activite->slug),
+						    true));
+	$i->addFlags('vignette');
+      }
+    }
+    else {
+      $ss->addParagraph()->addFlags('empty')
+	->addInline("Pas d'activités ".$annee." !");
+    }
+  }
 }
 
 $this->document->addPages(null, $this->model,
