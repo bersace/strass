@@ -12,51 +12,62 @@ VALUES
 ('ga', 'a pris son', 'flot rouge', 12, 'f', 16);
 
 INSERT INTO unite_type
-(slug, nom, parent, virtuelle, ordre, sexe, age_min, age_max)
+(slug, nom, parent, virtuelle, sexe, age_min, age_max)
 VALUES
-('groupe',		'groupe',		NULL,	0, 0,  'm', 30, 130),
-('clan',		'clan',			NULL,	0, 1,  'h', 17, 50),
-('eqclan',		'équipe',		2,	0, 1,  'h', 16, 30),
-('feu',			'feu',			NULL,	0, 1,  'f', 17, 30),
-('eqfeu',		'équipe',		4,	0, 1,  'f', 16, 30),
-('troupe',		'troupe',		1,	0, 2,  'h', 18, 30),
-('hp',			'haute-patrouille',	6,	1, 3,  NULL, NULL, NULL),
-('patrouille',		'patrouille',		6,	0, 4,  'h', 11, 17),
-('compagnie',		'compagnie',		1,	0, 2,  'f', 18, 30),
-('hpc',			'haute-patrouille',	9,	1, 3,  NULL, NULL, NULL),
-('patguide',		'patrouille',		9,	0, 4,  'f', 11, 17),
-('meute',		'meute',		1,	0, 5,  'm', 17, 30),
-('sizloup',		'sizaine',		12,	0, 6,  'h', 7, 12),
-('clairiere',		'clairière',		1,	0, 5,  'f', 17, 30),
-('sizlouvette',		'sizaine',		14,	0, 6,  'f', 7, 12);
+('groupe',		'Groupe',		NULL,	0,  'm', 30, 130),
+('clan',		'Clan',			NULL,	0,  'h', 17, 50),
+('eqclan',		'Équipe',		2,	0,  'h', 16, 30),
+('feu',			'Feu',			NULL,	0,  'f', 17, 30),
+('eqfeu',		'Équipe',		4,	0,  'f', 16, 30),
+('troupe',		'Troupe',		1,	0,  'h', 18, 30),
+('hp',			'Haute-Patrouille',	6,	1,  NULL, NULL, NULL),
+('patrouille',		'Patrouille',		6,	0,  'h', 11, 17),
+('compagnie',		'Compagnie',		1,	0,  'f', 18, 30),
+('hpc',			'Haute-Patrouille',	9,	1,  NULL, NULL, NULL),
+('patguide',		'Patrouille',		9,	0,  'f', 11, 17),
+('meute',		'Meute',		1,	0,  'm', 17, 30),
+('sizloup',		'Sizaine',		12,	0,  'h', 7, 12),
+('clairiere',		'Clairière',		1,	0,  'f', 17, 30),
+('sizlouvette',		'Sizaine',		14,	0,  'f', 7, 12);
+
+UPDATE unite_type SET accr_we = 'WEG', nom_we = 'Weekend de groupe' WHERE slug = 'groupe';
+UPDATE unite_type SET accr_we = 'WEC', nom_we = 'Weekend de clan', nom_camp = 'Route' WHERE slug = 'clan';
+UPDATE unite_type SET accr_we = 'WEF', nom_we = 'Weekend de feu' WHERE slug = 'feu';
+UPDATE unite_type SET accr_we = 'WEE', nom_we = 'Weekend d''équipe' WHERE slug IN ('eqclan', 'eqfeu');
+UPDATE unite_type SET accr_we = 'WET', nom_we = 'Weekend de troupe' WHERE slug = 'troupe';
+UPDATE unite_type SET accr_we = 'WECie', nom_we = 'Weekend de compagnie' WHERE slug = 'compagnie';
+UPDATE unite_type SET accr_we = 'WEHP', nom_we = 'Weekend HP', nom_camp = 'Camp HP' WHERE slug IN ('hp', 'hpc');
+UPDATE unite_type SET accr_we = 'WEP', nom_we = 'Weekend de patrouille' WHERE slug = 'patrouille';
+UPDATE unite_type SET nom_sortie = 'Chasse', nom_we = 'Grand chasse', nom_camp = 'Grande chasse'
+WHERE slug IN ('meute', 'clairiere');
 
 INSERT INTO unite_role
 (slug, titre, accr, type, acl_role, ordre)
 VALUES
-('cg',		'chef de groupe',		'CG',	1,	'chef',		0),	-- 1
-('acg',		'assistant chef de groupe',	'ACG',	1,	'assistant',	1),
-('cc',		'chef de clan',			'CC',	2,	'chef',		10),
-('acc',		'assistant chef de clan',	'CCA',	2,	'assistant',	11),
+('cg',		'Chef de groupe',		'CG',	1,	'chef',		0),	-- 1
+('acg',		'Assistant chef de groupe',	'ACG',	1,	'assistant',	1),
+('cc',		'Chef de clan',			'CC',	2,	'chef',		10),
+('acc',		'Assistant chef de clan',	'CCA',	2,	'assistant',	11),
 ('cer',		'Chef d''équipe',		'ACC',	3,	'chef',		11),
-('equipier',	'routier',			'SR',	3,	'assistant',	12),
-('cf',		'cheftaine de feu',		'CF',	3,	'chef',		10),
+('equipier',	'Routier',			'SR',	3,	'assistant',	12),
+('cf',		'Cheftaine de feu',		'CF',	3,	'chef',		10),
 ('acf',		'Assistante cheftaine de feu',	'ACF',	4,	'chef',		11),
 ('cef',		'Cheftaine d''équipe',		'CE',	5,	'chef',		11),
-('equipiere',	'guide-aînée',			'GA',	5,	'assistant',	12),
-('ct',		'chef de troupe',		'CT',	6,	'chef',		20),
-('act',		'assistant chef de troupe',	'ACT',	6,	'assistant',	21),
-('cp',		'chef de patrouille',		'CP',	8,	'chef',		40),	-- 15
-('sp',		'second de patrouille',		'SP',	8,	'assistant',	41),
+('equipiere',	'Guide-aînée',			'GA',	5,	'assistant',	12),
+('ct',		'Chef de troupe',		'CT',	6,	'chef',		20),
+('act',		'Assistant chef de troupe',	'ACT',	6,	'assistant',	21),
+('cp',		'Chef de patrouille',		'CP',	8,	'chef',		40),	-- 15
+('sp',		'Second de patrouille',		'SP',	8,	'assistant',	41),
 ('3e-patrouille','3e',				NULL,	8,	'membre',	42),
 ('4e-patrouille','4e',				NULL,	8,	'membre',	43),
 ('5e-patrouille','5e',				NULL,	8,	'membre',	44),
 ('6e-patrouille','6e',				NULL,	8,	'membre',	45),	-- 20
 ('7e-patrouille','7e',				NULL,	8,	'membre',	46),
 ('8e-patrouille','8e',				NULL,	8,	'membre',	46),
-('ccie',	'cheftaine de compagnie',	'CCie',	9,	'chef',		20),
-('accie',	'assistante cheftaine de compagnie','ACCie',9,	'chef',		21),
-('ce',		'cheftaine d''équipe',		'CE',	11,	'chef',		40),	-- 25
-('se',		'seconde d''équipe',		'SE',	11,	'assistant',	41),
+('ccie',	'Cheftaine de compagnie',	'CCie',	9,	'chef',		20),
+('accie',	'Assistante cheftaine de compagnie','ACCie',9,	'chef',		21),
+('ce',		'Cheftaine d''équipe',		'CE',	11,	'chef',		40),	-- 25
+('se',		'Seconde d''équipe',		'SE',	11,	'assistant',	41),
 ('3e-equipe',	'3e',				NULL,	11,	'membre',	42),
 ('4e-equipe',	'4e',				NULL,	11,	'membre',	43),
 ('5e-equipe',	'5e',				NULL,	11,	'membre',	44),
@@ -65,33 +76,57 @@ VALUES
 ('8e-equipe',	'8e',				NULL,	11,	'membre',	47),
 ('akela',	'Akéla',			NULL,	12, 	'chef',		30),
 ('acm',		'Assistant d''Akéla',		'ACM',	12,	'chef',		31),
-('sizainier-louveteau','sizainier',		NULL,	13,	'membre',	50),	-- 35
-('second-louveteau','second',			NULL,	13,	'membre',	51),
+('sizainier-louveteau','Sizainier',		NULL,	13,	'membre',	50),	-- 35
+('second-louveteau','Second',			NULL,	13,	'membre',	51),
 ('3e-louveteau','3e',				NULL,	13,	'membre',	52),
 ('4e-louveteau','4e',				NULL,	13,	'membre',	53),
 ('5e-louveteau','5e',				NULL,	13,	'membre',	54),
 ('6e-louveteau','6e',				NULL,	13,	'membre',	55),	-- 40
 ('akelaf',	'Akéla',			NULL,	14,	'chef',		30),
-('accl',	'assistante d''Akéla',		NULL,	14,	'chef',		31),
-('sizainiere-louvette','sizainière',		NULL,	15,	'membre',	50),
-('seconde-louvette','seconde',			NULL,	15,	'membre',	51),
+('accl',	'Assistante d''Akéla',		NULL,	14,	'chef',		31),
+('sizainiere-louvette','Sizainière',		NULL,	15,	'membre',	50),
+('seconde-louvette','Seconde',			NULL,	15,	'membre',	51),
 ('3e-louvette','3e',				NULL,	15,	'membre',	52),	-- 45
 ('4e-louvette','4e',				NULL,	15,	'membre',	53),
 ('5e-louvette','5e',				NULL,	15,	'membre',	54),
 ('6e-louvette','6e',				NULL,	15,	'membre',	55);
 
+UPDATE unite_role SET ordre = 0 WHERE slug = 'cg';
+UPDATE unite_role SET ordre = 1 WHERE slug = 'acg';
+UPDATE unite_role SET ordre = 10 WHERE slug IN ('cc', 'cf');
+UPDATE unite_role SET ordre = 11 WHERE slug IN ('acc', 'acf', 'cer', 'cef');
+UPDATE unite_role SET ordre = 12 WHERE slug IN ('routier', 'equipier', 'ga', 'equipiere');
+UPDATE unite_role SET ordre = 20 WHERE slug IN ('ct', 'ccie');
+UPDATE unite_role SET ordre = 21 WHERE slug IN ('act', 'accie');
+UPDATE unite_role SET ordre = 30 WHERE slug IN ('akela', 'akelaf');
+UPDATE unite_role SET ordre = 31 WHERE slug IN ('acm', 'accl');
+UPDATE unite_role SET ordre = 40 WHERE slug IN ('cp', 'ce');
+UPDATE unite_role SET ordre = 41 WHERE slug IN ('sp', 'se');
+UPDATE unite_role SET ordre = 42 WHERE slug IN ('3e-patrouille', '3e-equipe');
+UPDATE unite_role SET ordre = 43 WHERE slug IN ('4e-patrouille', '4e-equipe');
+UPDATE unite_role SET ordre = 44 WHERE slug IN ('5e-patrouille', '5e-equipe');
+UPDATE unite_role SET ordre = 45 WHERE slug IN ('6e-patrouille', '6e-equipe');
+UPDATE unite_role SET ordre = 46 WHERE slug IN ('7e-patrouille', '7e-equipe');
+UPDATE unite_role SET ordre = 47 WHERE slug IN ('8e-patrouille', '8e-equipe');
+UPDATE unite_role SET ordre = 50 WHERE slug IN ('sizainier-louveteau', 'sizainiere-louvette');
+UPDATE unite_role SET ordre = 51 WHERE slug IN ('second-louveteau', 'seconde-louvette');
+UPDATE unite_role SET ordre = 52 WHERE slug IN ('3e-louveteau', '3e-louvette');
+UPDATE unite_role SET ordre = 53 WHERE slug IN ('4e-louveteau', '4e-louvette');
+UPDATE unite_role SET ordre = 54 WHERE slug IN ('5e-louveteau', '5e-louvette');
+UPDATE unite_role SET ordre = 55 WHERE slug IN ('6e-louveteau', '6e-louvette');
+
 INSERT INTO unite_titre
 (slug, nom, role)
 VALUES
-('aumonier-g',	'aumônier',	2),
-('tresorier',	'trésorier',	2),
-('materialiste','matérialiste',	2),
-('secretaire',	'secrétaire',	2),
-('aumonier-c',	'aumônier',	4),	--  clan
-('aumonier-f',	'aumônier',	8),	--  feu
-('aumonier-t',	'aumônier',	14),	--  troupe
-('aumonier-ccie','aumônier',	24),	--  compagnie
-('aumonier-m',	'aumônier',	34),	--  meute
+('aumonier-g',	'Aumônier',	2),
+('tresorier',	'Trésorier',	2),
+('materialiste','Matérialiste',	2),
+('secretaire',	'Secrétaire',	2),
+('aumonier-c',	'Aumônier',	4),	--  clan
+('aumonier-f',	'Aumônier',	8),	--  feu
+('aumonier-t',	'Aumônier',	14),	--  troupe
+('aumonier-ccie','Aumônier',	24),	--  compagnie
+('aumonier-m',	'Aumônier',	34),	--  meute
 ('ahdeek',	'Ahdeek',	34),
 ('baloo',	'Baloo',	34),
 ('bagheera',	'Bagheera',	34),

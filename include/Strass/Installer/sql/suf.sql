@@ -136,15 +136,15 @@ UPDATE unite_role SET ordre = 55 WHERE slug IN ('6e-louveteau', '6e-jeannette');
 INSERT INTO unite_titre
 (slug, nom, role)
 VALUES
-('aumonier-g',	'aumônier',	2),
-('tresorier',	'trésorier',	2),
-('materialiste','matérialiste',	2),
-('secretaire',	'secrétaire',	2),
-('aumonier-c',	'aumônier',	4),	--  clan
-('aumonier-f',	'aumônier',	8),	--  feu
-('aumonier-t',	'aumônier',	14),	--  troupe
-('aumonier-ccie','aumônier',	24),	--  compagnie
-('aumonier-m',	'aumônier',	34),	--  meute
+('aumonier-g',	'Aumônier',	2),
+('tresorier',	'Trésorier',	2),
+('materialiste','Matérialiste',	2),
+('secretaire',	'Secrétaire',	2),
+('aumonier-c',	'Aumônier',	4),	--  clan
+('aumonier-f',	'Aumônier',	8),	--  feu
+('aumonier-t',	'Aumônier',	14),	--  troupe
+('aumonier-ccie','Aumônier',	24),	--  compagnie
+('aumonier-m',	'Aumônier',	34),	--  meute
 ('ahdeek',	'Ahdeek',	34),
 ('baloo',	'Baloo',	34),
 ('bagheera',	'Bagheera',	34),
