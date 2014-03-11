@@ -70,18 +70,17 @@ class Strass_Views_PagesRenderer_Unites_Accueil extends Strass_Views_PagesRender
   {
     extract($data);
 
-    if (!$unite->isTerminale()) {
-      $this->view->document->addStyleComponents('vignette');
-      $ss = $s->addSection('unites', 'Les '.$unite->getSousTypeName(true));
-      if ($sousunites) {
-	$l = $ss->addList();
-	$l->addFlags('vignettes', 'unites');
-	$this->renderUnites($l, $sousunites, $annee);
-      }
-      else {
-	$ss->addParagraph()->addFlags('empty')
-	  ->addInline("Pas d'unités actives !");
-      }
+    $this->view->document->addStyleComponents('vignette');
+    $ss = $s->addSection('unites', 'Les '.$unite->getSousTypeName(true));
+    $ss->addFlags('bloc');
+    if ($sousunites) {
+      $l = $ss->addList();
+      $l->addFlags('vignettes', 'unites');
+      $this->renderUnites($l, $sousunites, $annee);
+    }
+    else {
+      $ss->addParagraph()->addFlags('empty')
+	->addInline("Pas d'unités actives !");
     }
   }
 
@@ -96,6 +95,7 @@ class Strass_Views_PagesRenderer_Unites_Accueil extends Strass_Views_PagesRender
 						 'unite' => $unite->slug,
 						 'annee' => $annee),
 					   'Les photos', true));
+    $ss->addFlags('bloc');
     if ($photos->count()) {
       $l = $ss->addList();
       $l->addFlags('vignettes', 'photos');
@@ -121,6 +121,7 @@ class Strass_Views_PagesRenderer_Unites_Accueil extends Strass_Views_PagesRender
 						 'unite' => $unite->slug,
 						 'annee' => $annee),
 					   'Activités marquantes', true));
+    $ss->addFlags('bloc');
     if ($activites->count()) {
       $l = $ss->addList();
       $l->addFlags('vignettes', 'activites');
