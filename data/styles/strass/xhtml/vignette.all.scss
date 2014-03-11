@@ -4,8 +4,6 @@
 
 .vignettes
 {
-    display: flex;
-    flex-wrap: wrap;
     padding: 0;
     vertical-align: middle;
 
@@ -19,14 +17,13 @@
     }
 }
 
+$basesize: 210px;
+
 .vignettes.photos
 {
-     align-items: center;
-     justify-content: center;
-
      & > li
      {
-	 $size: 246px + 24px;
+	 $size: $basesize + 24px;
 	 width: $size;
 	 line-height: 100%;
     }
@@ -37,11 +34,12 @@
 .vignettes.albums,
 .vignettes.documents
 {
-    $size: 246px + 24px;
+    $size: $basesize + 24px;
     line-height: 100%;
 
     & > li
     {
+	vertical-align: top;
 	width: $size;
 	height: $size + 48px;
 	line-height: 1em;
@@ -105,7 +103,7 @@
     margin: 0;
     clear: both;
     border-radius: .25ex;
-    outline: 1px solid #615230;
+    border: 1px solid #615230;
     background: white;
     box-shadow: .25ex .25ex .75em rgba(40, 40, 40, .75);
     max-width: 90%;

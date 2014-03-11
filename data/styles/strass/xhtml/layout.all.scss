@@ -1,105 +1,103 @@
 /*-*- css -*-*/
 
-h1
+body
 {
-    padding: 1ex 0;
-    margin: 0;
-}
+    font-size: 9pt;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+    width: 85em;
+    margin: 1em auto;
+    padding: 0;
 
-
-#footer
-{
-    width: 100%;
-    clear: both;
-    display: block;
-}
-
-#footer p.copyright
-{
-    font-size: .9em;
-    text-align: center;
-    padding: 2em 0;
-}
-
-#footer .metas
-{
-    display: none;
-}
-
-@media screen {
-    body
-    {
-	font-size: 10pt;
-	width: 80em;
-	margin: 1em auto;
-	display: flex;
-	flex-direction: row;
-	flex-wrap: wrap;
-    }
-
-    body > div
+    & > div
     {
 	margin: 1ex 0;
     }
+}
 
-    .dialog {
-	position: relative;
+.dialog {
+    position: relative;
+}
+
+#header
+{
+    width: 100%;
+    height: 128px;
+    position: relative;
+    overflow: hidden;
+
+    & > .h
+    {
+	display: block;
+	text-align: center;
+	line-height: 128px;
+	margin: 0;
+	padding: 0;
     }
 
-    #header
+    #branche
     {
-	width: 100%;
-	height: 128px;
-	position: relative;
+	position: absolute;
+	bottom: 0;
+    }
+}
 
-	& > .h
-	{
-	    display: block;
-	    text-align: center;
-	    line-height: 128px;
-	    margin: 0;
-	    padding: 0;
+#contentwrapper
+{
+    float: left;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+    border-width: 1pt;
+    margin: 0;
+    width: 65em;
+
+    #document
+    {
+	padding: .9em;
+	padding-top: 5em;
+
+	#flash {
+	    margin: 1em auto 2em;
 	}
-
-	#branche
-	{
-	    position: absolute;
-	    bottom: 0;
-	}
     }
+}
 
-    #contentwrapper
+#aside
+{
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+    float: right;
+    width: 20em;
+    margin: 0;
+
+    #citation .paragraph {
+	margin-left: 1em;
+    }
+}
+
+#footer
+{
+    width: 65em;
+    clear: both;
+
+    p.copyright
     {
-	border-width: 1pt;
-	width: 64em;
-
-	#document
-	{
-	    padding: .9em;
-	    padding-top: 5em;
-	    margin: -1pt;
-
-	    #flash {
-		margin: 1em auto 2em;
-	    }
-	}
+	font-size: .9em;
+	text-align: center;
+	padding: 2em 0;
     }
 
-    #aside
+    .metas
     {
-	width: 15em;
+	display: none;
     }
 
-    #footer
-    {
-	width: 65em;
-    }
-
-    #footer .logo
+    .logo
     {
 	display: none;
     }
 }
+
 
 @media print {
     body, #document, #content
@@ -166,12 +164,6 @@ h1
 	margin-left: 4pt;
     }
 
-    #content h1
-    {
-	margin: 0;
-    }
-
-    #webaddons,
     #footer .copyright,
     #footer .metas *,
     #branche

@@ -5,7 +5,6 @@
 body
 {
   font-family: "Deja Vu Sans",sans-serif;
-  font-size: 10pt;
   color: black;
   }
 
@@ -170,17 +169,17 @@ ul.adminlinks {
 
     #document
     {
-	border-radius: inherit;
 	position: relative;
 	overflow: hidden;
 
 	& > h1 {
-	    font-size: 150%;
 	    position: absolute;
 	    top: 0;
 	    left: 0;
-	    border-radius: 0 0 2em 0;
+	    font-size: 150%;
+	    border-radius: .5ex 0 2em 0;
 	    padding: 1ex 5em 1ex 1em;
+	    margin: 0;
 	    background: $highlight_color;
 	    color: $content_background;
 
@@ -563,52 +562,53 @@ ul.adminlinks {
     /* Historique */
     #historique.pagelinks
     {
-	display: flex;
-	flex-direction: row;
-	flex-wrap: wrap;
-	justify-content: left;
-	align-items: stretch;
-    }
+	background: lighten($alt_background, 10%);
+	border-radius: 1ex;
+	padding: 1ex;
+	margin: 3em;
 
-    #historique.pagelinks .h
-    {
-	width: 100%;
-	font-size: 1.75ex;
-    }
+	.h
+	{
+	    width: 100%;
+	    font-size: 1.75ex;
+	    margin-top: 0;
+	}
 
-    #historique.pagelinks div.section
-    {
-	width: 29%;
-	margin: 0 2%;
-    }
+	div.section
+	{
+	    display: inline-block;
+	    vertical-align: top;
+	    width: 18em;
+	    margin: 1ex 2em;
 
-    #historique.pagelinks div.section .h
-    {
-	margin-bottom: .5ex;
-    }
+	    .h {
+		margin-bottom: .5ex;
+	    }
+	}
 
-    #historique.pagelinks ul
-    {
-	display: flex;
-	flex-direction: row;
-	flex-wrap: wrap;
-	margin: 0;
-	padding: 0;
-    }
+	ul
+	{
+	    display: block;
+	    margin: 0;
+	    padding: 0;
 
-    #historique.pagelinks li
-    {
-	display: inline-block;
-	margin: .5ex;
-    }
+	    li {
+		display: inline-block;
+		margin: .5ex;
+	    }
+	}
 
-    #historique.pagelinks .selectionnee a
-    {
-	font-weight: bold;
-	text-decoration: none;
-	color: black;
-    }
+	a {
+	    color: inherit !important;
+	}
 
+	.selectionnee a
+	{
+	    font-weight: bold;
+	    text-decoration: none;
+	    color: black;
+	}
+    }
 
     .empty
     {
