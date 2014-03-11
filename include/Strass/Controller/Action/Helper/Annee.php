@@ -11,6 +11,9 @@ class Strass_Controller_Action_Helper_Annee extends Zend_Controller_Action_Helpe
 
 	function setBranche($annee)
 	{
+	  if (!$annee)
+	    return;
+
 	  $this->_actionController->branche->append($annee, array('annee' => $annee));
 	  return $annee;
 	}
