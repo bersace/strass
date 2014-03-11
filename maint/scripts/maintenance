@@ -19,7 +19,8 @@ $loader->registerNamespace('Strass_');
 $config = new Strass_Config_Php('strass');
 
 $document = new Wtk_Document(new Wtk_Metas(array('DC.Title' => 'Maintenance')));
-$document->setStyle(new Wtk_Document_Style($config->system->style));
+$style = $config->get('system/style', 'strass');
+$document->setStyle(new Wtk_Document_Style($style));
 $document->addStyleComponents('layout', 'minilayout', 'common');
 $mouvement = $config->get('system/mouvement', null);
 $document->addFlags($mouvement);
