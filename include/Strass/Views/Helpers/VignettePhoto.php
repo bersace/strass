@@ -23,7 +23,7 @@ class Strass_View_Helper_VignettePhoto
 			      $urlOptions);
 
     $this->view->document->addStyleComponents('vignette');
-    $label = $label ? $label : ucfirst($photo->titre);
+    $label = $label ? $label : wtk_ucfirst($photo->titre);
     $page = Zend_Registry::get('page');
     $item = new Wtk_Container;
     $item->addSection()
@@ -32,7 +32,9 @@ class Strass_View_Helper_VignettePhoto
 		 $photo->titre.' '.$page->metas->get('DC.Subject'),
 		 $photo->titre);
     $item->addParagraph($label);
-    return new Wtk_Link($this->view->url($urlOptions, true, true).'#document',
-			$label, $item);
+    $link = new Wtk_Link($this->view->url($urlOptions, true, true).'#document',
+			 $label, $item);
+    $link->addFlags('vignette', 'photo');
+    return $link;
   }
 }

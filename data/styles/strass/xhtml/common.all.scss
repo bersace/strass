@@ -160,13 +160,18 @@ ul.adminlinks {
 	}
     }
 
-    #document
+    #contentwrapper
     {
-	position: relative;
 	background-color: $content_background;
 	border-style: solid;
 	border-color: $highlight_color;
 	border-radius: 1ex;
+    }
+
+    #document
+    {
+	border-radius: inherit;
+	position: relative;
 	overflow: hidden;
 
 	& > h1 {
@@ -604,7 +609,7 @@ ul.adminlinks {
     }
 
 
-    #document .empty
+    .empty
     {
 	text-align: center;
 	height: 16em;

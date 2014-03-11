@@ -1,5 +1,7 @@
 /*-*- css -*-*/
 
+@import 'common';
+
 .vignettes
 {
     display: flex;
@@ -68,9 +70,10 @@
     padding: 1ex;
 
     &.empty {
-	line-height: 90%;
+	height: 90%;
+	width: 90%;
 	vertical-align: middle;
-	color: #888;
+	color: $disabled;
     }
 }
 
@@ -96,7 +99,8 @@
     text-decoration: none;
 }
 
-.vignette img
+.vignette.photo img,
+.vignette.document img
 {
     margin: 0;
     clear: both;

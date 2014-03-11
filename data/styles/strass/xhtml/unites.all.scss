@@ -8,8 +8,8 @@
     float: left;
     clear: both;
     box-sizing: border-box;
-    width: 63%;
-    min-height: 320px;
+    width: 62%;
+    min-height: 290px;
     margin: 0 2em 2em 0;
     padding: 0 1ex;
     font-size: 120%;
@@ -30,13 +30,17 @@
 
 #document.unites.index
 {
-    .bloc .vignettes {
+    #presentation + .bloc .vignettes {
 	display: block;
-	text-align: left;
+	min-height: 100%;
 
 	li {
-	    display: inline-block;
+	    float: left;
 	}
+    }
+
+    #presentation + .bloc + .bloc .h {
+	clear: both;
     }
 }
 

@@ -2,44 +2,6 @@
 
 class Strass_Views_PagesRenderer_Unites_Accueil extends Strass_Views_PagesRenderer_Historique
 {
-  function renderUnites($list, $unites, $annee) {
-    foreach ($unites as $unite) {
-      $label = $unite->getName();
-
-      $src = $unite->getImage();
-      if ($src) {
-	$image = new Wtk_Image($src, "Photo d'unité", $label);
-      }
-      else {
-	$photo = $unite->findPhotoAleatoire();
-	if (!$photo)
-	  $photo = $unite->findParentUnites()->findPhotoAleatoire();
-	if ($photo)
-	  $image = new Wtk_Image($photo->getCheminVignette(),
-				 $photo->titre.' '.$this->view->page->metas->get('DC.Subject'),
-				 $photo->titre);
-	else {
-	  $image = new Wtk_Paragraph("Pas d'image !");
-	  $image->addFlags('empty', 'image');
-	}
-      }
-
-      $url = $this->view->url(array('unite' => $unite->slug));
-      $type = $unite->findParentTypesUnite();
-      $w = new Wtk_Section;
-      $w->addFlags('wrapper')->addChild($image);
-      $link = new Wtk_Link($url, $label,
-			   new Wtk_Container($w, new Wtk_Paragraph($label)));
-      $link->addFlags($type->slug);
-      $item = $list->addItem($link);
-      $item->addFlags($type->slug);
-      if ($src)
-	$item->addFlags('unite');
-      else
-	$item->addFlags('vignette');
-    }
-  }
-
   function render($annee, $data, $s)
   {
     extract($data);
@@ -73,14 +35,17 @@ class Strass_Views_PagesRenderer_Unites_Accueil extends Strass_Views_PagesRender
     $this->view->document->addStyleComponents('vignette');
     $ss = $s->addSection('unites', 'Les '.$unite->getSousTypeName(true));
     $ss->addFlags('bloc');
-    if ($sousunites) {
+    if ($sousunites->count()) {
       $l = $ss->addList();
       $l->addFlags('vignettes', 'unites');
-      $this->renderUnites($l, $sousunites, $annee);
+      foreach ($sousunites as $unite) {
+	$item = $l->addItem($this->view->vignetteUnite($unite, $annee));
+	$item->addFlags('vignette');
+      }
     }
     else {
       $ss->addParagraph()->addFlags('empty')
-	->addInline("Pas d'unités actives !");
+	->addInline("Pas d'unités actives en ${annee} !");
     }
   }
 

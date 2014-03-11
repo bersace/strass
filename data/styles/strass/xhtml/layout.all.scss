@@ -68,15 +68,20 @@ h1
 	}
     }
 
-    #document
+    #contentwrapper
     {
-	width: 63em;
-	padding: .9em;
-	padding-top: 5em;
 	border-width: 1pt;
+	width: 64em;
 
-	#flash {
-	    margin: 1em auto 2em;
+	#document
+	{
+	    padding: .9em;
+	    padding-top: 5em;
+	    margin: -1pt;
+
+	    #flash {
+		margin: 1em auto 2em;
+	    }
 	}
     }
 

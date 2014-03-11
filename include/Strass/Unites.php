@@ -504,16 +504,16 @@ class Unite extends Strass_Db_Table_Row_Abstract implements Zend_Acl_Resource_In
     }
   }
 
-  function findPhotoAleatoire()
+  function findPhotoAleatoire($annee = NULL)
   {
-    // Une photos aléatoire d'une activité où l'unité à
-    // participé et où les autres unités sont des
-    // sous-unités
+    // Une photos aléatoire d'une activité où l'unité à participé et
+    // où les autres unités sont des sous-unités. Ex: une photo d'un
+    // WET et pas de la rentrée de groupe.
     $t = new Photos;
     $db = $t->getAdapter();
     $s = $t->select()
       ->setIntegrityCheck(false)
-      ->from('photo')
+      ->from('photo', array('photo.*', 'year' => "STRFTIME('%Y', photo.date)"))
       ->join('activite',
 	     'activite.id = photo.activite', array())
       ->join('participation',
@@ -530,8 +530,13 @@ class Unite extends Strass_Db_Table_Row_Abstract implements Zend_Acl_Resource_In
 		 "parent_participation.unite = unite.parent\n",
 		 array())
       ->where('parent_participation.unite IS NULL')
+      ->order('year DESC')
       ->order('RANDOM()')
       ->limit(1);
+
+    if ($annee)
+      $s->where("CAST(STRFTIME('%Y', photo.date) AS INTEGER) <= ?", $annee);
+
     return $t->fetchAll($s)->current();
   }
 
