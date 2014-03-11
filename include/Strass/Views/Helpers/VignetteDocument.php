@@ -23,7 +23,7 @@ class Strass_View_Helper_VignetteDocument
     $item = new Wtk_Link($document->getUri(), $label, $image);
 
     $item->addFlags('vignette', 'document', $document->suffixe)
-      ->addParagraph($label);
+      ->addParagraph($label)->addFlags('label');
 
     return $item;
   }

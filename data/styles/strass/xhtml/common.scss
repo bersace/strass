@@ -509,10 +509,11 @@ a {
 /* Historique */
 #historique.pagelinks
 {
+    clear: both;
     background: lighten($alt_background, 10%);
     border-radius: 1ex;
     padding: 1ex;
-    margin: 3em;
+    margin: 5em 3em 3em;
 
     .h
     {
@@ -525,7 +526,7 @@ a {
     {
 	display: inline-block;
 	vertical-align: top;
-	width: 18em;
+	width: 12em;
 	margin: 1ex 2em;
 
 	.h {
@@ -613,6 +614,11 @@ ul.adminlinks {
 	    @include adminlink;
 	}
     }
+}
+
+.signature {
+    text-align: right;
+    font-style: italic;
 }
 
 .pages.links

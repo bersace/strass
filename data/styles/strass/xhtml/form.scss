@@ -84,6 +84,12 @@ textarea
     padding: 1px;
 }
 
+.nocaption .input,
+.nocaption textarea
+{
+    width: 100%;
+}
+
 div.control.compound div.control
 {
     float: left;

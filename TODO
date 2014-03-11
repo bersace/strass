@@ -1,3 +1,4 @@
+FONCTIONS :
 
  * trie des individus par nom. Colonne individu.ordre.
 
@@ -14,31 +15,15 @@
 
  * Cohérence des dates d'activités. debut < fin.
 
- * Présenter une vue par année des informations. Une sorte de trombi
-   des années : chef, équipes, routes, photos ? page "archive",
-   "souvenir".
-
 
 BUGS :
-
- * Bandes jaunes pour les cheftaines de meute (à vérifier pour la
-   ronde aussi).  Akéla n'a pas sa bande jaune dans les effectifs de
-   la meute. Par contre, les assistantes les ont.
-
- * Bandes pour les groupes transversaux : HP, communauté d'ainés
-
- * Vérifier que les bandes de sizainier, sizainière, CE et seconds
-   s'affichent bien (mais pour le moment toutes ces unités sont
-   inactives)
-
- * En non-connecté, Joséphine apparait comme "Akéla bagheera"
 
  * Les NOTICE PHP sont affichés en prod…
 
 
 AUTRES :
 
- * Gérer le type date de SQLite dans l'adapter, pour n'avoir que des epoch
+ * Gérer le type date de SQLite dans l'adapter.
 
  * Passer à ZF 1.12 et dojo 1.9
 

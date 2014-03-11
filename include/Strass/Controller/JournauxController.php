@@ -11,7 +11,7 @@ class JournauxController extends Strass_Controller_Action
 
     $s = $j->selectArticles();
     $s->where('public IS NOT NULL');
-    $this->view->model = new Strass_Pages_Model_Rowset($s, 30, $this->_getParam('page'));
+    $this->view->model = new Strass_Pages_Model_Rowset($s, 10, $this->_getParam('page'));
 
     $this->actions->append("Écrire un article",
 			   array('action' => 'ecrire',

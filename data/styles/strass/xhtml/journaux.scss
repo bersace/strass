@@ -27,6 +27,22 @@
     {
 	clear: both;
     }
+
+    .suite {
+	display: none;
+    }
+}
+
+#document.index .article
+{
+    .h {
+	font-size: 140%;
+	margin-left: -1em;
+    }
+
+    & + .article {
+	border-top: 1pt dashed $highlight_color;
+    }
 }
 
 form .check

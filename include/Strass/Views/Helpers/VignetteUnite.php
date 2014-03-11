@@ -41,8 +41,11 @@ class Strass_View_Helper_VignetteUnite
     $type = $unite->findParentTypesUnite();
     $w = new Wtk_Section;
     $w->addFlags('wrapper')->addChild($image);
+    $plabel = new Wtk_Paragraph($label);
+    $plabel->addFlags('label');
+
     $link = new Wtk_Link($this->view->url($urlOptions), $label,
-			 new Wtk_Container($w, new Wtk_Paragraph($label)));
+			 new Wtk_Container($w, $plabel));
     $link->addFlags('vignette', $type->slug);
     if ($src)
 	$link->addFlags('unite');

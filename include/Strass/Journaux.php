@@ -188,9 +188,9 @@ class Article extends Strass_Db_Table_Row_Abstract implements Zend_Acl_Resource_
     return $this->findParentCommentaires()->date;
   }
 
-  function getBoulet()
+  function getBoulet($generate=false)
   {
-    return $this->boulet ? $this->boulet : wtk_first_words($this->article);
+    return $this->boulet ? $this->boulet : $generate ? wtk_first_words($this->article) : null;
   }
 
   function findAuteur()

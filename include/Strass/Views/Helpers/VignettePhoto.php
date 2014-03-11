@@ -31,7 +31,7 @@ class Strass_View_Helper_VignettePhoto
       ->addImage($photo->getCheminVignette(),
 		 $photo->titre.' '.$page->metas->get('DC.Subject'),
 		 $photo->titre);
-    $item->addParagraph($label);
+    $item->addParagraph($label)->addFlags('label');
     $link = new Wtk_Link($this->view->url($urlOptions, true, true).'#document',
 			 $label, $item);
     $link->addFlags('vignette', 'photo');

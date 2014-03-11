@@ -2,22 +2,26 @@
 
 @import 'common';
 
+$basesize: 210px;
+
 .vignettes
 {
     padding: 0;
-    vertical-align: middle;
+    line-height: $basesize + 128px;
 
     & > li
     {
 	display: inline-block;
 	list-style: none;
-	display: inline-block;
+	vertical-align: top;
 	text-align: center;
 	margin: 1ex .5ex;
+
+	a, ul {
+	    line-height: 1em;
+	}
     }
 }
-
-$basesize: 210px;
 
 .vignettes.photos
 {
@@ -25,7 +29,6 @@ $basesize: 210px;
      {
 	 $size: $basesize + 24px;
 	 width: $size;
-	 line-height: 100%;
     }
 }
 
@@ -35,14 +38,11 @@ $basesize: 210px;
 .vignettes.documents
 {
     $size: $basesize + 24px;
-    line-height: 100%;
 
     & > li
     {
-	vertical-align: top;
 	width: $size;
 	height: $size + 48px;
-	line-height: 1em;
 
 	.section.wrapper
 	{
@@ -57,61 +57,53 @@ $basesize: 210px;
     }
 }
 
-.photos .vignette .image,
-.unites .vignette .image
+.vignette
 {
-    max-width: 90%;
-    max-height: 90%;
-    width: auto;
-    height: auto;
-    width: auto;
-    padding: 1ex;
+    a {
+	color: black;
+	display: block;
+	text-decoration: none;
+    }
 
-    &.empty {
-	height: 90%;
-	width: 90%;
-	vertical-align: middle;
-	color: $disabled;
+    .image
+    {
+	max-width: 90%;
+	max-height: 90%;
+	width: auto;
+	height: auto;
+	padding: 1ex;
+
+	&.empty {
+	    height: 90%;
+	    width: 90%;
+	    vertical-align: middle;
+	    color: $disabled;
+	}
+    }
+
+
+    &.photo img,
+    &.document img
+    {
+	-moz-box-sizing: border-box;
+	box-sizing: border-box;
+	margin: 0;
+	clear: both;
+	border-radius: .5ex;
+	border: 1pt solid $highlight_color;
+	background: white;
+	box-shadow: .25ex .25ex .75em rgba(40, 40, 40, .75);
+    }
+
+    p.label {
+	text-align: center;
+	clear: both;
+	width: 100%;
+	height: 2em;
     }
 }
 
-.vignettes li p,
-.vignette p
-{
-    text-align: center;
-    clear: both;
-    width: 100%;
-    height: 2em;
-}
-
-.vignettes.photos .vignette p
+.vignettes.photos .vignette p.label
 {
     display: none;
-}
-
-.vignettes a,
-.vignette a
-{
-    color: black;
-    display: block;
-    text-decoration: none;
-}
-
-.vignette.photo img,
-.vignette.document img
-{
-    margin: 0;
-    clear: both;
-    border-radius: .25ex;
-    border: 1px solid #615230;
-    background: white;
-    box-shadow: .25ex .25ex .75em rgba(40, 40, 40, .75);
-    max-width: 90%;
-    width: auto;
-    height: auto;
-}
-
-.photos.vignette img
-{
-    max-height: 90%;
 }

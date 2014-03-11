@@ -4,9 +4,9 @@ class Strass_Pages_RendererInscription extends Wtk_Pages_Renderer_Form
 {
   protected $view;
 
-  function __construct($view, $model)
+  function __construct($view)
   {
-    parent::__construct($model);
+    parent::__construct();
     $this->view = $view;
   }
 
@@ -34,6 +34,4 @@ class Strass_Pages_RendererInscription extends Wtk_Pages_Renderer_Form
   }
 }
 
-$s = $this->document->addSection('inscription');
-$s->addPages(null, $this->model,
-	     new Strass_Pages_RendererInscription($this, $this->model->getFormModel()));
+$this->document->addPages(null, $this->model, new Strass_Pages_RendererInscription($this));

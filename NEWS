@@ -2,12 +2,9 @@ RÉGRESSIONS
 
  - Abandons des fonctionnalités : chaîne détaillée, envoie de chaîne,
    rapport d'activité, trombinoscope d'unité, liste des anciens, suivi
-   des formations, suivi de la progression, liste des unités fermées
-   et ouvertes.
+   des formations, suivi de la progression, liste des unités ouvertes.
 
  - Changement de la structure HTML. Les styles CSS sont cassés.
-
- - Fusion de la page Contacts dans la page Mentions légales
 
  - Abandon des formats tableur et texteur. De toute façon, ça ne
    fonctionnait pas :x.
@@ -15,25 +12,34 @@ RÉGRESSIONS
  - Seul le blog d'unité a gardé son RSS. Les autres RSS ont été
    abandonnés.
 
- - Les URL sont pétées, ça impacte notamment dans le log système.
+ - Les URL sont pétées, ça impacte notamment dans le log système. Les
+   vieux messages ont des liens mort.
 
- - Il faut renseigner son mot de passe pour changer d'adresse électronique.
+ - Il faut renseigner son mot de passe pour changer d'adresse
+   électronique.
 
- - On ne peut plus sudoer un non-membre
+ - On ne peut plus sudoer un non-membre.
+
+ - Abandon de la page contacts. Fusionnée avec Mentions légales.
+
 
 NOUVEAUTÉS UTILISATEUR
 
  - La page d'accueil est remplacée par la page d'accueil de l'unité
    racine. L'accès aux citations se fait en cliquant sur le titre «
-   Citation » de la barre latérale.
+   Citation » de la barre latérale. S'il y a plusieurs racines, elles
+   apparaissent dans le menu.
 
- - Rafraîchissement de l'interface : plus de liens et d'actions
+ - Le contenu de la page d'accueil d'unité est paramétrable : photos,
+   sous-unité, activités marquantes.
+
+ - Rafraîchissement de l'interface : davantage de liens et d'actions
    contextuelles, menus et formulaires plus simples et
    concrets. (Ergonomie de nazi®, less is more, distractive free,
-   lol).
+   lol, etc.).
 
  - Les homonymes sont acceptés : individus, unités, activités, photos,
-   documents, etc.
+   documents, etc. Attention !
 
  - Possibilité de réinitialiser son mot de passe sans passer par
    l'admin :-)
@@ -45,16 +51,16 @@ NOUVEAUTÉS UTILISATEUR
    été aménagée pour index, effectifs, calendrier et photos des
    unités.
 
- - Les photos sont affichés par unités et par années comme les
-   effectifs et le calendrier.
+ - Les photos sont affichées par unités et par années comme les
+   effectifs et le calendrier. On peut renvoyer une photo (ex:
+   rotation, meilleur qualité, etc.).
 
  - Aperçu des documents. Édition des documents : changement d'unité,
    renvoi du document, renommage.
 
  - Les pages d'erreurs ont maintenant tout les menus et la console
-   utilisateur. La trace d'exception est masquée par défaut.
+   utilisateur. La trace d'exception est masquée.
 
- - Fusion des pages contacts et mentions légales.
 
 CHANGEMENTS WEBMESTRE
 
@@ -64,8 +70,8 @@ CHANGEMENTS WEBMESTRE
    opérations dessus, et de sauvegarder les données dans git. Voir
    make help pour ça.
 
- - Un assistant d'installation est proposé permettant d'initialiser la
-   base et de créer le premier compte.
+ - Un assistant d'installation permet d'initialiser la base selon le
+   mouvement scout et de créer le premier compte administrateur.
 
  - Les admins peuvent éditer et supprimer les citations.
 
@@ -91,13 +97,15 @@ CHANGEMENTS WEBMESTRE
  - Utilisation de SCSS pour générer le CSS des thèmes.
 
  - Versionnage des données et migration du modèle SQL et des
-   données. Attention, certaines migrations peuvent n'être réalisée
+   données. Attention, certaines migrations peuvent n'être réalisées
    que offline.
 
  - Le nombre de dossiers a été réduit. Un dossier private/ contient
    les données à ne pas publier par le serveur HTTP. data/ contient
    les données à publier (style, scripts, images, documents,
    etc.). include/ reste. Également, les dossiers de data/ ont été
-   étalé en largeur plutôt que multiplier les dossiers fils unique.
+   étalé en largeur plutôt que multiplier les dossiers fils
+   unique. Cela optimise un peu l'accès FTP et le cerveau du
+   développeur.
 
  - Gros nettoyage des dépendances. De 35Mo à 13Mo !

@@ -137,8 +137,6 @@ class PhotosController extends Strass_Controller_Action
 		       'DC.Subject' => 'photo',
 		       'DC.Date.created' => $photo->date));
 
-    $this->connexes->append("Revenir à l'album",
-			    array('action' => 'consulter', 'photo' => null, 'album' => $a->slug));
     $this->actions->append("Éditer",
 			   array('action' => 'editer'),
 			   array(null, $photo));
@@ -196,9 +194,6 @@ class PhotosController extends Strass_Controller_Action
 		       'DC.Subject' => 'photo',
 		       'DC.Date.created' => $p->date));
     $annee = $this->_helper->Annee(false);
-
-    $this->connexes->append("Revenir à l'album",
-			   array('action' => 'consulter', 'photo' => null, 'album' => $a->slug));
 
     $this->assert(null, $p, 'editer',
 		  "Vous n'avez pas le droit de editer cette photo.");

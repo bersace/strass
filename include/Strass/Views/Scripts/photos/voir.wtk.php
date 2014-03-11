@@ -29,7 +29,7 @@ if ($this->commentaires->count() || $this->com_model) {
   $s = $this->document->addSection('commentaires', "Commentaires");
   if ($m = $this->com_model) {
     $f = $s->addForm($this->com_model);
-    $f->addEntry('message', 38, 4);
+    $f->addEntry('message', 38, 4)->useLabel(false);
     $f->addForm_ButtonBox()->addForm_Submit($m->getSubmission('commenter'));
   }
 
