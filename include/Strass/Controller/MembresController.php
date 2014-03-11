@@ -484,26 +484,6 @@ class MembresController extends Strass_Controller_Action implements Zend_Acl_Res
     }
   }
 
-  function listerAction()
-  {
-    $ti = new Individus;
-    $this->assert(null, $this, 'lister',
-		  "Vous n'avez pas le droit de voir les individus de ce site");
-    $s = $ti->select()
-      ->from('individus')
-      ->joinLeft('users',
-		 'users.username = individus.username',
-		 array())
-      ->where('users.username IS NOT NULL')
-      ->order('id');
-    $is = $ti->fetchAll($s);
-    $p = $this->_getParam('page');
-    $p = $p ? $p : 1;
-    $this->view->individus = new Wtk_Pages_Model_Iterator($is, 20, $p);
-    $this->view->fiches = (bool) Zend_Registry::get('user');
-    $this->branche->append('Membres');
-  }
-
   function sudoAction()
   {
     $cible = $this->_helper->Individu();
