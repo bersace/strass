@@ -33,7 +33,7 @@ class Strass_Addon_Menu extends Strass_Addon_Liens
       if (!$i)
 	continue; // On saute l'unité racine par défaut
 
-      $this->append($u->getName(), array('unite' => $u->slug), array(), true);
+      $this->append($u->getFullName(), array('unite' => $u->slug), array(), true);
     }
 
     return parent::initView($view);
