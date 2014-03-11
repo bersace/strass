@@ -15,11 +15,6 @@ h2, h3, h4, h5, h6
     color: $highlight_color;
 }
 
-a
-{
-    color: $highlight_color;
-}
-
 h1
 {
     font-size: 1.35em;
@@ -60,14 +55,19 @@ ul
     list-style-type: disc;
 }
 
-a:hover, a:visited
-{
-    color: #223300;
-}
-
-a:hover
-{
+a {
+    color: darken($highlight_color, 10%);
     text-decoration: none;
+
+    &:hover, &:visited
+    {
+	color: darken($highlight_color, 10%);
+    }
+
+    &:hover
+    {
+	text-decoration: underline;
+    }
 }
 
 #header
@@ -111,6 +111,7 @@ a:hover
     border-style: solid;
     border-color: $highlight_color;
     border-radius: 1ex;
+    min-height: 50em;
 }
 
 #document
@@ -275,7 +276,7 @@ a:hover
 		    line-height: 1.5em;
 
 		    &:hover {
-			text-shadow: 1pt 1pt 10pt rgba(50, 51, 48, .5);
+			text-shadow: 1pt 1pt 10pt rgba(50, 51, 48, .25);
 		    }
 		}
 	    }
