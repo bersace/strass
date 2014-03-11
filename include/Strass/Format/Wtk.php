@@ -27,14 +27,14 @@ abstract class Strass_Format_Wtk extends Strass_Format
     if ($view->unite)
       $unite = $view->unite;
     else {
-      $t = new Unites;
-      try {
-	$unite = $t->findRacine();
+	try {
+	  $t = new Unites;
+	  $unite = $t->findRacine();
+	}
+	catch (Exception $e) {
+	  $unite = null;
+	}
       }
-      catch (Strass_Db_Table_NotFound $e) {
-	$unite = null;
-      }
-    }
 
     if ($unite)
       $document->addFlags($unite->slug, $unite->findParentTypesUnite()->slug);
