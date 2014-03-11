@@ -869,9 +869,24 @@ class TypeUnite extends Strass_Db_Table_Row_Abstract
       if ($type == 'camp') {
 	$mois = substr($activite->debut, 5, 2);
 	switch($mois) {
-	case '03':
+	case '01':
+	case '02':
+	  $i.= " d'hiver";
+	  break;
 	case '04':
+	case '05':
 	  $i.= ' de Pâques';
+	  break;
+	case '07':
+	case '08':
+	  $i.= " d'été";
+	  break;
+	case '10':
+	case '11':
+	  $i.= " de Toussaint";
+	  break;
+	case '12':
+	  $i.= " de Noël";
 	  break;
 	}
       }
