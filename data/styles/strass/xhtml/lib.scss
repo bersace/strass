@@ -1,0 +1,41 @@
+/*-*- css -*-*/
+
+$highlight_color: #615230;
+$page_background: #D6C996;
+$content_background: #FAFBF8;
+$alt_background: #B8BFAE;
+$disabled: #888;
+$error: #550000;
+$error_bg: #D6968B;
+$info: #3F4C20;
+$info_bg: #A0BF6B;
+$warn: $error;
+$warn_bg: #EDDF9A;
+$critical: $error;
+$critical_bg: $error_bg;
+
+@mixin minipage {
+    /* style commun pour les pages avec peu de contenu, on utilise réduit
+       la largeur et on contre */
+
+    width: 60%;
+    margin: 1em auto;
+}
+
+@mixin message {
+    position: relative;
+    padding: 1ex;
+    margin: 2pt auto;
+    background-color: $alt_background;
+
+    p {
+	margin: 1ex;
+	line-height: 1.1em;
+    }
+
+    .auteur {
+	float: left;
+	margin: 1ex 1em 0 1ex;
+	font-weight: bold;
+    }
+}

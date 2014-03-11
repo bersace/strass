@@ -1,9 +1,8 @@
-/*-*- css -*-*/
+// -*- css -*-
 
-@import "common";
+@import "lib";
 
 .admin {
-
     &.parametres form,
     &.unites table,
     &.membres table,
@@ -111,7 +110,7 @@ table {
 #log
 {
     float: right;
-    width: 40em;
+    width: 35em;
     min-height: 32em;
     overflow: hidden;
 }

@@ -1,16 +1,20 @@
-/*-*- css -*-*/
+// -*- css -*-
 
-@import "common.scss";
+@import "common";
 
 @media screen {
+    #document form
+    {
+	@include minipage;
+    }
+
     #calendrier table
     {
 	width: 80%;
 	margin: 1em 10%;
     }
 
-    #calendrier > p,
-    #participants + p
+    #calendrier > p
     {
 	background-image: url("icones/attention.png");
 	background-position: top left;
@@ -20,16 +24,6 @@
 	padding: 0 0 0 36px;
 	min-height: 32px;
 	font-size: 1.1em;
-    }
-
-    #document form
-    {
-	@include minipage;
-    }
-
-    #document.activites.modifier form table
-    {
-	min-width: 80%;
     }
 }
 
@@ -57,7 +51,6 @@
     }
 
     #historique,
-    #content .section #participants,
     #infos .h,
     #chaine .h
     {
@@ -78,4 +71,5 @@
 	text-align: left;
 	font-size: 1.3em;
 	margin-left: 1em;
-    }}
+    }
+}

@@ -1,6 +1,6 @@
-/*-*- css -*-*/
+// -*- css -*-
 
-@import "common";
+@import "lib";
 
 @mixin formcommentaire {
 
@@ -20,10 +20,6 @@
     form  {
 	@include minipage;
 	@include formcommentaire;
-    }
-
-    .section.commentaire {
-	@include minipage;
     }
 }
 
