@@ -3,6 +3,14 @@
 $f = $this->document->addForm($this->model);
 
 $monotype = count($this->model->getInstance('type')) == 1;
+$monoparente = count($this->model->getInstance('parente')) == 1;
+
+if ($this->sousunite || $monoparente) {
+  $f->addHidden('parente');
+}
+else {
+  $f->addSelect('parente', true);
+}
 
 if ($monotype) {
   $f->addHidden('type');

@@ -25,7 +25,7 @@ class UnitesController extends Strass_Controller_Action
     $soustypename = $u->getSousTypeName();
     if (!$u->isTerminale() && $soustypename)
       $this->actions->append(array('label' => "Fonder une ".$soustypename),
-			     array('action' => 'fonder', 'parente' => $u->slug),
+			     array('action' => 'fonder', 'unite' => $u->slug),
 			     array(null, $u));
 
     $journal = $u->findJournaux()->current();
@@ -80,19 +80,34 @@ class UnitesController extends Strass_Controller_Action
     $this->assert(null, $unite, 'fonder',
 		  "Pas le droit de fonder une sous-unité !");
 
+    /* on crée une sous unité si le parent est explicitement désignée */
+    $this->view->sousunite = $sousunite = $this->_getParam('unite');
     $ttu = new TypesUnite;
     // sous types possibles
-    if ($unite)
+    if ($this->view->sousunite)
       $soustypes = $unite->getSousTypes();
     else
       $soustypes = $ttu->fetchAll($ttu->select()->where('virtuelle = 0'));
 
     $st = $soustypes->count() > 1 ? 'sous-unité' : $soustypes->rewind()->current();
-    if ($unite)
+    if ($sousunite)
       $this->metas(array('DC.Title' => 'Fonder une '.$st.' de '.$unite->getFullname()));
     else
       $this->metas(array('DC.Title' => 'Fonder une unité'));
 
+    $m = new Wtk_Form_Model('fonder');
+    /* Parente */
+    $i = $m->addEnum('parente', 'Unité parente');
+    if ($sousunite)
+      $i->set($unite->id);
+    else {
+      $t = new Unites;
+      $i->addItem(null, 'Orpheline');
+      foreach($t->findSuperUnites() as $u)
+	$i->addItem($u->id, $u->getFullname());
+    }
+
+    /* Types */
     $ens = array();
     $enum = array();
     foreach($soustypes as $type) {
@@ -111,7 +126,6 @@ class UnitesController extends Strass_Controller_Action
     $types = $enum;
 
 
-    $m = new Wtk_Form_Model('fonder');
     $m->addEnum('type', 'Type', key($enum), $enum);
 
     if (key($enum) == 'sizloup') {
@@ -143,7 +157,7 @@ class UnitesController extends Strass_Controller_Action
 	$u->nom = $m->nom;
 	$u->type = $m->type;
 	$u->extra = $m->extra;
-	$u->parent = $unite ? $unite->id : null;
+	$u->parent = $m->parente ? $m->parente : null;
 	$u->save();
 
 	$this->logger->info("Fondation de ".$u->getFullname(),

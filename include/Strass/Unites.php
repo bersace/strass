@@ -67,6 +67,18 @@ class Unites extends Strass_Db_Table_Abstract
     return $racines->current();
   }
 
+  function findSuperUnites()
+  {
+    $s = $this->select()
+      ->setIntegrityCheck(false)
+      ->distinct()
+      ->join('unite_type', 'unite_type.id = unite.id', array())
+      ->joinLeft(array('soustype' => 'unite_type'), 'soustype.parent = unite_type.id', array())
+      ->where('soustype.id IS NOT NULL');
+
+    return $this->fetchAll($s);
+  }
+
   function fetchAll($where = NULL, $order = NULL, $count = NULL, $offset = NULL)
   {
     $args = func_get_args();
