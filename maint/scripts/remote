@@ -607,7 +607,9 @@ class upgrade(object):
     def __call__(self, args, config):
         ftp = FTPManager(config)
         self.log.info("Préparation de la mise à jour")
-        ftp.mirror('index.php', 'include/Strass/', 'include/Wtk/', 'data/styles/', 'data/scripts/wtk/')
+        ftp.mirror('index.php',
+                   'include/Strass/', 'include/Wtk/', 'data/styles/', 'include/templates/',
+                   'data/scripts/wtk/')
         self.log.info("Démarrage de la mise à jour")
         ftp.run()
 
