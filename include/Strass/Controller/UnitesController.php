@@ -158,6 +158,15 @@ class UnitesController extends Strass_Controller_Action
     $this->view->model = $m;
   }
 
+  function archivesAction()
+  {
+    $this->view->unite = $u = $this->_helper->Unite();
+    $this->metas(array('DC.Title' => 'Archives'));
+    $this->branche->append();
+
+    $this->view->fermees = $u->findFermees();
+  }
+
   function editerAction()
   {
     $this->view->unite = $u = $this->_helper->Unite();

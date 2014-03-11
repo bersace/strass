@@ -88,6 +88,11 @@ class Strass_Controller_Action_Helper_Unite extends Zend_Controller_Action_Helpe
 		      array('controller' => 'documents',
 			    'action' => 'index'));
 
+    if (!$unite->isTerminale() && !$unite->findParentTypesUnite()->virtuelle)
+      $connexes->append("Archives",
+			array('controller' => 'unites',
+			      'action' => 'archives'));
+
     $journal = $unite->findJournaux()->current();
     if ($journal)
       $connexes->append($journal->__toString(),

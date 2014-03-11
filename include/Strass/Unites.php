@@ -21,14 +21,6 @@ class Unites extends Strass_Db_Table_Abstract
 						   'refTableClass' => 'TypesUnite',
 						   'refColumns' => 'id'));
 
-  function getFermees($where = null) {
-    return $this->_getStatut(false, $where);
-  }
-
-  function getOuvertes($where = null) {
-    return $this->_getStatut(true, $where);
-  }
-
   function getIdSousUnites($ids_parent, $annee = NULL) {
     // mettre à jour les participations
     $rows = $this->find($ids_parent);
@@ -95,38 +87,6 @@ class Unites extends Strass_Db_Table_Abstract
 	     'strass_unite_ordre.id = unite.type'."\n", array())
       ->order('strass_unite_ordre.ordre')
       ->order('strass_unite_ordre.id');
-  }
-
-  protected function _getStatut($ouverte, $where = null) {
-    $select = $this->select()->distinct();
-
-    if ($ouverte) {
-      // appartenances à l'unité parente. C'est
-      // incomplet car on pourrait avoir les
-      // effectifs des patrouilles sans la maîtrise
-      // (PL) et donc avoir une HP.
-      $select->join('appartenance',
-		    "appartenance.unite = unite.id".
-		    " OR ".
-		    ("((unite.type = 'hp' OR unite.type = 'aines')".
-		     " AND ".
-		     "appartenance.unite = unite.parent)"),
-		    array())
-	->where('fin IS NULL');
-    }
-    else {
-      $select->joinLeft('appartenance',
-			'appartenance.unite = unite.id'.
-			' AND '.
-			'appartenance.fin IS NULL', array());
-      $select->where("appartenance.unite IS NULL");
-      $select->where("unite.type <> 'hp' AND unite.type <> 'aines'");
-    }
-
-    if ($where)
-      $select->where($where);
-
-    return $this->fetchAll($select);
   }
 }
 
@@ -371,6 +331,25 @@ class Unite extends Strass_Db_Table_Row_Abstract implements Zend_Acl_Resource_In
     return $t->fetchAll($select);
   }
 
+  function findFermees()
+  {
+    $t = $this->getTable();
+    $db = $t->getAdapter();
+    $s = $t->select()
+      ->setIntegrityCheck(false)
+      ->distinct()
+      ->from('unite')
+      ->joinLeft(array('actif' => 'appartenance'),
+		 'actif.unite = unite.id AND actif.fin IS NULL', array())
+      ->where('actif.id IS NULL')
+      ->joinLeft(array('inactif' => 'appartenance'),
+		 'inactif.unite = unite.id AND inactif.fin IS NOT NULL', array())
+      ->where('inactif.id')
+      ->where('unite.parent = ?', $this->id);
+
+    return $t->fetchAll($s);
+  }
+
   /**
    * Retrouve les appartenances à l'unité en fonction de l'année en
    * tenant compte du type (ex: HP).
@@ -590,11 +569,13 @@ class Unite extends Strass_Db_Table_Row_Abstract implements Zend_Acl_Resource_In
 
   function getDerniereAnnee()
   {
-    $u = $this->type == 'hp' ? $this->findParentUnites() : $this;
-    $ta = new Appartenances;
-    $s = $ta->select()->order('fin IS NULL')->limit(1);
-    $app = $u->findAppartenances($s)->current();
-    return $app ? intval(strftime('%Y', strtotime($app->fin)) - 1) : null;
+    $t = new Appartenances;
+    $db = $t->getAdapter();
+    $s = $db->select()
+      ->distinct()
+      ->from('appartenance', array("MAX(STRFTIME('%Y', appartenance.fin))"))
+      ->where('appartenance.unite = ?', $this->id);
+    return $s->query()->fetchColumn();
   }
 
   function getProchainesParticipations($count = 1, $explicites = false)
