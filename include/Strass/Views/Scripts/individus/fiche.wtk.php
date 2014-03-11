@@ -73,7 +73,7 @@ if ($this->historique->count()) {
   $l = $s->addList();
   foreach($this->historique as $app) {
     $u = $app->findParentUnites();
-    $l->addItem(new Wtk_Container($this->lienUnite($u, wtk_ucfirst($app->getShortDescription()),
+    $l->addItem(new Wtk_Container($this->lienUnite($u, $app->getShortDescription(),
 						   array('annee' => $app->getAnnee())),
 				  " en ".strtok($app->debut, "-")."-".strtok($app->fin, "-")));
   }
