@@ -99,6 +99,51 @@ WHERE slug IN ('groupe', 'aines', 'clan', 'eqclan', 'feu', 'eqfeu', 'troupe', 'c
 
 EOS
 );
+    else: // FSE Tom Morel
+      $db->exec(<<<'EOS'
+-- LOL
+DELETE FROM unite_type WHERE slug IN ('aines', 'ronde', 'sizjeanette');
+
+-- Capitalisation
+UPDATE unite_type SET nom = 'Groupe' WHERE slug = 'groupe';
+UPDATE unite_type SET nom = 'Communauté des aînés' WHERE slug = 'aines';
+UPDATE unite_type SET nom = 'Clan' WHERE slug = 'clan';
+UPDATE unite_type SET nom = 'Équipe' WHERE slug IN ('eqclan', 'eqfeu', 'equipe');
+UPDATE unite_type SET nom = 'Feu' WHERE slug = 'feu';
+UPDATE unite_type SET nom = 'Troupe' WHERE slug = 'troupe';
+UPDATE unite_type SET nom = 'Haute-Patrouille' WHERE slug = 'hp';
+UPDATE unite_type SET nom = 'Patrouille' WHERE slug = 'patrouille';
+UPDATE unite_type SET nom = 'Compagnie' WHERE slug = 'compagnie';
+UPDATE unite_type SET nom = 'Meute' WHERE slug = 'meute';
+UPDATE unite_type SET nom = 'Sizaine' WHERE slug LIKE 'siz%';
+
+UPDATE unite_type SET accr_we = 'WEG', nom_we = 'Weekend de groupe' WHERE slug = 'groupe';
+UPDATE unite_type SET accr_we = 'WEC', nom_we = 'Weekend de clan', nom_camp = 'Route' WHERE slug = 'clan';
+UPDATE unite_type SET accr_we = 'WEF', nom_we = 'Weekend de feu' WHERE slug = 'feu';
+UPDATE unite_type SET accr_we = 'WEE', nom_we = 'Weekend d''équipe' WHERE slug IN ('eqclan', 'eqfeu');
+UPDATE unite_type SET accr_we = 'WET', nom_we = 'Weekend de troupe' WHERE slug = 'troupe';
+UPDATE unite_type SET accr_we = 'WECie', nom_we = 'Weekend de compagnie' WHERE slug = 'compagnie';
+UPDATE unite_type SET accr_we = 'WEHP', nom_we = 'Weekend HP', nom_camp = 'Camp HP' WHERE slug IN ('hp', 'hpc');
+UPDATE unite_type SET accr_we = 'WEP', nom_we = 'Weekend de patrouille'
+WHERE slug IN ('patrouille', 'patguide');
+UPDATE unite_type SET nom_sortie = 'Chasse', nom_we = 'Grand chasse', nom_camp = 'Grande chasse'
+WHERE slug IN ('meute', 'clairiere');
+
+UPDATE unite_type SET ordre = 0 WHERE slug = 'groupe';
+UPDATE unite_type SET ordre = 11 WHERE slug IN ('clan', 'feu');
+UPDATE unite_type SET ordre = 12 WHERE slug IN ('eqclan', 'eqfeu');
+UPDATE unite_type SET ordre = 20 WHERE slug IN ('troupe', 'compagnie');
+UPDATE unite_type SET ordre = 21 WHERE slug IN ('hp', 'hpc');
+UPDATE unite_type SET ordre = 22 WHERE slug IN ('patrouille', 'patguide');
+UPDATE unite_type SET ordre = 30 WHERE slug IN ('meute', 'clairiere');
+UPDATE unite_type SET ordre = 31 WHERE slug IN ('sizloup', 'sizlouvette');
+
+UPDATE unite_type SET extra = 'Cri de pat' WHERE slug IN ('hp', 'patrouille', 'hpc', 'patguide');
+UPDATE unite_type SET extra = 'Saint patron'
+WHERE slug IN ('groupe', 'clan', 'eqclan', 'feu', 'eqfeu', 'troupe', 'compagnie');
+
+EOS
+);
     endif;
 
     $db->exec(<<<'EOS'
@@ -160,9 +205,9 @@ EOS
 -- préparation des données pour migration
 
 UPDATE roles SET accr = 'CF' WHERE id = 'chef' AND type = 'feu';
-UPDATE roles SET titre = 'assistant chef de clan', accr = 'ACC' WHERE id = 'assistant' AND titre = 'routier';
-UPDATE roles SET titre = 'cheftaine de compagnie' WHERE accr = 'CCie';
-UPDATE roles SET titre = 'assistante cheftaine de compagnie' WHERE accr = 'ACCie';
+UPDATE roles SET titre = 'Assistant chef de clan', accr = 'ACC' WHERE id = 'assistant' AND titre = 'routier';
+UPDATE roles SET titre = 'Cheftaine de compagnie' WHERE accr = 'CCie';
+UPDATE roles SET titre = 'Assistante cheftaine de compagnie' WHERE accr = 'ACCie';
 UPDATE roles SET accr = 'ACR' WHERE id = 'assistant' AND type = 'ronde';
 UPDATE roles SET accr = 'GA' WHERE titre = 'guide-aînée';
 EOS
@@ -171,7 +216,7 @@ EOS
       $db->exec(<<<'EOS'
 -- préparation des données pour migration
 
-UPDATE roles SET titre = 'chef de clan adjoint', accr = 'CCA' WHERE id = 'assistant' AND type = 'clan';
+UPDATE roles SET titre = 'Chef de clan adjoint', accr = 'CCA' WHERE id = 'assistant' AND type = 'clan';
 EOS
 );
     endif;

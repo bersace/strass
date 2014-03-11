@@ -37,9 +37,23 @@ UPDATE unite_type SET accr_we = 'WEE', nom_we = 'Weekend d''équipe' WHERE slug 
 UPDATE unite_type SET accr_we = 'WET', nom_we = 'Weekend de troupe' WHERE slug = 'troupe';
 UPDATE unite_type SET accr_we = 'WECie', nom_we = 'Weekend de compagnie' WHERE slug = 'compagnie';
 UPDATE unite_type SET accr_we = 'WEHP', nom_we = 'Weekend HP', nom_camp = 'Camp HP' WHERE slug IN ('hp', 'hpc');
-UPDATE unite_type SET accr_we = 'WEP', nom_we = 'Weekend de patrouille' WHERE slug = 'patrouille';
+UPDATE unite_type SET accr_we = 'WEP', nom_we = 'Weekend de patrouille'
+WHERE slug IN ('patrouille', 'patguide');
 UPDATE unite_type SET nom_sortie = 'Chasse', nom_we = 'Grand chasse', nom_camp = 'Grande chasse'
 WHERE slug IN ('meute', 'clairiere');
+
+UPDATE unite_type SET ordre = 0 WHERE slug = 'groupe';
+UPDATE unite_type SET ordre = 11 WHERE slug IN ('clan', 'feu');
+UPDATE unite_type SET ordre = 12 WHERE slug IN ('eqclan', 'eqfeu');
+UPDATE unite_type SET ordre = 20 WHERE slug IN ('troupe', 'compagnie');
+UPDATE unite_type SET ordre = 21 WHERE slug IN ('hp', 'hpc');
+UPDATE unite_type SET ordre = 22 WHERE slug IN ('patrouille', 'patguide');
+UPDATE unite_type SET ordre = 30 WHERE slug IN ('meute', 'clairiere');
+UPDATE unite_type SET ordre = 31 WHERE slug IN ('sizloup', 'sizlouvette');
+
+UPDATE unite_type SET extra = 'Cri de pat' WHERE slug IN ('hp', 'patrouille', 'hpc', 'patguide');
+UPDATE unite_type SET extra = 'Saint patron'
+WHERE slug IN ('groupe', 'clan', 'eqclan', 'feu', 'eqfeu', 'troupe', 'compagnie');
 
 INSERT INTO unite_role
 (slug, titre, accr, type, acl_role, ordre)
@@ -47,12 +61,12 @@ VALUES
 ('cg',		'Chef de groupe',		'CG',	1,	'chef',		0),	-- 1
 ('acg',		'Assistant chef de groupe',	'ACG',	1,	'assistant',	1),
 ('cc',		'Chef de clan',			'CC',	2,	'chef',		10),
-('acc',		'Assistant chef de clan',	'CCA',	2,	'assistant',	11),
-('cer',		'Chef d''équipe',		'ACC',	3,	'chef',		11),
+('cca',		'Chef de clan adjoint',		'CCA',	2,	'assistant',	11),
+('acc',		'Chef d''équipe',		'ACC',	3,	'chef',		11),
 ('equipier',	'Routier',			'SR',	3,	'assistant',	12),
 ('cf',		'Cheftaine de feu',		'CF',	3,	'chef',		10),
-('acf',		'Assistante cheftaine de feu',	'ACF',	4,	'chef',		11),
-('cef',		'Cheftaine d''équipe',		'CE',	5,	'chef',		11),
+('cfa',		'Cheftaine de feu adjointe',	'CFA',	4,	'chef',		11),
+('acf',		'Cheftaine d''équipe',		'ACF',	5,	'chef',		11),
 ('equipiere',	'Guide-aînée',			'GA',	5,	'assistant',	12),
 ('ct',		'Chef de troupe',		'CT',	6,	'chef',		20),
 ('act',		'Assistant chef de troupe',	'ACT',	6,	'assistant',	21),
@@ -94,7 +108,7 @@ VALUES
 UPDATE unite_role SET ordre = 0 WHERE slug = 'cg';
 UPDATE unite_role SET ordre = 1 WHERE slug = 'acg';
 UPDATE unite_role SET ordre = 10 WHERE slug IN ('cc', 'cf');
-UPDATE unite_role SET ordre = 11 WHERE slug IN ('acc', 'acf', 'cer', 'cef');
+UPDATE unite_role SET ordre = 11 WHERE slug IN ('cca', 'cfa', 'acc', 'acf');
 UPDATE unite_role SET ordre = 12 WHERE slug IN ('routier', 'equipier', 'ga', 'equipiere');
 UPDATE unite_role SET ordre = 20 WHERE slug IN ('ct', 'ccie');
 UPDATE unite_role SET ordre = 21 WHERE slug IN ('act', 'accie');
