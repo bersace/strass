@@ -28,19 +28,15 @@
     }
 }
 
-#unites .vignettes {
-    display: block;
-}
-
-#unites .vignettes li {
-    display: block;
-    float: left;
-}
-
 #document.unites.index
 {
-    #photos {
-	clear: both;
+    .bloc .vignettes {
+	display: block;
+	text-align: left;
+
+	li {
+	    display: inline-block;
+	}
     }
 }
 
