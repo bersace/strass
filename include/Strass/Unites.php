@@ -365,8 +365,12 @@ class Unite extends Strass_Db_Table_Row_Abstract implements Zend_Acl_Resource_In
   /**
    * Retrouve les appartenances à l'unité en fonction de l'année en
    * tenant compte du type (ex: HP).
+   *
+   * $annee = null: actifs et anciens
+   * $annee = <nombre> : actifs durant l'année <nombre>
+   * $annee = false : uniquement les actifs.
    */
-  public function findAppartenances($annee = null, $recursive = false)
+  public function findAppartenances($annee = null, $recursion = 0)
   {
     $db = $this->getTable()->getAdapter();
 
@@ -389,11 +393,14 @@ class Unite extends Strass_Db_Table_Row_Abstract implements Zend_Acl_Resource_In
 		     "AND unite_role.acl_role IN ('chef', 'assistant')) OR ".
 		     'appartenance.unite = ?', $this->id);
     }
-    else if ($recursive) {
-      $select
-	->joinLeft(array('fille' => 'unite'), $db->quoteInto('fille.parent = ?', $this->id), array())
-	->joinLeft(array('petitefille' => 'unite'), 'petitefille.parent = fille.id', array())
-	->where('appartenance.unite IN (?, fille.id, petitefille.id)'."\n", $this->id);
+    else if ($recursion) {
+      $select->joinLeft(array('fille' => 'unite'), $db->quoteInto('fille.parent = ?', $this->id), array());
+      if ($recursion == 1)
+	$select->where('appartenance.unite IN (?, fille.id)'."\n", $this->id);
+      else if ($recursion >= 2)
+	$select
+	  ->joinLeft(array('petitefille' => 'unite'), 'petitefille.parent = fille.id', array())
+	  ->where('appartenance.unite IN (?, fille.id, petitefille.id)'."\n", $this->id);
     }
     else {
       $select->where('appartenance.unite = ?'."\n", $this->id);
