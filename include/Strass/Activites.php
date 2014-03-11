@@ -192,16 +192,6 @@ class Activite extends Strass_Db_Table_Row_Abstract implements Zend_Acl_Resource
     return $this->findPhotos($select)->current();
   }
 
-  function countPhotos()
-  {
-    $db = $this->getTable()->getAdapter();
-    $select = $db->select()
-      ->from('photos', 'COUNT(*)')
-      ->where($db->quoteInto('photos.activite = ?', $this->slug));
-    $stmt = $db->query($select);
-    return count($stmt->fetchAll());
-  }
-
   protected function _postUpdate()
   {
     @rename($this->getDossierPhoto($this->_cleanData['slug']),
