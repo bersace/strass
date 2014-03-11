@@ -1,6 +1,6 @@
 <?php
 
-class Scout_Pages_Renderer_Albums extends Strass_Views_PagesRenderer_Historique
+class Strass_Pages_Renderer_Albums extends Strass_Views_PagesRenderer_Historique
 {
   function render($annee = NULL, $data, $parent)
   {
@@ -26,4 +26,4 @@ class Scout_Pages_Renderer_Albums extends Strass_Views_PagesRenderer_Historique
 
 $this->document->addStyleComponents('vignette');
 
-$s = $this->document->addPages('albums', $this->model, new Scout_Pages_Renderer_Albums($this));
+$s = $this->document->addPages('albums', $this->model, new Strass_Pages_Renderer_Albums($this));
