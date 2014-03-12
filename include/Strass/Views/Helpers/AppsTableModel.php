@@ -63,7 +63,7 @@ class Strass_View_Helper_AppsTableModel
 		 $unite->getName(),
 		 $url_unite,
 		 $individu->getFullname(true, false),
-		 $role->slug,
+		 array($role->slug, wtk_strtoid($app->titre)),
 		 $app->getAccronyme(),
 		 $role->acl_role,
 		 $etape ? $etape->slug : null,
