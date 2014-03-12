@@ -90,16 +90,16 @@ VALUES
 ('8e-equipe',	'8e',				NULL,	11,	'membre',	47),
 ('akela',	'Akéla',			NULL,	12, 	'chef',		30),
 ('acm',		'Assistant d''Akéla',		'ACM',	12,	'chef',		31),
-('sizainier-louveteau','Sizainier',		NULL,	13,	'membre',	50),	-- 35
-('second-louveteau','Second',			NULL,	13,	'membre',	51),
+('sizainier',	'Sizainier',		NULL,	13,	'membre',	50),	-- 35
+('second',	'Second',			NULL,	13,	'membre',	51),
 ('3e-louveteau','3e',				NULL,	13,	'membre',	52),
 ('4e-louveteau','4e',				NULL,	13,	'membre',	53),
 ('5e-louveteau','5e',				NULL,	13,	'membre',	54),
 ('6e-louveteau','6e',				NULL,	13,	'membre',	55),	-- 40
 ('akelaf',	'Akéla',			NULL,	14,	'chef',		30),
 ('accl',	'Assistante d''Akéla',		NULL,	14,	'chef',		31),
-('sizainiere-louvette','Sizainière',		NULL,	15,	'membre',	50),
-('seconde-louvette','Seconde',			NULL,	15,	'membre',	51),
+('sizainiere',	'Sizainière',		NULL,	15,	'membre',	50),
+('seconde',	'Seconde',			NULL,	15,	'membre',	51),
 ('3e-louvette','3e',				NULL,	15,	'membre',	52),	-- 45
 ('4e-louvette','4e',				NULL,	15,	'membre',	53),
 ('5e-louvette','5e',				NULL,	15,	'membre',	54),
@@ -122,8 +122,8 @@ UPDATE unite_role SET ordre = 44 WHERE slug IN ('5e-patrouille', '5e-equipe');
 UPDATE unite_role SET ordre = 45 WHERE slug IN ('6e-patrouille', '6e-equipe');
 UPDATE unite_role SET ordre = 46 WHERE slug IN ('7e-patrouille', '7e-equipe');
 UPDATE unite_role SET ordre = 47 WHERE slug IN ('8e-patrouille', '8e-equipe');
-UPDATE unite_role SET ordre = 50 WHERE slug IN ('sizainier-louveteau', 'sizainiere-louvette');
-UPDATE unite_role SET ordre = 51 WHERE slug IN ('second-louveteau', 'seconde-louvette');
+UPDATE unite_role SET ordre = 50 WHERE slug IN ('sizainier', 'sizainiere');
+UPDATE unite_role SET ordre = 51 WHERE slug IN ('second', 'seconde');
 UPDATE unite_role SET ordre = 52 WHERE slug IN ('3e-louveteau', '3e-louvette');
 UPDATE unite_role SET ordre = 53 WHERE slug IN ('4e-louveteau', '4e-louvette');
 UPDATE unite_role SET ordre = 54 WHERE slug IN ('5e-louveteau', '5e-louvette');

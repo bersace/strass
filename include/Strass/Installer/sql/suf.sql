@@ -94,16 +94,16 @@ VALUES
 ('8e-equipe',	'8e',				NULL,	12,	'membre'),
 ('akela',	'Akéla',			NULL,	13, 	'chef'),
 ('acm',		'Assistante d''Akéla',		'ACM',	13,	'chef'),
-('sizainier-louveteau','sizainier',		NULL,	14,	'membre'),	-- 35
-('second-louveteau','second',			NULL,	14,	'membre'),
+('sizainier',	'sizainier',		NULL,	14,	'membre'),	-- 35
+('second',	'second',			NULL,	14,	'membre'),
 ('3e-louveteau','3e',				NULL,	14,	'membre'),
 ('4e-louveteau','4e',				NULL,	14,	'membre'),
 ('5e-louveteau','5e',				NULL,	14,	'membre'),
 ('6e-louveteau','6e',				NULL,	14,	'membre'),	-- 40
 ('guillemette',	'Guillemette',			NULL,	15,	'chef'),
 ('acr',		'assistante de Guillemette',	NULL,	15,	'chef'),
-('sizainiere-jeannette','sizainière',		NULL,	16,	'membre'),
-('seconde-jeannette','seconde',			NULL,	16,	'membre'),
+('sizainiere',	'sizainière',		NULL,	16,	'membre'),
+('seconde',	'seconde',			NULL,	16,	'membre'),
 ('3e-jeannette','3e',				NULL,	16,	'membre'),	-- 45
 ('4e-jeannette','4e',				NULL,	16,	'membre'),
 ('5e-jeannette','5e',				NULL,	16,	'membre'),
@@ -126,8 +126,8 @@ UPDATE unite_role SET ordre = 44 WHERE slug IN ('5e-patrouille', '5e-equipe');
 UPDATE unite_role SET ordre = 45 WHERE slug IN ('6e-patrouille', '6e-equipe');
 UPDATE unite_role SET ordre = 46 WHERE slug IN ('7e-patrouille', '7e-equipe');
 UPDATE unite_role SET ordre = 47 WHERE slug IN ('8e-patrouille', '8e-equipe');
-UPDATE unite_role SET ordre = 50 WHERE slug IN ('sizainier-louveteau', 'sizainiere-jeannette');
-UPDATE unite_role SET ordre = 51 WHERE slug IN ('second-louveteau', 'seconde-jeannette');
+UPDATE unite_role SET ordre = 50 WHERE slug IN ('sizainier', 'sizainiere');
+UPDATE unite_role SET ordre = 51 WHERE slug IN ('second', 'seconde');
 UPDATE unite_role SET ordre = 52 WHERE slug IN ('3e-louveteau', '3e-jeannette');
 UPDATE unite_role SET ordre = 53 WHERE slug IN ('4e-louveteau', '4e-jeannette');
 UPDATE unite_role SET ordre = 54 WHERE slug IN ('5e-louveteau', '5e-jeannette');
