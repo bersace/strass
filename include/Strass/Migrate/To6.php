@@ -249,8 +249,12 @@ VALUES
 
 UPDATE unite_role SET slug = 'akela' WHERE titre = 'Akéla';
 UPDATE unite_role SET slug = 'guillemette' WHERE titre = 'Guillemette';
-UPDATE unite_role SET slug = 'sizainier-louveteau' WHERE slug = 'sizloup';
-UPDATE unite_role SET slug = 'sizainiere-jeannette' WHERE slug = 'sizjeanette';
+UPDATE unite_role SET slug = 'sizainier' WHERE slug = 'sizainier-sizloup';
+UPDATE unite_role SET slug = 'sizainiere' WHERE slug = 'sizainière-sizjeannette';
+UPDATE unite_role SET slug = 'second' WHERE slug = 'second-sizloup';
+UPDATE unite_role SET slug = 'seconde' WHERE slug = 'seconde-sizjeannette';
+UPDATE unite_role SET slug = REPLACE(slug, 'sizloup', 'louveteau') WHERE slug LIKE '%sizloup';
+UPDATE unite_role SET slug = REPLACE(slug, 'sizjeannette', 'jeannette') WHERE slug LIKE '%sizjeannette';
 
 UPDATE unite_role SET ordre = 0 WHERE slug = 'cg';
 UPDATE unite_role SET ordre = 1 WHERE slug = 'acg';
@@ -269,8 +273,8 @@ UPDATE unite_role SET ordre = 44 WHERE slug IN ('5e-patrouille', '5e-equipe');
 UPDATE unite_role SET ordre = 45 WHERE slug IN ('6e-patrouille', '6e-equipe');
 UPDATE unite_role SET ordre = 46 WHERE slug IN ('7e-patrouille', '7e-equipe');
 UPDATE unite_role SET ordre = 47 WHERE slug IN ('8e-patrouille', '8e-equipe');
-UPDATE unite_role SET ordre = 50 WHERE slug IN ('sizainier-louveteau', 'sizainiere-jeannette');
-UPDATE unite_role SET ordre = 51 WHERE slug IN ('second-louveteau', 'seconde-jeannette');
+UPDATE unite_role SET ordre = 50 WHERE slug IN ('sizainier', 'sizainiere');
+UPDATE unite_role SET ordre = 51 WHERE slug IN ('second', 'seconde');
 UPDATE unite_role SET ordre = 52 WHERE slug IN ('3e-louveteau', '3e-jeannette');
 UPDATE unite_role SET ordre = 53 WHERE slug IN ('4e-louveteau', '4e-jeannette');
 UPDATE unite_role SET ordre = 54 WHERE slug IN ('5e-louveteau', '5e-jeannette');
