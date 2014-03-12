@@ -28,7 +28,7 @@ abstract class Strass_Views_PagesRenderer_Historique extends Wtk_Pages_Renderer
       switch($type->slug) {
       case 'groupe':
       case 'aines':
-	return $chef->nom;
+	return $chef->capitalizedLastname();
 	break;
       case 'meute':
       case 'ronde':
