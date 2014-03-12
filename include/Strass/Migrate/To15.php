@@ -22,6 +22,8 @@ class Strass_Migrate_To15 extends Strass_MigrateHandler {
     unset($system['sauvegarder']);
 
     $new->system = $system;
+    /* Plutôt que d'afficher un style pété, on se repli */
+    $new->system->style = 'strass';
     $new->write();
 
     Zend_Registry::set('config', $new);
