@@ -67,7 +67,8 @@ class Strass_Controller_Action_Helper_Unite extends Zend_Controller_Action_Helpe
     // CONNEXES
     $connexes = $this->_actionController->connexes;
     $connexes->titre = $this->_actionController->view->lien(array('controller' => 'unites',
-								  'action' => 'index'),
+								  'action' => 'index',
+								  'unite' => $unite->slug),
 							    $unite->getTypeName(), true);
 
     $connexes->append("Photos",
