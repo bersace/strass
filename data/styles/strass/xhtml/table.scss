@@ -4,7 +4,8 @@
 
 table
 {
-    border-spacing: 0;
+    border-collapse: separate;
+    border-spacing: 0 1pt;
 }
 
 thead th

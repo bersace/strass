@@ -116,11 +116,11 @@ td.numero
 	width: 100%;
     }
 
-    #effectifs > table.meute td.accr
-    {
-	width: auto;
+    table.effectifs td {
+	-moz-box-sizing: border-box;
+	box-sizing: border-box;
+	min-height: 28px;
     }
-
 
     /* barrettes */
     td.accr
@@ -129,68 +129,95 @@ td.numero
 	background-repeat: no-repeat;
     }
 
-    tr.aumonier td.accr
-    {
-	background-image: url("postes/aumonier.png");
+    tr.aumonier td.accr {
+	background-image: url("postes/aumonier.png") !important;
     }
 
-    tbody.groupe tr.chef td.accr
+    table.fse tr.aumonier td.accr,
+    table.europa tr.aumonier td.accr
     {
+	background-image: url("postes/aumonier-fse.png") !important;
+    }
+
+
+    tr.cg td.accr {
 	background-image: url("postes/cg.png");
     }
 
-    tbody.groupe tr.assistant td.accr
-    {
+    tr.acg td.accr {
 	background-image: url("postes/acg.png");
     }
 
-    tbody.clan tr.chef td.accr
+    tr.cc td.accr,
+    tr.cf td.accr
     {
 	background-image: url("postes/cc.png");
     }
 
-    tbody.troupe tr.chef td.accr,
-    tbody.compagnie tr.chef td.accr
+    tr.cca td.accr,
+    tr.cfa td.accr
+    {
+	background-image: url("postes/cca.png");
+    }
+
+    tr.acc td.accr,
+    tr.acf td.accr
+    {
+	background-image: url("postes/acc.png");
+    }
+
+    tr.cer td.accr,
+    tr.cef td.accr
+    {
+	background-image: url("postes/cer.png");
+    }
+
+    tr.ct td.accr,
+    tr.ccie td.accr
     {
 	background-image: url("postes/ct.png");
     }
 
-    tbody.troupe tr.assistant td.accr,
-    tbody.compagnie tr.assistant td.accr
+    tr.act td.accr,
+    tr.accie td.accr
     {
 	background-image: url("postes/act.png");
     }
 
-    tbody.patrouille tr.chef td.accr,
-    tbody.equipe tr.chef td.accr
+    tr.cp td.accr,
+    tr.ce td.accr
     {
 	background-image: url("postes/cp.png");
     }
 
-    tbody.patrouille > tr.assistant td.accr,
-    tbody.equipe > tr.assistant td.accr
+    tr.sp td.accr,
+    tr.se td.accr
     {
 	background-image: url("postes/sp.png");
     }
 
-    tbody.meute tr.chef td.accr,
-    tbody.ronde tr.chef td.accr
+    tr.akela td.accr,
+    tr.guillemette td.accr,
+    tr.akelaf td.accr
     {
 	background-image: url("postes/akela.png");
     }
 
-    tbody.meute tr.assistant td.accr,
-    tbody.ronde tr.assistant td.accr
+    tr.acm td.accr,
+    tr.acr td.accr,
+    tr.accl td.accr
     {
 	background-image: url("postes/bagheera.png");
     }
 
-    tbody.sizloup tr.siz td.accr
+    tr.sizainier td.accr,
+    tr.sizainiere td
     {
 	background-image: url("postes/siz.png");
     }
 
-    tbody.sizloup tr.sec td.accr
+    tr.second td.accr,
+    tr.seconde td.accr
     {
 	background-image: url("postes/sec.png");
     }
