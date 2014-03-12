@@ -53,7 +53,7 @@ class Strass_View_Helper_AppsTableModel
       }
 
       $url_unite =$this->view->url(array('controller' => 'unites',
-					 'action' => 'index',
+					 'action' => 'contacts',
 					 'unite' => $unite->slug), true);
       $etape = $individu->findParentEtapes();
 
