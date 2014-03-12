@@ -133,10 +133,11 @@ class Individu extends Strass_Db_Table_Row_Abstract implements Zend_Acl_Resource
     $noms = preg_split("`[ '-]`", $this->nom);
     $nom = array();
     foreach($noms as $n) {
+      $n = mb_strtolower($n);
       switch($n) {
       case "d":
       case "l":
-	$nom[]=$n."'";
+	$nom[] = $n."'";
       break;
       case 'de':
       case 'la':
@@ -148,9 +149,9 @@ class Individu extends Strass_Db_Table_Row_Abstract implements Zend_Acl_Resource
 	break;
       default:
 	if ($compact)
-	  $nom[] = $n{0}.'. ';
+	  $nom[] = mb_strtoupper($n{0}).'. ';
 	else
-	  $nom[] = $n.' ';
+	  $nom[] = mb_strtoupper($n).' ';
 	break;
       }
     }
