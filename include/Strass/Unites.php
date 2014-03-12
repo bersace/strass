@@ -379,19 +379,19 @@ class Unite extends Strass_Db_Table_Row_Abstract implements Zend_Acl_Resource_In
       ->setIntegrityCheck(false)
       ->distinct()
       ->from('appartenance')
-      ->join('unite_type', $db->quoteInto('unite_type.id = ?', $this->type), array())
-      ->joinLeft(array('soeur' => 'unite'),
-		 'unite_type.virtuelle AND '.
-		 $db->quoteInto('soeur.parent = ?', $this->parent ? $this->parent : null),
-		 array());
+      ->join('unite_type', $db->quoteInto('unite_type.id = ?', $this->type), array());
 
     $virtuelle = $this->findParentTypesUnite()->virtuelle;
     if ($virtuelle) {
-      $select->where('(unite_type.virtuelle AND '."\n".
-		     ('(appartenance.unite = soeur.id OR '.
-		      $db->quoteInto('appartenance.unite = ?', $this->parent ? $this->parent : null).')').
-		     "AND unite_role.acl_role IN ('chef', 'assistant')) OR ".
-		     'appartenance.unite = ?', $this->id);
+      $select
+	->joinLeft(array('soeur' => 'unite'),
+		   $db->quoteInto('soeur.parent = ?', $this->parent ? $this->parent : null),
+		   array())
+	->where('(unite_type.virtuelle AND '."\n".
+		('(appartenance.unite = soeur.id OR '.
+		 $db->quoteInto('appartenance.unite = ?', $this->parent ? $this->parent : null).')').
+		"AND unite_role.acl_role IN ('chef', 'assistant')) OR ".
+		'appartenance.unite = ?', $this->id);
     }
     else if ($recursion) {
       $select->joinLeft(array('fille' => 'unite'), $db->quoteInto('fille.parent = ?', $this->id), array());
@@ -408,7 +408,10 @@ class Unite extends Strass_Db_Table_Row_Abstract implements Zend_Acl_Resource_In
 
     $select
       ->join('individu', "individu.id = appartenance.individu", array())
-      ->join('unite_role', 'unite_role.id = appartenance.role'."\n", array())
+      ->join('unite_role', 'unite_role.id = appartenance.role', array())
+      ->join(array('app_unite' => 'unite'), 'app_unite.id = appartenance.unite', array())
+      ->join(array('app_type' => 'unite_type'), 'app_type.id = app_unite.type'."\n", array())
+      ->order('app_type.ordre')
       ->order('appartenance.unite')
       ->order('unite_role.ordre')
       ->order('appartenance.titre')
