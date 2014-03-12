@@ -14,7 +14,7 @@ class Individus extends Strass_Db_Table_Abstract
 						    'refTableClass'	=> 'Etapes',
 						    'refColumns'	=> 'id',
 						    'onUpdate'		=> self::CASCADE,
-						    'onDelete'		=> self::CASCADE),
+						    'onDelete'		=> self::SET_NULL),
 				   );
 
   function selectAll()
