@@ -42,11 +42,11 @@ body
 {
     -moz-box-sizing: border-box;
     box-sizing: border-box;
-    border-width: 1pt;
     margin: 0 auto;
 
     #document
     {
+	border-width: 1pt;
 	#flash {
 	    margin: 1em auto 2em;
 	}
@@ -60,9 +60,12 @@ body
 }
 
 @media screen {
+    $menuwidth: 18em;
+
     body {
-	width: 78em;
 	margin: 1em auto;
+	width: 90%;
+	max-width: 106em + $menuwidth;
 
 	& > div
 	{
@@ -76,12 +79,13 @@ body
 
     #contentwrapper
     {
-	float: left;
-	width: 60em;
+	float: right;
+	width: 100%;
 
 	#document {
 	    padding: .9em;
 	    padding-top: 5em;
+	    margin-right: $menuwidth;
 	}
     }
 
@@ -90,8 +94,9 @@ body
 	-moz-box-sizing: border-box;
 	box-sizing: border-box;
 	float: right;
-	width: 18em;
+	width: $menuwidth;
 	margin: 0;
+	margin-right: -100%;
 
 	#citation .paragraph {
 	    margin-left: 1em;

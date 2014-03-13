@@ -240,16 +240,12 @@ a {
 	}
     }
 
-    #contentwrapper
-    {
+    #document {
 	background-color: $content_background;
 	border-style: solid;
 	border-color: $highlight_color;
 	border-radius: 1ex;
 	min-height: 50em;
-    }
-
-    #document {
 	overflow: hidden;
 
 	& > h1 {
@@ -257,7 +253,7 @@ a {
 	    top: 0;
 	    left: 0;
 	    font-size: 150%;
-	    border-radius: .5ex 0 2em 0;
+	    border-radius: 0 0 2em 0;
 	    padding: 1ex 5em 1ex 1em;
 	    margin: 0;
 	    background: $highlight_color;

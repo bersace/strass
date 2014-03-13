@@ -9,11 +9,11 @@
     clear: both;
     -moz-box-sizing: border-box;
     box-sizing: border-box;
-    width: 60%;
+    width: 470px; /* à peu près deux largeur de vignette */
     min-height: 290px;
     margin: 0 2em 2em 0;
     padding: 0 1ex;
-    font-size: 120%;
+    font-size: 125%;
     text-align: left;
     background: lighten($alt_background, 10%);
     border-radius: 1ex;
