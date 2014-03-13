@@ -18,7 +18,7 @@
    version="1.0"
    sodipodi:docname="bandes.svg"
    inkscape:output_extension="org.inkscape.output.svg.inkscape"
-   inkscape:export-filename="/home/bersace/Projets/strass/data/styles/strass/xhtml/postes/sec.png"
+   inkscape:export-filename="/home/bersace/Projets/strass/data/styles/strass/xhtml/postes/cp.png"
    inkscape:export-xdpi="90"
    inkscape:export-ydpi="90">
   <defs
@@ -107,11 +107,11 @@
      borderopacity="1.0"
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
-     inkscape:zoom="8.6031325"
-     inkscape:cx="62.42273"
-     inkscape:cy="-8.4233053"
+     inkscape:zoom="12.166667"
+     inkscape:cx="32.063772"
+     inkscape:cy="-0.4749393"
      inkscape:document-units="px"
-     inkscape:current-layer="layer1"
+     inkscape:current-layer="layer2"
      width="24px"
      height="24px"
      borderlayer="false"
@@ -148,9 +148,9 @@
      inkscape:groupmode="layer"
      id="layer2"
      inkscape:label="Assistant"
-     style="display:inline">
+     style="display:none">
     <rect
-       transform="matrix(0.98329696,0,0,1.0896246,0.20043648,-28.925524)"
+       transform="matrix(0.98682947,0,0,0.91467486,0.15804638,1.0013208)"
        rx="0"
        ry="0"
        y="0.0017966871"
@@ -162,10 +162,10 @@
     <rect
        style="fill:#fafdff;fill-opacity:1;fill-rule:evenodd;stroke:none;display:inline"
        id="rect3970"
-       width="6"
-       height="26"
-       x="9"
-       y="-28.823128"
+       width="6.0215549"
+       height="21.825449"
+       x="8.9892225"
+       y="1.0872763"
        ry="0"
        rx="0" />
     <rect
@@ -183,7 +183,7 @@
        width="6"
        height="26"
        x="9"
-       y="-25"
+       y="-53.361763"
        ry="0"
        rx="0"
        transform="matrix(0,1,-1,0,0,0)" />
@@ -271,7 +271,7 @@
        y="0"
        xlink:href="#rect3968"
        id="use4055"
-       transform="translate(-7.9726027,-3.6415283e-7)"
+       transform="translate(-8.0012444,-6.4145111e-7)"
        width="24"
        height="24" />
     <use
@@ -280,7 +280,7 @@
        y="0"
        xlink:href="#rect3970"
        id="use4057"
-       transform="translate(-7.9726027,-3.6415283e-7)"
+       transform="translate(-8.0012444,-6.4145111e-7)"
        width="24"
        height="24" />
     <use
@@ -298,7 +298,7 @@
        y="0"
        xlink:href="#rect3968"
        id="use4061"
-       transform="translate(7.9726027,-3.6415283e-7)"
+       transform="translate(8.0012444,-6.4145111e-7)"
        width="24"
        height="24" />
     <use
@@ -307,7 +307,7 @@
        y="0"
        xlink:href="#rect3970"
        id="use4063"
-       transform="translate(7.9726027,-3.6415283e-7)"
+       transform="translate(8.0012444,-6.4145111e-7)"
        width="24"
        height="24" />
     <use
@@ -325,7 +325,7 @@
        width="6"
        height="26"
        x="1.0273976"
-       y="-25"
+       y="-53.361763"
        ry="0"
        rx="0"
        transform="matrix(0,1,-1,0,0,0)" />
@@ -335,7 +335,7 @@
        width="6"
        height="26"
        x="16.972603"
-       y="-25"
+       y="-53.361763"
        ry="0"
        rx="0"
        transform="matrix(0,1,-1,0,0,0)" />

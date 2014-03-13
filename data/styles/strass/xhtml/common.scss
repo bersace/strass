@@ -17,7 +17,7 @@ h2, h3, h4, h5, h6
 
 h1
 {
-    font-size: 1.35em;
+    font-size: 1.40em;
 }
 
 h2
@@ -89,51 +89,11 @@ a {
     {
 	background-image: url("mouvements/europa.png");
     }
-
-    & > .h
-    {
-	font-size: 3em;
-	font-family: serif;
-	text-shadow: 1pt 1pt 2pt rgba(250, 251, 248, .75),
-	1pt 1pt 4pt rgba(50, 51, 48, .75);
-
-	a
-	{
-	    color: inherit;
-	    text-decoration: inherit;
-	}
-    }
-}
-
-#contentwrapper
-{
-    background-color: $content_background;
-    border-style: solid;
-    border-color: $highlight_color;
-    border-radius: 1ex;
-    min-height: 50em;
 }
 
 #document
 {
     position: relative;
-    overflow: hidden;
-
-    & > h1 {
-	position: absolute;
-	top: 0;
-	left: 0;
-	font-size: 150%;
-	border-radius: .5ex 0 2em 0;
-	padding: 1ex 5em 1ex 1em;
-	margin: 0;
-	background: $highlight_color;
-	color: $content_background;
-
-	a {
-	    color: inherit !important;
-	}
-    }
 
     #flash {
 	font-size: 105%;
@@ -224,338 +184,9 @@ a {
     }
 }
 
-#aside
-{
-    padding-top: 2em;
-    padding-bottom: 4em;
-
-    .section
-    {
-	.h, a {
-	    font-size: 125%;
-	}
-
-	.h
-	{
-	    text-align: right;
-	    font-size: 1.2em;
-	    margin: 0;
-	    padding: 1ex;
-	    color: lighten($content_background, 10%);
-	    background: $highlight_color;
-
-	    a
-	    {
-		color: inherit;
-		text-decoration: inherit;
-		font-size: inherit;
-	    }
-	}
-
-	& > * + *
-	{
-	    margin-left: 1ex;
-	}
-
-	ul
-	{
-	    padding-left: 1ex;
-
-	    li
-	    {
-		list-style-type: none;
-		background-repeat: no-repeat;
-		background-position: left center;
-
-		a {
-		    display: inline-block;
-		    padding: .5ex 0 .5ex 2.5em;
-		    vertical-align: middle;
-		    width: 100%;
-		    height: 1.5em;
-		    line-height: 1.5em;
-
-		    &:hover {
-			text-shadow: 1pt 1pt 10pt rgba(50, 51, 48, .25);
-		    }
-		}
-	    }
-	}
-    }
-}
-
-/* BRANCHE */
-#branche
-{
-    font-size: 9pt !important;
-
-    /* branche a un traitement *très* spéciale, on réinitialise tout */
-    *
-    {
-	position: static !important;
-	top: 0 !important;
-	margin: 0 !important;
-	display: inline !important;
-	padding: 0 !important;
-	background: none !important;
-    }
-
-    .h
-    {
-	text-align: left;
-	font-size: inherit;
-	color: #483005 !important;
-    }
-
-    li + li:before
-    {
-	content: "/";
-	margin: 0 1ex;
-	color: $highlight_color;
-    }
-}
-
-
-#aside li.current a
-{
-    color: black;
-    text-decoration: none;
-    font-weight: bold;
-}
-
-/* CONSOLE */
-#console, #login {
-    & > .h
-    {
-	margin-bottom: 0;
-    }
-
-    div.section
-    {
-	margin: 0 0 0 1em;
-	padding: 0;
-
-	.h
-	{
-	    font-size: 1.05em;
-	    margin: 0;
-	    padding: 0;
-	}
-    }
-
-    form {
-	margin: 0;
-
-	.buttonbox {
-	    padding: 1ex;
-	    display: block;
-	}
-    }
-}
-
 #footer
 {
     color: $highlight_color;
-}
-
-/* ICÔNES */
-
-#menu li:first-child
-{
-    background-image: url("icones/accueil.png");
-}
-
-#aside li.unites,
-#aside li.membres
-{
-    background-image: url("icones/effectifs.png");
-}
-
-#connexes li.contacts
-{
-    background-image: url("icones/carnet.png");
-}
-
-#aside li.activites
-{
-    background-image: url("icones/activites.png");
-}
-
-#aside li.photos
-{
-    background-image: url("icones/photos.png");
-}
-
-#aside li.journaux
-{
-    background-image: url("icones/journaux.png");
-}
-
-#aside li.documents
-{
-    background-image: url("icones/documents.png");
-}
-
-#aside li.liens
-{
-    background-image: url("icones/liens.png");
-}
-
-#connexes li.rapports,
-#aside li.livredor
-{
-    background-image: url("icones/livredor.png");
-}
-
-#aside li.citation
-{
-    background-image: url("icones/citation.png");
-}
-
-#login li.inscription,
-#actions li.inscrire,
-#console li.inscriptions
-{
-    background-image: url("icones/inscription.png");
-}
-
-#console li.fiche,
-#actions li.fiche
-{
-    background-image: url("icones/individu.png");
-}
-
-#actions li.fermer
-{
-    background-image: url("icones/fermer.png");
-}
-
-#login li + li
-{
-    background-image: url("icones/verrou.png");
-}
-
-/* ADMIN */
-#admin li.configurer,
-#admin li.administrer,
-#aside li.admin
-{
-    background-image: url("icones/config.png");
-}
-
-#admin li.editer,
-#admin li.modifier,
-#admin li.reporter,
-#aside li.parametres
-{
-    background-image: url("icones/editer.png");
-}
-
-#admin li.annuler,
-#admin li.supprimer,
-#admin li.desinscrire
-{
-    background-image: url("icones/supprimer.png");
-}
-
-#connexes li.anciens,
-#connexes li.anciennes,
-#connexes li.archives,
-#admin li.historique
-{
-    background-image: url("icones/historique.png");
-}
-
-#aside li.prevoir
-{
-    background-image: url("icones/prevoir.png");
-}
-
-
-/* FORMATS */
-#formats li.rss,
-#formats li.atom
-{
-    background-image: url("icones/flux.png");
-}
-
-#formats li.vcf
-{
-    background-image: url("icones/carnet.png");
-}
-
-#formats li.ics
-{
-    background-image: url("icones/activites.png");
-}
-
-#formats li.ods,
-#formats li.csv
-{
-    background-image: url("icones/tableur.png");
-}
-
-
-/* citation */
-#citation .signature
-{
-    font-size: 0.8em;
-    font-weight: bold;
-    font-style: italic;
-    text-align: right;
-}
-
-
-/* Historique */
-#historique.pagelinks
-{
-    clear: both;
-    background: lighten($alt_background, 10%);
-    border-radius: 1ex;
-    padding: 1ex;
-    margin: 5em 3em 3em;
-
-    .h
-    {
-	width: 100%;
-	font-size: 1.75ex;
-	margin-top: 0;
-    }
-
-    div.section
-    {
-	display: inline-block;
-	vertical-align: top;
-	width: 12em;
-	margin: 1ex 2em;
-
-	.h {
-	    margin-bottom: .5ex;
-	}
-    }
-
-    ul
-    {
-	display: block;
-	margin: 0;
-	padding: 0;
-
-	li {
-	    display: inline-block;
-	    margin: .5ex;
-	}
-    }
-
-    a {
-	color: inherit !important;
-    }
-
-    .selectionnee a
-    {
-	font-weight: bold;
-	text-decoration: none;
-	color: black;
-    }
 }
 
 .empty
@@ -573,9 +204,12 @@ a {
     }
 }
 
-*:hover > ul.adminlinks {
-    visibility: visible;
+
+.signature {
+    text-align: right;
+    font-style: italic;
 }
+
 
 @mixin adminlink {
     display: inline-block;
@@ -589,60 +223,452 @@ a {
     }
 }
 
-a.adminlink {
-    @include adminlink;
-}
+@media screen {
+    #header {
+	& > .h
+	{
+	    font-size: 3em;
+	    font-family: serif;
+	    text-shadow: 1pt 1pt 2pt rgba(250, 251, 248, .75),
+	    1pt 1pt 4pt rgba(50, 51, 48, .75);
 
-td.adminlinks a.adminlink {
-    font-size: 90%;
-}
-
-ul.adminlinks {
-    position: absolute;
-    top: -.5ex;
-    right: 0;
-    margin: 0;
-    display: block;
-    text-align: right;
-    visibility: hidden;
-
-    li {
-	display: inline-block;
-	margin: 0 .5ex;
-
-	a {
-	    @include adminlink;
+	    a
+	    {
+		color: inherit;
+		text-decoration: inherit;
+	    }
 	}
     }
-}
 
-.signature {
-    text-align: right;
-    font-style: italic;
-}
+    #contentwrapper
+    {
+	background-color: $content_background;
+	border-style: solid;
+	border-color: $highlight_color;
+	border-radius: 1ex;
+	min-height: 50em;
+    }
 
-.pages.links
-{
-    margin: 1ex;
-    text-align: center;
-    clear: both;
-}
+    #document {
+	overflow: hidden;
 
-.pages.links li
-{
-    list-style: none;
-    margin: 1ex;
-    display: inline;
-}
+	& > h1 {
+	    position: absolute;
+	    top: 0;
+	    left: 0;
+	    font-size: 150%;
+	    border-radius: .5ex 0 2em 0;
+	    padding: 1ex 5em 1ex 1em;
+	    margin: 0;
+	    background: $highlight_color;
+	    color: $content_background;
 
-.pages.links .current a
-{
-    color: black;
-    text-decoration: none;
-    font-weight: bold;
-}
+	    a {
+		color: inherit !important;
+	    }
+	}
+    }
 
-@media screen {
+    #admin {
+	ul {
+	    -webkit-transition-property: max-height;
+	    -webkit-transition-duration: 1s;
+	    -webkit-transition-timing-function: ease-out;
+	    -webkit-transition-delay: .25s;
+	    transition-property: max-height;
+	    transition-duration: 1s;
+	    transition-timing-function: ease-out;
+	    transition-delay: .25s;
+	    max-height: 4.5em;
+	    overflow: hidden;
+	}
+
+	&:hover ul {
+	    max-height: 30em;
+	}
+    }
+
+    :hover > ul.adminlinks
+    {
+	visibility: visible;
+    }
+
+    a.adminlink {
+	@include adminlink;
+    }
+
+    td.adminlinks a.adminlink {
+	font-size: 90%;
+    }
+
+    ul.adminlinks {
+	position: absolute;
+	top: -.5ex;
+	right: 0;
+	margin: 0;
+	display: block;
+	text-align: right;
+	visibility: hidden;
+
+	li {
+	    display: inline-block;
+	    margin: 0 .5ex;
+
+	    a {
+		@include adminlink;
+	    }
+	}
+    }
+
+    .pages.links
+    {
+	margin: 1ex;
+	text-align: center;
+	clear: both;
+    }
+
+    .pages.links li
+    {
+	list-style: none;
+	margin: 1ex;
+	display: inline;
+    }
+
+    .pages.links .current a
+    {
+	color: black;
+	text-decoration: none;
+	font-weight: bold;
+    }
+
+    #aside
+    {
+	padding-top: 2em;
+	padding-bottom: 4em;
+
+	.section
+	{
+	    .h, a {
+		font-size: 125%;
+	    }
+
+	    .h
+	    {
+		text-align: right;
+		font-size: 1.2em;
+		margin: 0;
+		padding: 1ex;
+		color: lighten($content_background, 10%);
+		background: $highlight_color;
+
+		a
+		{
+		    color: inherit;
+		    text-decoration: inherit;
+		    font-size: inherit;
+		}
+	    }
+
+	    & > * + *
+	    {
+		margin-left: 1ex;
+	    }
+
+	    ul
+	    {
+		padding-left: 1ex;
+
+		li
+		{
+		    list-style-type: none;
+		    background-repeat: no-repeat;
+		    background-position: left center;
+
+		    a {
+			display: inline-block;
+			padding: .5ex 0 .5ex 2.5em;
+			vertical-align: middle;
+			width: 100%;
+			height: 1.5em;
+			line-height: 1.5em;
+
+			&:hover {
+			    text-shadow: 1pt 1pt 10pt rgba(50, 51, 48, .25);
+			}
+		    }
+		}
+	    }
+	}
+    }
+
+    /* BRANCHE */
+    #branche
+    {
+	font-size: 9pt !important;
+
+	/* branche a un traitement *très* spéciale, on réinitialise tout */
+	*
+	{
+	    position: static !important;
+	    top: 0 !important;
+	    margin: 0 !important;
+	    display: inline !important;
+	    padding: 0 !important;
+	    background: none !important;
+	}
+
+	.h
+	{
+	    text-align: left;
+	    font-size: inherit;
+	    color: #483005 !important;
+	}
+
+	li + li:before
+	{
+	    content: "/";
+	    margin: 0 1ex;
+	    color: $highlight_color;
+	}
+    }
+
+
+    #aside li.current a
+    {
+	color: black;
+	text-decoration: none;
+	font-weight: bold;
+    }
+
+    /* CONSOLE */
+    #console, #login {
+	& > .h
+	{
+	    margin-bottom: 0;
+	}
+
+	div.section
+	{
+	    margin: 0 0 0 1em;
+	    padding: 0;
+
+	    .h
+	    {
+		font-size: 1.05em;
+		margin: 0;
+		padding: 0;
+	    }
+	}
+
+	form {
+	    margin: 0;
+
+	    .buttonbox {
+		padding: 1ex;
+		display: block;
+	    }
+	}
+    }
+    /* ICÔNES */
+
+    #menu li:first-child
+    {
+	background-image: url("icones/accueil.png");
+    }
+
+    #aside li.unites,
+    #aside li.membres
+    {
+	background-image: url("icones/effectifs.png");
+    }
+
+    #connexes li.contacts
+    {
+	background-image: url("icones/carnet.png");
+    }
+
+    #aside li.activites
+    {
+	background-image: url("icones/activites.png");
+    }
+
+    #aside li.photos
+    {
+	background-image: url("icones/photos.png");
+    }
+
+    #aside li.journaux
+    {
+	background-image: url("icones/journaux.png");
+    }
+
+    #aside li.documents
+    {
+	background-image: url("icones/documents.png");
+    }
+
+    #aside li.liens
+    {
+	background-image: url("icones/liens.png");
+    }
+
+    #connexes li.rapports,
+    #aside li.livredor
+    {
+	background-image: url("icones/livredor.png");
+    }
+
+    #aside li.citation
+    {
+	background-image: url("icones/citation.png");
+    }
+
+    #login li.inscription,
+    #actions li.inscrire,
+    #console li.inscriptions
+    {
+	background-image: url("icones/inscription.png");
+    }
+
+    #console li.fiche,
+    #actions li.fiche
+    {
+	background-image: url("icones/individu.png");
+    }
+
+    #actions li.fermer
+    {
+	background-image: url("icones/fermer.png");
+    }
+
+    #login li + li
+    {
+	background-image: url("icones/verrou.png");
+    }
+
+    /* ADMIN */
+    #admin li.configurer,
+    #admin li.administrer,
+    #aside li.admin
+    {
+	background-image: url("icones/config.png");
+    }
+
+    #admin li.editer,
+    #admin li.modifier,
+    #admin li.reporter,
+    #aside li.parametres
+    {
+	background-image: url("icones/editer.png");
+    }
+
+    #admin li.annuler,
+    #admin li.supprimer,
+    #admin li.desinscrire
+    {
+	background-image: url("icones/supprimer.png");
+    }
+
+    #connexes li.anciens,
+    #connexes li.anciennes,
+    #connexes li.archives,
+    #admin li.historique
+    {
+	background-image: url("icones/historique.png");
+    }
+
+    #aside li.prevoir
+    {
+	background-image: url("icones/prevoir.png");
+    }
+
+
+    /* FORMATS */
+    #formats li.rss,
+    #formats li.atom
+    {
+	background-image: url("icones/flux.png");
+    }
+
+    #formats li.vcf
+    {
+	background-image: url("icones/carnet.png");
+    }
+
+    #formats li.ics
+    {
+	background-image: url("icones/activites.png");
+    }
+
+    #formats li.ods,
+    #formats li.csv
+    {
+	background-image: url("icones/tableur.png");
+    }
+
+
+    /* citation */
+    #citation .signature
+    {
+	font-size: 0.8em;
+	font-weight: bold;
+	font-style: italic;
+	text-align: right;
+    }
+
+
+    /* Historique */
+    #historique.pagelinks
+    {
+	clear: both;
+	background: lighten($alt_background, 10%);
+	border-radius: 1ex;
+	padding: 1ex;
+	margin: 5em 3em 3em;
+
+	.h
+	{
+	    width: 100%;
+	    font-size: 1.75ex;
+	    margin-top: 0;
+	}
+
+	div.section
+	{
+	    display: inline-block;
+	    vertical-align: top;
+	    width: 12em;
+	    margin: 1ex 2em;
+
+	    .h {
+		margin-bottom: .5ex;
+	    }
+	}
+
+	ul
+	{
+	    display: block;
+	    margin: 0;
+	    padding: 0;
+
+	    li {
+		display: inline-block;
+		margin: .5ex;
+	    }
+	}
+
+	a {
+	    color: inherit !important;
+	}
+
+	.selectionnee a
+	{
+	    font-weight: bold;
+	    text-decoration: none;
+	    color: black;
+	}
+    }
+
     /* Glisser-déposer */
     .dojoDndItem
     {
@@ -676,26 +702,22 @@ ul.adminlinks {
 	color: black;
     }
 
-    #footer
-    {
-	color: #004400;
-    }
+    body {
+	background-repeat: no-repeat;
+	background-position: 100% top;
+	background-size: 6em 6em;
 
-    #footer .logo
-    {
-	border: none;
-    }
+	&.suf {
+	    background-image: url("mouvements/suf.png");
+	}
 
-    #document h1
-    {
-	font-size: 1.6em !important;
-	font-weight: normal;
-    }
+	&.fse {
+	    background-image: url("mouvements/fse.png");
+	}
 
-    a
-    {
-	color: inherit;
-	text-decoration: none;
+	&.europa {
+	    background-image: url("mouvements/europa.png");
+	}
     }
 
     .h,
@@ -704,13 +726,21 @@ ul.adminlinks {
 	margin-bottom: 0;
     }
 
+    a
+    {
+	color: inherit;
+	text-decoration: none;
+    }
+
     p
     {
 	margin-top: 0;
     }
 
-    #historique
-    {
-	display: none;
+    #document {
+	h1
+	{
+	    border-bottom: 1pt solid $highlight_color;
+	}
     }
 }

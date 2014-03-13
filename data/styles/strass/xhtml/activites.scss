@@ -1,6 +1,6 @@
 // -*- css -*-
 
-@import "common";
+@import "lib";
 
 @media screen {
     #document form
@@ -30,9 +30,9 @@
 @media print {
     #calendrier table
     {
-	margin: 1em 10%;
-	padding: O;
-	width: 80%;
+	margin: 15% auto 20%;
+	padding: 0;
+	width: 40em;
     }
 
     #calendrier td

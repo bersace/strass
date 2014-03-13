@@ -16,6 +16,16 @@
 	max-width: 60em;
 	margin: 0 auto;
 
+	&:hover {
+	    .previous {
+		background-image: url("img/prev.png");
+	    }
+
+	    .next {
+		background-image: url("img/next.png");
+	    }
+	}
+
 	p.photo
 	{
 	    height: $height - 1em;
@@ -53,20 +63,12 @@
 
 	    .previous {
 		left: 0;
-
-		&:hover {
-		    background-position: left center;
-		    background-image: url("img/prev.png");
-		}
+		background-position: left center;
 	    }
 
 	    .next {
 		right: 0;
-
-		&:hover {
-		    background-position: right center;
-		    background-image: url("img/next.png");
-		}
+		background-position: right center;
 	    }
 	}
     }

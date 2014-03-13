@@ -57,261 +57,170 @@
     padding-top: 1em;
 }
 
-#historique
+#document.fonder form,
+#document.editer form,
+#document.parametres form,
+#document.supprimer form,
+#document.inscrire form,
+#document.fermer form
 {
-    clear: both;
+    @include minipage;
 }
 
-/* COLONNES */
+/* EFFECTIFS */
+#document.contacts table.effectifs {
+    width: 100%;
+}
+
+tr.category td
+{
+    padding-top: 1em;
+}
+
 td.accr
 {
-    width: 4em;
+    width: 1em;
     padding-left: 24px;
     text-align: right;
 }
 
-.contacts	td.prenom-nom,
-.infos		td.prenom-nom
+td.prenom-nom,
+td.naissance,
+td.adresse
 {
-    width: 20em;
-}
-
-.maitrise td.prenom-nom
-{
-    width: 10em;
+    white-space: nowrap;
 }
 
 td.fixe,
 td.portable,
 td.telephone
 {
-    width: 8em;
+    white-space: nowrap;
     text-align: center;
-}
-
-.effectifs tr .naissance,
-tr .age
-{
-    display: none;
 }
 
 td.numero
 {
-    width: 4em;
     text-align: center;
 }
 
-@media screen {
-    #document.fonder form,
-    #document.editer form,
-    #document.parametres form,
-    #document.supprimer form,
-    #document.inscrire form,
-    #document.fermer form
-    {
-	@include minipage;
-    }
+/* barrettes */
+td.accr
+{
+    background-position: left center;
+    background-repeat: no-repeat;
+}
 
-    #document.contacts table {
-	width: 100%;
-    }
+tr.aumonier td.accr {
+    background-image: url("postes/aumonier.png") !important;
+}
 
-    table.effectifs td {
-	-moz-box-sizing: border-box;
-	box-sizing: border-box;
-	min-height: 28px;
-    }
-
-    /* barrettes */
-    td.accr
-    {
-	background-position: left center;
-	background-repeat: no-repeat;
-    }
-
-    tr.aumonier td.accr {
-	background-image: url("postes/aumonier.png") !important;
-    }
-
-    table.fse tr.aumonier td.accr,
-    table.europa tr.aumonier td.accr
-    {
-	background-image: url("postes/aumonier-fse.png") !important;
-    }
+table.fse tr.aumonier td.accr,
+table.europa tr.aumonier td.accr
+{
+    background-image: url("postes/aumonier-fse.png") !important;
+}
 
 
-    tr.cg td.accr {
-	background-image: url("postes/cg.png");
-    }
+tr.cg td.accr {
+    background-image: url("postes/cg.png");
+}
 
-    tr.acg td.accr {
-	background-image: url("postes/acg.png");
-    }
+tr.acg td.accr {
+    background-image: url("postes/acg.png");
+}
 
-    tr.cc td.accr,
-    tr.cf td.accr
-    {
-	background-image: url("postes/cc.png");
-    }
+tr.cc td.accr,
+tr.cf td.accr
+{
+    background-image: url("postes/cc.png");
+}
 
-    tr.cca td.accr,
-    tr.cfa td.accr
-    {
-	background-image: url("postes/cca.png");
-    }
+tr.cca td.accr,
+tr.cfa td.accr
+{
+    background-image: url("postes/cca.png");
+}
 
-    tr.acc td.accr,
-    tr.acf td.accr
-    {
-	background-image: url("postes/acc.png");
-    }
+tr.acc td.accr,
+tr.acf td.accr
+{
+    background-image: url("postes/acc.png");
+}
 
-    tr.cer td.accr,
-    tr.cef td.accr
-    {
-	background-image: url("postes/cer.png");
-    }
+tr.cer td.accr,
+tr.cef td.accr
+{
+    background-image: url("postes/cer.png");
+}
 
-    tr.ct td.accr,
-    tr.ccie td.accr
-    {
-	background-image: url("postes/ct.png");
-    }
+tr.ct td.accr,
+tr.ccie td.accr
+{
+    background-image: url("postes/ct.png");
+}
 
-    tr.act td.accr,
-    tr.accie td.accr
-    {
-	background-image: url("postes/act.png");
-    }
+tr.act td.accr,
+tr.accie td.accr
+{
+    background-image: url("postes/act.png");
+}
 
-    tr.cp td.accr,
-    tr.ce td.accr
-    {
-	background-image: url("postes/cp.png");
-    }
+tr.cp td.accr,
+tr.ce td.accr
+{
+    background-image: url("postes/cp.png");
+    background-size: 24px 90%;
+}
 
-    tr.sp td.accr,
-    tr.se td.accr
-    {
-	background-image: url("postes/sp.png");
-    }
+tr.sp td.accr,
+tr.se td.accr
+{
+    background-image: url("postes/sp.png");
+    background-size: 24px 90%;
+}
 
-    tr.akela td.accr,
-    tr.guillemette td.accr,
-    tr.akelaf td.accr
-    {
-	background-image: url("postes/akela.png");
-    }
+tr.akela td.accr,
+tr.guillemette td.accr,
+tr.akelaf td.accr
+{
+    background-image: url("postes/akela.png");
+}
 
-    tr.acm td.accr,
-    tr.acr td.accr,
-    tr.accl td.accr
-    {
-	background-image: url("postes/bagheera.png");
-    }
+tr.acm td.accr,
+tr.acr td.accr,
+tr.accl td.accr
+{
+    background-image: url("postes/bagheera.png");
+}
 
-    tr.sizainier td.accr,
-    tr.sizainiere td
-    {
-	background-image: url("postes/siz.png");
-    }
+tr.sizainier td.accr,
+tr.sizainiere td
+{
+    background-image: url("postes/siz.png");
+}
 
-    tr.second td.accr,
-    tr.seconde td.accr
-    {
-	background-image: url("postes/sec.png");
-    }
+tr.second td.accr,
+tr.seconde td.accr
+{
+    background-image: url("postes/sec.png");
 }
 
 @media print {
-    #content #effectifs div.section
-    {
-	padding: 0 !important;
-	margin: 0 !important;
-    }
-
-    div.section > table
-    {
-	margin: 0 !important;
-    }
-
-    #effectifs > div.section
-    {
-	margin-right: 0;
-	padding-right: 0;
-    }
-
-    #effectifs .section .h
-    {
-	margin-left: 2em;
-    }
-
-
-    #effectifs table
+    table.effectifs
     {
 	width: 100%;
     }
 
-    #effectifs table td a
+    table.effectifs td a
     {
 	text-decoration: none;
 	color: black;
     }
 
-    #effectifs tr.odd
-    {
-	background: none !important;
-    }
-
-    #effectifs tr.odd td + td
-    {
-	background: #F0F0F0;
-    }
-
-    #effectifs td.accr
+    table.td.accr
     {
 	color: grey;
-    }
-
-    #effectifs td.prenom-nom,
-    #effectifs td.nom-abbr
-    {
-	width: 30%;
-	padding: 2pt 5pt;
-    }
-
-    /* masquer le nom-prénom des cheftaines de meutes. */
-    #maitrise table.meute td.prenom-nom a
-    {
-	position: absolute;
-	display: block;
-	top: -512px;
-	left: -1024px;
-	width: 1px;
-	height: 1px;
-	overflow: hidden;
-    }
-
-    .liste #effectifs table td +td +td
-    {
-	border-left: 1px dashed #845d18;
-	width: 10%;
-    }tr .adelec,
-    .contacts tr .adresse
-    {
-	display: none;
-    }
-
-    #document #content .effectifs h2
-    {
-	font-size: 1.05em;
-	text-align: left;
-	margin: 1ex 0 .5ex;
-    }
-
-    #document td.prenom-nom
-    {
-	width: 20em;
     }
 
     th.prenom-nom,
@@ -321,44 +230,9 @@ td.numero
 	text-align: left;
     }
 
-
-    table tr .accr
-    {
-	width: 3em;
-	padding: 0;
-    }
-
-    #effectifs th.accr
+    .effectifs th.accr
     {
 	visibility: hidden;
 	border: none;
-    }
-
-    #effectifs #maitrise .h
-    {
-	display: none;
-    }
-
-    .maitrise	table,
-    .participants	table
-    {
-	width: 100%;
-    }
-
-    td.adresse
-    {
-	width: 20em;
-    }
-
-    td.naissance,
-    .maitrise td.cep1,
-    .maitrise td.cep2
-    {
-	width: 10ex;
-    }
-
-    .maitrise table .formation + *
-    {
-	width: 10%;
     }
 }

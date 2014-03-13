@@ -1,6 +1,6 @@
 /*-*- css -*-*/
 
-@import 'common';
+@import 'lib';
 
 $basesize: 210px;
 
@@ -25,10 +25,12 @@ $basesize: 210px;
 
 .vignettes.photos
 {
-     & > li
-     {
-	 $size: $basesize + 24px;
-	 width: $size;
+    line-height: inherit;
+
+    & > li
+    {
+	$size: $basesize + 24px;
+	width: $size;
     }
 }
 
