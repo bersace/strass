@@ -266,6 +266,18 @@ class Individu extends Strass_Db_Table_Row_Abstract implements Zend_Acl_Resource
     unset($image);
   }
 
+  function findAppartenances($s=null)
+  {
+    if (is_null($s)) {
+      $t = new Appartenances;
+      $s = $t->select()
+	// Placer les inscriptions en cours en premier
+	->order(new Zend_Db_Expr('(CASE WHEN appartenance.fin IS NULL THEN 0 ELSE 1 END)'))
+	->order('appartenance.fin DESC');
+    }
+    return parent::findAppartenances($s);
+  }
+
   function findEtapesCanditates()
   {
     $t = new Etapes;

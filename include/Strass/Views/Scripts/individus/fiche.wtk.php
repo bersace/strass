@@ -70,6 +70,7 @@ if ($this->apps->count()) {
     $unite = $app->findParentUnites();
     $url_unite =$this->url(array('controller' => 'unites', 'action' => 'contacts',
 				 'unite' => $unite->slug, 'annee' => $app->getAnnee()), true);
+    $fin = $app->fin ? strftime('au %x', strtotime($app->fin)) : "à aujourd'hui";
     $m->append($unite->slug,
 	       $unite->findParentTypesUnite()->slug,
 	       $unite->getFullName(),
@@ -77,8 +78,7 @@ if ($this->apps->count()) {
 	       array($role->slug, wtk_strtoid($app->titre)),
 	       $app->getAccronyme(),
 	       $role->acl_role,
-	       strftime('%x', strtotime($app->debut)),
-	       strftime('%x', strtotime($app->fin))
+	       strftime('du %x', strtotime($app->debut)), $fin
 	       );
   }
 
