@@ -34,11 +34,11 @@ class UnitesController extends Strass_Controller_Action
 			     array('controller' => 'journaux', 'action' => 'fonder'),
 			     array(null, $u, 'fonder-journal'));
 
-    $this->actions->append("Éditer",
+    $this->actions->append("Éditer l'unité",
 			   array('controller' => 'unites', 'action' => 'editer', 'unite' => $u->slug),
 			   array(null, $u));
 
-    $this->actions->append("Paramètres",
+    $this->actions->append("Paramétrer de la page",
 			   array('controller' => 'unites', 'action' => 'parametres', 'unite' => $u->slug),
 			   array(null, $u));
 
