@@ -13,7 +13,7 @@ class Strass_View_Helper_VignetteIndividu
 				   $label = null,
 				   $urlOptions = array())
   {
-    if (!$individu && !$individu->getImage())
+    if (!$individu)
       return;
 
     $urlOptions = array_merge(array('controller'	=> 'individus',
@@ -24,9 +24,12 @@ class Strass_View_Helper_VignetteIndividu
     $this->view->document->addStyleComponents('vignette');
     $label = $label ? $label : $individu->getFullname();
     $item = new Wtk_Container;
-    $item->addSection()
-      ->addFlags('wrapper')
-      ->addImage($individu->getImage(), $individu->getFullname(), $individu->getFullname());
+    $section = $item->addSection()
+      ->addFlags('wrapper');
+    if ($src = $individu->getImage())
+      $section->addImage($src, $individu->getFullname(), $individu->getFullname());
+    else
+      $section->addParagraph("Pas de photo")->addFlags('empty');
     $item->addParagraph($label)->addFlags('label');
     $link = new Wtk_Link($this->view->url($urlOptions, true, true),
 			 $label, $item);

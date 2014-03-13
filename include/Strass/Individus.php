@@ -206,6 +206,14 @@ class Individu extends Strass_Db_Table_Row_Abstract implements Zend_Acl_Resource
       return null;
   }
 
+  function getTelephone()
+  {
+    if ($this->portable)
+      return $this->portable;
+    else
+      return $this->fixe;
+  }
+
   function isAncien()
   {
     $t = new Appartenances();
@@ -495,7 +503,7 @@ class Appartient extends Strass_Db_Table_Row_Abstract implements Zend_Acl_Role_I
   function getAnnee()
   {
     if ($this->fin)
-      return strftime('%Y', strtotime($this->fin) - 243 * 24 * 60 * 60);
+      return strftime('%Y', strtotime($this->fin) - 10 * 31 * 24 * 60 * 60);
     else
       return null;
   }

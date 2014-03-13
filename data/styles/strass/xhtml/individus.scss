@@ -2,40 +2,103 @@
 
 @import "lib";
 
-#informations a.avatar
+#cartevisite
 {
-  float: right;
-  margin-top: -3em;
-  padding: 1ex;
-  }
+    width: 80%;
+    max-width: 55em;
+    margin: 1em auto 4em;
+    padding: 1ex;
+    background: lighten($alt_background, 10%);
+    border-radius: 1ex;
 
-#informations ul,
-#informations #notes
-{
-  display: inline-block;
-  vertical-align: top;
-  }
+    & > .h {
+	font-size: 200%;
+	text-align: right;
+	margin-right: 1em;
+    }
 
-#informations ul
-{
-    /* Adapté à la ligne Dernière connexion */
-    width: 25em;
+    a.avatar, ul.infos, #notes
+    {
+	display: inline-block;
+	padding: 1ex;
+	margin: 1ex;
+	vertical-align: top;
+    }
+
+    a.avatar {
+	margin-top: -4em;
+
+	p.label {
+	    display: none;
+	}
+    }
+
+    ul.infos
+    {
+	max-width: 50%;
+	font-size: 130%;
+
+	li {
+	    list-style: none;
+	    margin: .5ex;
+	}
+
+	li.adresse {
+	    white-space: pre-wrap;
+	}
+    }
+
+    #notes {
+	width: 100%;
+
+	.h { display: none; }
+    }
 }
 
-#informations #notes
-{
-  width: 45%;
-  }
+#details, #cv, #commentaires, #articles {
+    clear: both;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+    padding: 0 1ex;
+    width: 49%;
+    display: inline-block;
+    vertical-align: top;
+}
 
-#commentaires,
-#articles
-{
-  width: 48%;
-  margin: 0;
-  padding: 0;
-  display: inline-block;
-  text-align: vertical;
-  }
+#details {
+    width: 40%;
+
+    ul {
+	/* Adapté à la ligne Dernière connexion */
+	min-width: 20em;
+	padding-left: 2em;
+    }
+
+    #notes {
+	margin: 1ex;
+	font-style: italic;
+    }
+}
+
+#cv {
+    min-width: 59%;
+
+    table {
+	width: 100%;
+
+	thead { display: none; }
+	td.unite {
+	    white-space: nowrap;
+	    width: 80%;
+	}
+    }
+}
+
+/* si pas de détails */
+#cartevisite + #cv {
+    display: block;
+    margin: 0 auto;
+}
 
 .individus form {
     @include minipage;

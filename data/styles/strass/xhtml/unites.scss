@@ -77,13 +77,6 @@ tr.category td
     padding-top: 1em;
 }
 
-td.accr
-{
-    width: 1em;
-    padding-left: 24px;
-    text-align: right;
-}
-
 td.prenom-nom,
 td.naissance,
 td.adresse
@@ -107,6 +100,9 @@ td.numero
 /* barrettes */
 td.accr
 {
+    width: 1em;
+    padding-left: 28px;
+    text-align: right;
     background-position: left center;
     background-repeat: no-repeat;
 }

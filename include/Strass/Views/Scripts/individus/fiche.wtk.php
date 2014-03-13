@@ -1,61 +1,64 @@
 <?php
 
-if ($this->etape)
-  $this->document->addFlags($this->etape->slug);
-
 $this->document->addFlags('sexe-'.$this->individu->sexe);
 
-$s = $this->document->addSection('informations');
+$s = $this->document->addSection('cartevisite', $this->individu->getFullName(false, false));
 $s->addChild($this->vignetteIndividu($this->individu));
 
-$l = $s->addList();
+$l = $s->addList()->addFlags('infos');
+if ($this->assert(null, $this->individu, 'totem'))
+  $l->addItem()->addFlags('totem')->addRawText($this->individu->totem);
+if ($this->etape) {
+  $l->addItem()->addFlags('etape', $this->etape->slug)
+    ->addInline("**".wtk_ucfirst($this->etape->titre)."**");
+  $this->document->addFlags($this->etape->slug);
+}
+
 if ($this->individu->naissance) {
   $participe = $this->individu->sexe == 'h' ? 'Né' : 'Née';
   $l->addItem()->addRawText($participe." en ".
 			    $this->individu->getDateNaissance('%Y').
 			    " (".$this->individu->getAge()." ans)");
 }
-$info = array('adelec'		=> "**Adélec :** [mailto:%s %s]",
-	      'portable'	=> "**Téléphone portable :** %s",
-	      'fixe'		=> "**Téléphone fixe :** %s",
-	      'adresse'		=> "**Addresse :** %s",
-	      );
 
-$acl = Zend_Registry::get('acl');
-if ($this->etape)
-  $info['etape'] = "**".wtk_ucfirst($this->etape->titre)."**";
-if ($acl->isAllowed(null, $this->individu, 'totem'))
-  $info['totem'] = '**Totem :** %s';
-
-if ($this->chef) {
-  $info['numero']	 = "**Numéro adhérent :** %s";
-}
+if ($adelec = $this->individu->adelec)
+  $l->addItem()->addFlags('adelec')->addLink("mailto:".$adelec, $adelec);
+if ($telephone = $this->individu->getTelephone())
+  $l->addItem()->addFlags('telephone')->addLink("tel:".$telephone, $telephone);
+if ($adresse = $this->individu->adresse)
+  $l->addItem()->addFlags('adresse')->addRawText($adresse);
 
 
+// DÉTAILS
+$s = $this->document->addSection('details', "Détails");
+$l = $s->addList();
+
+$info = array();
+$info['portable'] = "**Portable :** %s";
+$info['fixe'] = "**Fixe :** %s";
+if ($this->assert(null, $this->individu, 'voir-nom'))
+  $info['numero'] = "**Numéro adhérent :** %s";
 
 foreach($info as $k => $f) {
-  if ($this->individu->$k)
-    $l->addItem(new Wtk_Inline(str_replace(array('%s', "\n"),
-					   array($this->individu->$k, " – "),
-					   $f)))->addFlags($k);
+  if ($value = $this->individu->$k)
+    $l->addItem()->addFlags($k)->addInline(sprintf($f, $value));
 }
 
-if ($this->chef && $this->user->admin)
+if ($this->assert(null, 'site') && $this->user->admin)
   $l->addItem()->addFlags('admin')->addStrong("Administrateur du site");
-else if ($this->individu->isMember()) {
+else if ($this->individu->isMember())
   $l->addItem()->addFlags('member')->addStrong("Membre");
-}
 if ($this->user->last_login)
   $l->addItem()->addFlags('last')->addInline("**Dernière connexion :** ".strftime("le %e-%m-%Y à %Hh%M"));
-
-// notes
 if ($this->individu->notes) {
-  $ss = $s->addSection('notes', "Notes");
-  $ss->addText($this->individu->notes);
+  $s->addSection('notes')->addText($this->individu->notes);
 }
+else if (!count($l))
+  $this->document->removeChild($s);
 
-// CV scout
-$s = $this->document->addSection('appartenances', "CV scout");
+
+// CV SCOUT
+$s = $this->document->addSection('cv', "CV scout");
 if ($this->apps->count()) {
   $this->document->addStyleComponents('unites');
   $m = new Wtk_Table_Model('unite_slug', 'unite_type', 'unite_nom', 'unite_lien',
@@ -83,7 +86,8 @@ if ($this->apps->count()) {
   $config = Zend_Registry::get('config');
   $t->addFlags('effectifs', $config->system->mouvement, 'appartenances');
   $t->addNewColumn('Poste', new Wtk_Table_CellRenderer_Text('text', 'accr'));
-  $t->addNewColumn('Unité', new Wtk_Table_CellRenderer_Link('href', 'unite_lien', 'label', 'unite_nom'));
+  $t->addNewColumn('Unité', new Wtk_Table_CellRenderer_Link('href', 'unite_lien',
+							    'label', 'unite_nom'), 'unite');
   $t->addNewColumn('Début', new Wtk_Table_CellRenderer_Text('text', 'debut'));
   $t->addNewColumn('Fin', new Wtk_Table_CellRenderer_Text('text', 'fin'));
 }
