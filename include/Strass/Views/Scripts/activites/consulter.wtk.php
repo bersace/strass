@@ -1,38 +1,38 @@
 <?php
-$a = $this->activite;
-$s = $this->document;
 
-$intro = $s->addText($a->description);
+$this->document->addText($this->activite->description);
 
 // PIÈCES JOINTES
 if ($this->documents->count()) {
-	$ss = $s->addSection('piecesjointes', "Pièces-jointes");
-	$l = $ss->addChild(new Wtk_List());
-	foreach($this->documents as $docact)
-		$l->addItem($this->lienDocument($docact->findParentDocuments()));
- }
-
-// UNITÉ PARTICIPANTES
-$unites = $a->findUnitesParticipantes();
-
-if ($unites->count()) {
-	$titre = "Unités participantes";
-	$ss = $s->addSection('participants', $titre);
-
-	$l = $ss->addList();
-
-	// Suivant que l'activité soit future ou passée, on ira à la page de
-	// l'unité (effectif).
-	$url = array('annee' => $a->getAnnee());
-
-	foreach($unites as $unite) {
-		$l->addItem($this->lienUnite($unite, null, $url));
-	}
-
- }
+  $ss = $this->document->addSection('piecesjointes', "Pièces-jointes");
+  $l = $ss->addList();
+  $l->addFlags('vignettes', 'document');
+  foreach($this->documents as $docact)
+    $l->addItem($this->vignetteDocument($docact->findParentDocuments()))
+    ->addFlags('vignette', 'document');
+}
 
 // ANTI ABSENTS
-if ($a->isFuture())
-	$s->addParagraph()
-		->addFlags('remarque')
-		->addInline("**La présence de chacun est primordiale** pour le bon déroulement de cette activité.");
+if ($this->activite->isFuture())
+  $this->document->addParagraph()
+    ->addFlags('remarque')
+    ->addInline("**La présence de chacun est primordiale** ".
+		"pour le bon déroulement de cette activité.");
+else {
+  // PHOTOS
+  $s = $this->document->addSection('photos', $this->lien(array('controller' => 'photos',
+							       'action' => 'consulter',
+							       'album' => $this->activite->slug),
+							 "Photos"), true);
+  if ($this->photos->count()) {
+    $l = $s->addList();
+    $l->addFlags('vignettes', 'photos');
+    foreach($this->photos as $photo) {
+      $i = $l->addItem($this->vignettePhoto($photo));
+      $i->addFlags('vignette');
+    }
+  }
+  else {
+    $s->addParagraph("Pas de photos")->addFlags('empty');
+  }
+}

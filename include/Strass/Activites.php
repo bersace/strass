@@ -170,10 +170,15 @@ class Activite extends Strass_Db_Table_Row_Abstract implements Zend_Acl_Resource
 
   function getPhotoAleatoire()
   {
+    return $this->findPhotosAleatoires(1)->current();
+  }
+
+  function findPhotosAleatoires($count=6)
+  {
     $select = $this->getTable()->select()
       ->order('RANDOM()')
-      ->limit(1);
-    return $this->findPhotos($select)->current();
+      ->limit($count);
+    return $this->findPhotos($select);
   }
 
   protected function _postUpdate()

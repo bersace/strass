@@ -151,6 +151,7 @@ class ActivitesController extends Strass_Controller_Action
     $this->metas(array('DC.Title' => $a->getIntitule()));
 
     $this->view->documents = $a->findPiecesJointes();
+    $this->view->photos = $a->findPhotosAleatoires(6);
     $i = Zend_Registry::get('individu');
 
     if (!$a->isFuture()) {
@@ -159,6 +160,10 @@ class ActivitesController extends Strass_Controller_Action
 				   'controller' => 'photos',
 				   'activite' => $a->slug),
 			     array(null, $a, 'envoyer-photo'));
+      $this->connexes->append("Photos",
+			     array('action' => 'consulter',
+				   'controller' => 'photos',
+				   'album' => $a->slug));
     }
 
     $this->actions->append('Éditer',
