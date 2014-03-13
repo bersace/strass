@@ -196,7 +196,7 @@ class PhotosController extends Strass_Controller_Action
     $annee = $this->_helper->Annee(false);
 
     $this->assert(null, $p, 'editer',
-		  "Vous n'avez pas le droit de editer cette photo.");
+		  "Vous n'avez pas le droit d'éditer cette photo.");
 
     $individu = Zend_Registry::get('individu');
     $as = $individu->findActivites($annee);
@@ -207,7 +207,7 @@ class PhotosController extends Strass_Controller_Action
     $enum = array();
     foreach($as as $a)
       if ($this->assert(null, $a, 'envoyer-photo'))
-	$enum[$a->id] = $a->getIntituleComplet();
+    	$enum[$a->id] = $a->getIntituleComplet();
 
     $m->addEnum('activite', "Album", $p->activite, $enum);
     $m->addFile('photo', "Photo");

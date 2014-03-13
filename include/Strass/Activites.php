@@ -32,22 +32,6 @@ class Activites extends Strass_Db_Table_Abstract
       ->order('fin');
     return $this->fetchAll($select);
   }
-
-  // Retourne les clefs primaires des unités qui ne sont pas
-  // implicetement participante d'une activité via une unité parente.
-  static function findUnitesParticipantesExplicites($participantes)
-  {
-    $explicites = array();
-    $parentes = clone $participantes;
-    foreach($participantes as $unite) {
-      $implicite = false;
-      foreach($parentes as $parente)
-	$implicite = $implicite || $unite->parent == $parente->id;
-      if (!$implicite)
-	array_push($explicites, $unite->id);
-    }
-    return $explicites;
-  }
 }
 
 
@@ -220,29 +204,30 @@ class Activite extends Strass_Db_Table_Row_Abstract implements Zend_Acl_Resource
 
   function findUnitesParticipantes()
   {
-    // mettre à jour les participations
-    $rows = $this->findUnitesViaParticipations();
-
-    // sélectionner *toutes* les sous-unités.
-    $participantes = array();
-    foreach($rows as $unite) {
-      $participantes[] = $unite->id;
-      $sus = $unite->findSousUnites($this->getAnnee(), true);
-      foreach($sus as $su) {
-	$participantes[] = $su->id;
-      }
-    }
-    $participantes = array_unique($participantes);
-
-    $tu = new Unites();
-    return $tu->findMany($participantes);
+    $t = new Unites;
+    $s = $t->select()
+      ->setIntegrityCheck(false)
+      ->distinct()
+      ->from('unite')
+      ->join('participation', 'participation.unite = unite.id', array())
+      ->where('participation.activite = ?', $this->id);
+    return $t->fetchAll($s);
   }
 
   function findUnitesParticipantesExplicites()
   {
-    $tu = new Unites();
-    $ids = Activites::findUnitesParticipantesExplicites($this->findUnitesParticipantes());
-    return $tu->findMany($ids);
+    $t = new Unites;
+    $s = $t->select()
+      ->setIntegrityCheck(false)
+      ->distinct()
+      ->from('unite')
+      ->joinLeft('participation', 'participation.unite = unite.id', array())
+      ->joinLeft(array('mere' => 'unite'), 'mere.id = unite.parent', array())
+      ->joinLeft(array('part_mere' => 'participation'),
+		 'part_mere.unite = mere.id AND part_mere.activite = participation.activite', array())
+      ->where('participation.activite = ?', $this->id)
+      ->where('part_mere.id IS NULL');
+    return $t->fetchAll($s);
   }
 }
 

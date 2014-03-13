@@ -59,16 +59,16 @@ class ActivitesController extends Strass_Controller_Action
     $u = $this->_helper->Unite(false);
     $this->branche->append();
 
-    $individu = Zend_Registry::get('individu');
     $t = new Unites;
-    $unites = $individu->findUnites();
-    $programmables = array();
-    foreach($unites as $unite)
+    $enum = array();
+    foreach($t->fetchAll() as $unite)
       if ($this->assert(null, $unite, 'prevoir'))
-	array_push($programmables, $unite);
+	$enum[$unite->id] = $unite->getFullname();
 
-    if (!$programmables)
-      throw new Strass_Controller_Action_Exception_Notice("Vous n'avez pas le droit d'enregistrer une activité");
+    if (!$enum)
+      throw new Strass_Controller_Action_Exception_Notice("Vous ne pouvez pas enregistrer une activité");
+    $i = $m->addEnum('unites', 'Unités participantes', key($enum), $enum, true);    // multiple
+    $m->addConstraintRequired($i);
 
     $annee = $this->_helper->Annee(false);
     // On ne décale pas en septembre afin de réserver pour la date
@@ -181,20 +181,18 @@ class ActivitesController extends Strass_Controller_Action
 
     $this->metas(array('DC.Title' => 'Éditer '.$a->getIntitule()));
 
-    $individu = Zend_Registry::get('individu');
-    $unites = $individu->findUnites();
-    $programmables = array();
-    foreach($unites as $unite)
-      if ($this->assert(null, $unite, 'prevoir'))
-	array_push($programmables, $unite);
-    $participantes = $a->findUnitesViaParticipations();
-    $explicites = Activites::findUnitesParticipantesExplicites($participantes);
-
-    $enum = array();
-    foreach($programmables as $unite)
-      $enum[$unite->id] = $unite->getFullname();
     $this->view->model = $m = new Wtk_Form_Model('activite');
-    $i = $m->addEnum('unites', 'Unités participantes', $explicites, $enum, true);    // multiple
+
+    $t = new Unites;
+    $explicites = $a->findUnitesParticipantesExplicites();
+    $enum = array();
+    foreach($t->fetchAll() as $unite)
+      if ($this->assert(null, $unite, 'prevoir'))
+	$enum[$unite->id] = $unite->getFullname();
+    $values = array();
+    foreach($explicites as $unite)
+      $values[] = $unite->id;
+    $i = $m->addEnum('unites', 'Unités participantes', $values, $enum, true);    // multiple
     $m->addConstraintRequired($i);
 
     $m->addString('intitule', 'Intitulé explicite', $a->intitule);
