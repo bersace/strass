@@ -2,14 +2,11 @@
 
 @import "lib";
 
-#informations p.avatar
+#informations a.avatar
 {
   float: right;
   margin-top: -3em;
   padding: 1ex;
-  border: 1px solid black;
-  background: white;
-  border-radius: 1ex;
   }
 
 #informations ul,

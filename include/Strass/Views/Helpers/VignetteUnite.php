@@ -47,10 +47,9 @@ class Strass_View_Helper_VignetteUnite
     $link = new Wtk_Link($this->view->url($urlOptions), $label,
 			 new Wtk_Container($w, $plabel));
     $link->addFlags('vignette', $type->slug);
-    if ($src)
 	$link->addFlags('unite');
-    else
-	$link->addFlags('photo');
+    if (!$src)
+      $link->addFlags('photo');
 
     return $link;
   }

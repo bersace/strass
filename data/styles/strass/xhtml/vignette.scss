@@ -8,14 +8,12 @@ $basesize: 210px;
 .vignettes
 {
     padding: 0;
-    line-height: $basesize + 128px;
 
     & > li
     {
 	display: inline-block;
 	list-style: none;
 	vertical-align: top;
-	text-align: center;
 	margin: 1ex .5ex;
 
 	a, ul {
@@ -24,48 +22,36 @@ $basesize: 210px;
     }
 }
 
-.vignettes.photos
+a.vignette
 {
-    line-height: inherit;
-
-    & > li
-    {
-	$size: $basesize + 24px;
-	width: $size;
-    }
-}
-
-
-.vignettes.unites,
-.vignettes.albums,
-.vignettes.documents
-{
+    /* taille + ombre */
     $size: $basesize + 24px;
 
-    & > li
+    color: black;
+    display: block;
+    height: $size;
+    width: $size;
+    text-decoration: none;
+    text-overflow: ellipsis;
+    text-align: center;
+
+    &.album,
+    &.document,
+    &.unite
     {
-	width: $size;
+	/* Pour les deux lignes de texte */
 	height: $size + 48px;
-
-	.section.wrapper
-	{
-	    height: $size;
-	    line-height: $size;
-
-	    img {
-		display: inline-block;
-		vertical-align: middle;
-	    }
-	}
     }
-}
 
-.vignette
-{
-    a {
-	color: black;
-	display: block;
-	text-decoration: none;
+    .section.wrapper
+    {
+	height: $size;
+	line-height: $size;
+
+	img {
+	    display: inline-block;
+	    vertical-align: middle;
+	}
     }
 
     .image
@@ -84,13 +70,14 @@ $basesize: 210px;
 	}
     }
 
-
     &.photo img,
+    &.album img,
+    &.individu img,
     &.document img
     {
 	-moz-box-sizing: border-box;
 	box-sizing: border-box;
-	margin: 0;
+	margin: 0 auto;
 	clear: both;
 	border-radius: .5ex;
 	border: 1pt solid $highlight_color;

@@ -5,10 +5,8 @@ if ($this->etape)
 
 $this->document->addFlags('sexe-'.$this->individu->sexe);
 
-$s = $this->document->addSection('informations', "Informations personnelles");
-
-if ($i = $this->individu->getImage())
-  $s->addParagraph()->addFlags('avatar')->addImage($i, "Photo", $this->individu->getFullname());
+$s = $this->document->addSection('informations');
+$s->addChild($this->vignetteIndividu($this->individu));
 
 $l = $s->addList();
 if ($this->individu->naissance) {
