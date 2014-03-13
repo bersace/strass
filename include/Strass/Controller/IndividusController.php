@@ -202,10 +202,6 @@ class IndividusController extends Strass_Controller_Action
     $i1 = $g->addDate('fin', "Date de fin", $m->get('actuel/date'));
     $m->addConstraintDepends($i1, $i0);
 
-    $g = $m->addGroup('titre');
-    $i = $g->addEnum('predefini', 'Titre', '$$autre$$', array('$$autre$$' => 'Autre'));
-    $g->addString('autre', 'Autre');
-
     $this->view->model = $pm = new Wtk_Pages_Model_Form($m);
 
     $tu = new Unites;
@@ -220,8 +216,12 @@ class IndividusController extends Strass_Controller_Action
       $unite = $tu->findOne($m->get('actuel/unite'));
       $roles = $unite->findParentTypesUnite()->findRoles();
       $i = $g->getChild('role');
-      foreach ($roles as $role)
-	$i->addItem($role->id, wtk_ucfirst($role->titre));
+      foreach ($roles as $role) {
+	$i->addItem($role->id.'__', wtk_ucfirst($role->titre));
+	foreach ($role->findTitres() as $titre) {
+	  $i->addItem($role->id.'__'.$titre->nom, wtk_ucfirst($titre->nom));
+	}
+      }
     }
 
     /* Ne préremplir le role que si la page role va etre affichée */
@@ -250,21 +250,6 @@ class IndividusController extends Strass_Controller_Action
       }
     }
 
-    $page = $pm->partialValidate();
-
-    if ($pm->pageCmp($page, 'titre') >= 0) {
-      $g = $m->getInstance('titre');
-      $role = $tr->findOne($m->get('role/role'));
-      $titres = $role->findTitres();
-      if ($titres->count() == 0)
-	$pm->gotoEnd();
-      else {
-	$i = $g->getChild('predefini');
-	foreach ($titres as $titre)
-	  $i->addItem($titre->nom, wtk_ucfirst($titre->nom));
-      }
-    }
-
     if ($pm->validate()) {
       $t = new Appartenances;
 
@@ -280,20 +265,18 @@ class IndividusController extends Strass_Controller_Action
 	}
 
 	if ($m->get('actuel/inscrire')) {
-	  $titre = $m->get('titre/predefini');
-	  if ($titre == '$$autre$$')
-	    $titre = $m->get('titre/autre');
 
-	  $data = array('individu' => $individu->id,
-			'unite' => $m->get('actuel/unite'),
-			'role' => $m->get('role/role'),
-			'titre' => $titre,
-			'debut' => $m->get('actuel/date'),
-			);
+	  $app = new Appartient;
+	  $app->individu = $individu->id;
+	  $app->unite = $m->get('actuel/unite');
+	  list($role, $titre) = explode('__', $m->get('role/role'));
+	  $app->role = intval($role);
+	  $app->titre = $titre;
+	  $app->debut = $m->get('actuel/date');
+
 	  if ($m->get('role/clore'))
-	    $data['fin'] = $m->get('role/fin');
-	  $k = $t->insert($data);
-	  $app = $t->findOne($k);
+	    $app->fin = $m->get('role/fin');
+	  $app->save();
 	}
 
 	$this->logger->info("Inscription éditée", $this->_helper->Url('fiche'));
