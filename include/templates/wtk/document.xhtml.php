@@ -59,7 +59,8 @@ else {
 <?php if ($ie): ?>
 <!--[if <?php echo implode(' ', $ie); ?>]>
 <?php endif; ?>
-<link type="text/css" rel="<?php echo $default ? "" : "alternate "; ?>stylesheet" title="<?php echo $style->title; ?>" media="<?php echo $medium; ?>" href="<?php echo $file; ?>" />
+<link type="text/css" rel="<?php echo $default ? "" : "alternate "; ?>stylesheet" <?php
+  wtk_attr('title', $style->title); wtk_attr('media', $medium); wtk_attr('href', $file); ?> />
 <?php if ($ie): ?>
 <![endif]-->
 <?php endif; ?>

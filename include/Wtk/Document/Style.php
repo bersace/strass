@@ -55,8 +55,7 @@ class Wtk_Document_Style {
 		      rsort($fs);
 
 		      foreach($fs as $f)
-			$files[] = array('file' => $f,
-					 'medium' => $medium ? $medium : 'all');
+			$files[] = array('file' => $f, 'medium' => $medium);
 		    }
 		  }
 		  break;
