@@ -53,6 +53,7 @@ class Individus extends Strass_Db_Table_Abstract
 
 class Individu extends Strass_Db_Table_Row_Abstract implements Zend_Acl_Resource_Interface, Zend_Acl_Role_Interface
 {
+  protected $_tableClass = 'Individus';
   protected $_privileges = array(array('chef',	NULL),
 				 array('assistant', 'editer'),
 				 array(NULL, 'fiche'));
@@ -469,10 +470,7 @@ class Appartenances extends Strass_Db_Table_Abstract
 
 class Appartient extends Strass_Db_Table_Row_Abstract implements Zend_Acl_Role_Interface, Zend_Acl_Resource_Interface
 {
-  function __construct($config)
-  {
-    parent::__construct($config);
-  }
+  protected $_tableClass = 'Appartenances';
 
   public function getRoleId()
   {

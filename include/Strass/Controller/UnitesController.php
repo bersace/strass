@@ -323,7 +323,10 @@ class UnitesController extends Strass_Controller_Action
     $roles = $u->findParentTypesUnite()->findRoles();
     $enum = array();
     foreach ($roles as $role) {
-      $enum[$role->id] = wtk_ucfirst($role->titre);
+      $enum[$role->id.'__'] = wtk_ucfirst($role->titre);
+      foreach ($role->findTitres() as $titre) {
+	$enum[$role->id.'__'.$titre->nom] = wtk_ucfirst($titre->nom);
+      }
     }
     $g->addEnum('role', 'Rôle', null, $enum);
     $g->addDate('debut', 'Début', $a.'-10-08');
@@ -365,24 +368,29 @@ class UnitesController extends Strass_Controller_Action
       $db->beginTransaction();
       try {
 	if ($m->get('individu/individu') == '$$nouveau$$') {
-	  $data = $m->get('fiche');
-	  $data['slug'] = $ti->createSlug(wtk_strtoid($data['prenom'].' '.$data['nom']));
-	  $k = $ti->insert($data);
-	  $i = $ti->findOne($k);
+	  $i = new Individu;
+	  $i->prenom = $m->prenom;
+	  $i->nom = $m->nom;
+	  $i->sexe = $m->sexe;
+	  $i->naissance = $m->naissance;
+	  $i->slug = $i->getTable()->createSlug(wtk_strtoid($i->getFullname(false, false)));
+	  $i->save();
 	}
 	else {
 	  $i = $individu;
 	}
 
-	$data = array('unite' => $u->id,
-		      'individu' => $i->id,
-		      'role' => $m->get('app/role'),
-		      'debut' => $m->get('app/debut'),
-		      );
+	$app = new Appartient;
+	$app->unite = $u->id;
+	$app->individu = $i->id;
+	$app->debut = $m->get('app/debut');
+	list($role, $titre) = explode('__', $m->get('app/role'));
+	$app->role = intval($role);
+	$app->titre = $titre;
 	if ($m->get('app/clore'))
-	  $data['fin'] = $m->get('app/fin');
+	  $app->fin = $m->get('app/fin');
+	$app->save();
 
-	$t->insert($data);
 	$message = $i->getFullname(false, false)." inscrit.";
 	$this->logger->info($message);
 	$this->_helper->Flash->info($message);
