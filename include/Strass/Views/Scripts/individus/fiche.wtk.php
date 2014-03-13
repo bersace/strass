@@ -56,27 +56,41 @@ if ($this->individu->notes) {
   $ss->addText($this->individu->notes);
 }
 
-// activité
-if ($this->appactives->count()) {
-  $s = $this->document->addSection('activites', "Actuellement");
-  $l = $s->addList();
-  foreach($this->appactives as $app) {
-    $l->addItem(new Wtk_Container(new Wtk_RawText($app->findParentRoles()." dans "),
-				  $this->lienUnite($app->findParentUnites()),
-				  new Wtk_RawText(" depuis le ".$app->getDebut())));
-  }
-}
+// CV scout
+$s = $this->document->addSection('appartenances', "CV scout");
+if ($this->apps->count()) {
+  $this->document->addStyleComponents('unites');
+  $m = new Wtk_Table_Model('unite_slug', 'unite_type', 'unite_nom', 'unite_lien',
+			   'role', 'accr', 'acl',
+			   'debut', 'fin');
 
-// historique
-if ($this->historique->count()) {
-  $s = $this->document->addSection('historique', "Historique");
-  $l = $s->addList();
-  foreach($this->historique as $app) {
-    $u = $app->findParentUnites();
-    $l->addItem(new Wtk_Container($this->lienUnite($u, $app->getShortDescription(),
-						   array('annee' => $app->getAnnee())),
-				  " en ".strtok($app->debut, "-")."-".strtok($app->fin, "-")));
+  foreach($this->apps as $app) {
+    $role = $app->findParentRoles();
+    $unite = $app->findParentUnites();
+    $url_unite =$this->url(array('controller' => 'unites', 'action' => 'contacts',
+				 'unite' => $unite->slug, 'annee' => $app->getAnnee()), true);
+    $m->append($unite->slug,
+	       $unite->findParentTypesUnite()->slug,
+	       $unite->getFullName(),
+	       $url_unite,
+	       array($role->slug, wtk_strtoid($app->titre)),
+	       $app->getAccronyme(),
+	       $role->acl_role,
+	       strftime('%x', strtotime($app->debut)),
+	       strftime('%x', strtotime($app->fin))
+	       );
   }
+
+  $t = $s->addTable($m, true, array('acl', 'role'));
+  $config = Zend_Registry::get('config');
+  $t->addFlags('effectifs', $config->system->mouvement, 'appartenances');
+  $t->addNewColumn('Poste', new Wtk_Table_CellRenderer_Text('text', 'accr'));
+  $t->addNewColumn('Unité', new Wtk_Table_CellRenderer_Link('href', 'unite_lien', 'label', 'unite_nom'));
+  $t->addNewColumn('Début', new Wtk_Table_CellRenderer_Text('text', 'debut'));
+  $t->addNewColumn('Fin', new Wtk_Table_CellRenderer_Text('text', 'fin'));
+}
+else {
+  $s->addParagraph('Inscrit dans aucune unité !')->addFlags('empty');
 }
 
 // commentaires

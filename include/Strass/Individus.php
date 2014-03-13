@@ -494,7 +494,10 @@ class Appartient extends Strass_Db_Table_Row_Abstract implements Zend_Acl_Role_I
 
   function getAnnee()
   {
-    return strftime('%Y', strtotime($this->debut) - 243 * 24 * 60 * 60);
+    if ($this->fin)
+      return strftime('%Y', strtotime($this->fin) - 243 * 24 * 60 * 60);
+    else
+      return null;
   }
 
   function getAccronyme()
