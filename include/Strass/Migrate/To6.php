@@ -205,11 +205,13 @@ EOS
 -- préparation des données pour migration
 
 UPDATE roles SET accr = 'CF' WHERE id = 'chef' AND type = 'feu';
-UPDATE roles SET titre = 'Assistant chef de clan', accr = 'ACC' WHERE id = 'assistant' AND titre = 'routier';
 UPDATE roles SET titre = 'Cheftaine de compagnie' WHERE accr = 'CCie';
 UPDATE roles SET titre = 'Assistante cheftaine de compagnie' WHERE accr = 'ACCie';
 UPDATE roles SET accr = 'ACR' WHERE id = 'assistant' AND type = 'ronde';
 UPDATE roles SET accr = 'GA' WHERE titre = 'guide-aînée';
+
+-- Ze bug :x
+UPDATE appartient SET role = 'chef' WHERE unite = 'ronde' AND role = 'siz';
 EOS
 );
     else:
@@ -240,6 +242,7 @@ EOS
 INSERT INTO unite_role
 (slug, acl_role, titre, accr, type)
 VALUES
+('acc', 'assistant', 'Assistant chef de clan', 'ACC', (SELECT id FROM unite_type WHERE slug = 'clan')),
 ('acm', 'assistant', 'Assistante d''Akéla', 'ACM', (SELECT id FROM unite_type WHERE unite_type.slug = 'meute')),
 ('acf', 'assistant', 'Assistante cheftaine de feu', 'ACF', (SELECT id FROM unite_type WHERE unite_type.slug = 'feu')),
 ('cer', 'chef', 'Chef d''équipe', 'CE', (SELECT id FROM unite_type WHERE slug = 'eqclan')),
@@ -247,6 +250,7 @@ VALUES
 ('cef', 'chef', 'Cheftaine d''équipe', 'CE', (SELECT id FROM unite_type WHERE slug = 'eqfeu')),
 ('equipiere', 'assistant', 'guide-aînée', NULL, (SELECT id FROM unite_type WHERE slug = 'eqfeu'));
 
+UPDATE unite_role SET slug = 'routier' WHERE slug LIKE 'routier%';
 UPDATE unite_role SET slug = 'akela' WHERE titre = 'Akéla';
 UPDATE unite_role SET slug = 'guillemette' WHERE titre = 'Guillemette';
 UPDATE unite_role SET slug = 'sizainier' WHERE slug = 'sizainier-sizloup';
@@ -285,7 +289,6 @@ EOS
     endif;
 
     $db->exec(<<<'EOS'
-DROP TABLE roles;
 
 CREATE VIEW vroles AS
 SELECT r.id, r.slug, r.titre, t.nom, r.accr, acl_role AS acl
@@ -482,6 +485,7 @@ EOS
 );
     endif;
 
+    $inscriptions_avant = $db->query('SELECT COUNT(*) FROM appartient;')->fetchColumn();
     $db->exec(<<<'EOS'
 CREATE VIEW vtitres AS
 SELECT t.id, t.slug, t.nom, unite_role.titre, unite_type.nom AS unite
@@ -505,13 +509,19 @@ SELECT DISTINCT individu.id, unite.id, unite_role.id, unite_titre.nom, debut, fi
 FROM appartient
 JOIN individu ON individu.slug = appartient.individu
 JOIN unite ON unite.slug = appartient.unite
-JOIN unite_role ON unite_role.acl_role = (CASE
-WHEN appartient.role IN ('chef', 'routier', '3e', '4e', '5e', '6e', '7e', '8e', 'siz', 'sec')
-        THEN appartient.role
-ELSE 'assistant'
-END) AND unite_role.type = unite.type
+JOIN roles ON roles.id = appartient.role AND roles.type = appartient.type
+JOIN unite_role ON unite_role.type = unite.type
+     AND (CASE
+     WHEN roles.titre = 'routier' THEN unite_role.slug = roles.titre
+     WHEN appartient.role = 'chef' THEN unite_role.acl_role = appartient.role
+     WHEN appartient.role IN ('3e', '4e', '5e', '6e', '7e', '8e', 'siz', 'sec')
+     	  THEN unite_role.slug LIKE appartient.role || '%'
+     ELSE unite_role.acl_role = 'assistant' -- Pour bagheera, raksha, etc.
+END)
 JOIN unite_type ON unite_type.id = unite.type
 LEFT JOIN unite_titre ON unite_titre.slug = appartient.role;
+
+DROP TABLE roles;
 
 -- suppression des titres (aumônier, bagheera, etc.)
 UPDATE unite_role SET acl_role = 'membre' WHERE acl_role LIKE '_e' OR acl_role IN ('siz', 'sec');
@@ -531,6 +541,10 @@ ORDER BY individu.naissance ASC;
 DROP TABLE appartient;
 EOS
 );
+
+    $inscriptions_apres = $db->query('SELECT COUNT(*) FROM appartenance;')->fetchColumn();
+    if (($diff = $inscriptions_avant - $inscriptions_apres))
+      error_log($diff." inscriptions ont été perdues pendant la migration");
 
     $rootslug = $db->query("SELECT slug FROM unite WHERE parent IS NULL LIMIT 1")->fetchColumn();
     rename('private/unites/intro.wiki', 'private/unites/'.$rootslug.'.wiki');
