@@ -51,10 +51,6 @@ NOUVEAUTÉS UTILISATEUR
    été aménagée pour index, effectifs, calendrier et photos des
    unités.
 
- - Les photos sont affichées par unités et par années comme les
-   effectifs et le calendrier. On peut renvoyer une photo (ex:
-   rotation, meilleur qualité, etc.).
-
  - Aperçu des documents. Édition des documents : changement d'unité,
    renvoi du document, renommage.
 
@@ -89,7 +85,10 @@ CHANGEMENTS WEBMESTRE
    d'alerte. Les bugs apparaissent dans le journal (autant que
    possible, bien sûr). Une page détaille chaque évènement.
 
- - Un thème par défaut est proposé.
+ - Un thème par défaut est proposé. Avec visionneuse de photos, menu
+   déroulant, barettes de poste dans une unité, compatible
+   multi-mouvement, impressions des effectifs et calendrier, etc. Peut
+   servir de base pour faire un style personnalisé.
 
  - L'année est un paramètre de base dans les URL
    /controlleur/action.format/annee/clef/val/clef/val.
