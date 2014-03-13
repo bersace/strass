@@ -37,6 +37,7 @@ class Wtk_Text extends Wtk_Element
 					 'file://',
 					 'mailto:',
 					 'xmpp:',
+					 'tel:',
 					 './',
 					 '../',
 					 );
