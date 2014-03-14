@@ -126,7 +126,13 @@ class Individu extends Strass_Db_Table_Row_Abstract implements Zend_Acl_Resource
 
   function __toString()
   {
-    return $this->getFullName();
+    try {
+      return $this->getFullName();
+    }
+    catch (Exception $e) {
+      error_log((string) $e);
+      return "Individu #".$this->id;
+    }
   }
 
   function capitalizedLastname($compact=false)
@@ -181,7 +187,7 @@ class Individu extends Strass_Db_Table_Row_Abstract implements Zend_Acl_Resource
 	return $app->getTitre();
       else
 	/* Prénom et initiales des mineurs pour les visiteurs*/
-	return trim(wtk_ucfirst($this->prenom)." ".$this->capitalizedLastname($mineur));
+	return trim(wtk_ucfirst($this->prenom)." ".$this->capitalizedLastname($compact || $mineur));
     }
     else
       /* dans le doute, on masque plutôt que de fuiter un prénom de cheftaine à un louveteau*/

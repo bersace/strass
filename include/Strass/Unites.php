@@ -658,11 +658,10 @@ class Unite extends Strass_Db_Table_Row_Abstract implements Zend_Acl_Resource_In
   {
     // sélectionner les années où l'unité à eut au moins un membre
     $db = $this->getTable()->getAdapter();
-    $ti = new Individus;
+    $t = new Individus;
     // DISTINCT ON dans SQLite est fait avec MIN() hors group by.
-    $select = $ti->select()
+    $select = $t->select()
       ->setIntegrityCheck(false)
-      ->distinct()
       ->from('appartenance',
 	     array('debut' => "strftime('%Y', debut)",
 		   'fin' => "strftime('%Y', fin)",
@@ -671,7 +670,8 @@ class Unite extends Strass_Db_Table_Row_Abstract implements Zend_Acl_Resource_In
 	     array('role' => 'unite_role.acl_role',
 		   'ordre' => 'MIN(unite_role.ordre)'))
       ->join('individu',
-	     'individu.id = appartenance.individu')
+	     'individu.id = appartenance.individu',
+	     array('individu.*', 'homonymes' => 'COUNT(individu.prenom)'))
       ->join('unite',
 	     'unite.id = appartenance.unite',
 	     array())
@@ -686,9 +686,10 @@ class Unite extends Strass_Db_Table_Row_Abstract implements Zend_Acl_Resource_In
       $select->where('unite.id = ? OR unite.parent = ?', intval($this->id));
     }
 
-    $is = $ti->fetchAll($select);
+    $is = $t->fetchAll($select);
     $annees = array();
     $cette_annee = intval(strftime('%Y', time()-243*24*60*60));
+    $homonymes = array();
     foreach($is as $individu) {
       /* pour le dernier chef en cours, inclure l'année courante *incluse* */
       $fin = $individu->fin ? $individu->fin : $cette_annee + 1;
@@ -696,18 +697,28 @@ class Unite extends Strass_Db_Table_Row_Abstract implements Zend_Acl_Resource_In
 	if (!array_key_exists($annee, $annees))
 	  $annees[$annee] = null;
 
-	if (is_object($annees[$annee])) {
+	if (is_object($chef = $annees[$annee]))
 	  continue;
-	}
 
 	if ($individu->unite == $this->id || ($virtuelle && $individu->unite == $this->parent)) {
-	  if ($individu->role == 'chef')
+	  if ($individu->role == 'chef') {
 	    $annees[$annee] = $individu;
+	    /* Récolte des homonymes */
+	    if (!array_key_exists($individu->prenom, $homonymes))
+	      $homonymes[$individu->prenom] = array($individu->slug);
+	    else
+	      array_push($homonymes[$individu->prenom], $individu->slug);
+	  }
 	  else // on a des assistant, mais pas de chef
 	    $annees[$annee] = '##INCONNU##';
 	}
       }
     }
+
+    foreach($annees as $chef)
+      if (is_object($chef))
+	$chef->homonymes = count(array_unique($homonymes[$chef->prenom]));
+
     ksort($annees);
     return $annees;
   }
