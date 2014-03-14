@@ -67,6 +67,13 @@ try {
   Zend_Session::writeClose();
 }
 catch (Exception $e) {
+  // Close session, if started
+  if (class_exists('Zend_Session', false) && Zend_Session::isStarted()) {
+    Zend_Session::writeClose();
+  } elseif (isset($_SESSION)) {
+    session_write_close();
+  }
+
   try {
     try {
       $logger = Zend_Registry::get('logger');
