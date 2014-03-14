@@ -159,7 +159,7 @@ class Individu extends Strass_Db_Table_Row_Abstract implements Zend_Acl_Resource
     return implode('', $nom);
   }
 
-  function getFullName($compute = true, $totem = true)
+  function getFullName($compute = true, $totem = true, $compact = false)
   {
     $acl = Zend_Registry::get('acl');
 
@@ -173,24 +173,24 @@ class Individu extends Strass_Db_Table_Row_Abstract implements Zend_Acl_Resource
     }
 
     if ($acl->isAllowed(null, $this, 'voir-nom'))
-      return trim(wtk_ucfirst($this->prenom)." ".$this->capitalizedLastname());
-    else if ($compute && $app = $this->findAppartenances()->current())
-      return $app->findParentRoles()->titre;
+      return trim(wtk_ucfirst($this->prenom)." ".$this->capitalizedLastname($compact));
+    else if ($compute && $app = $this->findAppartenances()->current()) {
+      if ($app->titre)
+	return $app->titre;
+      /* Branche jaune, préférer Akéla, Guillemette pour les inconnus */
+      elseif ($app->findParentUnites()->findParentTypesUnite()->age_max < 14)
+	return $app->getTitre();
+      else
+	/* Prénom et initiales */
+	return trim(wtk_ucfirst($this->prenom)." ".$this->capitalizedLastname(true));
+    }
     else
       return 'Nom masqué';
   }
 
   function getName()
   {
-    if (Zend_Registry::get('acl')->isAllowed(null, $this, 'voir-nom')) {
-      return $this->prenom.' '.$this->capitalizedLastname(true);
-    }
-    else if ($app = $this->findAppartenances()->current()) {
-      return $app->findParentRoles()->titre;
-    }
-    else {
-      return 'Masqué';
-    }
+    return $this->getFullName(true, true, true);
   }
 
   function getDateNaissance($format = "%e/%m/%Y")

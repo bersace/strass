@@ -33,6 +33,6 @@ class Strass_View_Helper_LienIndividu
       return $lien;
     }
     else
-      return new Wtk_RawText($label ? $label : $individu->getName());
+      return new Wtk_RawText($label ? $label : $individu->getFullname());
   }
 }
