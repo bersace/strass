@@ -499,7 +499,8 @@ a {
 
     #connexes li.rapports,
     #aside li.livredor,
-    #aside li.citation
+    #aside li.citation,
+    #aside li.ecrire
     {
 	background-image: url("icones/pen.png");
     }
@@ -624,6 +625,7 @@ a {
 	    display: inline-block;
 	    vertical-align: top;
 	    width: 32.5%;
+	    min-width: 16em;
 	    max-width: 22em;
 	    padding: 1ex 2em;
 	    margin: 0;

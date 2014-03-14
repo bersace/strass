@@ -65,10 +65,19 @@ body
 @media screen {
     $menuwidth: 18em;
 
+    html {
+	margin: 0;
+	padding: 2pt;
+    }
+
     body {
-	margin: 1em auto;
-	width: 90%;
+	margin: 0 auto;
+	padding: 0;
+	width: 96%;
+	min-width: 42em + $menuwidth;
 	max-width: 106em + $menuwidth;
+	overflow-x: hidden;
+	overflow-y: auto;
 
 	& > div
 	{
