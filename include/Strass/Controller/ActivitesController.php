@@ -73,15 +73,10 @@ class ActivitesController extends Strass_Controller_Action
     $m->addConstraintRequired($i);
 
     $annee = $this->_helper->Annee(false);
-    // On ne décale pas en septembre afin de réserver pour la date
-    // actuelle si possible.
-    $annee = $annee ? $annee : date('Y');
-    $m->addDate('debut', 'Début',
-		$annee.date('-m-d').' 14:30',
-		'%Y-%m-%d %H:%M');
-    $m->addDate('fin', 'Fin',
-		$annee.date('-m-d', time()+60*60*24).'17:00',
-		'%Y-%m-%d %H:%M');
+    $debut = $annee ? $annee.'-09-01' : strftime('%Y-%m-%d');
+    $fin = $annee ? $annee.'-09-02' : strftime('%Y-%m-%d', time() + 60 * 60 * 24);
+    $m->addDate('debut', 'Début', $debut.' 14:30', '%Y-%m-%d %H:%M');
+    $m->addDate('fin', 'Fin', $fin.'17:00', '%Y-%m-%d %H:%M');
     $m->addString('intitule', 'Intitulé explicite', "");
     $m->addString('lieu', 'Lieu');
 
