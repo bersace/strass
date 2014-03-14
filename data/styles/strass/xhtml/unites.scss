@@ -66,13 +66,22 @@
 
 /* EFFECTIFS */
 #document.contacts table.effectifs {
-    width: 15em;
+    width: 30em;
     margin: 0 auto;
     max-width: 100%;
 
     /* simple listing, façon 27eparis.net */
     &.sansfiche {
 	width: 98%;
+
+	&.terminale {
+	    width: 30em;
+
+	    tbody {
+		width: 100%;
+	    }
+	}
+
 	display: block;
 	thead { display: none; }
 
