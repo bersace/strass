@@ -190,7 +190,12 @@ class Article extends Strass_Db_Table_Row_Abstract implements Zend_Acl_Resource_
 
   function getBoulet($generate=false)
   {
-    return $this->boulet ? $this->boulet : $generate ? wtk_first_words($this->article) : null;
+    if ($this->boulet)
+      return $this->boulet;
+    elseif ($generate)
+      return wtk_first_words($this->article);
+    else
+      return null;
   }
 
   function findAuteur()
