@@ -11,7 +11,8 @@
 @media screen {
 
     #document > form,
-    #document.inscriptions table
+    #document.inscriptions table,
+    #document.parametres #parametres
     {
 	@include minipage;
     }
@@ -31,18 +32,6 @@
 		box-sizing: border-box;
 		width: 100%;
 	    }
-	}
-    }
-
-    #document.parametres #parametres {
-	display: flex;
-	flex-direction: row;
-	flex-wrap: wrap;
-
-	& > .section {
-	    width: 48%;
-	    margin: 0 1%;
-	    padding: 0;
 	}
     }
 }
