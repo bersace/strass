@@ -4,7 +4,7 @@ require_once 'Text/Wiki.php';
 
 class Wtk_Text extends Wtk_Element
 {
-	static protected	$tw;
+  static protected $const_tw;
 
 	function __construct ($text = '', $preformated = false)
 	{
@@ -12,8 +12,8 @@ class Wtk_Text extends Wtk_Element
 		$this->text		= $text;
 		$this->preformated	= $preformated;
 
-		if (!self::$tw) {
-			self::$tw = $tw = new Text_Wiki();
+		if (!self::$const_tw) {
+			self::$const_tw = $tw = new Text_Wiki();
 			// Désactivation de certaine fonctionnalité peu sécurisé ou utiles dans
 			// le cadre d'un wiki uniquement.
 			$disable = array('phplookup',	'interwiki',	'wikilink',	'freelink',	'bold',
@@ -47,7 +47,7 @@ class Wtk_Text extends Wtk_Element
 			$tw->setRenderConf('Xhtml', 'image', 'base', './');
 		}
 
-		$this->tw = self::$tw;
+		$this->tw = clone(self::$const_tw);
 	}
 
 	function setText ($text)
@@ -62,6 +62,6 @@ class Wtk_Text extends Wtk_Element
 
 	function getTextWiki()
 	{
-		return self::$tw;
+		return $this->tw;
 	}
 }
