@@ -9,7 +9,7 @@ class Strass_View_Helper_AppsTableModel
     $this->view = $view;
   }
 
-  function appsTableModel($apps, $m = null)
+  function appsTableModel($apps, $m = null, $racine=null)
   {
     if (!$m) {
       $m = new Wtk_Table_Model('unite_slug',
@@ -32,11 +32,11 @@ class Strass_View_Helper_AppsTableModel
 			       'totem',
 			       'numero');
     }
-    $this->append($m, $apps);
+    $this->append($m, $apps, $racine);
     return $m;
   }
 
-  function append($model, $apps)
+  function append($model, $apps, $racine)
   {
     $m = $model;
     $acl = Zend_Registry::get('acl');
@@ -56,11 +56,12 @@ class Strass_View_Helper_AppsTableModel
 					 'action' => 'contacts',
 					 'unite' => $unite->slug), true);
       $etape = $individu->findParentEtapes();
+      $maitrise = $unite == $racine && !$unite->isTerminale();
 
       // insertion du tuple
       $m->append($unite->slug,
 		 $unite->findParentTypesUnite()->slug,
-		 $unite->getName(),
+		 $maitrise ? 'Maîtrise' : $unite->getName(),
 		 $url_unite,
 		 $individu->getFullname(true, false),
 		 array($role->slug, wtk_strtoid($app->titre)),

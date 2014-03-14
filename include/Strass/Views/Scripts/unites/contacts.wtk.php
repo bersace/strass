@@ -7,7 +7,7 @@ class Strass_Views_PagesRenderer_Unites_Contacts extends Strass_Views_PagesRende
     if ($apps->count()) {
       $type = $unite->findParentTypesUnite();
       $t = $s->addChild($this->view->tableEffectifs($unite,
-						    $this->view->appsTableModel($apps),
+						    $this->view->appsTableModel($apps, null, $unite),
 						    $this->view->fiches,
 						    array('adelec', 'portable', 'fixe')));
     }
