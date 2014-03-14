@@ -29,8 +29,6 @@ class Strass_Auth_Adapter_Sudo implements Zend_Auth_Adapter_Interface
 	$sudoer = $t->findByUsername($username);
 	Zend_Registry::set('sudoer', $sudoer);
 
-	error_log('SUDOER '.join('@', $sudoer->getIdentity()));
-
 	/* NOOP */
 	$identity = Zend_Registry::get('user')->getIdentity();
       }
@@ -42,7 +40,6 @@ class Strass_Auth_Adapter_Sudo implements Zend_Auth_Adapter_Interface
       /* Changer l'identité */
       $identity = $this->target->getIdentity();
       $session->sudoer = $sudoer->getIdentity();
-      error_log('SUDO '.join('@', $identity));
     }
     else {
       /* On considère l'authentification comme un succès s'il n'y a

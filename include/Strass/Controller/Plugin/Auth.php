@@ -78,7 +78,6 @@ class Strass_Controller_Plugin_Auth extends Zend_Controller_Plugin_Abstract
 
     // initialise la session.
     $auth = Zend_Auth::getInstance();
-    error_log('AUTH '.join('@', (array) $auth->getIdentity()));
 
     // DB AUTH
     $this->db = new Strass_Auth_Adapter_DbTable($db, 'user', 'username', 'password');
@@ -134,11 +133,8 @@ class Strass_Controller_Plugin_Auth extends Zend_Controller_Plugin_Abstract
 	    break;
 	  }
 	}
-	else
-	  error_log('FORM '.join('@', $auth->getIdentity()));
       }
       else if ($om->validate()) {
-	error_log('LOGOUT');
 	$auth->clearIdentity();
       }
     }
@@ -168,12 +164,9 @@ class Strass_Controller_Plugin_Auth extends Zend_Controller_Plugin_Abstract
 	}
 
 	$this->getResponse()->sendHeaders();
-	error_log('exit');
+	error_log('EXIT 401');
 	exit();
       }
-      else
-	error_log('DIGEST '.join('@', $auth->getIdentity()));
-
     }
     return $this->getUser();
   }
