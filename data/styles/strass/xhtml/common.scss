@@ -537,12 +537,15 @@ a {
 	background-image: url("icones/plus.png");
     }
 
-    #admin li.configurer,
     #admin li.administrer,
-    #aside li.admin,
-    #aside li.parametres
+    #aside li.admin
     {
 	background-image: url("icones/settings.png");
+    }
+
+    #aside li.parametres
+    {
+	background-image: url("icones/config.png");
     }
 
     #admin li.editer
