@@ -52,3 +52,8 @@ $critical_bg: $error_bg;
 	background: $critical_bg;
     }
 }
+
+@mixin headfont {
+    font-family: "Old Newspaper Types";
+    font-weight: normal;
+}

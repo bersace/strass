@@ -2,6 +2,11 @@
 
 @import "lib";
 
+@font-face {
+    font-family: "Old Newspaper Types";
+    src: url("OldNewspaperTypes.ttf");
+}
+
 body
 {
     font-family: "Deja Vu Sans",sans-serif;
@@ -17,6 +22,7 @@ h2, h3, h4, h5, h6
 
 h1
 {
+    @include headfont;
     font-size: 1.40em;
 }
 
@@ -215,9 +221,8 @@ a {
 	& > .h
 	{
 	    font-size: 3em;
-	    font-family: serif;
-	    text-shadow: 1pt 1pt 2pt rgba(250, 251, 248, .75),
-	    1pt 1pt 4pt rgba(50, 51, 48, .75);
+	    @include headfont;
+	    text-shadow: 1pt 1pt 2pt rgba(250, 251, 248, .75);
 
 	    a
 	    {
@@ -338,7 +343,8 @@ a {
 	    .h
 	    {
 		text-align: right;
-		font-size: 1.2em;
+		@include headfont;
+		font-size: 1.4em;
 		margin: 0;
 		padding: 1ex;
 		color: lighten($content_background, 10%);
@@ -452,8 +458,8 @@ a {
 	    }
 	}
     }
-    /* ICÔNES */
 
+    /* ICÔNES */
     #menu li:first-child
     {
 	background-image: url("icones/accueil.png");
@@ -611,8 +617,9 @@ a {
 
 	.h
 	{
+	    @include headfont;
 	    width: 100%;
-	    font-size: 1.75ex;
+	    font-size: 1.5ex;
 	    margin-top: 0;
 	}
 
