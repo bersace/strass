@@ -19,6 +19,7 @@ $critical_bg: $error_bg;
        la largeur et on contre */
 
     width: 60%;
+    max-width: 50em;
     margin: 1em auto;
 }
 
@@ -37,5 +38,17 @@ $critical_bg: $error_bg;
 	float: left;
 	margin: 1ex 1em 0 1ex;
 	font-weight: bold;
+    }
+}
+
+@mixin adminlink {
+    display: inline-block;
+    background: $page_background;
+    padding: .5ex 1em;
+    border-radius: 1ex;
+    box-shadow: 2pt 4pt 1ex rgba(4, 4, 4, 0.5);
+
+    &.critical {
+	background: $critical_bg;
     }
 }

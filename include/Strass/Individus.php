@@ -313,7 +313,7 @@ class Individu extends Strass_Db_Table_Row_Abstract implements Zend_Acl_Resource
     return $t->fetchAll($s);
   }
 
-  function findRolesCandidats($unite)
+  function findRolesCandidats($unite, $filter_current=true)
   {
     $t = new Roles;
     $db = $t->getAdapter();
@@ -322,13 +322,14 @@ class Individu extends Strass_Db_Table_Row_Abstract implements Zend_Acl_Resource
       ->from('unite_role')
       ->join('unite_type', 'unite_type.id = unite_role.type', array())
       ->join('unite', 'unite.type = unite_type.id', array())
-      ->joinLeft('appartenance',
-		 'appartenance.role = unite_role.id AND '.
-		 'appartenance.unite = unite.id AND '.
-		 $db->quoteInto('appartenance.individu', $this->id),
-		 array())
-      ->where('unite.id = ?', $unite->id)
-      ->where('appartenance.id IS NULL');
+      ->where('unite.id = ?', $unite->id);
+    if ($filter_current)
+      $s->joinLeft('appartenance',
+		   'appartenance.role = unite_role.id AND '.
+		   'appartenance.unite = unite.id AND '.
+		   $db->quoteInto('appartenance.individu', $this->id),
+		   array())
+	->where('appartenance.id IS NULL');
     return $t->fetchAll($s);
   }
 
@@ -526,6 +527,14 @@ class Appartient extends Strass_Db_Table_Row_Abstract implements Zend_Acl_Role_I
       return $this->titre;
     else
       return $this->findParentRoles()->getAccronyme();
+  }
+
+  function getTitre()
+  {
+    if ($this->titre)
+      return $this->titre;
+    else
+      return $this->findParentRoles()->titre;
   }
 
   function getShortDescription()

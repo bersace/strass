@@ -66,11 +66,11 @@
 }
 
 #details {
-    width: 40%;
+    width: 30%;
 
     ul {
 	/* Adapté à la ligne Dernière connexion */
-	min-width: 20em;
+	min-width: 15em;
 	padding-left: 2em;
     }
 
@@ -81,7 +81,7 @@
 }
 
 #cv {
-    min-width: 59%;
+    min-width: 69%;
 
     table {
 	width: 100%;
@@ -122,5 +122,39 @@
 		font-size: 80%;
 	    }
 	}
+    }
+}
+
+.individus.reinscrire {
+    .vignettes {
+	white-space: nowrap;
+	text-align: center;
+
+	li {
+	    vertical-align: middle;
+
+	    &.liaison {
+		font-size: 200%;
+		font-style: italic;
+		font-family: serif;
+		margin: 1em;
+	    }
+	}
+    }
+}
+
+.individus.desinscrire #inscription {
+    width: 100%;
+    text-align: center;
+
+    .vignette {
+	display: inline-block;
+    }
+
+    table {
+	@include minipage;
+	margin: 0 auto;
+
+	thead { display: none; }
     }
 }

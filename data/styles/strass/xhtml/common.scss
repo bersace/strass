@@ -210,19 +210,6 @@ a {
     font-style: italic;
 }
 
-
-@mixin adminlink {
-    display: inline-block;
-    background: $page_background;
-    padding: .5ex 1em;
-    border-radius: 1ex;
-    box-shadow: 2pt 4pt 1ex rgba(4, 4, 4, 0.5);
-
-    &.critical {
-	background: $critical_bg;
-    }
-}
-
 @media screen {
     #header {
 	& > .h
@@ -293,8 +280,9 @@ a {
 	@include adminlink;
     }
 
-    td.adminlinks a.adminlink {
-	font-size: 90%;
+    td a.adminlink {
+	font-size: 80%;
+	padding: .25ex 1ex;
     }
 
     ul.adminlinks {

@@ -285,6 +285,84 @@ class IndividusController extends Strass_Controller_Action
     }
   }
 
+  function reinscrireAction()
+  {
+    $this->view->app = $app = $this->_helper->Inscription();
+    $this->metas(array('DC.Title' => "Éditer l'inscription"));
+    $this->view->individu = $individu = $app->findParentIndividus();
+    $this->assert(null, $individu, 'inscrire',
+		  "Vous n'avez pas le droit d'inscrire ".$individu->getFullname()." dans une unité.");
+
+    $this->view->model = $m = new Wtk_Form_Model('inscription');
+    $this->view->unite = $unite = $app->findParentUnites();
+    $i = $m->addEnum('role', 'Rôle', $app->role);
+    $roles = $individu->findRolesCandidats($unite, false);
+    foreach($roles as $role)
+      $i->addItem($role->id, wtk_ucfirst($role->titre));
+    $m->addEnum('titre', 'Titre', $app->titre);
+    $m->addDate('debut', 'Début', $app->debut);
+    $i0 = $m->addBool('clore', 'Clore', (bool) $app->fin);
+    $i1 = $m->addDate('fin', 'Fin', $app->fin);
+    $m->addConstraintDepends($i1, $i0);
+    $m->addNewSubmission('enregistrer', "Enregistrer");
+
+    if ($m->validate()) {
+      $app->role = $m->role;
+      $app->titre = $m->titre;
+      $app->debut = $m->debut;
+      if ($m->clore)
+	$app->fin = $m->fin;
+      else
+	$app->fin = null;
+
+      $db = $app->getTable()->getAdapter();
+      $db->beginTransaction();
+      try {
+	$app->save();
+	$this->logger->info("Inscription éditée");
+	$this->_helper->Flash->info("Inscription éditée");
+	$db->commit();
+      }
+      catch (Exception $e) { $db->rollBack(); throw $e; }
+
+      $this->redirectSimple('fiche', 'individus', null, array('individu' => $individu->slug), true);
+    }
+  }
+
+  function desinscrireAction()
+  {
+    $this->view->app = $app = $this->_helper->Inscription();
+    $this->metas(array('DC.Title' => "Annuler l'inscription"));
+    $this->view->individu = $individu = $app->findParentIndividus();
+    $this->assert(null, $individu, 'inscrire',
+		  "Vous n'avez pas le droit de désinscrire ".$individu->getFullname()." d'une unité.");
+
+    $this->view->model = $m = new Wtk_Form_Model('annuler');
+    $m->addBool('confirmer', "Je confirme la suppression de cette inscription dans l'historique");
+    $m->addNewSubmission('continuer', "Continuer");
+
+    if ($m->validate()) {
+      if ($m->confirmer) {
+	$db = $app->getTable()->getAdapter();
+	$db->beginTransaction();
+	try {
+	  $app->delete();
+	  $this->logger->info("Inscription supprimée",
+			      $this->_helper->Url('fiche', 'individus', null,
+						  array('individu' => $individu->slug), true));
+	  $this->_helper->Flash->warn("Inscription supprimée");
+	  $db->commit();
+	}
+	catch (Exception $e) { $db->rollBack(); throw $e; }
+      }
+      else {
+	$this->_helper->Flash->info("Suppression annulée");
+      }
+
+      $this->redirectSimple('fiche', 'individus', null, array('individu' => $individu->slug), true);
+    }
+  }
+
   function adminAction()
   {
     $this->view->individu = $individu = $this->_helper->Individu();
