@@ -111,6 +111,8 @@ VALUES
 ('5e-jeannette','5e',				NULL,	16,	'membre'),
 ('6e-jeannette','6e',				NULL,	16,	'membre');
 
+UPDATE unite_role SET nom_jungle = 1 WHERE slug IN ('akela', 'guillemette', 'acm', 'acr');
+
 UPDATE unite_role SET ordre = 0 WHERE slug = 'cg';
 UPDATE unite_role SET ordre = 1 WHERE slug = 'acg';
 UPDATE unite_role SET ordre = 10 WHERE slug IN ('cc', 'cf');

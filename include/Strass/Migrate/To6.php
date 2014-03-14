@@ -85,6 +85,7 @@ UPDATE unite_type SET accr_we = 'WEHE', nom_we = 'Weekend HE', accr_camp = 'Camp
 WHERE slug = 'he';
 UPDATE unite_type SET nom_sortie = 'Chasse', nom_we = 'Grand chasse', nom_camp = 'Grande chasse',
        accr_sortie = 'Chasse', accr_we = 'Grande chasse', accr_camp = 'Grande chasse'
+WHERE slug = 'meute';
 
 UPDATE unite_type SET ordre = 0 WHERE slug = 'groupe';
 UPDATE unite_type SET ordre = 10 WHERE slug IN ('aines');
@@ -198,6 +199,7 @@ CREATE TABLE `unite_role` (
 	titre		CHAR(64),
 	accr		CHAR(6),
 	ordre		INT(2),
+	nom_jungle	BOOLEAN		DEFAULT 0,
 	UNIQUE (slug, type)
 );
 EOS
@@ -236,6 +238,7 @@ SELECT
 	(CASE WHEN length(roles.accr) > 0 THEN lower(roles.accr) ELSE lower(roles.titre) || '-' || roles.type END),
         (SELECT id FROM unite_type WHERE unite_type.slug = roles.type), id, titre, accr, ordre
 FROM roles;
+
 EOS
 );
 
@@ -262,6 +265,8 @@ UPDATE unite_role SET slug = 'second' WHERE slug = 'second-sizloup';
 UPDATE unite_role SET slug = 'seconde' WHERE slug = 'seconde-sizjeannette';
 UPDATE unite_role SET slug = REPLACE(slug, 'sizloup', 'louveteau') WHERE slug LIKE '%sizloup';
 UPDATE unite_role SET slug = REPLACE(slug, 'sizjeannette', 'jeannette') WHERE slug LIKE '%sizjeannette';
+
+UPDATE unite_role SET nom_jungle = 1 WHERE slug IN ('akela', 'guillemette', 'acm', 'acr');
 
 UPDATE unite_role SET ordre = 0 WHERE slug = 'cg';
 UPDATE unite_role SET ordre = 1 WHERE slug = 'acg';

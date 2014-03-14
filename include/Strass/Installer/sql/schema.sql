@@ -123,6 +123,7 @@ CREATE TABLE `unite_role` (
 	titre		CHAR(64),
 	accr		CHAR(6),
 	ordre		INT(2),
+	nom_jungle	BOOLEAN		DEFAULT 0,
 	UNIQUE (slug, type)
 );
 
