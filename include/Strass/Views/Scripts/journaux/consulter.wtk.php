@@ -2,6 +2,8 @@
 
 $this->document->addStyleComponents('signature', 'article');
 
+$this->document->addChild($this->vignetteIndividu($this->article->findAuteur()));
+
 $s = $this->document->addSection('boulet');
 $s->addFlags('article', 'boulet');
 $t = $s->addText($this->article->getBoulet());
