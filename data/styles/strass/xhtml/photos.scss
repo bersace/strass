@@ -7,7 +7,19 @@
     @include message;
 }
 
-#document.voir {
+#contentwrapper #document.voir {
+
+    h1 {
+	background: none;
+	border: none;
+	border-radius: 0;
+	width: 100%;
+	padding: 2em 0 0;
+	color: $highlight_color;
+	text-align: center;
+	font-size: 220%;
+    }
+
     #visionneuse {
 	position: relative;
 
