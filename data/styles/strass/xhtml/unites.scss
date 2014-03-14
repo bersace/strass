@@ -48,7 +48,6 @@
 .effectifs tr.category td a {
     @include headfont;
     color: $highlight_color;
-    font-weight: bold;
     font-size: 125%;
     text-decoration: none;
     padding-top: 1em;
@@ -241,6 +240,15 @@ tr.seconde td.accr
 	width: 100%;
     }
 
+    #document.effectifs tr .adelec {
+	display: none;
+    }
+
+    table.effectifs tbody td {
+	padding-top: 0;
+	padding-bottom: 0;
+    }
+
     table.effectifs td a
     {
 	text-decoration: none;
@@ -259,9 +267,9 @@ tr.seconde td.accr
 	text-align: left;
     }
 
-    .effectifs th.accr
-    {
-	visibility: hidden;
-	border: none;
-    }
+    /* .effectifs th.accr */
+    /* { */
+    /* 	visibility: hidden; */
+    /* 	border: none; */
+    /* } */
 }
