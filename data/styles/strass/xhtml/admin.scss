@@ -104,15 +104,24 @@ table {
 #indicateurs, #membres
 {
     float: left;
+    clear: left;
     width: 22em;
+    position: relative;
+    z-index: 1;
 }
 
 #log
 {
+    position: relative;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
     float: right;
-    width: 35em;
+    width: 100%;
+    padding-left: 23em;
+    margin-left: -23em;
     min-height: 32em;
     overflow: hidden;
+    z-index: 0;
 }
 
 table.logs td,

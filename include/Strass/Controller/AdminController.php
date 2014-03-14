@@ -100,7 +100,7 @@ class AdminController extends Strass_Controller_Action
       $m->append($e->date,
 		 strtolower($e->level),
 		 $e->logger,
-		 wtk_first_words($e->message, 40),
+		 $e->message,
 		 $e->url,
 		 $pn, $fiche,
 		 $url);
