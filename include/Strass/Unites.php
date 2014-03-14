@@ -110,7 +110,6 @@ class Unite extends Strass_Db_Table_Row_Abstract implements Zend_Acl_Resource_In
 				 array('assistant',	array('prevoir-activite')),
 				 array('membre',	array('consulter',
 							      'calendrier',
-							      'contacts',
 							      'infos')));
 
   public function getResourceId()
@@ -122,7 +121,7 @@ class Unite extends Strass_Db_Table_Row_Abstract implements Zend_Acl_Resource_In
   {
     $acl->add(new Zend_Acl_Resource($this->getResourceId()));
     $this->initPrivileges($acl, array($this));
-    $acl->allow(null, $this, array('index', 'contacts'));
+    $acl->allow(null, $this, array('index', 'effectifs'));
   }
 
   public function getRoleId($role)

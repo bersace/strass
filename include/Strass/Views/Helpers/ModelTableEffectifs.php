@@ -1,6 +1,6 @@
 <?php
 
-class Strass_View_Helper_AppsTableModel
+class Strass_View_Helper_ModelTableEffectifs
 {
   protected	$view;
 
@@ -9,7 +9,7 @@ class Strass_View_Helper_AppsTableModel
     $this->view = $view;
   }
 
-  function appsTableModel($apps, $m = null, $racine=null)
+  function modelTableEffectifs($apps, $m = null, $racine=null)
   {
     if (!$m) {
       $m = new Wtk_Table_Model('unite_slug',
@@ -53,7 +53,7 @@ class Strass_View_Helper_AppsTableModel
       }
 
       $url_unite =$this->view->url(array('controller' => 'unites',
-					 'action' => 'contacts',
+					 'action' => 'effectifs',
 					 'unite' => $unite->slug), true);
       $etape = $individu->findParentEtapes();
       $maitrise = $unite == $racine && !$unite->isTerminale();

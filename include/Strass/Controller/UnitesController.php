@@ -48,13 +48,13 @@ class UnitesController extends Strass_Controller_Action
 			     array(null, $u));
   }
 
-  function contactsAction()
+  function effectifsAction()
   {
     $this->metas(array('DC.Title.alternative' => 'Effectifs'));
     $this->view->unite = $u = $this->_helper->Unite();
     $this->branche->append(null, array('annee' => false));
 
-    $this->view->model = new Strass_Pages_Model_Contacts($u, $this->_helper->Annee());
+    $this->view->model = new Strass_Pages_Model_Effectifs($u, $this->_helper->Annee());
     $this->_helper->Annee->setBranche($this->view->annee = $a = $this->view->model->current);
     $this->metas(array('DC.Title' => 'Effectifs '.$a));
 

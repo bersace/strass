@@ -69,7 +69,7 @@ if ($this->apps->count()) {
   foreach($this->apps as $app) {
     $role = $app->findParentRoles();
     $unite = $app->findParentUnites();
-    $url_unite = $this->url(array('controller' => 'unites', 'action' => 'contacts',
+    $url_unite = $this->url(array('controller' => 'unites', 'action' => 'effectifs',
 				  'unite' => $unite->slug, 'annee' => $app->getAnnee()), true);
     $url_editer = $this->url(array('controller' => 'individus', 'action' => 'reinscrire',
 				   'inscription' => $app->id), true);

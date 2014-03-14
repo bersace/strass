@@ -75,10 +75,10 @@ class Strass_Controller_Action_Helper_Unite extends Zend_Controller_Action_Helpe
 		      array('controller' => 'photos',
 			    'action' => 'index'));
 
-    $connexes->append('Contacts',
+    $connexes->append('Effectifs',
 		      array('controller' => 'unites',
-			    'action' => 'contacts'),
-		      array(null, $unite, 'contacts'));
+			    'action' => 'effectifs'),
+		      array(null, $unite, 'effectifs'));
 
     $connexes->append("Calendrier",
 		      array('controller' => 'activites',

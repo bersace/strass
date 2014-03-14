@@ -10,7 +10,7 @@ $m = new Wtk_Table_Model('unite_slug', 'unite_type', 'unite_nom', 'unite_lien',
 
 $role = $this->app->findParentRoles();
 $unite = $this->app->findParentUnites();
-$url_unite = $this->url(array('controller' => 'unites', 'action' => 'contacts',
+$url_unite = $this->url(array('controller' => 'unites', 'action' => 'effectifs',
 			      'unite' => $unite->slug, 'annee' => $this->app->getAnnee()), true);
 $fin = $this->app->fin ? strftime('au %x', strtotime($this->app->fin)) : "à aujourd'hui";
 $m->append($unite->slug,

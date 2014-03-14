@@ -45,7 +45,7 @@
     }
 }
 
-.contacts tr.category td a {
+.effectifs tr.category td a {
     @include headfont;
     color: $highlight_color;
     font-weight: bold;
@@ -65,7 +65,7 @@
 }
 
 /* EFFECTIFS */
-#document.contacts table.effectifs {
+#document.effectifs table.effectifs {
     width: 30em;
     margin: 0 auto;
     max-width: 100%;

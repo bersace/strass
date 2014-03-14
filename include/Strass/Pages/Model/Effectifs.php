@@ -1,6 +1,6 @@
 <?php
 
-class Strass_Pages_Model_Contacts extends Strass_Pages_Model_Historique
+class Strass_Pages_Model_Effectifs extends Strass_Pages_Model_Historique
 {
   function fetch($annee = null)
   {

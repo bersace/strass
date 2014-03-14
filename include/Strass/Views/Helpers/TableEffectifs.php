@@ -22,14 +22,11 @@ class Strass_View_Helper_TableEffectifs
   {
     $t = new Wtk_Table($model, true, array('acl', 'role', 'etape'));
     $config = Zend_Registry::get('config');
-    $t->addFlags('effectifs', $config->system->mouvement);
-    if ($fiches)
-      $t->addFlags('fiches');
-    else
-      $t->addFlags('sansfiche');
-
     $type = $unite->findParentTypesUnite();
-    $t->addFlags('contacts', $type->slug);
+
+    $t->addFlags('effectifs', $config->system->mouvement, $type->slug,
+		 $fiches ? 'fiches' : 'sansfiche');
+
     if ($type->virtuelle)
       $t->addFlags('virtuelle');
     if ($type->isTerminale())

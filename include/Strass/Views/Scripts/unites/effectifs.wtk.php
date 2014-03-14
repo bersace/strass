@@ -1,13 +1,13 @@
 <?php
 
-class Strass_Views_PagesRenderer_Unites_Contacts extends Strass_Views_PagesRenderer_Historique {
+class Strass_Views_PagesRenderer_Effectifs extends Strass_Views_PagesRenderer_Historique {
   function render($annee, $data, $s) {
     extract($data);
 
     if ($apps->count()) {
       $type = $unite->findParentTypesUnite();
       $t = $s->addChild($this->view->tableEffectifs($unite,
-						    $this->view->appsTableModel($apps, null, $unite),
+						    $this->view->modelTableEffectifs($apps, null, $unite),
 						    $this->view->fiches,
 						    array('adelec', 'portable', 'fixe')));
     }
@@ -19,5 +19,5 @@ class Strass_Views_PagesRenderer_Unites_Contacts extends Strass_Views_PagesRende
 }
 
 $s = $this->document->addFlags($this->unite->findParentTypesUnite()->slug);
-$renderer = new Strass_Views_PagesRenderer_Unites_Contacts($this);
+$renderer = new Strass_Views_PagesRenderer_Effectifs($this);
 $s->addPages(null, $this->model, $renderer);
