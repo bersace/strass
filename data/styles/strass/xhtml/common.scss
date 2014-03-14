@@ -135,7 +135,7 @@ a {
 	&.info {
 	    color: $info;
 	    background-color: $info_bg;
-	    background-image: url("icones/information.png");
+	    background-image: url("dialog/information.png");
 	    background-position: 1ex .72ex;
 	    background-repeat: no-repeat;
 	}
@@ -143,7 +143,7 @@ a {
 	&.error {
 	    color: $warn;
 	    background-color: $warn_bg;
-	    background-image: url("icones/attention.png");
+	    background-image: url("dialog/attention.png");
 	    background-position: 1em 1em;
 	    background-repeat: no-repeat;
 
