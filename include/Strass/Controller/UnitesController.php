@@ -58,13 +58,7 @@ class UnitesController extends Strass_Controller_Action
     $this->_helper->Annee->setBranche($this->view->annee = $a = $this->view->model->current);
     $this->metas(array('DC.Title' => 'Effectifs '.$a));
 
-    $this->assert(null, $u, null,
-		  "Vous n'avez pas le droit de voir les contacts de l'unité");
-
-    $i = Zend_Registry::get('user');
-    // si l'individu est connecté, on propose le lien.
-    $this->view->fiches = (bool) $i;
-
+    $this->view->fiches = $this->assert(null, $u, 'fiches');
 
     if (!$u->findParentTypesUnite()->virtuelle)
       $this->actions->append(array('label' => "Inscrire"),

@@ -23,6 +23,10 @@ class Strass_View_Helper_TableEffectifs
     $t = new Wtk_Table($model, true, array('acl', 'role', 'etape'));
     $config = Zend_Registry::get('config');
     $t->addFlags('effectifs', $config->system->mouvement);
+    if ($fiches)
+      $t->addFlags('fiches');
+    else
+      $t->addFlags('sansfiche');
 
     $type = $unite->findParentTypesUnite();
     $t->addFlags('contacts', $type->slug);
@@ -41,8 +45,16 @@ class Strass_View_Helper_TableEffectifs
 
     // rendu des colonnes
     foreach($headers as $id => $titre) {
+      if (in_array($id, array('adelec', 'fixe', 'portable')) && !$fiches)
+	$field = 'Masqué';
+      else
+	$field = $id;
+
       switch($id) {
       case 'adelec':
+	if (!$fiches)
+	  break;
+
 	$l = new Wtk_Table_CellRenderer_Link('href', 'adelec',
 					     'label', 'adelec');
 	$l->setUrlFormat('mailto:%s');
@@ -50,19 +62,17 @@ class Strass_View_Helper_TableEffectifs
 	break;
       case 'fixe':
       case 'portable':
-	if ($fiches) {
-	  $renderer = new Wtk_Table_CellRenderer_Link('href', $id, 'label', $id);
-	  $renderer->setUrlFormat('tel:%s');
-	  $t->addColumn(new Wtk_Table_Column($titre, $renderer));
-	}
+	if (!$fiches)
+	  break;
+	$renderer = new Wtk_Table_CellRenderer_Link('href', $id, 'label', $id);
+	$renderer->setUrlFormat('tel:%s');
+	$t->addColumn(new Wtk_Table_Column($titre, $renderer));
 	break;
       case 'prenom-nom':
-	if ($fiches) {
-	  $t->addColumn(new Wtk_Table_Column($titre,
-					     new Wtk_Table_CellRenderer_Link('href', 'fiche',
-									     'label', 'prenom-nom',
-									     'flags', array('role', 'etape'))));
-	}
+	$t->addColumn(new Wtk_Table_Column($titre,
+					   new Wtk_Table_CellRenderer_Link('href', 'fiche',
+									   'label', 'prenom-nom',
+									   'flags', array('role', 'etape'))));
 	break;
       default:
 	$t->addColumn(new Wtk_Table_Column($titre, new Wtk_Table_CellRenderer_Text('text', $id)));

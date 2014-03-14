@@ -45,11 +45,8 @@
     }
 }
 
-.contacts.parente tbody:nth-of-type(1) tr.category {
-    display: none;
-}
-
 .contacts tr.category td a {
+    @include headfont;
     color: $highlight_color;
     font-weight: bold;
     font-size: 125%;
@@ -69,7 +66,34 @@
 
 /* EFFECTIFS */
 #document.contacts table.effectifs {
-    width: 100%;
+    width: 15em;
+    margin: 0 auto;
+    max-width: 100%;
+
+    /* simple listing, façon 27eparis.net */
+    &.sansfiche {
+	width: 90%;
+	display: block;
+	thead { display: none; }
+
+	tbody {
+	    -moz-box-sizing: border-box;
+	    box-sizing: border-box;
+	    display: inline-block;
+	    vertical-align: top;
+	    padding: 1em;
+	    width: 32.5%;
+	    max-width: 20em;
+
+	    td + td {
+		width: 100%;
+	    }
+	}
+    }
+
+    &.fiches tbody:nth-of-type(1) tr.category {
+	display: none;
+    }
 }
 
 tr.category td

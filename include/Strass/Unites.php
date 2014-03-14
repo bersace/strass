@@ -122,7 +122,7 @@ class Unite extends Strass_Db_Table_Row_Abstract implements Zend_Acl_Resource_In
   {
     $acl->add(new Zend_Acl_Resource($this->getResourceId()));
     $this->initPrivileges($acl, array($this));
-    $acl->allow(null, $this, 'index');
+    $acl->allow(null, $this, array('index', 'contacts'));
   }
 
   public function getRoleId($role)
