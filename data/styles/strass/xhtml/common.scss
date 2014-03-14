@@ -372,6 +372,7 @@ a {
 		    list-style-type: none;
 		    background-repeat: no-repeat;
 		    background-position: left center;
+		    background-size: auto 80%;
 
 		    a {
 			display: inline-block;
@@ -462,93 +463,91 @@ a {
     /* ICÔNES */
     #menu li:first-child
     {
-	background-image: url("icones/accueil.png");
+	background-image: url("icones/home.png");
     }
 
     #aside li.unites,
     #aside li.membres
     {
-	background-image: url("icones/effectifs.png");
-    }
-
-    #connexes li.contacts
-    {
-	background-image: url("icones/carnet.png");
+	background-image: url("icones/customers.png");
     }
 
     #aside li.activites
     {
-	background-image: url("icones/activites.png");
+	background-image: url("icones/date.png");
     }
 
     #aside li.photos
     {
-	background-image: url("icones/photos.png");
+	background-image: url("icones/photography.png");
     }
 
     #aside li.journaux
     {
-	background-image: url("icones/journaux.png");
+	background-image: url("icones/feed.png");
     }
 
     #aside li.documents
     {
-	background-image: url("icones/documents.png");
+	background-image: url("icones/library.png");
     }
 
     #aside li.liens
     {
-	background-image: url("icones/liens.png");
+	background-image: url("icones/world.png");
     }
 
     #connexes li.rapports,
-    #aside li.livredor
-    {
-	background-image: url("icones/livredor.png");
-    }
-
+    #aside li.livredor,
     #aside li.citation
     {
-	background-image: url("icones/citation.png");
+	background-image: url("icones/pen.png");
     }
+
 
     #login li.inscription,
-    #actions li.inscrire,
     #console li.inscriptions
     {
-	background-image: url("icones/inscription.png");
+	background-image: url("icones/plus.png");
     }
 
+    #admin li.individu,
     #console li.fiche,
-    #actions li.fiche
+    #admin li.fiche
     {
-	background-image: url("icones/individu.png");
+	background-image: url("icones/user.png");
     }
 
-    #actions li.fermer
+    #admin li.fermer
     {
-	background-image: url("icones/fermer.png");
+	background-image: url("icones/lock.png");
     }
 
     #login li + li
     {
-	background-image: url("icones/verrou.png");
+	background-image: url("icones/login.png");
     }
 
     /* ADMIN */
-    #admin li.configurer,
-    #admin li.administrer,
-    #aside li.admin
+    #admin li.prevoir,
+    #admin li.fonder,
+    #admin li.inscrire,
+    #admin li.citation.enregistrer
     {
-	background-image: url("icones/config.png");
+	background-image: url("icones/plus.png");
     }
 
-    #admin li.editer,
-    #admin li.modifier,
-    #admin li.reporter,
+    #admin li.configurer,
+    #admin li.administrer,
+    #aside li.admin,
     #aside li.parametres
     {
-	background-image: url("icones/editer.png");
+	background-image: url("icones/settings.png");
+    }
+
+    #admin li.editer
+    {
+	background-image: url("icones/pencil.png");
     }
 
     #admin li.annuler,
@@ -558,41 +557,31 @@ a {
 	background-image: url("icones/supprimer.png");
     }
 
-    #connexes li.anciens,
-    #connexes li.anciennes,
-    #connexes li.archives,
-    #admin li.historique
+    #connexes li.archives
     {
-	background-image: url("icones/historique.png");
+	background-image: url("icones/old-versions.png");
     }
-
-    #aside li.prevoir
-    {
-	background-image: url("icones/prevoir.png");
-    }
-
 
     /* FORMATS */
     #formats li.rss,
     #formats li.atom
     {
-	background-image: url("icones/flux.png");
+	background-image: url("icones/feed.png");
     }
 
     #formats li.vcf
     {
-	background-image: url("icones/carnet.png");
+	background-image: url("icones/my-account.png");
     }
 
     #formats li.ics
     {
-	background-image: url("icones/activites.png");
+	background-image: url("icones/date.png");
     }
 
-    #formats li.ods,
     #formats li.csv
     {
-	background-image: url("icones/tableur.png");
+	background-image: url("icones/database.png");
     }
 
 
