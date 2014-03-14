@@ -2,76 +2,39 @@
 
 @import "lib";
 
-@media screen {
-    #document form
-    {
-	@include minipage;
-    }
+#document form
+{
+    @include minipage;
+}
 
-    #calendrier table
-    {
-	width: 80%;
-	max-width: 40em;
-	margin: 1em auto;
-    }
+#calendrier table
+{
+    width: 80%;
+    max-width: 40em;
+    margin: 1em auto;
+}
 
-    #calendrier > p
-    {
-	background-image: url("dialog/attention.png");
-	background-position: top left;
-	background-repeat: no-repeat;
-	width: 50%;
-	max-width: 30em;
-	margin: 2em auto;
-	padding: 0 0 0 36px;
-	min-height: 32px;
-	font-size: 1.1em;
-    }
+#calendrier > p
+{
+    background-image: url("dialog/attention.png");
+    background-position: top left;
+    background-repeat: no-repeat;
+    width: 70%;
+    max-width: 30em;
+    margin: 2em auto;
+    padding: 0 0 0 36px;
+    min-height: 32px;
+    font-size: 1.1em;
 }
 
 @media print {
     #calendrier table
     {
-	margin: 15% auto 20%;
-	padding: 0;
-	width: 40em;
-    }
+	font-size: 130%;
+	margin: 15% auto 10%;
 
-    #calendrier td
-    {
-	padding: .75ex .75ex;
-    }
-
-    #calendrier td.date
-    {
-	width: 30%;
-    }
-
-    #calendrier td.intitule
-    {
-	width: 70%;
-    }
-
-    #historique,
-    #infos .h,
-    #chaine .h
-    {
-	display: none;
-    }
-
-
-    #calendrier > p,
-    #participants + p
-    {
-	margin: 2em 15%;
-	width: 70%;
-	font-size: 1.1em;
-    }
-
-    .document.consulter #content h3
-    {
-	text-align: left;
-	font-size: 1.3em;
-	margin-left: 1em;
+	td {
+	    padding: .75ex;
+	}
     }
 }

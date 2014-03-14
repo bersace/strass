@@ -46,7 +46,6 @@ body
 
     #document
     {
-	padding: 1ex;
 	overflow: auto;
 	border-width: 1pt;
 
@@ -161,9 +160,10 @@ body
 
     #footer .metas .author
     {
+	@include headfont;
 	display: block;
 	position: absolute;
-	top: 16pt;
+	top: 20pt;
 	font-size: 1.5em;
 	font-weight: normal;
     }
