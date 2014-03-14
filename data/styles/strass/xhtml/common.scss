@@ -120,6 +120,7 @@ a {
 
     & > div.dialog {
 	width: 30em;
+	padding: 1em;
 	margin: 8em auto;
 	background: lighten($page_background, 22%);
 	box-shadow: 2pt 4pt 1ex rgba(4, 4, 4, 0.5);
