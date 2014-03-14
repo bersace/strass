@@ -17,21 +17,6 @@ class Activites extends Strass_Db_Table_Abstract
     return $this->fetchAll("debut ".($futures ? '>' : '<').
 			   " STRFTIME('%Y-%m-%d %H:%M', CURRENT_TIMESTAMP, '+2 HOURS')");
   }
-
-  function findAlbums($annee)
-  {
-    $db = $this->getAdapter();
-    $select = $this->select()
-      ->setIntegrityCheck(false)
-      ->distinct()
-      ->from('activite')
-      ->join('photo', 'photo.activite = activite.id', array())
-      ->where("? < activite.debut", $annee.'-08-31')
-      ->where("activite.debut < ?", ($annee+1).'-08-31')
-      ->where("activite.debut < STRFTIME('%Y-%m-%d %H:%M', CURRENT_TIMESTAMP)")
-      ->order('fin');
-    return $this->fetchAll($select);
-  }
 }
 
 

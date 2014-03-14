@@ -6,7 +6,6 @@ class Strass_Pages_Model_Photos extends Strass_Pages_Model_Historique
      on a des photos ? */
 
   function fetch($annee = NULL) {
-    $t = new Activites;
-    return array('activites' => $t->findAlbums($annee));
+    return array('albums' => $this->unite->findAlbums($annee));
   }
 }

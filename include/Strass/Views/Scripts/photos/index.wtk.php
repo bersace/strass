@@ -6,9 +6,9 @@ class Strass_Pages_Renderer_Albums extends Strass_Views_PagesRenderer_Historique
   {
     extract($data);
     $l = $parent->addList()->addFlags('albums', 'vignettes');
-    if ($activites->count()) {
-      foreach ($activites as $activite) {
-	$v = $this->view->vignetteAlbum($activite);
+    if ($albums->count()) {
+      foreach ($albums as $album) {
+	$v = $this->view->vignetteAlbum($album);
 	$l->addItem($v);
       }
     }
