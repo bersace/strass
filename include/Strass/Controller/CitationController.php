@@ -37,7 +37,7 @@ class CitationController extends Strass_Controller_Action
       $db->beginTransaction();
       try {
 	$tc->insert($data);
-	$this->logger->info("Citation enregistrée", $this->_helper->Url(null, 'citations'));
+	$this->logger->info("Citation enregistrée", $this->_helper->Url('index', 'citation', null, null, true));
 	$db->commit();
       }
       catch (Exception $e) {
