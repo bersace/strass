@@ -54,7 +54,7 @@ class Strass_View_Helper_ModelTableEffectifs
 
       $url_unite =$this->view->url(array('controller' => 'unites',
 					 'action' => 'effectifs',
-					 'unite' => $unite->slug), true);
+					 'unite' => $unite->slug));
       $etape = $individu->findParentEtapes();
       $maitrise = $unite == $racine && !$unite->isTerminale();
 
