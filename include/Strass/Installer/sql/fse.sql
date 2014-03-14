@@ -10,7 +10,6 @@ VALUES
 ('flot-jaune', 'a pris son', 'flot jaune', 10, 'f', 16),
 ('flot-vert', 'a pris son', 'flot vert', 11, 'f', 16),
 ('ga', 'a pris son', 'flot rouge', 12, 'f', 16);
-
 INSERT INTO unite_type
 (slug, nom, parent, virtuelle, sexe, age_min, age_max)
 VALUES
@@ -43,7 +42,7 @@ UPDATE unite_type SET accr_we = 'WEP', nom_we = 'Weekend de patrouille'
 WHERE slug IN ('patrouille', 'patguide');
 UPDATE unite_type SET nom_sortie = 'Chasse', nom_we = 'Grand chasse', nom_camp = 'Grande chasse',
        accr_sortie = 'Chasse', accr_we = 'Grande chasse', accr_camp = 'Grande chasse'
-WHERE slug = 'meute';
+WHERE slug IN ('meute', 'clairiere');
 
 UPDATE unite_type SET ordre = 0 WHERE slug = 'groupe';
 UPDATE unite_type SET ordre = 11 WHERE slug IN ('clan', 'feu');
@@ -65,47 +64,47 @@ VALUES
 ('acg',		'Assistant chef de groupe',	'ACG',	1,	'assistant',	1),
 ('cc',		'Chef de clan',			'CC',	2,	'chef',		10),
 ('cca',		'Chef de clan adjoint',		'CCA',	2,	'assistant',	11),
-('acc',		'Chef d''équipe',		'ACC',	3,	'chef',		11),
+('acc',		'Chef d''équipe',		'ACC',	3,	'chef',		11),	-- 5
 ('equipier',	'Routier',			'SR',	3,	'assistant',	12),
-('cf',		'Cheftaine de feu',		'CF',	3,	'chef',		10),
+('cf',		'Cheftaine de feu',		'CF',	4,	'chef',		10),
 ('cfa',		'Cheftaine de feu adjointe',	'CFA',	4,	'chef',		11),
 ('acf',		'Cheftaine d''équipe',		'ACF',	5,	'chef',		11),
-('equipiere',	'Guide-aînée',			'GA',	5,	'assistant',	12),
+('equipiere',	'Guide-aînée',			'GA',	5,	'assistant',	12),	-- 10
 ('ct',		'Chef de troupe',		'CT',	6,	'chef',		20),
 ('act',		'Assistant chef de troupe',	'ACT',	6,	'assistant',	21),
-('cp',		'Chef de patrouille',		'CP',	8,	'chef',		40),	-- 15
+('cp',		'Chef de patrouille',		'CP',	8,	'chef',		40),
 ('sp',		'Second de patrouille',		'SP',	8,	'assistant',	41),
-('3e-patrouille','3e',				NULL,	8,	'membre',	42),
+('3e-patrouille','3e',				NULL,	8,	'membre',	42),	-- 15
 ('4e-patrouille','4e',				NULL,	8,	'membre',	43),
 ('5e-patrouille','5e',				NULL,	8,	'membre',	44),
-('6e-patrouille','6e',				NULL,	8,	'membre',	45),	-- 20
+('6e-patrouille','6e',				NULL,	8,	'membre',	45),
 ('7e-patrouille','7e',				NULL,	8,	'membre',	46),
-('8e-patrouille','8e',				NULL,	8,	'membre',	46),
+('8e-patrouille','8e',				NULL,	8,	'membre',	46),	-- 20
 ('ccie',	'Cheftaine de compagnie',	'CCie',	9,	'chef',		20),
 ('accie',	'Assistante cheftaine de compagnie','ACCie',9,	'chef',		21),
-('ce',		'Cheftaine d''équipe',		'CE',	11,	'chef',		40),	-- 25
+('ce',		'Cheftaine d''équipe',		'CE',	11,	'chef',		40),
 ('se',		'Seconde d''équipe',		'SE',	11,	'assistant',	41),
-('3e-equipe',	'3e',				NULL,	11,	'membre',	42),
+('3e-equipe',	'3e',				NULL,	11,	'membre',	42),	-- 25
 ('4e-equipe',	'4e',				NULL,	11,	'membre',	43),
 ('5e-equipe',	'5e',				NULL,	11,	'membre',	44),
-('6e-equipe',	'6e',				NULL,	11,	'membre',	45),	-- 30
+('6e-equipe',	'6e',				NULL,	11,	'membre',	45),
 ('7e-equipe',	'7e',				NULL,	11,	'membre',	46),
-('8e-equipe',	'8e',				NULL,	11,	'membre',	47),
+('8e-equipe',	'8e',				NULL,	11,	'membre',	47),	-- 30
 ('akela',	'Akéla',			NULL,	12, 	'chef',		30),
 ('acm',		'Assistant d''Akéla',		'ACM',	12,	'chef',		31),
-('sizainier',	'Sizainier',		NULL,	13,	'membre',	50),	-- 35
+('sizainier',	'Sizainier',			NULL,	13,	'membre',	50),
 ('second',	'Second',			NULL,	13,	'membre',	51),
-('3e-louveteau','3e',				NULL,	13,	'membre',	52),
+('3e-louveteau','3e',				NULL,	13,	'membre',	52),	-- 35
 ('4e-louveteau','4e',				NULL,	13,	'membre',	53),
 ('5e-louveteau','5e',				NULL,	13,	'membre',	54),
-('6e-louveteau','6e',				NULL,	13,	'membre',	55),	-- 40
+('6e-louveteau','6e',				NULL,	13,	'membre',	55),
 ('akelaf',	'Akéla',			NULL,	14,	'chef',		30),
-('accl',	'Assistante d''Akéla',		NULL,	14,	'chef',		31),
-('sizainiere',	'Sizainière',		NULL,	15,	'membre',	50),
+('accl',	'Assistante d''Akéla',		NULL,	14,	'chef',		31),	-- 40
+('sizainiere',	'Sizainière',			NULL,	15,	'membre',	50),
 ('seconde',	'Seconde',			NULL,	15,	'membre',	51),
-('3e-louvette','3e',				NULL,	15,	'membre',	52),	-- 45
+('3e-louvette','3e',				NULL,	15,	'membre',	52),
 ('4e-louvette','4e',				NULL,	15,	'membre',	53),
-('5e-louvette','5e',				NULL,	15,	'membre',	54),
+('5e-louvette','5e',				NULL,	15,	'membre',	54),	-- 45
 ('6e-louvette','6e',				NULL,	15,	'membre',	55);
 
 UPDATE unite_role SET ordre = 0 WHERE slug = 'cg';
@@ -135,93 +134,93 @@ UPDATE unite_role SET ordre = 55 WHERE slug IN ('6e-louveteau', '6e-louvette');
 INSERT INTO unite_titre
 (slug, nom, role)
 VALUES
-('aumonier-g',	'Aumônier',	2),
+('aumonier-g',	'CR',		2),
 ('tresorier',	'Trésorier',	2),
 ('materialiste','Matérialiste',	2),
 ('secretaire',	'Secrétaire',	2),
-('aumonier-c',	'Aumônier',	4),	--  clan
-('aumonier-f',	'Aumônier',	8),	--  feu
-('aumonier-t',	'Aumônier',	14),	--  troupe
-('aumonier-ccie','Aumônier',	24),	--  compagnie
-('aumonier-m',	'Aumônier',	34),	--  meute
-('ahdeek',	'Ahdeek',	34),
-('baloo',	'Baloo',	34),
-('bagheera',	'Bagheera',	34),
-('chikai',	'Chikaï',	34),
-('chil',	'Chil',		34),
-('chunchundra',	'Chunchundra',	34),
-('dahinda',	'Dahinda',	34),
-('darzee',	'Darzee',	34),
-('ferao',	'Ferao',	34),
-('gris',	'Frère-Gris',	34),
-('hathi',	'Hathi',	34),
-('jacala',	'jacala',	34),
-('kaa',		'Kaa',		34),
-('keego',	'Keego',	34),
-('keneu',	'Keneu',	34),
-('ko',		'Ko',		34),
-('kotick',	'Kotick',	34),
-('lardaki',	'Lardaki',	34),
-('louie',	'Roi-Louie',	34),
-('mang',	'Mang',		34),
-('mor',		'Mor',		34),
-('mysa',	'Mysa',		34),
-('nag',		'Nag',		34),
-('oo',		'Oo',		34),
-('oonai',	'Oonaï',	34),
-('phao',	'Phao',		34),
-('phaona',	'Phaona',	34),
-('pukeena',	'Pukeena',	34),
-('raksha',	'Raksha',	34),
-('rama',	'Rama',		34),
-('rikki',	'Rikki Tiki Tavi',34),
-('sahi',	'Sahi',		34),
-('shada',	'Shada',	34),
-('shawshaw',	'Shaw Shaw',	34),
-('singum',	'Singum',	34),
-('sona',	'Sona',		34),
-('tegumai',	'Tegumaï',	34),
-('tha',		'Thâ',		34),
-('thuu',	'Thuu',		34),
-('wontolla',	'Won-Tolla',	34),
-('aumonier-m',	'aumônier',	42),	--  clairière
-('ahdeek',	'Ahdeek',	42),
-('baloo',	'Baloo',	42),
-('bagheera',	'Bagheera',	42),
-('chikai',	'Chikaï',	42),
-('chil',	'Chil',		42),
-('chunchundra',	'Chunchundra',	42),
-('dahinda',	'Dahinda',	42),
-('darzee',	'Darzee',	42),
-('ferao',	'Ferao',	42),
-('gris',	'Frère-Gris',	42),
-('hathi',	'Hathi',	42),
-('jacala',	'jacala',	42),
-('kaa',		'Kaa',		42),
-('keego',	'Keego',	42),
-('keneu',	'Keneu',	42),
-('ko',		'Ko',		42),
-('kotick',	'Kotick',	42),
-('lardaki',	'Lardaki',	42),
-('louie',	'Roi-Louie',	42),
-('mang',	'Mang',		42),
-('mor',		'Mor',		42),
-('mysa',	'Mysa',		42),
-('nag',		'Nag',		42),
-('oo',		'Oo',		42),
-('oonai',	'Oonaï',	42),
-('phao',	'Phao',		42),
-('phaona',	'Phaona',	42),
-('pukeena',	'Pukeena',	42),
-('raksha',	'Raksha',	42),
-('rama',	'Rama',		42),
-('rikki',	'Rikki Tiki Tavi',42),
-('sahi',	'Sahi',		42),
-('shada',	'Shada',	42),
-('shawshaw',	'Shaw Shaw',	42),
-('singum',	'Singum',	42),
-('sona',	'Sona',		42),
-('tegumai',	'Tegumaï',	42),
-('tha',		'Thâ',		42),
-('thuu',	'Thuu',		42),
-('wontolla',	'Won-Tolla',	42);
+('aumonier-c',	'CR',		4),	--  clan
+('aumonier-f',	'CR',		8),	--  feu
+('aumonier-t',	'CR',		12),	--  troupe
+('aumonier-ccie','CR',		22),	--  compagnie
+('aumonier-m',	'CR',		32),	--  meute
+('ahdeek',	'Ahdeek',	32),
+('baloo',	'Baloo',	32),
+('bagheera',	'Bagheera',	32),
+('chikai',	'Chikaï',	32),
+('chil',	'Chil',		32),
+('chunchundra',	'Chunchundra',	32),
+('dahinda',	'Dahinda',	32),
+('darzee',	'Darzee',	32),
+('ferao',	'Ferao',	32),
+('gris',	'Frère-Gris',	32),
+('hathi',	'Hathi',	32),
+('jacala',	'jacala',	32),
+('kaa',		'Kaa',		32),
+('keego',	'Keego',	32),
+('keneu',	'Keneu',	32),
+('ko',		'Ko',		32),
+('kotick',	'Kotick',	32),
+('lardaki',	'Lardaki',	32),
+('louie',	'Roi-Louie',	32),
+('mang',	'Mang',		32),
+('mor',		'Mor',		32),
+('mysa',	'Mysa',		32),
+('nag',		'Nag',		32),
+('oo',		'Oo',		32),
+('oonai',	'Oonaï',	32),
+('phao',	'Phao',		32),
+('phaona',	'Phaona',	32),
+('pukeena',	'Pukeena',	32),
+('raksha',	'Raksha',	32),
+('rama',	'Rama',		32),
+('rikki',	'Rikki Tiki Tavi',32),
+('sahi',	'Sahi',		32),
+('shada',	'Shada',	32),
+('shawshaw',	'Shaw Shaw',	32),
+('singum',	'Singum',	32),
+('sona',	'Sona',		32),
+('tegumai',	'Tegumaï',	32),
+('tha',		'Thâ',		32),
+('thuu',	'Thuu',		32),
+('wontolla',	'Won-Tolla',	32),
+('aumonier-m',	'CR',		40),	--  clairière
+('ahdeek',	'Ahdeek',	40),
+('baloo',	'Baloo',	40),
+('bagheera',	'Bagheera',	40),
+('chikai',	'Chikaï',	40),
+('chil',	'Chil',		40),
+('chunchundra',	'Chunchundra',	40),
+('dahinda',	'Dahinda',	40),
+('darzee',	'Darzee',	40),
+('ferao',	'Ferao',	40),
+('gris',	'Frère-Gris',	40),
+('hathi',	'Hathi',	40),
+('jacala',	'jacala',	40),
+('kaa',		'Kaa',		40),
+('keego',	'Keego',	40),
+('keneu',	'Keneu',	40),
+('ko',		'Ko',		40),
+('kotick',	'Kotick',	40),
+('lardaki',	'Lardaki',	40),
+('louie',	'Roi-Louie',	40),
+('mang',	'Mang',		40),
+('mor',		'Mor',		40),
+('mysa',	'Mysa',		40),
+('nag',		'Nag',		40),
+('oo',		'Oo',		40),
+('oonai',	'Oonaï',	40),
+('phao',	'Phao',		40),
+('phaona',	'Phaona',	40),
+('pukeena',	'Pukeena',	40),
+('raksha',	'Raksha',	40),
+('rama',	'Rama',		40),
+('rikki',	'Rikki Tiki Tavi',40),
+('sahi',	'Sahi',		40),
+('shada',	'Shada',	40),
+('shawshaw',	'Shaw Shaw',	40),
+('singum',	'Singum',	40),
+('sona',	'Sona',		40),
+('tegumai',	'Tegumaï',	40),
+('tha',		'Thâ',		40),
+('thuu',	'Thuu',		40),
+('wontolla',	'Won-Tolla',	40);

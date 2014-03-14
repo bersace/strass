@@ -29,19 +29,6 @@ CREATE TABLE `unite_type`
 	accr_camp	CHAR(8)		DEFAULT 'Camp'
 );
 
-INSERT INTO unite_type
-(slug, virtuelle, nom, ordre, sexe, age_min, age_max)
-SELECT id AS slug,
-CAST((id IN ('hp', 'aines')) AS BOOLEAN) AS virtuelle,
-t.nom, t.ordre, t.sexe, t.age_min, t.age_max
-FROM types_unite AS t;
-
-UPDATE unite_type
-SET parent = (
-    SELECT p.id
-    FROM types_unite AS t
-    JOIN unite_type AS p ON p.slug = t.parent
-    WHERE t.id = unite_type.slug);
 EOS
 );
 
@@ -105,32 +92,40 @@ EOS
 );
     else: // FSE Tom Morel
       $db->exec(<<<'EOS'
--- LOL
-DELETE FROM unite_type WHERE slug IN ('aines', 'ronde', 'sizjeanette');
+-- copie-collé de l'installeur
 
--- Capitalisation
-UPDATE unite_type SET nom = 'Groupe' WHERE slug = 'groupe';
-UPDATE unite_type SET nom = 'Communauté des aînés' WHERE slug = 'aines';
-UPDATE unite_type SET nom = 'Clan' WHERE slug = 'clan';
-UPDATE unite_type SET nom = 'Équipe' WHERE slug IN ('eqclan', 'eqfeu', 'equipe');
-UPDATE unite_type SET nom = 'Feu' WHERE slug = 'feu';
-UPDATE unite_type SET nom = 'Troupe' WHERE slug = 'troupe';
-UPDATE unite_type SET nom = 'Haute-Patrouille' WHERE slug = 'hp';
-UPDATE unite_type SET nom = 'Patrouille' WHERE slug = 'patrouille';
-UPDATE unite_type SET nom = 'Compagnie' WHERE slug = 'compagnie';
-UPDATE unite_type SET nom = 'Meute' WHERE slug = 'meute';
-UPDATE unite_type SET nom = 'Sizaine' WHERE slug LIKE 'siz%';
+INSERT INTO unite_type
+(slug, nom, parent, virtuelle, sexe, age_min, age_max)
+VALUES
+('groupe',		'Groupe',		NULL,	0,  'm', 30, 130),
+('clan',		'Clan',			NULL,	0,  'h', 17, 50),
+('eqclan',		'Équipe',		2,	0,  'h', 16, 30),
+('feu',			'Feu',			NULL,	0,  'f', 17, 30),
+('eqfeu',		'Équipe',		4,	0,  'f', 16, 30),
+('troupe',		'Troupe',		1,	0,  'h', 18, 30),
+('hp',			'Haute-Patrouille',	6,	1,  NULL, NULL, NULL),
+('patrouille',		'Patrouille',		6,	0,  'h', 11, 17),
+('compagnie',		'Compagnie',		1,	0,  'f', 18, 30),
+('hpc',			'Haute-Patrouille',	9,	1,  NULL, NULL, NULL),
+('patguide',		'Patrouille',		9,	0,  'f', 11, 17),
+('meute',		'Meute',		1,	0,  'm', 17, 30),
+('sizloup',		'Sizaine',		12,	0,  'h', 7, 12),
+('clairiere',		'Clairière',		1,	0,  'f', 17, 30),
+('sizlouvette',		'Sizaine',		14,	0,  'f', 7, 12);
 
 UPDATE unite_type SET accr_we = 'WEG', nom_we = 'Weekend de groupe' WHERE slug = 'groupe';
-UPDATE unite_type SET accr_we = 'WEC', nom_we = 'Weekend de clan', nom_camp = 'Route' WHERE slug = 'clan';
+UPDATE unite_type SET accr_we = 'WEC', nom_we = 'Weekend de clan', accr_camp = 'Route', nom_camp = 'Route'
+WHERE slug = 'clan';
 UPDATE unite_type SET accr_we = 'WEF', nom_we = 'Weekend de feu' WHERE slug = 'feu';
 UPDATE unite_type SET accr_we = 'WEE', nom_we = 'Weekend d''équipe' WHERE slug IN ('eqclan', 'eqfeu');
 UPDATE unite_type SET accr_we = 'WET', nom_we = 'Weekend de troupe' WHERE slug = 'troupe';
 UPDATE unite_type SET accr_we = 'WECie', nom_we = 'Weekend de compagnie' WHERE slug = 'compagnie';
-UPDATE unite_type SET accr_we = 'WEHP', nom_we = 'Weekend HP', nom_camp = 'Camp HP' WHERE slug IN ('hp', 'hpc');
+UPDATE unite_type SET accr_we = 'WEHP', nom_we = 'Weekend HP', accr_camp = 'Camp HP', nom_camp = 'Camp HP'
+WHERE slug IN ('hp', 'hpc');
 UPDATE unite_type SET accr_we = 'WEP', nom_we = 'Weekend de patrouille'
 WHERE slug IN ('patrouille', 'patguide');
-UPDATE unite_type SET nom_sortie = 'Chasse', nom_we = 'Grand chasse', nom_camp = 'Grande chasse'
+UPDATE unite_type SET nom_sortie = 'Chasse', nom_we = 'Grand chasse', nom_camp = 'Grande chasse',
+       accr_sortie = 'Chasse', accr_we = 'Grande chasse', accr_camp = 'Grande chasse'
 WHERE slug IN ('meute', 'clairiere');
 
 UPDATE unite_type SET ordre = 0 WHERE slug = 'groupe';
@@ -151,7 +146,6 @@ EOS
     endif;
 
     $db->exec(<<<'EOS'
-UPDATE unite_type SET age_min = NULL, age_max = NULL, sexe = NULL where virtuelle;
 
 DROP TABLE types_unite;
 
@@ -207,76 +201,73 @@ EOS
 
     if ($SUF):
       $db->exec(<<<'EOS'
--- préparation des données pour migration
-
-UPDATE roles SET accr = 'CF' WHERE id = 'chef' AND type = 'feu';
-UPDATE roles SET titre = 'Cheftaine de compagnie' WHERE accr = 'CCie';
-UPDATE roles SET titre = 'Assistante cheftaine de compagnie' WHERE accr = 'ACCie';
-UPDATE roles SET accr = 'ACR' WHERE id = 'assistant' AND type = 'ronde';
-UPDATE roles SET accr = 'GA' WHERE titre = 'guide-aînée';
-
 -- Ze bug :x
 UPDATE appartient SET role = 'chef' WHERE unite = 'ronde' AND role = 'siz';
 EOS
 );
-    else:
+    else: // FSE
       $db->exec(<<<'EOS'
--- préparation des données pour migration
+-- Complément FSE
 
-UPDATE roles SET titre = 'Chef de clan adjoint', accr = 'CCA' WHERE id = 'assistant' AND type = 'clan';
-EOS
-);
-    endif;
-
-    $db->exec(<<<'EOS'
-UPDATE roles SET accr = replace(accr, '.', '');
-
--- Migration des roles, même s'il y a des titres '
 INSERT INTO unite_role
-(slug, type, acl_role, titre, accr, ordre)
-SELECT
-	(CASE WHEN length(roles.accr) > 0 THEN lower(roles.accr) ELSE lower(roles.titre) || '-' || roles.type END),
-        (SELECT id FROM unite_type WHERE unite_type.slug = roles.type), id, titre, accr, ordre
-FROM roles;
-
-EOS
-);
-
-    if ($SUF):
-      $db->exec(<<<'EOS'
--- Complément SUF
-INSERT INTO unite_role
-(slug, acl_role, titre, accr, type)
+(slug, titre, accr, type, acl_role, ordre)
 VALUES
-('acc', 'assistant', 'Assistant chef de clan', 'ACC', (SELECT id FROM unite_type WHERE slug = 'clan')),
-('acm', 'assistant', 'Assistante d''Akéla', 'ACM', (SELECT id FROM unite_type WHERE unite_type.slug = 'meute')),
-('acf', 'assistant', 'Assistante cheftaine de feu', 'ACF', (SELECT id FROM unite_type WHERE unite_type.slug = 'feu')),
-('cer', 'chef', 'Chef d''équipe', 'CE', (SELECT id FROM unite_type WHERE slug = 'eqclan')),
-('equipier', 'assistant', 'routier', NULL, (SELECT id FROM unite_type WHERE slug = 'eqclan')),
-('cef', 'chef', 'Cheftaine d''équipe', 'CE', (SELECT id FROM unite_type WHERE slug = 'eqfeu')),
-('equipiere', 'assistant', 'guide-aînée', NULL, (SELECT id FROM unite_type WHERE slug = 'eqfeu'));
-
-UPDATE unite_role SET slug = 'routier' WHERE slug LIKE 'routier%';
-UPDATE unite_role SET slug = 'akela' WHERE titre = 'Akéla';
-UPDATE unite_role SET slug = 'guillemette' WHERE titre = 'Guillemette';
-UPDATE unite_role SET slug = 'sizainier' WHERE slug = 'sizainier-sizloup';
-UPDATE unite_role SET slug = 'sizainiere' WHERE slug = 'sizainière-sizjeannette';
-UPDATE unite_role SET slug = 'second' WHERE slug = 'second-sizloup';
-UPDATE unite_role SET slug = 'seconde' WHERE slug = 'seconde-sizjeannette';
-UPDATE unite_role SET slug = REPLACE(slug, 'sizloup', 'louveteau') WHERE slug LIKE '%sizloup';
-UPDATE unite_role SET slug = REPLACE(slug, 'sizjeannette', 'jeannette') WHERE slug LIKE '%sizjeannette';
-
-UPDATE unite_role SET nom_jungle = 1 WHERE slug IN ('akela', 'guillemette', 'acm', 'acr');
+('cg',		'Chef de groupe',		'CG',	1,	'chef',		0),	-- 1
+('acg',		'Assistant chef de groupe',	'ACG',	1,	'assistant',	1),
+('cc',		'Chef de clan',			'CC',	2,	'chef',		10),
+('cca',		'Chef de clan adjoint',		'CCA',	2,	'assistant',	11),
+('acc',		'Chef d''équipe',		'ACC',	3,	'chef',		11),	-- 5
+('equipier',	'Routier',			'SR',	3,	'assistant',	12),
+('cf',		'Cheftaine de feu',		'CF',	4,	'chef',		10),
+('cfa',		'Cheftaine de feu adjointe',	'CFA',	4,	'chef',		11),
+('acf',		'Cheftaine d''équipe',		'ACF',	5,	'chef',		11),
+('equipiere',	'Guide-aînée',			'GA',	5,	'assistant',	12),	-- 10
+('ct',		'Chef de troupe',		'CT',	6,	'chef',		20),
+('act',		'Assistant chef de troupe',	'ACT',	6,	'assistant',	21),
+('cp',		'Chef de patrouille',		'CP',	8,	'chef',		40),
+('sp',		'Second de patrouille',		'SP',	8,	'assistant',	41),
+('3e-patrouille','3e',				NULL,	8,	'membre',	42),	-- 15
+('4e-patrouille','4e',				NULL,	8,	'membre',	43),
+('5e-patrouille','5e',				NULL,	8,	'membre',	44),
+('6e-patrouille','6e',				NULL,	8,	'membre',	45),
+('7e-patrouille','7e',				NULL,	8,	'membre',	46),
+('8e-patrouille','8e',				NULL,	8,	'membre',	46),	-- 20
+('ccie',	'Cheftaine de compagnie',	'CCie',	9,	'chef',		20),
+('accie',	'Assistante cheftaine de compagnie','ACCie',9,	'chef',		21),
+('ce',		'Cheftaine d''équipe',		'CE',	11,	'chef',		40),
+('se',		'Seconde d''équipe',		'SE',	11,	'assistant',	41),
+('3e-equipe',	'3e',				NULL,	11,	'membre',	42),	-- 25
+('4e-equipe',	'4e',				NULL,	11,	'membre',	43),
+('5e-equipe',	'5e',				NULL,	11,	'membre',	44),
+('6e-equipe',	'6e',				NULL,	11,	'membre',	45),
+('7e-equipe',	'7e',				NULL,	11,	'membre',	46),
+('8e-equipe',	'8e',				NULL,	11,	'membre',	47),	-- 30
+('akela',	'Akéla',			NULL,	12, 	'chef',		30),
+('acm',		'Assistant d''Akéla',		'ACM',	12,	'chef',		31),
+('sizainier',	'Sizainier',			NULL,	13,	'membre',	50),
+('second',	'Second',			NULL,	13,	'membre',	51),
+('3e-louveteau','3e',				NULL,	13,	'membre',	52),	-- 35
+('4e-louveteau','4e',				NULL,	13,	'membre',	53),
+('5e-louveteau','5e',				NULL,	13,	'membre',	54),
+('6e-louveteau','6e',				NULL,	13,	'membre',	55),
+('akelaf',	'Akéla',			NULL,	14,	'chef',		30),
+('accl',	'Assistante d''Akéla',		NULL,	14,	'chef',		31),	-- 40
+('sizainiere',	'Sizainière',			NULL,	15,	'membre',	50),
+('seconde',	'Seconde',			NULL,	15,	'membre',	51),
+('3e-louvette','3e',				NULL,	15,	'membre',	52),
+('4e-louvette','4e',				NULL,	15,	'membre',	53),
+('5e-louvette','5e',				NULL,	15,	'membre',	54),	-- 45
+('6e-louvette','6e',				NULL,	15,	'membre',	55);
 
 UPDATE unite_role SET ordre = 0 WHERE slug = 'cg';
 UPDATE unite_role SET ordre = 1 WHERE slug = 'acg';
 UPDATE unite_role SET ordre = 10 WHERE slug IN ('cc', 'cf');
-UPDATE unite_role SET ordre = 11 WHERE slug IN ('acc', 'acf', 'cer', 'cef');
+UPDATE unite_role SET ordre = 11 WHERE slug IN ('cca', 'cfa', 'acc', 'acf');
 UPDATE unite_role SET ordre = 12 WHERE slug IN ('routier', 'equipier', 'ga', 'equipiere');
 UPDATE unite_role SET ordre = 20 WHERE slug IN ('ct', 'ccie');
 UPDATE unite_role SET ordre = 21 WHERE slug IN ('act', 'accie');
-UPDATE unite_role SET ordre = 30 WHERE slug IN ('akela', 'guillemette');
-UPDATE unite_role SET ordre = 31 WHERE slug IN ('acm', 'acr');
+UPDATE unite_role SET ordre = 30 WHERE slug IN ('akela', 'akelaf');
+UPDATE unite_role SET ordre = 31 WHERE slug IN ('acm', 'accl');
 UPDATE unite_role SET ordre = 40 WHERE slug IN ('cp', 'ce');
 UPDATE unite_role SET ordre = 41 WHERE slug IN ('sp', 'se');
 UPDATE unite_role SET ordre = 42 WHERE slug IN ('3e-patrouille', '3e-equipe');
@@ -287,10 +278,10 @@ UPDATE unite_role SET ordre = 46 WHERE slug IN ('7e-patrouille', '7e-equipe');
 UPDATE unite_role SET ordre = 47 WHERE slug IN ('8e-patrouille', '8e-equipe');
 UPDATE unite_role SET ordre = 50 WHERE slug IN ('sizainier', 'sizainiere');
 UPDATE unite_role SET ordre = 51 WHERE slug IN ('second', 'seconde');
-UPDATE unite_role SET ordre = 52 WHERE slug IN ('3e-louveteau', '3e-jeannette');
-UPDATE unite_role SET ordre = 53 WHERE slug IN ('4e-louveteau', '4e-jeannette');
-UPDATE unite_role SET ordre = 54 WHERE slug IN ('5e-louveteau', '5e-jeannette');
-UPDATE unite_role SET ordre = 55 WHERE slug IN ('6e-louveteau', '6e-jeannette');
+UPDATE unite_role SET ordre = 52 WHERE slug IN ('3e-louveteau', '3e-louvette');
+UPDATE unite_role SET ordre = 53 WHERE slug IN ('4e-louveteau', '4e-louvette');
+UPDATE unite_role SET ordre = 54 WHERE slug IN ('5e-louveteau', '5e-louvette');
+UPDATE unite_role SET ordre = 55 WHERE slug IN ('6e-louveteau', '6e-louvette');
 
 EOS
 );
@@ -491,9 +482,109 @@ VALUES
   WHERE r.acl_role = 'assistant' AND t.slug = 'ronde'));
 EOS
 );
+    else: // FSE
+    $db->exec(<<<'EOS'
+
+INSERT INTO unite_titre
+(slug, nom, role)
+VALUES
+('aumonier-g',	'CR',		2),
+('tresorier',	'Trésorier',	2),
+('materialiste','Matérialiste',	2),
+('secretaire',	'Secrétaire',	2),
+('aumonier-c',	'CR',		4),	--  clan
+('aumonier-f',	'CR',		8),	--  feu
+('aumonier-t',	'CR',		12),	--  troupe
+('aumonier-ccie','CR',		22),	--  compagnie
+('aumonier-m',	'CR',		32),	--  meute
+('ahdeek',	'Ahdeek',	32),
+('baloo',	'Baloo',	32),
+('bagheera',	'Bagheera',	32),
+('chikai',	'Chikaï',	32),
+('chil',	'Chil',		32),
+('chunchundra',	'Chunchundra',	32),
+('dahinda',	'Dahinda',	32),
+('darzee',	'Darzee',	32),
+('ferao',	'Ferao',	32),
+('gris',	'Frère-Gris',	32),
+('hathi',	'Hathi',	32),
+('jacala',	'jacala',	32),
+('kaa',		'Kaa',		32),
+('keego',	'Keego',	32),
+('keneu',	'Keneu',	32),
+('ko',		'Ko',		32),
+('kotick',	'Kotick',	32),
+('lardaki',	'Lardaki',	32),
+('louie',	'Roi-Louie',	32),
+('mang',	'Mang',		32),
+('mor',		'Mor',		32),
+('mysa',	'Mysa',		32),
+('nag',		'Nag',		32),
+('oo',		'Oo',		32),
+('oonai',	'Oonaï',	32),
+('phao',	'Phao',		32),
+('phaona',	'Phaona',	32),
+('pukeena',	'Pukeena',	32),
+('raksha',	'Raksha',	32),
+('rama',	'Rama',		32),
+('rikki',	'Rikki Tiki Tavi',32),
+('sahi',	'Sahi',		32),
+('shada',	'Shada',	32),
+('shawshaw',	'Shaw Shaw',	32),
+('singum',	'Singum',	32),
+('sona',	'Sona',		32),
+('tegumai',	'Tegumaï',	32),
+('tha',		'Thâ',		32),
+('thuu',	'Thuu',		32),
+('wontolla',	'Won-Tolla',	32),
+('aumonier-m',	'CR',		40),	--  clairière
+('ahdeek',	'Ahdeek',	40),
+('baloo',	'Baloo',	40),
+('bagheera',	'Bagheera',	40),
+('chikai',	'Chikaï',	40),
+('chil',	'Chil',		40),
+('chunchundra',	'Chunchundra',	40),
+('dahinda',	'Dahinda',	40),
+('darzee',	'Darzee',	40),
+('ferao',	'Ferao',	40),
+('gris',	'Frère-Gris',	40),
+('hathi',	'Hathi',	40),
+('jacala',	'jacala',	40),
+('kaa',		'Kaa',		40),
+('keego',	'Keego',	40),
+('keneu',	'Keneu',	40),
+('ko',		'Ko',		40),
+('kotick',	'Kotick',	40),
+('lardaki',	'Lardaki',	40),
+('louie',	'Roi-Louie',	40),
+('mang',	'Mang',		40),
+('mor',		'Mor',		40),
+('mysa',	'Mysa',		40),
+('nag',		'Nag',		40),
+('oo',		'Oo',		40),
+('oonai',	'Oonaï',	40),
+('phao',	'Phao',		40),
+('phaona',	'Phaona',	40),
+('pukeena',	'Pukeena',	40),
+('raksha',	'Raksha',	40),
+('rama',	'Rama',		40),
+('rikki',	'Rikki Tiki Tavi',40),
+('sahi',	'Sahi',		40),
+('shada',	'Shada',	40),
+('shawshaw',	'Shaw Shaw',	40),
+('singum',	'Singum',	40),
+('sona',	'Sona',		40),
+('tegumai',	'Tegumaï',	40),
+('tha',		'Thâ',		40),
+('thuu',	'Thuu',		40),
+('wontolla',	'Won-Tolla',	40);
+
+EOS
+);
     endif;
 
     $inscriptions_avant = $db->query('SELECT COUNT(*) FROM appartient;')->fetchColumn();
+
     $db->exec(<<<'EOS'
 CREATE VIEW vtitres AS
 SELECT t.id, t.slug, t.nom, unite_role.titre, unite_type.nom AS unite
@@ -520,14 +611,17 @@ JOIN unite ON unite.slug = appartient.unite
 JOIN roles ON roles.id = appartient.role AND roles.type = appartient.type
 JOIN unite_role ON unite_role.type = unite.type
      AND (CASE
-     WHEN roles.titre = 'routier' THEN unite_role.slug = roles.titre
+     WHEN roles.titre = 'routier' AND roles.type = 'clan' THEN unite_role.slug = roles.titre
+     WHEN roles.titre = 'routier' AND roles.type = 'eqclan' THEN unite_role.slug = 'equipier'
      WHEN appartient.role = 'chef' THEN unite_role.acl_role = appartient.role
      WHEN appartient.role IN ('3e', '4e', '5e', '6e', '7e', '8e', 'siz', 'sec')
      	  THEN unite_role.slug LIKE appartient.role || '%'
      ELSE unite_role.acl_role = 'assistant' -- Pour bagheera, raksha, etc.
 END)
 JOIN unite_type ON unite_type.id = unite.type
-LEFT JOIN unite_titre ON unite_titre.slug = appartient.role;
+LEFT JOIN unite_titre ON unite_titre.role = unite_role.id
+     AND unite_titre.slug LIKE appartient.role || '%'
+ORDER BY debut;
 
 DROP TABLE roles;
 
@@ -551,8 +645,11 @@ EOS
 );
 
     $inscriptions_apres = $db->query('SELECT COUNT(*) FROM appartenance;')->fetchColumn();
-    if (($diff = $inscriptions_avant - $inscriptions_apres))
+    $diff = $inscriptions_avant - $inscriptions_apres;
+    if ($diff > 0)
       error_log($diff." inscriptions ont été perdues pendant la migration");
+    elseif ($diff < 0)
+      throw new Exception(-1 * $diff . " inscriptions générées !!");
 
     $rootslug = $db->query("SELECT slug FROM unite WHERE parent IS NULL LIMIT 1")->fetchColumn();
     rename('private/unites/intro.wiki', 'private/unites/'.$rootslug.'.wiki');
