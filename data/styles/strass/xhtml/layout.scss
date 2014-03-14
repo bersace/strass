@@ -46,7 +46,10 @@ body
 
     #document
     {
+	padding: 1ex;
+	overflow: auto;
 	border-width: 1pt;
+
 	#flash {
 	    margin: 1em auto 2em;
 	}
