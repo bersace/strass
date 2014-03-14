@@ -171,20 +171,18 @@ class Individu extends Strass_Db_Table_Row_Abstract implements Zend_Acl_Resource
 	return wtk_ucfirst($this->totem);
       }
     }
-
     if ($acl->isAllowed(null, $this, 'voir-nom'))
       return trim(wtk_ucfirst($this->prenom)." ".$this->capitalizedLastname($compact));
     else if ($compute && $app = $this->findAppartenances()->current()) {
-      if ($app->titre)
-	return $app->titre;
-      /* Branche jaune, préférer Akéla, Guillemette pour les inconnus */
-      elseif ($app->findParentUnites()->findParentTypesUnite()->age_max < 14)
+      if (false && $app->findParentRoles()->nom_jungle)
+	/* Branche jaune, préférer Akéla, Guillemette pour les inconnus */
 	return $app->getTitre();
       else
-	/* Prénom et initiales */
+	/* Prénom et initiales pour les visiteurs*/
 	return trim(wtk_ucfirst($this->prenom)." ".$this->capitalizedLastname(true));
     }
     else
+      /* dans le doute, on masque plutôt que de fuiter un prénom de cheftaine à un louveteau*/
       return 'Nom masqué';
   }
 
