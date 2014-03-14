@@ -296,7 +296,7 @@ class IndividusController extends Strass_Controller_Action
     $roles = $individu->findRolesCandidats($unite, false);
     foreach($roles as $role)
       $i->addItem($role->id, wtk_ucfirst($role->titre));
-    $m->addEnum('titre', 'Titre', $app->titre);
+    $m->addString('titre', 'Titre', $app->titre);
     $m->addDate('debut', 'Début', $app->debut);
     $i0 = $m->addBool('clore', 'Clore', (bool) $app->fin);
     $i1 = $m->addDate('fin', 'Fin', $app->fin);
