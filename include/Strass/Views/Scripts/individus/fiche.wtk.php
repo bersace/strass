@@ -3,7 +3,7 @@
 $this->document->addFlags('sexe-'.$this->individu->sexe);
 
 $s = $this->document->addSection('cartevisite', $this->individu->getFullName(false, false));
-$s->addChild($this->vignetteIndividu($this->individu));
+$s->addChild($this->vignetteIndividu($this->individu)->addFlags('nolabel'));
 
 $l = $s->addList()->addFlags('infos');
 if ($this->assert(null, $this->individu, 'totem'))

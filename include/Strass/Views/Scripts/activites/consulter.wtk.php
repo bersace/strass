@@ -1,10 +1,27 @@
 <?php
 
-$this->document->addText($this->activite->description);
+// ANTI ABSENTS
+if ($this->activite->isFuture())
+  $this->document->addDialog()
+    ->addFlags('warn')
+    ->addInline("**La présence de chacun est primordiale** ".
+		"pour le bon déroulement de cette activité.");
+
+$s = $this->document->addSection('evenement', $this->activite->getIntituleComplet());
+$s->addChild($this->vignetteAlbum($this->activite)->addFlags('nolabel'));
+$l = $s->addList()->addFlags('infos');
+$l->addItem()->addFlags('debut')
+->addInline("**Début :** ".strftime('le %A %e %B à %R', strtotime($this->activite->debut)));
+$l->addItem()->addFlags('fin')
+->addInline("**Fin :** ".strftime('le %A %e %B à %R', strtotime($this->activite->fin)));
+if ($lieu = $this->activite->lieu)
+  $l->addItem()->addFlags('lieu')->addInline("**Lieu :** ".$lieu);
+
+$l->addItem()->addFlags('description')->addText($this->activite->description);
 
 // PIÈCES JOINTES
 if ($this->documents->count()) {
-  $ss = $this->document->addSection('piecesjointes', "Pièces-jointes");
+  $ss = $this->document->addSection('piecesjointes', "Les documents");
   $l = $ss->addList();
   $l->addFlags('vignettes', 'document');
   foreach($this->documents as $docact)
@@ -12,18 +29,12 @@ if ($this->documents->count()) {
     ->addFlags('vignette', 'document');
 }
 
-// ANTI ABSENTS
-if ($this->activite->isFuture())
-  $this->document->addParagraph()
-    ->addFlags('remarque')
-    ->addInline("**La présence de chacun est primordiale** ".
-		"pour le bon déroulement de cette activité.");
-else {
+if (!$this->activite->isFuture()) {
   // PHOTOS
   $s = $this->document->addSection('photos', $this->lien(array('controller' => 'photos',
 							       'action' => 'consulter',
 							       'album' => $this->activite->slug),
-							 "Photos"), true);
+							 "Les photos"), true);
   if ($this->photos->count()) {
     $l = $s->addList();
     $l->addFlags('vignettes', 'photos');

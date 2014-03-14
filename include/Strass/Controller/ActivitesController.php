@@ -134,8 +134,9 @@ class ActivitesController extends Strass_Controller_Action
   function consulterAction()
   {
     $this->view->activite = $a = $this->_helper->Activite();
-    $this->assert(null, $a, 'consulter',
-		  "Vous n'avez pas le droit de consulter les détails de cette activité");
+    if ($a->isFuture())
+      $this->assert(null, $a, 'consulter',
+		    "Vous n'avez pas le droit de consulter les détails de cette activité");
 
     $this->metas(array('DC.Title' => $a->getIntitule()));
 
@@ -193,6 +194,7 @@ class ActivitesController extends Strass_Controller_Action
     $m->addString('lieu', 'Lieu', $a->lieu);
     $m->addDate('debut', 'Début', $a->debut, '%Y-%m-%d %H:%M');
     $m->addDate('fin', 'Fin', $a->fin, '%Y-%m-%d %H:%M');
+    $m->addString('description', 'Description', $a->description);
     $m->addNewSubmission('enregistrer', 'Enregistrer');
 
     if ($m->validate()) {

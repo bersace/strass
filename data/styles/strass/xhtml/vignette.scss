@@ -97,7 +97,9 @@ a.vignette
     }
 }
 
-.vignettes.photos .vignette {
+.vignette.nolabel,
+.vignettes.photos .vignette
+{
     height: $size;
 
     p.label
