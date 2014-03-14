@@ -609,6 +609,8 @@ a {
     /* Historique */
     #historique.pagelinks
     {
+	-moz-box-sizing: border-box;
+	box-sizing: border-box;
 	clear: both;
 	background: lighten($alt_background, 10%);
 	border-radius: 1ex;
@@ -625,10 +627,14 @@ a {
 
 	div.section
 	{
+	    -moz-box-sizing: border-box;
+	    box-sizing: border-box;
 	    display: inline-block;
 	    vertical-align: top;
-	    width: 12em;
-	    margin: 1ex 2em;
+	    width: 32.5%;
+	    max-width: 22em;
+	    padding: 1ex 2em;
+	    margin: 0;
 
 	    .h {
 		margin-bottom: .5ex;
