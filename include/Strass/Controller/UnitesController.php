@@ -65,7 +65,8 @@ class UnitesController extends Strass_Controller_Action
 			     array('action' => 'inscrire', 'unite' => $u->slug),
 			     array(null, $u));
 
-    $this->formats('vcf', 'csv');
+    if ($this->view->fiches)
+      $this->formats('vcf', 'csv');
   }
 
   function fonderAction()
