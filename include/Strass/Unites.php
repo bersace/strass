@@ -189,7 +189,7 @@ class Unite extends Strass_Db_Table_Row_Abstract implements Zend_Acl_Resource_In
     else if (!$this->nom)
       return $this->getFullName();
     else
-      return $this->nom;
+      return $tu->nom . ' ' . $this->nom;
   }
 
   public function getFullName()
