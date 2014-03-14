@@ -108,25 +108,3 @@ if ($this->apps->count()) {
 else {
   $s->addParagraph('Inscrit dans aucune unité !')->addFlags('empty');
 }
-
-// commentaires
-if ($this->commentaires->count()) {
-  $s = $this->document->addSection('commentaires', "Derniers commentaires de photos");
-  $l = $s->addList();
-  foreach($this->commentaires as $commentaire) {
-    $i =  $l->addItem();
-    $i->addChild($this->lienPhoto($commentaire->findPhoto()));
-    $i->addChild(" le ".strftime("%e-%m-%Y", strtotime($commentaire->date)).".");
-  }
-}
-
-// articles
-if ($this->articles->count()) {
-  $s = $this->document->addSection('articles', "Derniers articles");
-  $l = $s->addList();
-  foreach($this->articles as $article) {
-    $i = $l->addItem();
-    $i->addChild($this->lienArticle($article));
-    $i->addRawText(" le ".strftime("%e-%m-%Y", strtotime($article->getDate())."."));
-  }
-}

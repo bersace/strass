@@ -26,9 +26,6 @@ class IndividusController extends Strass_Controller_Action
     $this->view->etape = $individu->findParentEtapes();
     $this->view->apps = $individu->findAppartenances();
     $s = $individu->getTable()->select()->order('date DESC');
-    $s->order(array('date DESC', 'heure DESC'))->limit(5);
-    $this->view->commentaires = $individu->findCommentaires(clone $s);
-    $this->view->articles = $individu->findArticles(clone $s);
     $this->view->user = $user = $individu->findUser();
 
     $this->actions->append("Inscription",

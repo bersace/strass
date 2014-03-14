@@ -22,27 +22,20 @@ $basesize: 210px;
     }
 }
 
+/* taille + ombre */
+$size: $basesize + 24px;
+
 a.vignette
 {
-    /* taille + ombre */
-    $size: $basesize + 24px;
-
     color: black;
     display: block;
-    height: $size;
     width: $size;
     text-decoration: none;
     text-overflow: ellipsis;
     text-align: center;
 
-    &.album,
-    &.document,
-    &.unite,
-    &.individu
-    {
-	/* Pour les deux lignes de texte */
-	height: $size + 48px;
-    }
+    /* Pour les deux lignes de texte */
+    height: $size + 48px;
 
     .section.wrapper
     {
@@ -94,7 +87,11 @@ a.vignette
     }
 }
 
-.vignettes.photos .vignette p.label
-{
-    display: none;
+.vignettes.photos .vignette {
+    height: $size;
+
+    p.label
+    {
+	display: none;
+    }
 }
