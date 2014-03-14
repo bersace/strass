@@ -1,64 +1,54 @@
 <?php
 
-class Strass_Views_PagesRenderer_Unites_Accueil extends Strass_Views_PagesRenderer_Historique
+class Strass_Views_Unite_Index_BlocGenerator
 {
-  function render($annee, $data, $s)
+  function __construct($view)
   {
-    extract($data);
+    $this->view = $view;
+  }
 
-    // Présentation
-    $src = $unite->getImage();
-    if ($texte || $src) {
-      $ss = $s->addSection('presentation');
-
-      if ($src) {
-	$ss->addImage($src, "Photos d'unité", $unite->getFullname());
-      }
-
-      if ($texte) {
-	$ss->addText($texte);
-      }
-    }
-
+  function render()
+  {
     foreach ($this->view->blocs as $bloc) {
       $method = 'bloc'.$bloc;
       if (!method_exists($this, $method))
 	throw new Exception("Impossible de générer le bloc ".$bloc);
-      call_user_func_array(array($this, $method), array($annee, $data, $s));
+      call_user_func(array($this, $method));
     }
   }
 
-  function blocUnites($annee, $data, $s)
+  function blocUnites()
   {
-    extract($data);
+    $s = $this->view->document;
+    $unite = $this->view->unite;
+    $unites = $this->view->unites;
 
     $this->view->document->addStyleComponents('vignette');
     $ss = $s->addSection('unites', 'Les '.$unite->getSousTypeName(true));
     $ss->addFlags('bloc');
-    if ($sousunites->count()) {
+    if ($unites->count()) {
       $l = $ss->addList();
       $l->addFlags('vignettes', 'unites');
-      foreach ($sousunites as $unite) {
-	$item = $l->addItem($this->view->vignetteUnite($unite, $annee));
-	$item->addFlags('vignette');
-      }
+      foreach ($unites as $unite)
+	$l->addItem($this->view->vignetteUnite($unite));
     }
     else {
       $ss->addParagraph()->addFlags('empty')
-	->addInline("Pas d'unités actives en ${annee} !");
+	->addInline("Pas d'unités actives !");
     }
   }
 
-  function blocPhotos($annee, $data, $s)
+  function blocPhotos()
   {
-    extract($data);
+    $s = $this->view->document;
+    $unite = $this->view->unite;
+    $photos = $this->view->photos;
 
     $this->view->document->addStyleComponents('vignette');
     $ss = $s->addSection('photos',
 			 $this->view->lien(array('controller' => 'photos',
 						 'action' => null,
-						 'unite' => $unite->slug,
-						 'annee' => $annee),
+						 'unite' => $unite->slug),
 					   'Les photos', true));
     $ss->addFlags('bloc');
     if ($photos->count()) {
@@ -71,41 +61,51 @@ class Strass_Views_PagesRenderer_Unites_Accueil extends Strass_Views_PagesRender
     }
     else {
       $ss->addParagraph()->addFlags('empty')
-	->addInline("Pas de photos d'activités ".$annee." !");
+	->addInline("Pas de photos d'activités !");
     }
   }
 
-  function blocActivites($annee, $data, $s)
+  function blocActivites()
   {
-    extract($data);
+    $s = $this->view->document;
+    $unite = $this->view->unite;
+    $activites = $this->view->activites;
 
     $this->view->document->addStyleComponents('vignette');
     $ss = $s->addSection('activites',
 			 $this->view->lien(array('controller' => 'activites',
 						 'action' => 'calendrier',
-						 'unite' => $unite->slug,
-						 'annee' => $annee),
+						 'unite' => $unite->slug),
 					   'Activités marquantes', true));
     $ss->addFlags('bloc');
     if ($activites->count()) {
       $l = $ss->addList();
       $l->addFlags('vignettes', 'activites');
       foreach($activites as $activite) {
-	$i = $l->addItem($this->view->vignettePhoto($activite->getPhotoAleatoire(),
-						    $activite->getIntituleCourt(),
-						    array('action'		=> 'consulter',
-							  'controller'	=> 'photos',
-							  'album'	=> $activite->slug),
-						    true));
-	$i->addFlags('vignette');
+	$l->addItem($this->view->vignettePhoto($activite->getPhotoAleatoire(),
+					       $activite->getIntituleCourt(),
+					       array('controller'	=> 'activites',
+						     'action'		=> 'consulter',
+						     'activite'	=> $activite->slug),
+					       true));
       }
     }
     else {
       $ss->addParagraph()->addFlags('empty')
-	->addInline("Pas d'activités ".$annee." !");
+	->addInline("Pas d'activités marquantes !");
     }
   }
 }
 
-$this->document->addPages(null, $this->model,
-			  new Strass_Views_PagesRenderer_Unites_Accueil($this));
+$src = $this->unite->getImage();
+if ($this->presentation || $src) {
+  $s = $this->document->addSection('presentation');
+
+  if ($src)
+    $s->addImage($src, "Photos d'unité", $this->unite->getFullname());
+
+  $s->addText($this->presentation);
+}
+
+$generator = new Strass_Views_Unite_Index_BlocGenerator($this);
+$generator->render();

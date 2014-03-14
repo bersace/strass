@@ -8,11 +8,15 @@ class UnitesController extends Strass_Controller_Action
   function indexAction()
   {
     $this->view->unite = $u = $this->_helper->Unite();
-    $this->view->model = new Strass_Pages_Model_AccueilUnite($u, $this->_helper->Annee());
-    $this->_helper->Annee->setBranche($this->view->annee = $a = $this->view->model->current);
-    $this->metas(array('DC.Title' => $u->getFullname().' '.$a));
+    $this->metas(array('DC.Title' => $u->getFullname()));
 
-    $this->view->fiches = (bool) Zend_Registry::get('user');
+    $w = $u->getWiki();
+    $this->view->presentation = $w ? file_get_contents($w) : '';
+    $this->view->unites = $u->findSousUnites(true, false);
+    $this->view->photos = $u->findPhotosAleatoires();
+    $this->view->activites = $u->findActivitesMarquantes();
+
+    $this->view->fiches = $this->assert(null, $u, 'fiches');
     $config = new Strass_Config_Php($u->slug);
     $default = $u->isTerminale() ? array('photos') : array('unites');
     $this->view->blocs = $config->get('blocs', $default);

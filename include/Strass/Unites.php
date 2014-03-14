@@ -300,6 +300,7 @@ class Unite extends Strass_Db_Table_Row_Abstract implements Zend_Acl_Resource_In
       }
 
       if ($annee) {
+	/* unités ouvertes */
 	$select
 	  ->joinLeft(array('petitefille' => 'unite'), 'petitefille.parent = unite.id', array())
 	  ->joinLeft(array('actif' => 'appartenance'),
@@ -317,9 +318,14 @@ class Unite extends Strass_Db_Table_Row_Abstract implements Zend_Acl_Resource_In
 		    " inactif.unite = unite.parent)").
 		     ' AND inactif.fin IS NOT NULL',
 		     array());
-	$date = ($annee+1).'-06-01';
-	$select->where("(actif.debut < ? AND (actif.fin IS NULL OR ?<= actif.fin))".
-		       " OR inactif.id IS NULL", $date);
+	if ($annee == true) {
+	  $select->where('actif.fin IS NULL AND inactif.id IS NOT NULL');
+	}
+	else {
+	  $date = ($annee+1).'-06-01';
+	  $select->where("(actif.debut < ? AND (actif.fin IS NULL OR ?<= actif.fin))".
+			 " OR inactif.id IS NULL", $date);
+	}
       }
       $su = $t->fetchAll($select);
       $tags = array('sous_unites');
@@ -561,7 +567,7 @@ class Unite extends Strass_Db_Table_Row_Abstract implements Zend_Acl_Resource_In
     return $t->fetchAll($s)->current();
   }
 
-  function findPhotosAleatoires($annee)
+  function findPhotosAleatoires($annee=null)
   {
     // Une photos aléatoire d'une activité où l'unité à participé
 
@@ -582,29 +588,33 @@ class Unite extends Strass_Db_Table_Row_Abstract implements Zend_Acl_Resource_In
 	     ' AND '.
 	     $db->quoteInto('participation.unite IN (?, fille.id, petitefille.id)', intval($this->id))."\n",
 	     array())
-      ->where("strftime('%Y', activite.debut, '-8 months') = ?", strval($annee))
       ->limit(6) // paramétrable ?
       ->order('participation.unite') // Les unités parentes en priorité
       ->order("RANDOM()\n");
+
+    if ($annee)
+      $select->where("strftime('%Y', activite.debut, '-8 months') = ?", strval($annee));
+
     return $t->fetchAll($select);
   }
 
-  function findActivitesMarquantes($annee, $count = 4)
+  function findActivitesMarquantes($annee = null, $count = 4)
   {
     $t = new Activites;
-    $db = $t->getAdapter();
     $select = $t->select()
       ->setIntegrityCheck(false)
       ->distinct()
       ->from('activite')
       ->join('participation', 'participation.activite = activite.id', array())
       ->where('participation.unite = ?', $this->id)
-      ->where("strftime('%Y', activite.debut, '-8 months') = ?", strval($annee))
       ->join('photo', 'photo.activite = participation.activite', array('photos' => 'COUNT(photo.id)'))
       ->group('activite.id')
       ->having('photos > 4')
       ->order('photos', 'activite.debut')
       ->limit($count);
+
+    if ($annee)
+      $select->where("strftime('%Y', activite.debut, '-8 months') = ?", strval($annee));
 
     return $t->fetchAll($select);
   }

@@ -5,14 +5,13 @@
 /* ACCUEIL */
 #presentation
 {
-    float: left;
-    clear: both;
     -moz-box-sizing: border-box;
     box-sizing: border-box;
-    width: 470px; /* à peu près deux largeur de vignette */
+    width: 100%;
+    max-width: 40em;
     min-height: 290px;
-    margin: 0 2em 2em 0;
-    padding: 0 1ex;
+    margin: 0 auto;
+    padding: 1ex;
     font-size: 125%;
     text-align: left;
     background: lighten($alt_background, 10%);
@@ -26,22 +25,6 @@
 	&.empty {
 	    width: 200px;
 	}
-    }
-}
-
-#document.unites.index
-{
-    #presentation + .bloc .vignettes {
-	display: block;
-	min-height: 100%;
-
-	li {
-	    float: left;
-	}
-    }
-
-    #presentation + .bloc + .bloc .h {
-	clear: both;
     }
 }
 
