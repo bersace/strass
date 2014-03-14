@@ -32,6 +32,11 @@ class PhotosController extends Strass_Controller_Action
 				  'action'  => 'consulter',
 				  'activite' => $a->slug,
 				  'album' => null));
+    $this->actions->append("Éditer la chaîne",
+			    array('controller' => 'activites',
+				  'action'  => 'editer',
+				  'activite' => $a->slug,
+				  'album' => null));
     $this->actions->append("Envoyer une photo",
 			   array('action' => 'envoyer'),
 			   array(null, $a,'envoyer-photo'));

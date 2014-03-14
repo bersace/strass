@@ -59,6 +59,8 @@ class ActivitesController extends Strass_Controller_Action
     $u = $this->_helper->Unite(false);
     $this->branche->append();
 
+    $this->view->model = $m = new Wtk_Form_Model('prevoir');
+
     $t = new Unites;
     $enum = array();
     foreach($t->fetchAll() as $unite)
@@ -74,14 +76,6 @@ class ActivitesController extends Strass_Controller_Action
     // On ne décale pas en septembre afin de réserver pour la date
     // actuelle si possible.
     $annee = $annee ? $annee : date('Y');
-
-    $this->view->model = $m = new Wtk_Form_Model('prevoir');
-    $enum = array();
-    foreach($programmables as $unite)
-      $enum[$unite->id] = $unite->getFullname();
-    $default = $u ? $u->id : null;
-    $m->addEnum('unites', 'Unités participantes',
-		$default, $enum, true);        // multiple
     $m->addDate('debut', 'Début',
 		$annee.date('-m-d').' 14:30',
 		'%Y-%m-%d %H:%M');
@@ -251,8 +245,7 @@ class ActivitesController extends Strass_Controller_Action
 
     $this->view->model = $m = new Wtk_Form_Model('annuler');
     $m->addBool('confirmer',
-		"Je confirme la destruction de toute informations relative à l'activité ".
-		$a->getIntituleCourt().".", false);
+		"Je confirme la destruction de toutes informations relative à cette activité.", false);
     $m->addNewSubmission('continuer', 'Continuer');
 
     if ($m->validate()) {

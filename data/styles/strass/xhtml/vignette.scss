@@ -5,6 +5,16 @@
 /* À peu près 1/3 du contenu sur un écran 1024 */
 $basesize: 210px;
 
+/* Vignette seule, pour suppression */
+#vignette {
+    text-align: center;
+    margin: 1em auto;
+
+    .vignette {
+	display: inline-block;
+    }
+}
+
 .vignettes
 {
     padding: 0;

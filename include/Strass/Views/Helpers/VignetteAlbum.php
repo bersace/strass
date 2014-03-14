@@ -25,9 +25,13 @@ class Strass_View_Helper_VignetteAlbum
     $photo = $album->getPhotoAleatoire();
     $label = $label ? $label : $album->getIntituleCourt();
     $item = new Wtk_Container;
-    $item->addSection()
-      ->addFlags('wrapper')
-      ->addImage($photo->getCheminVignette(), $photo->titre, $album->getIntituleComplet());
+    $w = $item->addSection()
+      ->addFlags('wrapper');
+    if ($photo)
+      $w->addImage($photo->getCheminVignette(), $photo->titre, $album->getIntituleComplet());
+    else
+       $w->addParagraph("Pas d'image !")->addFlags('empty', 'image');
+
     $item->addParagraph($label)->addFlags('label');
     $link = new Wtk_Link($this->view->url($urlOptions, true, true), $label, $item);
     $link->addFlags('vignette', 'album');

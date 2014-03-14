@@ -1,0 +1,7 @@
+// -*- css -*-
+
+@import 'lib';
+
+#document form {
+    @include minipage;
+}

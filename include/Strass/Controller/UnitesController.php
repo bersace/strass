@@ -364,10 +364,10 @@ class UnitesController extends Strass_Controller_Action
       try {
 	if ($m->get('individu/individu') == '$$nouveau$$') {
 	  $i = new Individu;
-	  $i->prenom = $m->prenom;
-	  $i->nom = $m->nom;
-	  $i->sexe = $m->sexe;
-	  $i->naissance = $m->naissance;
+	  $i->prenom = $m->get('fiche/prenom');
+	  $i->nom = $m->get('fiche/nom');
+	  $i->sexe = $m->get('fiche/sexe');
+	  $i->naissance = $m->get('fiche/naissance');
 	  $i->slug = $i->getTable()->createSlug(wtk_strtoid($i->getFullname(false, false)));
 	  $i->save();
 	}
