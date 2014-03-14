@@ -52,7 +52,7 @@ function wtk_nbsp($string)
 }
 
 /*
- * tronque $full à maximum $length sans couper de mot. Ajout $ellipse
+ * tronque $full à maximum $length sans couper de mot. Ajoute $ellipse
  * à la fin du resultat si besoin.
  */
 function wtk_first_words($full, $length = 512, $ellipse = " […]")
@@ -62,6 +62,30 @@ function wtk_first_words($full, $length = 512, $ellipse = " […]")
 		$firsts.= $ellipse;
 
 	return $firsts;
+}
+
+/*
+ * tronque $full à maximum $length sans couper de lignesf. Ajout $ellipse
+ * à la fin du resultat si besoin.
+ */
+function wtk_first_lines($full, $length = 512, $maxlines=5, $ellipse = "…")
+{
+  $lines = explode("\n", $full);
+  $count = 0;
+  $out = "";
+  foreach($lines as $i => $line) {
+    $out .= $line."\n";
+    if (strlen($out) >= $length)
+      break;
+
+    if ($i >= $maxlines)
+      break;
+  }
+
+  if ($ellipse && $out != $full)
+    $out.= $ellipse;
+
+  return $out;
 }
 
 /**

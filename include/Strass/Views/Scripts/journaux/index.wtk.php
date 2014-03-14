@@ -18,8 +18,9 @@ class Strass_Pages_Renderer_Articles extends Wtk_Pages_Renderer
   {
     $s = $root->addSection($article->slug, $this->view->lienArticle($article));
     $s->addFlags('article');
+    $s->addChild($this->view->vignetteIndividu($article->findAuteur()));
 
-    $t = $s->addText($article->getBoulet(true));
+    $t = $s->addText(wtk_first_lines($article->getBoulet() . "\n\n". $article->article));
     $tw = $t->getTextWiki();
     $tw->setRenderConf('Xhtml', 'image', 'base', $article->getDossier());
     $s->addParagraph($this->view->signature($article), ".")->addFlags('signature');

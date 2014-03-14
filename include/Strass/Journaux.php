@@ -50,7 +50,7 @@ class Journal extends Strass_Db_Table_Row_Abstract implements Zend_Acl_Resource_
       ->from('article')
       ->join('commentaire', 'commentaire.id = article.commentaires', array())
       ->where('article.journal = ?', $this->id)
-      ->order('commentaire.date');
+      ->order('commentaire.date DESC');
     return $s;
   }
 
@@ -193,7 +193,7 @@ class Article extends Strass_Db_Table_Row_Abstract implements Zend_Acl_Resource_
     if ($this->boulet)
       return $this->boulet;
     elseif ($generate)
-      return wtk_first_words($this->article);
+      return wtk_first_lines($this->article);
     else
       return null;
   }
