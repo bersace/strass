@@ -43,12 +43,12 @@ class Strass_Pages_Renderer_Livredor extends Strass_Pages_Renderer
       $l->addItem()->addChild($this->view->lien(array('controller' => 'livredor',
 						      'action' => 'editer',
 						      'message' => $message->id),
-						"Éditer", true));
+						"Éditer", true))->addFlags('adminlink', 'editer');
       $l->addItem()->addChild($this->view->lien(array('controller' => 'livredor',
 						      'action' => 'supprimer',
 						      'message' => $message->id),
 						"Supprimer", true))
-	->addFlags('critical');
+	->addFlags('critical', 'adminlink', 'supprimer');
     }
   }
 }

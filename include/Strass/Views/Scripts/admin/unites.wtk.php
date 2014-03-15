@@ -9,7 +9,7 @@ if ($this->unites->count()) {
   $t->addNewColumn('Inscrits', new Wtk_Table_CellRenderer_Text('text', 'inscrits'));
   $t->addNewColumn(null, new Wtk_Table_CellRenderer_Link('href', 'url-supprimer',
 							 'label', 'Supprimer',
-							 'flags', array('adminlink', 'critical')),
+							 'flags', array('adminlink', 'critical', 'supprimer')),
 		   'adminlinks');
 }
 else {

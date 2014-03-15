@@ -99,10 +99,11 @@ if ($this->apps->count()) {
   if ($this->assert(null, $this->individu, 'inscrire')) {
     $t->addNewColumn(null, new Wtk_Table_CellRenderer_Link('href', 'url-editer',
 							   'label', 'Éditer',
-							   'flags', array('adminlink')));
+							   'flags', array('adminlink', 'editer')));
     $t->addNewColumn(null, new Wtk_Table_CellRenderer_Link('href', 'url-supprimer',
 							   'label', 'Supprimer',
-							   'flags', array('adminlink', 'critical')));
+							   'flags', array('adminlink', 'critical',
+									  'supprimer')));
   }
 }
 else {

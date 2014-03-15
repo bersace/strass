@@ -535,18 +535,34 @@ a {
 	}
     }
 
-    :hover > ul.adminlinks
-    {
-	visibility: visible;
-    }
-
     a.adminlink {
 	@include adminlink;
+
+	&.supprimer, &.admin, &.editer {
+	    width: 0;
+	    height: 0;
+	    overflow: hidden;
+	    background-repeat: no-repeat;
+	    background-size: auto 70%;
+	    background-position: center center;
+	    padding: 1.75em 1.75em 0 0;
+	}
+
+	&.supprimer {
+	    background-image: url("icones/supprimer.png");
+	}
+
+	&.admin {
+	    background-image: url("icones/settings.png");
+	}
+
+	&.editer {
+	    background-image: url("icones/pencil.png");
+	}
     }
 
     td a.adminlink {
 	font-size: 80%;
-	padding: .25ex 1ex;
     }
 
     ul.adminlinks {
@@ -564,12 +580,16 @@ a {
 
 	    a {
 		@include adminlink;
+		box-shadow: 2pt 4pt 1ex rgba(4, 4, 4, 0.5);
 	    }
 	}
     }
 
-    .pages.links
-    {
+    :hover > ul.adminlinks {
+	visibility: visible;
+    }
+
+    .pages.links {
 	margin: 1ex;
 	text-align: center;
 	clear: both;

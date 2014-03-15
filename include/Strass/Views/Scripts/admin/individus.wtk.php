@@ -25,11 +25,12 @@ class Strass_Pages_Renderer_Individus extends Wtk_Pages_Renderer
 								    'label', 'app'));
     $t->addNewColumn(null, new Wtk_Table_CellRenderer_Link('href', 'url-admin',
 							   'label', 'Administrer',
-							   'flags', array('adminlink')),
+							   'flags', array('adminlink', 'admin')),
 		     'adminlinks');
     $t->addNewColumn(null, new Wtk_Table_CellRenderer_Link('href', 'url-supprimer',
 							   'label', 'Supprimer',
-							   'flags', array('adminlink', 'critical')),
+							   'flags', array('adminlink', 'critical',
+									  'supprimer')),
 		     'adminlinks');
 
     return $table;

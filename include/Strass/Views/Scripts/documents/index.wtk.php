@@ -11,12 +11,13 @@ if ($this->docs->count()) {
     $al->addItem()->addChild($this->lien(array('controller' => 'documents',
 					       'action' => 'envoyer',
 					       'document' => $doc->slug),
-					 "Éditer", true));
+					 "Éditer", true))
+      ->addFlags('adminlink', 'editer');
     $al->addItem()->addChild($this->lien(array('controller' => 'documents',
 					       'action' => 'supprimer',
 					       'document' => $doc->slug),
 					 "Supprimer", true))
-      ->addFlags('critical');
+      ->addFlags('adminlink', 'supprimer', 'critical');
   }
 }
 else {
