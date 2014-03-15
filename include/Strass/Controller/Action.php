@@ -33,12 +33,12 @@ abstract class Strass_Controller_Action extends Zend_Controller_Action implement
 
       /* instanciation de la page courante */
       $metas = $config->metas;
-      if ($metas->title) {
+      if ($metas->title)
 	$site = $metas->title;
-      }
-      elseif ($racine) {
+      elseif ($racine)
 	  $site = wtk_ucfirst($racine->getName());
-      }
+      else
+	$site = null;
 
       $page = new Strass_Page(new Wtk_Metas(array('DC.Title'		=> $metas->title,
 						  'DC.Title.alternative'=> $metas->title,

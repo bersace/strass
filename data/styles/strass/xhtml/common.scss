@@ -107,7 +107,11 @@ a {
     }
 
     div.dialog {
-	padding-left: 64px;
+	&.info, &.warn, &.error {
+	    .h {
+		padding-left: 64px;
+	    }
+	}
 
 	&.info {
 	    color: $info;
