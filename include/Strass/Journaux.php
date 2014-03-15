@@ -136,6 +136,9 @@ class Article extends Strass_Db_Table_Row_Abstract implements Zend_Acl_Resource_
     if ($acl->hasRole($auteur))
       $acl->allow($auteur, $this,
 		  array('editer', 'supprimer'));
+
+    if ($this->public)
+      $acl->allow(null, $this, 'voir');
   }
 
   function getDossier($data = null)

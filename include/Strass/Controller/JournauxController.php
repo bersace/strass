@@ -10,7 +10,7 @@ class JournauxController extends Strass_Controller_Action
     $this->formats('rss', 'atom');
 
     $s = $j->selectArticles();
-    $s->where('public IS NOT NULL');
+    $s->where('public = 1');
     $this->view->model = new Strass_Pages_Model_Rowset($s, 10, $this->_getParam('page'));
 
     $this->actions->append("Écrire un article",
@@ -21,9 +21,10 @@ class JournauxController extends Strass_Controller_Action
 			   array('action' => 'editer',
 				 'journal' => $j->slug),
 			   array(null, $j));
-    $brouillons = $j->findArticles('public IS NULL');
+    $brouillons = $j->findArticles('public != 1');
     if ($brouillons->count()) {
-      $this->actions->append("Brouillons",
+      $this->actions->insert(0,
+			     "Brouillons",
 			     array('action' => 'brouillons',
 				   'journal' => $j->slug),
 			     array(null, $j));

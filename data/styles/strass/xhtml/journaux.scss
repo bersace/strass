@@ -4,7 +4,8 @@
 
 #document form,
 #document > .section,
-#document > .signature
+#document > .signature,
+#boulet, #article
 {
     @include minipage;
 }
@@ -14,21 +15,15 @@
     font-size: 120%;
 }
 
-#document {
+#article {
+    font-size: 120%;
+}
 
-    .index .article
-    {
-	width: 50%;
-	position: relative;
-	font-size: 110%;
-    }
-
-    .article p img {
-	display: block;
-	max-width: 80%;
-	height: auto;
-	margin: 0 auto;
-    }
+#document p img {
+    display: block;
+    max-width: 80%;
+    height: auto;
+    margin: 0 auto;
 }
 
 #document .avatar {
@@ -38,9 +33,11 @@
     z-index: 10000;
 }
 
-#document.index .article
+#document.index .article,
+#document.brouillons .article
 {
     clear: both;
+    position: relative;
 
     .avatar {
 	margin-right: -12em;
@@ -58,14 +55,8 @@
     .suite, .signature { display: none;  }
 }
 
-form .check
-{
+form .check {
     text-align: center;
-}
-
-#actions li.ecrire
-{
-    list-style-image: url("icones/ecrire.png");
 }
 
 #document.ecrire .entry.input textarea,
