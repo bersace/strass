@@ -65,6 +65,8 @@ class Strass_MigrateHandler
       error_log("Erreur. Restauration de la version précédentee.");
       throw $e;
     }
+
+    $db->exec('VACUUM;');
   }
 
   /* À exécuter si on a un accès shell */
