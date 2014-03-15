@@ -2,8 +2,7 @@
 
 @import 'lib';
 
-body
-{
+body {
     font-size: 9pt;
     -moz-box-sizing: border-box;
     box-sizing: border-box;
@@ -15,8 +14,7 @@ body
     position: relative;
 }
 
-#header
-{
+#header {
     -moz-box-sizing: border-box;
     box-sizing: border-box;
     width: 100%;
@@ -25,34 +23,38 @@ body
     overflow: hidden;
     margin: 2em auto 1em;
 
-    & > .h
-    {
+    & > .h {
 	display: block;
 	line-height: 128px;
 	margin: 0;
     }
 
-    #branche
-    {
+    #branche {
 	position: absolute;
 	bottom: 0;
     }
 }
 
-#contentwrapper
-{
+#contentwrapper {
     -moz-box-sizing: border-box;
     box-sizing: border-box;
     margin: 0 auto;
 
-    #document
-    {
+    #document {
 	overflow: auto;
 	border-width: 1pt;
 
 	#flash {
 	    margin: 1em auto 2em;
 	}
+    }
+
+    .dialog {
+	-moz-box-sizing: border-box;
+	box-sizing: border-box;
+	width: 30em;
+	padding: 1em;
+	margin: 3em auto;
     }
 }
 
@@ -79,8 +81,7 @@ body
 	overflow-x: hidden;
 	overflow-y: auto;
 
-	& > div
-	{
+	& > div	{
 	    margin: 1ex auto;
 	}
     }
@@ -90,8 +91,7 @@ body
 	padding: 0 150px;
     }
 
-    #contentwrapper
-    {
+    #contentwrapper {
 	float: right;
 	width: 100%;
 
@@ -102,8 +102,13 @@ body
 	}
     }
 
-    #aside
-    {
+    .suf, .fse, .europa {
+	#document {
+	    min-height: 30em;
+	}
+    }
+
+    #aside {
 	-moz-box-sizing: border-box;
 	box-sizing: border-box;
 	float: right;
@@ -179,29 +184,20 @@ body
 	}
     }
 
-    #footer .logo
-    {
-	display: block !important;
-	position: absolute;
-	top: 0;
-	left: 0;
-	width: 83pt;
-	height: auto;
-    }
-
-    #footer .metas .author
-    {
-	@include headfont;
+    #footer #about .author {
 	display: block;
 	position: absolute;
 	top: 20pt;
-	font-size: 1.5em;
-	font-weight: normal;
+	left: .5ex;
+	margin: 0;
+	padding: 0;
     }
 
     #header,
-    #footer .copyright,
-    #footer .metas *,
+    #footer #citation,
+    #footer #menu,
+    #footer #about .h,
+    #footer #about li,
     #branche,
     #aside,
     #historique

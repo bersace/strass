@@ -43,13 +43,12 @@ $critical_bg: $error_bg;
 
 @mixin adminlink {
     display: inline-block;
-    background: $page_background;
+    background-color: $page_background;
     padding: .5ex 1em;
     border-radius: 1ex;
-    box-shadow: 2pt 4pt 1ex rgba(4, 4, 4, 0.5);
 
     &.critical {
-	background: $critical_bg;
+	background-color: $critical_bg;
     }
 }
 

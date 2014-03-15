@@ -7,56 +7,46 @@
     src: url("OldNewspaperTypes.ttf");
 }
 
-body
-{
-    font-family: "Deja Vu Sans",sans-serif;
+body {
+    font-family: "Liberation Sans", "Deja Vu Sans", sans-serif;
     color: black;
     background: $page_background;
 }
 
-.h, th,
-h2, h3, h4, h5, h6
+.h, th, h2, h3, h4, h5, h6
 {
     color: $highlight_color;
 }
 
-h1
-{
+h1 {
     font-size: 1.40em;
 }
 
-h2
-{
+h2 {
     font-size: 1.30em;
 }
 
-h3
-{
+h3 {
     font-size: 1.25em;
 }
 
-h4
-{
+h4 {
     font-size: 1.20em;
 }
 
-h5
-{
+h5 {
     font-size: 1.15em;
 }
 
-h6
-{
+h6 {
     font-size: 1.10em;
 }
 
-p
-{
+p {
     text-align: justify;
 }
 
-ul
-{
+ul {
     list-style-type: disc;
 }
 
@@ -75,29 +65,24 @@ a {
     }
 }
 
-#header
-{
+#header {
     background-repeat: no-repeat;
-    background-position: 97% center;
+    background-position: 96% center;
 
-    &.suf
-    {
+    &.suf {
 	background-image: url("mouvements/suf.png");
     }
 
-    &.fse
-    {
+    &.fse {
 	background-image: url("mouvements/fse.png");
     }
 
-    &.europa
-    {
+    &.europa {
 	background-image: url("mouvements/europa.png");
     }
 }
 
-#document
-{
+#document {
     position: relative;
 
     h1 {
@@ -121,31 +106,18 @@ a {
 	}
     }
 
-    & > div.dialog {
-	width: 30em;
-	padding: 1em;
-	margin: 8em auto;
-	background: lighten($page_background, 22%);
-	box-shadow: 2pt 4pt 1ex rgba(4, 4, 4, 0.5);
-	border-radius: 1ex;
-
-	.h {
-	    text-align: center;
-	    margin: 1ex;
-	    font-size: 140%;
-	}
+    div.dialog {
+	padding-left: 64px;
 
 	&.info {
 	    color: $info;
-	    background-color: $info_bg;
 	    background-image: url("dialog/information.png");
 	    background-position: 1ex .72ex;
 	    background-repeat: no-repeat;
 	}
 
-	&.error {
+	&.warn, &.error {
 	    color: $warn;
-	    background-color: $warn_bg;
 	    background-image: url("dialog/attention.png");
 	    background-position: 1em 1em;
 	    background-repeat: no-repeat;
@@ -158,36 +130,6 @@ a {
 
 	    #details {
 		display: none;
-	    }
-
-	    &.showtrace {
-		width: 80%;
-
-		.h {
-		    margin-left: 48px;
-		    text-align: left;
-		}
-
-		#details {
-		    display: block;
-
-		    > .h {
-			font-size: 1em;
-			text-align: right;
-			cursor: pointer;
-			color: lighten($highlight_color, 10%);
-		    }
-
-		    > * + * {
-			display: none;
-		    }
-
-		    &:hover > *,
-		    &:active > *
-		    {
-			display: block;
-		    }
-		}
 	    }
 	}
     }
@@ -251,6 +193,56 @@ a {
 		color: inherit !important;
 	    }
 	}
+
+	div.dialog {
+	    background: lighten($page_background, 22%);
+	    box-shadow: 2pt 4pt 1ex rgba(4, 4, 4, 0.5);
+	    border-radius: 1ex;
+
+	    .h {
+		text-align: center;
+		margin: 1ex;
+		font-size: 140%;
+	    }
+
+	    &.info {
+		background-color: $info_bg;
+	    }
+
+	    &.warn, &.error {
+		background-color: $warn_bg;
+
+		&.showtrace {
+		    width: 80%;
+
+		    .h {
+			margin-left: 48px;
+			text-align: left;
+		    }
+
+		    #details {
+			display: block;
+
+			> .h {
+			    font-size: 1em;
+			    text-align: right;
+			    cursor: pointer;
+			    color: lighten($highlight_color, 10%);
+			}
+
+			> * + * {
+			    display: none;
+			}
+
+			&:hover > *,
+			&:active > *
+			{
+			    display: block;
+			}
+		    }
+		}
+	    }
+	}
     }
 
     #footer
@@ -293,7 +285,7 @@ a {
 
     #citation {
 	p {
-	    font-size: 120%;
+	    font-size: 140%;
 	    font-style: italic;
 	}
 
@@ -311,50 +303,46 @@ a {
 	padding-top: 2em;
 	padding-bottom: 4em;
 
-	div.section
-	{
+	.section > * + * {
+	    margin-left: 1ex;
+	}
 
-	    .h, a {
-		font-size: 130%;
+	.h, a {
+	    font-size: 130%;
+	}
+
+	.h {
+	    text-align: right;
+	    margin: 0;
+	    padding: 1ex;
+	    @include headfont;
+	    color: lighten($content_background, 10%);
+	    background: $highlight_color;
+
+	    a {
+		color: inherit;
+		text-decoration: inherit;
+		font-size: inherit;
 	    }
+	}
 
-	    & > * + *
-	    {
-		margin-left: 1ex;
-	    }
+	li a {
+	    padding: .5ex 0 .5ex 2.5em;
+	    width: 100%;
+	}
 
-	    .h
-	    {
-		text-align: right;
-		margin: 0;
-		padding: 1ex;
-		@include headfont;
-		color: lighten($content_background, 10%);
-		background: $highlight_color;
-
-		a
-		{
-		    color: inherit;
-		    text-decoration: inherit;
-		    font-size: inherit;
-		}
-	    }
-
-	    li a {
-		padding: .5ex 0 .5ex 2.5em;
-		width: 100%;
-	    }
+	li.current a {
+	    color: black;
+	    text-decoration: none;
+	    font-weight: bold;
 	}
     }
 
-    #aside, #footer
-    {
-	ul
-	{
+    #aside, #footer {
+	ul {
 	    padding-left: 1ex;
 
-	    li
-	    {
+	    li {
 		list-style-type: none;
 		background-repeat: no-repeat;
 		background-position: left center;
@@ -375,13 +363,11 @@ a {
     }
 
     /* BRANCHE */
-    #branche
-    {
+    #branche {
 	font-size: 9pt !important;
 
 	/* branche a un traitement *très* spéciale, on réinitialise tout */
-	*
-	{
+	* {
 	    position: static !important;
 	    top: 0 !important;
 	    margin: 0 !important;
@@ -390,49 +376,21 @@ a {
 	    background: none !important;
 	}
 
-	.h
-	{
+	.h {
 	    text-align: left;
 	    font-size: inherit;
 	    color: #483005 !important;
 	}
 
-	li + li:before
-	{
+	li + li:before {
 	    content: "/";
 	    margin: 0 1ex;
 	    color: $highlight_color;
 	}
     }
 
-
-    #aside li.current a
-    {
-	color: black;
-	text-decoration: none;
-	font-weight: bold;
-    }
-
     /* CONSOLE */
     #console, #login {
-	& > .h
-	{
-	    margin-bottom: 0;
-	}
-
-	div.section
-	{
-	    margin: 0 0 0 1em;
-	    padding: 0;
-
-	    .h
-	    {
-		font-size: 1.05em;
-		margin: 0;
-		padding: 0;
-	    }
-	}
-
 	form {
 	    margin: 0;
 
@@ -444,7 +402,6 @@ a {
     }
 
     /* ICÔNES */
-
     #aside {
 	#login li + li {
     	    background-image: url("icones/login.png");
@@ -593,25 +550,22 @@ a {
 	margin: 1ex;
 	text-align: center;
 	clear: both;
-    }
 
-    .pages.links li
-    {
-	list-style: none;
-	margin: 1ex;
-	display: inline;
-    }
+	li {
+	    list-style: none;
+	    margin: 1ex;
+	    display: inline;
 
-    .pages.links .current a
-    {
-	color: black;
-	text-decoration: none;
-	font-weight: bold;
+	    &.current a {
+		color: black;
+		text-decoration: none;
+		font-weight: bold;
+	    }
+	}
     }
 
     /* Historique */
-    #historique.pagelinks
-    {
+    #historique.pagelinks {
 	-moz-box-sizing: border-box;
 	box-sizing: border-box;
 	clear: both;
@@ -620,16 +574,14 @@ a {
 	padding: 1ex;
 	margin: 5em 3em 3em;
 
-	.h
-	{
+	.h {
 	    @include headfont;
 	    width: 100%;
 	    font-size: 1.5ex;
 	    margin-top: 0;
 	}
 
-	div.section
-	{
+	div.section {
 	    -moz-box-sizing: border-box;
 	    box-sizing: border-box;
 	    display: inline-block;
@@ -645,8 +597,7 @@ a {
 	    }
 	}
 
-	ul
-	{
+	ul {
 	    display: block;
 	    margin: 0;
 	    padding: 0;
@@ -670,32 +621,28 @@ a {
     }
 
     /* Glisser-déposer */
-    .dojoDndItem
-    {
+    .dojoDndItem {
 	cursor: pointer;
     }
 
     .dojoDndItemBefore,
-    .dojoDndItemBefore td
-    {
+    .dojoDndItemBefore td {
 	border-top: 2px solid red;
     }
 
     .dojoDndItemAfter,
-    .dojoDndItemAfter td
-    {
+    .dojoDndItemAfter td {
 	border-bottom: 2px solid red;
     }
 
-    .dojoDndAvatar
-    {
-	moz-opacity: .75;
+    .dojoDndAvatar {
+	-moz-opacity: .75;
+	opacity: .75;
     }
 }
 
 @media print {
-    html, body
-    {
+    html, body {
 	font-size: 9pt;
 	font-family: serif;
 	background: white;
@@ -720,27 +667,30 @@ a {
 	}
     }
 
-    .h,
-    h3, h4, h5, h6
-    {
+    .h, h3, h4, h5, h6 {
 	margin-bottom: 0;
     }
 
-    a
-    {
+    a {
 	color: inherit;
 	text-decoration: none;
     }
 
-    p
-    {
+    p {
 	margin-top: 0;
     }
 
-    #document {
-	h1
-	{
-	    border-bottom: 1pt solid $highlight_color;
-	}
+    div.dialog {
+	font-size: 140%;
+    }
+
+    #document h1 {
+	border-bottom: 1pt solid $highlight_color;
+    }
+
+    #footer #about .author {
+	@include headfont;
+	font-size: 1.5em;
+	color: $highlight_color;
     }
 }

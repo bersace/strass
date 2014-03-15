@@ -44,14 +44,8 @@ a.vignette
     text-overflow: ellipsis;
     text-align: center;
 
-    /* Pour les deux lignes de texte */
-    height: $size + 48px;
-
     .section.wrapper
     {
-	height: $size;
-	line-height: $size;
-
 	img {
 	    display: inline-block;
 	    vertical-align: middle;
