@@ -65,11 +65,11 @@ VALUES
 ('cc',		'Chef de clan',			'CC',	2,	'chef',		10),
 ('cca',		'Chef de clan adjoint',		'CCA',	2,	'assistant',	11),
 ('acc',		'Chef d''équipe',		'ACC',	3,	'chef',		11),	-- 5
-('equipier',	'Équipier',			null,	3,	'assistant',	12),
+('equipier',	'Équipier',			NULL,	3,	'membre',	12),
 ('cf',		'Cheftaine de feu',		'CF',	4,	'chef',		10),
 ('cfa',		'Cheftaine de feu adjointe',	'CFA',	4,	'chef',		11),
 ('acf',		'Cheftaine d''équipe',		'ACF',	5,	'chef',		11),
-('equipiere',	'Guide-aînée',			'GA',	5,	'assistant',	12),	-- 10
+('equipiere',	'Guide-aînée',			'GA',	5,	'membre',	12),	-- 10
 ('ct',		'Chef de troupe',		'CT',	6,	'chef',		20),
 ('act',		'Assistant chef de troupe',	'ACT',	6,	'assistant',	21),
 ('cp',		'Chef de patrouille',		'CP',	8,	'chef',		40),
