@@ -62,32 +62,32 @@ WHERE slug IN ('groupe', 'aines', 'clan', 'eqclan', 'feu', 'eqfeu', 'troupe', 'c
 INSERT INTO unite_role
 (slug, titre, accr, type, acl_role)
 VALUES
-('cg',		'chef de groupe',		'CG',	1,	'chef'),	-- 1
-('acg',		'assistant chef de groupe',	'ACG',	1,	'assistant'),
-('cc',		'chef de clan',			'CC',	3,	'chef'),
-('acc',		'assistant chef de clan',	'ACC',	3,	'assistant'),
-('routier',	'routier',			'SR',	3,	'assistant'),	-- 5
+('cg',		'Chef de groupe',		'CG',	1,	'chef'),	-- 1
+('acg',		'Assistant chef de groupe',	'ACG',	1,	'assistant'),
+('cc',		'Chef de clan',			'CC',	3,	'chef'),
+('acc',		'Assistant chef de clan',	'ACC',	3,	'assistant'),
+('routier',	'Routier',			'SR',	3,	'assistant'),	-- 5
 ('cer',		'Chef d''équipe',		'CE',	4,	'chef'),
-('equipier',	'routier',			'SR',	4,	'assistant'),
-('cf',		'cheftaine de feu',		'CF',	5,	'chef'),
+('equipier',	'Routier',			'SR',	4,	'assistant'),
+('cf',		'Cheftaine de feu',		'CF',	5,	'chef'),
 ('acf',		'Assistante cheftaine de feu',	'ACF',	5,	'chef'),
-('ga',		'guide-aînée',			'GA',	5,	'assistant'),	-- 10
+('ga',		'Guide-aînée',			'GA',	5,	'assistant'),	-- 10
 ('cef',		'Cheftaine d''équipe',		'CE',	6,	'chef'),
-('equipiere',	'guide-aînée',			'GA',	6,	'assistant'),
-('ct',		'chef de troupe',		'CT',	7,	'chef'),
-('act',		'assistant chef de troupe',	'ACT',	7,	'assistant'),
-('cp',		'chef de patrouille',		'CP',	9,	'chef'),	-- 15
-('sp',		'second de patrouille',		'SP',	9,	'assistant'),
+('equipiere',	'Guide-aînée',			'GA',	6,	'assistant'),
+('ct',		'Chef de troupe',		'CT',	7,	'chef'),
+('act',		'Assistant chef de troupe',	'ACT',	7,	'assistant'),
+('cp',		'Chef de patrouille',		'CP',	9,	'chef'),	-- 15
+('sp',		'Second de patrouille',		'SP',	9,	'assistant'),
 ('3e-patrouille','3e',				NULL,	9,	'membre'),
 ('4e-patrouille','4e',				NULL,	9,	'membre'),
 ('5e-patrouille','5e',				NULL,	9,	'membre'),
 ('6e-patrouille','6e',				NULL,	9,	'membre'),	-- 20
 ('7e-patrouille','7e',				NULL,	9,	'membre'),
 ('8e-patrouille','8e',				NULL,	9,	'membre'),
-('ccie',	'cheftaine de compagnie',	'CCie',	10,	'chef'),
-('accie',	'assistante cheftaine de compagnie','ACCie',10,	'chef'),
-('ce',		'cheftaine d''équipe',		'CE',	12,	'chef'),	-- 25
-('se',		'seconde d''équipe',		'SE',	12,	'assistant'),
+('ccie',	'Cheftaine de compagnie',	'CCie',	10,	'chef'),
+('accie',	'Assistante cheftaine de compagnie','ACCie',10,	'chef'),
+('ce',		'Cheftaine d''équipe',		'CE',	12,	'chef'),	-- 25
+('se',		'Seconde d''équipe',		'SE',	12,	'assistant'),
 ('3e-equipe',	'3e',				NULL,	12,	'membre'),
 ('4e-equipe',	'4e',				NULL,	12,	'membre'),
 ('5e-equipe',	'5e',				NULL,	12,	'membre'),
@@ -96,16 +96,16 @@ VALUES
 ('8e-equipe',	'8e',				NULL,	12,	'membre'),
 ('akela',	'Akéla',			NULL,	13, 	'chef'),
 ('acm',		'Assistante d''Akéla',		'ACM',	13,	'chef'),
-('sizainier',	'sizainier',		NULL,	14,	'membre'),	-- 35
-('second',	'second',			NULL,	14,	'membre'),
+('sizainier',	'Sizainier',		NULL,	14,	'membre'),	-- 35
+('second',	'Second',			NULL,	14,	'membre'),
 ('3e-louveteau','3e',				NULL,	14,	'membre'),
 ('4e-louveteau','4e',				NULL,	14,	'membre'),
 ('5e-louveteau','5e',				NULL,	14,	'membre'),
 ('6e-louveteau','6e',				NULL,	14,	'membre'),	-- 40
 ('guillemette',	'Guillemette',			NULL,	15,	'chef'),
-('acr',		'assistante de Guillemette',	NULL,	15,	'chef'),
-('sizainiere',	'sizainière',		NULL,	16,	'membre'),
-('seconde',	'seconde',			NULL,	16,	'membre'),
+('acr',		'Assistante de Guillemette',	NULL,	15,	'chef'),
+('sizainiere',	'Sizainière',		NULL,	16,	'membre'),
+('seconde',	'Seconde',			NULL,	16,	'membre'),
 ('3e-jeannette','3e',				NULL,	16,	'membre'),	-- 45
 ('4e-jeannette','4e',				NULL,	16,	'membre'),
 ('5e-jeannette','5e',				NULL,	16,	'membre'),
