@@ -5,6 +5,7 @@ require_once 'Strass/Livredor.php';
 class LivredorController extends Strass_Controller_Action
 {
   protected $_titreBranche = "Livre d'or";
+  public $_afficherMenuUniteRacine = true;
 
   function indexAction()
   {

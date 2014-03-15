@@ -3,6 +3,8 @@ interface Strass_Controller_ErrorController {}
 
 class ErrorController extends Strass_Controller_Action implements Strass_Controller_ErrorController
 {
+  public $_afficherMenuUniteRacine = true;
+
   public function errorAction()
   {
     $this->view->errors = $errors = $this->getResponse()->getException();

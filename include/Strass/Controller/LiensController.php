@@ -5,6 +5,7 @@ require_once 'Strass/Liens.php';
 class LiensController extends Strass_Controller_Action
 {
   protected $_titreBranche = 'Liens';
+  public $_afficherMenuUniteRacine = true;
 
   function indexAction()
   {

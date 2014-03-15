@@ -29,7 +29,7 @@ class Strass_Controller_Action_Helper_Activite extends Zend_Controller_Action_He
     $unites = $activite->findUnitesParticipantesExplicites();
     if ($unites->count() == 1) {
       $unite = $unites->current();
-      $this->_actionController->_helper->Unite->setBranche($unite, 'calendrier');
+      $this->_actionController->_helper->Unite->liensConnexes($unite, 'calendrier');
 
       $this->_actionController->branche->append($activite->getAnnee(),
 						array('controller'=> 'activites',

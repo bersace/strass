@@ -6,6 +6,7 @@ abstract class Strass_Controller_Action extends Zend_Controller_Action implement
   protected $_formats = array('xhtml');
   protected $resourceid;
   public $_helper = null;
+  public $_afficherMenuUniteRacine = false;
 
   public function getResourceId()
   {
@@ -22,20 +23,21 @@ abstract class Strass_Controller_Action extends Zend_Controller_Action implement
     catch (Exception $e) {
       $config = Zend_Registry::get('config');
 
+      try {
+	$t = new Unites;
+	$racine = $t->findRacine();
+      }
+      catch (Strass_Db_Table_NotFound $e) {
+	$racine = null;
+      }
+
       /* instanciation de la page courante */
       $metas = $config->metas;
       if ($metas->title) {
 	$site = $metas->title;
       }
-      else {
-	try {
-	  $t = new Unites;
-	  $racine = $t->findRacine();
+      elseif ($racine) {
 	  $site = wtk_ucfirst($racine->getName());
-	}
-	catch (Strass_Db_Table_NotFound $e) {
-	  $site = null;
-	}
       }
 
       $page = new Strass_Page(new Wtk_Metas(array('DC.Title'		=> $metas->title,
@@ -63,11 +65,13 @@ abstract class Strass_Controller_Action extends Zend_Controller_Action implement
       if ($config->system->short_title)
 	$this->branche->append($config->system->short_title, array(), array(), true);
 
+      if ($this->_afficherMenuUniteRacine && $racine)
+	$this->_helper->Unite->liensConnexes($racine, $action='index', $controller='unites');
+
       if (!$this instanceof Strass_Controller_ErrorController && $this->_titreBranche)
 	$this->branche->append($this->_titreBranche,
 			       array('controller' => strtolower($this->_request->getControllerName())),
 			       array(), true);
-
       return $page;
     }
   }

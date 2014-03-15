@@ -4,6 +4,8 @@ require_once 'Strass/Unites.php';
 
 class MembresController extends Strass_Controller_Action implements Zend_Acl_Resource_Interface
 {
+  public $_afficherMenuUniteRacine = true;
+
   function init()
   {
     parent::init();
@@ -20,7 +22,7 @@ class MembresController extends Strass_Controller_Action implements Zend_Acl_Res
     catch (Strass_Db_Table_NotFound $e) {}
   }
 
-  function getResourceID()
+  function getResourceId()
   {
     return 'membres';
   }

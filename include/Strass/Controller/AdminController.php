@@ -15,6 +15,7 @@ function strass_admin_count_level($count, $warn, $critical)
 class AdminController extends Strass_Controller_Action
 {
   public $_titreBranche = 'Administration';
+  public $_afficherMenuUniteRacine = true;
 
   function init()
   {

@@ -66,33 +66,41 @@ class Strass_Controller_Action_Helper_Unite extends Zend_Controller_Action_Helpe
 
     // CONNEXES
     $connexes = $this->_actionController->connexes;
-    $connexes->titre = $this->_actionController->view->lien(array('controller' => 'unites',
-								  'action' => 'index',
-								  'unite' => $unite->slug),
-							    $unite->getTypeName(), true);
+    $url = $this->_actionController->_helper->Url('index', 'unites', null, null, true);
+    $connexes->titre = new Wtk_Link($url, $unite->getTypeName());
 
     $connexes->append("Photos",
 		      array('controller' => 'photos',
-			    'action' => 'index'));
+			    'action' => 'index',
+			    'unite' => $unite->slug),
+		      array(), true);
 
     $connexes->append('Effectifs',
 		      array('controller' => 'unites',
-			    'action' => 'effectifs'),
-		      array(null, $unite, 'effectifs'));
+			    'action' => 'effectifs',
+			    'unite' => $unite->slug),
+		      array(null, $unite, 'effectifs'),
+		      true);
 
     $connexes->append("Calendrier",
 		      array('controller' => 'activites',
-			    'action' => 'calendrier'),
-		      array(null, $unite, 'calendrier'));
+			    'action' => 'calendrier',
+			    'unite' => $unite->slug),
+		      array(null, $unite, 'calendrier'),
+		      true);
 
     $connexes->append("Documents",
 		      array('controller' => 'documents',
-			    'action' => 'index'));
+			    'action' => 'index',
+			    'unite' => $unite->slug),
+			array(), true);
 
     if (!$unite->isTerminale() && !$unite->findParentTypesUnite()->virtuelle)
       $connexes->append("Archives",
 			array('controller' => 'unites',
-			      'action' => 'archives'));
+			      'action' => 'archives',
+			      'unite' => $unite->slug),
+			array(), true);
 
     $journal = $unite->findJournaux()->current();
     if ($journal)

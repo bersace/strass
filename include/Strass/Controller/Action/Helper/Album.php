@@ -28,7 +28,7 @@ class Strass_Controller_Action_Helper_Album extends Zend_Controller_Action_Helpe
     $unites = $activite->findUnitesParticipantesExplicites();
     if ($unites->count() == 1) {
       $unite = $unites->current();
-      $this->_actionController->_helper->Unite->setBranche($unite, 'index', 'photos');
+      $this->_actionController->_helper->Unite->liensConnexes($unite, 'index', 'photos');
 
       $urlOptions = array('controller'=> 'photos',
 			  'action'	=> 'index',

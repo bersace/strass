@@ -5,6 +5,8 @@ require_once 'Strass/Unites.php';
 
 class IndividusController extends Strass_Controller_Action
 {
+  public $_afficherMenuUniteRacine = true;
+
   function indexAction()
   {
     $this->redirectSimple('index', 'unites');
