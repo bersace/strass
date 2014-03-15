@@ -2,46 +2,17 @@
 
 @import "lib";
 
-#document form
-{
+#document form {
     @include minipage;
 }
 
-#calendrier table
-{
+#calendrier table {
     width: 80%;
     max-width: 40em;
     margin: 1em auto;
 }
 
-#calendrier > p,
-p.remarque
-{
-    background-image: url("dialog/attention.png");
-    background-position: top left;
-    background-repeat: no-repeat;
-    width: 70%;
-    max-width: 30em;
-    margin: 2em auto;
-    padding: 0 0 0 36px;
-    min-height: 32px;
-    font-size: 1.1em;
-}
-
-@media print {
-    #calendrier table
-    {
-	font-size: 130%;
-	margin: 15% auto 10%;
-
-	td {
-	    padding: .75ex;
-	}
-    }
-}
-
-#evenement
-{
+#evenement {
     width: 80%;
     max-width: 55em;
     margin: 1em auto 4em;
@@ -64,7 +35,7 @@ p.remarque
     }
 
     a.vignette {
-	margin-top: -4em;
+	margin-top: -3em;
 
 	p.label {
 	    display: none;
@@ -74,7 +45,8 @@ p.remarque
     ul.infos
     {
 	max-width: 50%;
-	font-size: 130%;
+	font-size: 150%;
+	margin-top: 2em;
 
 	li {
 	    list-style: none;
@@ -83,6 +55,22 @@ p.remarque
 
 	li.adresse {
 	    white-space: pre-wrap;
+	}
+    }
+
+    #description {
+	font-size: 130%;
+	margin: 0 1em;
+    }
+}
+
+@media print {
+    #calendrier table {
+	font-size: 130%;
+	margin: 15% auto 10%;
+
+	td {
+	    padding: .75ex;
 	}
     }
 }

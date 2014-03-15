@@ -32,8 +32,9 @@ class Strass_Views_PagesRenderer_Calendrier extends Strass_Views_PagesRenderer_H
     $c->setUrlFormat(urldecode($url));
 
     if($future)
-      $ss->addText("**La présence de chacun est primordiale** pour le bon déroulement ".
-		   "des activités et pour la progression de tous.");
+      $ss->addDialog()->addFlags('warn')
+	->addText("**La présence de chacun est primordiale** pour le bon déroulement ".
+		  "des activités et pour la progression de tous.");
     return $s;
   }
 }

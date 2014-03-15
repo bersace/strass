@@ -17,7 +17,7 @@ $l->addItem()->addFlags('fin')
 if ($lieu = $this->activite->lieu)
   $l->addItem()->addFlags('lieu')->addInline("**Lieu :** ".$lieu);
 
-$l->addItem()->addFlags('description')->addText($this->activite->description);
+$s->addSection('description')->addText($this->activite->description);
 
 // PIÈCES JOINTES
 if ($this->documents->count()) {
