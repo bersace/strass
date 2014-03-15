@@ -22,7 +22,6 @@ h2, h3, h4, h5, h6
 
 h1
 {
-    @include headfont;
     font-size: 1.40em;
 }
 
@@ -79,7 +78,7 @@ a {
 #header
 {
     background-repeat: no-repeat;
-    background-position: 100% center;
+    background-position: 97% center;
 
     &.suf
     {
@@ -100,6 +99,10 @@ a {
 #document
 {
     position: relative;
+
+    h1 {
+	@include headfont;
+    }
 
     #flash {
 	font-size: 105%;
@@ -190,11 +193,6 @@ a {
     }
 }
 
-#footer
-{
-    color: $highlight_color;
-}
-
 .empty
 {
     text-align: center;
@@ -237,7 +235,6 @@ a {
 	border-style: solid;
 	border-color: $highlight_color;
 	border-radius: 1ex;
-	min-height: 50em;
 
 	& > h1 {
 	    position: absolute;
@@ -252,6 +249,25 @@ a {
 
 	    a {
 		color: inherit !important;
+	    }
+	}
+    }
+
+    #footer
+    {
+	color: $content_background;
+	background: $highlight_color;
+
+	.h, .h a {
+	    @include headfont;
+	    color: $page_background;
+	}
+
+	li {
+	    padding: .5ex 0;
+
+	    a {
+		color: inherit;
 	    }
 	}
     }
@@ -275,58 +291,19 @@ a {
 	}
     }
 
-    :hover > ul.adminlinks
-    {
-	visibility: visible;
-    }
-
-    a.adminlink {
-	@include adminlink;
-    }
-
-    td a.adminlink {
-	font-size: 80%;
-	padding: .25ex 1ex;
-    }
-
-    ul.adminlinks {
-	position: absolute;
-	top: -.5ex;
-	right: 0;
-	margin: 0;
-	display: block;
-	text-align: right;
-	visibility: hidden;
-
-	li {
-	    display: inline-block;
-	    margin: 0 .5ex;
-
-	    a {
-		@include adminlink;
-	    }
+    #citation {
+	p {
+	    font-size: 120%;
+	    font-style: italic;
 	}
-    }
 
-    .pages.links
-    {
-	margin: 1ex;
-	text-align: center;
-	clear: both;
-    }
-
-    .pages.links li
-    {
-	list-style: none;
-	margin: 1ex;
-	display: inline;
-    }
-
-    .pages.links .current a
-    {
-	color: black;
-	text-decoration: none;
-	font-weight: bold;
+	.signature
+	{
+	    font-size: 0.8em;
+	    font-weight: bold;
+	    font-style: italic;
+	    text-align: right;
+	}
     }
 
     #aside
@@ -334,19 +311,24 @@ a {
 	padding-top: 2em;
 	padding-bottom: 4em;
 
-	.section
+	div.section
 	{
+
 	    .h, a {
-		font-size: 125%;
+		font-size: 130%;
+	    }
+
+	    & > * + *
+	    {
+		margin-left: 1ex;
 	    }
 
 	    .h
 	    {
 		text-align: right;
-		@include headfont;
-		font-size: 1.4em;
 		margin: 0;
 		padding: 1ex;
+		@include headfont;
 		color: lighten($content_background, 10%);
 		background: $highlight_color;
 
@@ -358,33 +340,34 @@ a {
 		}
 	    }
 
-	    & > * + *
-	    {
-		margin-left: 1ex;
+	    li a {
+		padding: .5ex 0 .5ex 2.5em;
+		width: 100%;
 	    }
+	}
+    }
 
-	    ul
+    #aside, #footer
+    {
+	ul
+	{
+	    padding-left: 1ex;
+
+	    li
 	    {
-		padding-left: 1ex;
+		list-style-type: none;
+		background-repeat: no-repeat;
+		background-position: left center;
+		background-size: auto 80%;
 
-		li
-		{
-		    list-style-type: none;
-		    background-repeat: no-repeat;
-		    background-position: left center;
-		    background-size: auto 80%;
+		a {
+		    display: inline-block;
+		    vertical-align: middle;
+		    height: 1.5em;
+		    line-height: 1.5em;
 
-		    a {
-			display: inline-block;
-			padding: .5ex 0 .5ex 2.5em;
-			vertical-align: middle;
-			width: 100%;
-			height: 1.5em;
-			line-height: 1.5em;
-
-			&:hover {
-			    text-shadow: 1pt 1pt 10pt rgba(50, 51, 48, .25);
-			}
+		    &:hover {
+			text-shadow: 1pt 1pt 10pt rgba(50, 51, 48, .25);
 		    }
 		}
 	    }
@@ -461,143 +444,150 @@ a {
     }
 
     /* ICÔNES */
-    #menu li:first-child
-    {
-	background-image: url("icones/home.png");
+
+    #aside {
+	#login li + li {
+    	    background-image: url("icones/login.png");
+	}
+
+	li.unites,
+	li.membres
+	{
+	    background-image: url("icones/customers.png");
+	}
+
+	li.activites {
+	    background-image: url("icones/date.png");
+	}
+
+	li.photos {
+	    background-image: url("icones/photography.png");
+	}
+
+	li.journaux {
+	    background-image: url("icones/feed.png");
+	}
+
+	li.documents {
+	    background-image: url("icones/library.png");
+	}
+
+	li.liens {
+	    background-image: url("icones/world.png");
+	}
+
+	li.rapports, li.livredor, li.citation, li.ecrire {
+	    background-image: url("icones/pen.png");
+	}
+
+	li.inscription {
+	    background-image: url("icones/plus.png");
+	}
+
+	li.individu, li.fiche {
+	    background-image: url("icones/user.png");
+	}
+
+	li.fermer {
+	    background-image: url("icones/lock.png");
+	}
+
+	li.prevoir, li.fonder, li.inscrire, li.citation.enregistrer
+	{
+	    background-image: url("icones/plus.png");
+	}
+
+	li.administrer, li.admin {
+	    background-image: url("icones/settings.png");
+	}
+
+	li.parametres {
+	    background-image: url("icones/config.png");
+	}
+
+	li.editer {
+	    background-image: url("icones/pencil.png");
+	}
+
+	li.annuler, li.supprimer, li.desinscrire
+	{
+	    background-image: url("icones/supprimer.png");
+	}
+
+	li.archives {
+	    background-image: url("icones/old-versions.png");
+	}
+
+	li.rss, li.atom {
+	    background-image: url("icones/feed.png");
+	}
+
+	li.vcf {
+	    background-image: url("icones/my-account.png");
+	}
+
+	li.ics {
+	    background-image: url("icones/date.png");
+	}
+
+	li.csv {
+	    background-image: url("icones/database.png");
+	}
     }
 
-    #aside li.unites,
-    #aside li.membres
+    :hover > ul.adminlinks
     {
-	background-image: url("icones/customers.png");
+	visibility: visible;
     }
 
-    #aside li.activites
-    {
-	background-image: url("icones/date.png");
+    a.adminlink {
+	@include adminlink;
     }
 
-    #aside li.photos
-    {
-	background-image: url("icones/photography.png");
+    td a.adminlink {
+	font-size: 80%;
+	padding: .25ex 1ex;
     }
 
-    #aside li.journaux
-    {
-	background-image: url("icones/feed.png");
-    }
-
-    #aside li.documents
-    {
-	background-image: url("icones/library.png");
-    }
-
-    #aside li.liens
-    {
-	background-image: url("icones/world.png");
-    }
-
-    #connexes li.rapports,
-    #aside li.livredor,
-    #aside li.citation,
-    #aside li.ecrire
-    {
-	background-image: url("icones/pen.png");
-    }
-
-
-    #login li.inscription,
-    #console li.inscriptions
-    {
-	background-image: url("icones/plus.png");
-    }
-
-    #admin li.individu,
-    #console li.fiche,
-    #admin li.fiche
-    {
-	background-image: url("icones/user.png");
-    }
-
-    #admin li.fermer
-    {
-	background-image: url("icones/lock.png");
-    }
-
-    #login li + li
-    {
-	background-image: url("icones/login.png");
-    }
-
-    /* ADMIN */
-    #admin li.prevoir,
-    #admin li.fonder,
-    #admin li.inscrire,
-    #admin li.citation.enregistrer
-    {
-	background-image: url("icones/plus.png");
-    }
-
-    #admin li.administrer,
-    #aside li.admin
-    {
-	background-image: url("icones/settings.png");
-    }
-
-    #aside li.parametres
-    {
-	background-image: url("icones/config.png");
-    }
-
-    #admin li.editer
-    {
-	background-image: url("icones/pencil.png");
-    }
-
-    #admin li.annuler,
-    #admin li.supprimer,
-    #admin li.desinscrire
-    {
-	background-image: url("icones/supprimer.png");
-    }
-
-    #connexes li.archives
-    {
-	background-image: url("icones/old-versions.png");
-    }
-
-    /* FORMATS */
-    #formats li.rss,
-    #formats li.atom
-    {
-	background-image: url("icones/feed.png");
-    }
-
-    #formats li.vcf
-    {
-	background-image: url("icones/my-account.png");
-    }
-
-    #formats li.ics
-    {
-	background-image: url("icones/date.png");
-    }
-
-    #formats li.csv
-    {
-	background-image: url("icones/database.png");
-    }
-
-
-    /* citation */
-    #citation .signature
-    {
-	font-size: 0.8em;
-	font-weight: bold;
-	font-style: italic;
+    ul.adminlinks {
+	position: absolute;
+	top: -.5ex;
+	right: 0;
+	margin: 0;
+	display: block;
 	text-align: right;
+	visibility: hidden;
+
+	li {
+	    display: inline-block;
+	    margin: 0 .5ex;
+
+	    a {
+		@include adminlink;
+	    }
+	}
     }
 
+    .pages.links
+    {
+	margin: 1ex;
+	text-align: center;
+	clear: both;
+    }
+
+    .pages.links li
+    {
+	list-style: none;
+	margin: 1ex;
+	display: inline;
+    }
+
+    .pages.links .current a
+    {
+	color: black;
+	text-decoration: none;
+	font-weight: bold;
+    }
 
     /* Historique */
     #historique.pagelinks

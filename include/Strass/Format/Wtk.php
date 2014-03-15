@@ -41,7 +41,7 @@ abstract class Strass_Format_Wtk extends Strass_Format
 
     $document->addFlags($mouvement);
     $document->header->addFlags($mouvement);
-    $document->footer->addFlags($mouvement);
+    $document->footer->addSection('wrapper');
 
     $link = new Wtk_Link('/', $page->metas->site);
     $document->header->setTitle($link);

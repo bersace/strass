@@ -8,6 +8,7 @@ body
     -moz-box-sizing: border-box;
     box-sizing: border-box;
     padding: 0;
+    margin: 0;
 }
 
 .dialog {
@@ -22,6 +23,7 @@ body
     height: 128px;
     position: relative;
     overflow: hidden;
+    margin: 2em auto 1em;
 
     & > .h
     {
@@ -54,24 +56,24 @@ body
     }
 }
 
-#footer
-{
-    width: 65em;
-    clear: both;
-}
-
 @media screen {
     $menuwidth: 18em;
+    $footerheight: 24em;
 
     html {
 	margin: 0;
-	padding: 2pt;
+	padding: 0;
+	position: relative;
+	min-height: 100%;
     }
 
     body {
-	margin: 0 auto;
+	-moz-box-sizing: border-box;
+	box-sizing: border-box;
+	margin: 0 auto $footerheight + 6em;
 	padding: 0;
 	width: 96%;
+	min-height: 100%;
 	min-width: 42em + $menuwidth;
 	max-width: 106em + $menuwidth;
 	overflow-x: hidden;
@@ -115,16 +117,45 @@ body
     }
 
     #footer {
-	p.copyright
-	{
-	    font-size: .9em;
-	    text-align: center;
-	    padding: 2em 0;
-	}
+	position: absolute;
+	left: 0;
+	bottom: 0;
+	width: 100%;
+	height: $footerheight;
+	overflow: hidden;
 
-	.metas, .logo
-	{
-	    display: none;
+	#wrapper {
+	    margin: 0 auto;
+	    width: 96%;
+	    min-width: 42em + $menuwidth;
+	    max-width: 106em + $menuwidth;
+
+	    div.section {
+		display: inline-block;
+		margin: 1ex 2em;
+		vertical-align: top;
+		width: 30%;
+		max-width: 15em;
+	    }
+
+	    #citation {
+		width: 40%;
+		max-width: 20em;
+	    }
+
+	    #menu {
+		width: 20%;
+		max-width: 15em;
+	    }
+
+	    #about {
+		width: 40%;
+		max-width: 40em;
+	    }
+
+	    .date, .author {
+		display: none;
+	    }
 	}
     }
 }

@@ -92,9 +92,12 @@ dojo.require("dojo.parser");
 <?php endif; ?>
   </head>
 <body<?php wtk_classes($flags); ?>>
+<div id="body">
 <?php if (isset($this->header)) $this->header->output(); ?>
 <div id="contentwrapper"><?php if (isset($this->content)) $this->content->output (); ?></div>
 <?php if (isset($this->aside)) $this->aside->output(); ?>
 <?php if (isset($this->footer)) $this->footer->output(); ?>
+<hr id="clearer" style="clear: both; visibility: hidden;" />
+</div>
   </body>
 </html>

@@ -60,9 +60,9 @@ class Strass_Controller_Action_Helper_Unite extends Zend_Controller_Action_Helpe
     }
   }
 
-  protected function liensConnexes($unite)
+  function liensConnexes($unite, $action=null, $controller=null)
   {
-    $this->setBranche($unite);
+    $this->setBranche($unite, $action, $controller);
 
     // CONNEXES
     $connexes = $this->_actionController->connexes;

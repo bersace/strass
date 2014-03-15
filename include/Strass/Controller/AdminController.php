@@ -20,14 +20,14 @@ class AdminController extends Strass_Controller_Action
   {
     parent::init();
 
-    $this->assert(null, 'site', 'admin', "Espace réservé aux administrateurs.");
+    $this->assert(null, 'site', 'admin', "Espace réservé aux administrateurs");
   }
 
   function indexAction()
   {
     $this->metas(array('DC.Title' => 'Administration'));
 
-    $this->actions->append("Paramètres", array('action' => 'parametres'));
+    $this->actions->append("Paramètres du site", array('action' => 'parametres'));
 
     $this->view->indicateurs = $m = new Wtk_Table_Model('label', 'url', 'compteur', 'level');
     $config = Zend_Registry::get('config');

@@ -17,7 +17,7 @@ class Strass_Addon_Menu extends Strass_Addon_Liens
 
   function __construct()
   {
-    parent::__construct('menu', 'Menu');
+    parent::__construct('menu', 'Navigation');
   }
 
   public function initView($view)
@@ -36,6 +36,7 @@ class Strass_Addon_Menu extends Strass_Addon_Liens
       $this->append($u->getFullName(), array('unite' => $u->slug), array(), true);
     }
 
-    return parent::initView($view);
+    parent::initView($view);
+    $view->parent = $view->document->footer->current();
   }
 }

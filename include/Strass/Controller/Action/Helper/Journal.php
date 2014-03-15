@@ -24,7 +24,8 @@ class Strass_Controller_Action_Helper_Journal extends Zend_Controller_Action_Hel
 
   function setBranche($journal)
   {
-    $this->_actionController->_helper->Unite->setBranche($journal->findParentUnites(), 'index', 'unites');
+    $unite = $journal->findParentUnites();
+    $this->_actionController->_helper->Unite->liensConnexes($unite, 'index', 'unites');
     $this->_actionController->branche->append(wtk_ucfirst($journal->nom),
 					      array('controller'=> 'journaux',
 						    'action'	=> 'index',

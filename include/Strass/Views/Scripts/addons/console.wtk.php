@@ -3,10 +3,11 @@
 $user = Zend_Registry::get('user');
 
 $this->document->addStyleComponents('form');
+$parent = $this->document->aside;
 
 if ($user->username == 'nobody') {
   // login
-  $section = $this->addons->addSection('login', "Membres");
+  $section = $parent->addSection('login', "Membres");
   $l = $section->addList();
   $l->addItem($this->lien(array('controller'	=> 'membres',
 				'action'	=> 'inscription'),
@@ -24,7 +25,7 @@ if ($user->username == 'nobody') {
 }
 else {
   // console
-  $s = $this->addons->addSection('console', "Mon compte");
+  $s = $parent->addSection('console', "Mon compte");
 
   if (count($this->liens)) {
     $l = $s->addList();

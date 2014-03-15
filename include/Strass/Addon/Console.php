@@ -2,9 +2,6 @@
 
 class Strass_Addon_Console extends Strass_Addon_Liens
 {
-  protected $login;
-  protected $logout;
-
   function __construct()
   {
     parent::__construct('console', 'Console');

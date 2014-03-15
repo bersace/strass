@@ -1,18 +1,19 @@
 <?php
 
-$f = $this->document->getFooter();
+$s = $this->document->getFooter()->current()->addSection('about', "À propos");
 
 $created = $this->document->metas->get('DC.Date.created');
-$f->addParagraph('Copyright © '.$created.($created == date('Y') ? '' : ' - '.date('Y')).' '.$this->document->metas->get('DC.Creator').' - ')->addFlags('copyright')
-->addLink($this->url(array('controller' => 'statiques',
-                           'action' => 'index',
-                           'page' => 'legal')),
-          'Mentions légales');
-                            
-$p = $f->addParagraph()->addFlags('metas');
-$p->addSpan($this->page->metas->get('DC.Creator'))->addFlags('author');
-$p->addSpan($this->page->metas->organization)->addFlags('organization');
-$p->addSpan(strftime('%d-%m-%Y', strtotime($this->page->metas->get('DC.Date.available'))))->addFlags('date');
+$l = $s->addList();
+$l->addItem('Copyright © '.
+	    $created.($created == date('Y') ? '' : '-'.date('Y'))." ".
+	    $this->document->metas->get('DC.Creator'))->addFlags('copyright');
 
-if (is_readable($logo = "data/styles/".$this->document->default_style->id."/logo.png"))
-	$f->addImage($logo, "logo", "Logo")->addFlags('logo');
+
+$l->addItem()->addFlags('legal')
+->addLink($this->url(array('controller' => 'statiques', 'action' => 'index', 'page' => 'legal'), true),
+          'Mentions légales');
+
+$l->addItem($this->page->metas->get('DC.Creator'))->addFlags('author');
+$l->addItem(strftime('%x', strtotime($this->page->metas->get('DC.Date.available'))))->addFlags('date');
+$l->addItem()->addFlags('strass')
+->addLink('http://gitorious.org/strass', 'Propulsé par Strass');
