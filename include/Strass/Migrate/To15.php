@@ -27,5 +27,7 @@ class Strass_Migrate_To15 extends Strass_MigrateHandler {
     $new->write();
 
     Zend_Registry::set('config', $new);
+
+    $db->exec('VACUUM;');
   }
 }
