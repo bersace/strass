@@ -38,8 +38,7 @@ class Wtk_Text extends Wtk_Element
 					 'mailto:',
 					 'xmpp:',
 					 'tel:',
-					 './',
-					 '../',
+					 '/', './', '../',
 					 );
 			$tw->setParseConf('Url', 'schemes', $options);
 			//$tw->setFormatConf('Xhtml', 'charset', 'utf-8');

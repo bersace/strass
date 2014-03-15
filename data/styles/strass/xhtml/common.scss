@@ -51,12 +51,12 @@ ul {
 }
 
 a {
-    color: darken($highlight_color, 10%);
+    color: $highlight_color;
     text-decoration: none;
 
     &:hover, &:visited
     {
-	color: darken($highlight_color, 10%);
+	color: $highlight_color;
     }
 
     &:hover
