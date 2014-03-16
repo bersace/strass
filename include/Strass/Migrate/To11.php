@@ -9,6 +9,8 @@ CREATE TABLE `document` (
 	id		INTEGER		PRIMARY KEY,
 	slug		CHAR(128)	NOT NULL UNIQUE,
 	titre		CHAR(128)	NOT NULL,
+	description	TEXT		NULL,
+	auteur		CHAR(512)	NULL,
 	suffixe		CHAR(8),
 	date		DATETIME
 );
