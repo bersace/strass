@@ -4,14 +4,13 @@
 
 /* ACCUEIL */
 #presentation {
+    @include smallcontent;
     width: 100%;
     max-width: 40em;
     margin: 0 auto;
     padding: 2em;
     font-size: 130%;
     text-align: left;
-    background: lighten($alt_background, 10%);
-    border-radius: 1ex;
 
     .image {
 	float: left;

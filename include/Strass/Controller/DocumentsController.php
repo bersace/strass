@@ -33,7 +33,9 @@ class DocumentsController extends Strass_Controller_Action
     }
     else {
       $this->view->unite = $unite = $this->_helper->Unite(false);
-      $this->metas(array('DC.Title' => 'Envoyer un document'));
+      $this->branche->append('Documents', array('action' => 'index'));
+      $this->metas(array('DC.Title' => 'Envoyer un document',
+			 'DC.Title.alternative' => 'Envoyer'));
       $this->branche->append();
     }
 
@@ -51,12 +53,16 @@ class DocumentsController extends Strass_Controller_Action
     $this->view->model = $m = new Wtk_Form_Model('envoyer');
     $m->addNewSubmission('envoyer', "Envoyer");
 
-    $m->addInstance('Enum', 'unite', "Unité", $unite->id, $envoyables);
-    $m->addInstance('String', 'titre', "Titre", $d ? $d->titre : null);
-    $i = $m->addInstance('File', 'document', "Document");
+    $m->addEnum('unite', "Unité", $unite->id, $envoyables);
+    $i = $m->addString('titre', "Titre", $d ? $d->titre : null);
+    $m->addConstraintRequired($i);
+    $m->addString('auteur', "Auteur", $d ? $d->auteur : null);
+    $m->addDate('date', "Date", $d ? $d->date : strftime('%F %T'));
+    $m->addString('description', "Description", $d ? $d->description : null);
+    $i = $m->addInstance('File', 'fichier', "Fichier");
 
     if ($m->validate()) {
-      $i = $m->getInstance('document');
+      $i = $m->getInstance('fichier');
       if (!$d && !$i->isUploaded())
 	throw new Exception("Fichier manquant");
 
@@ -76,11 +82,17 @@ class DocumentsController extends Strass_Controller_Action
 
 	$d->slug = $t->createSlug(wtk_strtoid($m->titre), $d->slug);
 	$d->titre = $m->titre;
-	$d->suffixe =strtolower(end(explode('.', $m->document['name'])));
-	$d->save();
+	$d->auteur = $m->auteur;
+	$d->date = $m->date;
+	$d->description = $m->description;
 
-	if ($i->isUploaded())
+	if ($i->isUploaded()) {
+	  $d->suffixe =strtolower(end(explode('.', $m->fichier['name'])));
+	  $d->save();
 	  $d->storeFile($i->getTempFilename());
+	}
+	else
+	  $d->save();
 
 	$du->document = $d->id;
 	$du->unite = $m->unite;
@@ -88,7 +100,7 @@ class DocumentsController extends Strass_Controller_Action
 
 	$this->logger->info($message,
 			    $this->_helper->Url('index', null, null,
-						array('unite' => $du->findParentUnites()->slug)));
+						array('unite' => $du->findParentUnites()->slug), true));
 
 	$db->commit();
       }

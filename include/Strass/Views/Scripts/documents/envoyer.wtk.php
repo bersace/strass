@@ -2,14 +2,14 @@
 
 $i = $this->model->getInstance('unite');
 $f = $this->document->addForm($this->model);
-if (count($i) > 1) {
+if (count($i) > 1)
   $f->addSelect('unite');
- }
- else {
-   $f->addHidden('unite');
- }
+else
+  $f->addHidden('unite');
+$f->addFile('fichier');
 $f->addEntry('titre', 36);
-$f->addFile('document');
+$f->addEntry('auteur', 36);
+$f->addDate('date', '%e/%m/%Y');
+$f->addEntry('description', 36, 4);
 
-$b = $f->addForm_ButtonBox();
-$b->addForm_Submit($this->model->getSubmission('envoyer'));
+$f->addForm_ButtonBox()->addForm_Submit($this->model->getSubmission('envoyer'));

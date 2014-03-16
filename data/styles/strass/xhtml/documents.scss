@@ -2,12 +2,19 @@
 
 @import "lib";
 
-#document form {
+.documents form
+{
     @include minipage;
 }
 
-#document li.document {
-    position: relative;
+#document .section.documents {
+    width: 80%;
+    max-width: 80em;
+    margin: 1em auto;
+}
+
+.section.document {
+    @include smallcontent;
 }
 
 .supprimer #vignette {
