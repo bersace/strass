@@ -13,32 +13,23 @@ class Wtk_Text extends Wtk_Element
 		$this->preformated	= $preformated;
 
 		if (!self::$const_tw) {
-			self::$const_tw = $tw = new Text_Wiki();
+			self::$const_tw = $tw = new Text_Wiki;
 			// Désactivation de certaine fonctionnalité peu sécurisé ou utiles dans
 			// le cadre d'un wiki uniquement.
-			$disable = array('phplookup',	'interwiki',	'wikilink',	'freelink',	'bold',
-					 'italic',	'embed',	    'include',	'toc');
-			foreach($disable as $rule) {
+			$disable = array('phplookup', 'interwiki', 'wikilink', 'freelink', 'bold', 'italic',
+					 'embed', 'include', 'toc');
+			foreach($disable as $rule)
 				$tw->disableRule($rule);
-			}
 
-			$enable = array('html', 'code', 'translatehtml');
-			foreach($enable as $rule) {
+			$enable = array('code', 'translatehtml');
+			foreach($enable as $rule)
 				$tw->enableRule($rule);
-			}
 
 			// Ajouter la gestion des url relative.
-			$options = array('http://',
-					 'https://',
-					 'ftp://',
-					 'gopher://',
-					 'news://',
-					 'irc://',
-					 'file://',
-					 'mailto:',
-					 'xmpp:',
-					 'tel:',
-					 '/', './', '../',
+			$options = array('/', './', '../',
+					 'http://', 'https://', 'ftp://',
+					 'gopher://', 'news://', 'file://',
+					 'irc://', 'mailto:', 'xmpp:', 'tel:',
 					 );
 			$tw->setParseConf('Url', 'schemes', $options);
 			//$tw->setFormatConf('Xhtml', 'charset', 'utf-8');

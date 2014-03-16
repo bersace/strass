@@ -64,6 +64,14 @@ abstract class Wtk_Form_Control extends Wtk_Element
 			$caption = $this->caption->template();
 			$tpl->addChild ('caption', $caption);
 		}
+		if ($this->instance->errors) {
+		  $this->errors = new Wtk_Section;
+		  $this->errors->addFlags('error');
+		  foreach ($this->instance->errors as $error)
+		    $this->errors->addForm_Error($error);
+		  $tpl->addChild('errors', $this->errors->template());
+		}
+
 		$control = $this->elementTemplate();
 		$tpl->addChild('control', $control);
 		return $tpl;

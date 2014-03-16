@@ -10,6 +10,7 @@ class Wtk_Form_Model_Exception extends Exception
     if ($instance) {
       $instance->valid = FALSE;
       $format = sprintf($format, $instance->label);
+      $instance->errors[] = $this;
     }
     parent::__construct($format);
     $this->format = $format;
@@ -26,5 +27,3 @@ class Wtk_Form_Model_Exception extends Exception
     return $this->format;
   }
 }
-
-?>

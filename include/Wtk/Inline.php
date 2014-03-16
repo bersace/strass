@@ -10,7 +10,7 @@ class Wtk_Inline extends Wtk_Text
     // le cadre d'un wiki uniquement.
     $disable = array('blockquote',
 		     'center',	'code',		'deflist',	'heading',	'horiz',
-		     'html',		'list',		'newline',	'paragraph',	'raw',
+		     'html',	'list',		'newline',	'paragraph',	'raw',
 		     'table');
 
     foreach($disable as $rule)

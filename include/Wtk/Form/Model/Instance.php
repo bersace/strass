@@ -7,6 +7,7 @@ abstract class Wtk_Form_Model_Instance
   public	$label;
   public	$value;
   public	$valid;
+  public $errors = array();
   public $readonly;
 
   function __construct ($path, $label = null, $value = NULL, $readonly = false)

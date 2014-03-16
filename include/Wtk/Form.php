@@ -18,13 +18,6 @@ class Wtk_Form extends Wtk_Container {
 		$this->model = $model;
 		$this->setDojoType("wtk.Form");
 
-		if (count($this->data['model']->errors)) {
-			$this->errors = new Wtk_Dialog('Erreurs de validation');
-			$this->errors->addFlags('form errors');
-			foreach($this->data['model']->errors as $error)
-				$this->errors->addForm_Error($error);
-		}
-
 		// Add a hidden field 'validated' which ensure that at least one
 		// data is sent if this form is validated. If you call validate()
 		// before new Wtk_Form_Model(), you won't be annoyed by this
