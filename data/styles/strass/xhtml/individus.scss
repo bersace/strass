@@ -50,8 +50,6 @@
 }
 
 #details, #cv {
-    -moz-box-sizing: border-box;
-    box-sizing: border-box;
     padding: 0 1ex;
     display: inline-block;
     vertical-align: top;
@@ -92,17 +90,16 @@
     margin: 0 auto;
 }
 
-.individus form {
+.individus.editer form,
+.individus.inscrire form,
+.individus.reinscrire form,
+.individus.desinscrire form,
+.individus.supprimer form
+{
     @include minipage;
-
-    #control-editer-notes textarea {
-	width: 100%;
-    }
 }
 
 .individus.admin form {
-    width: auto;
-
     table {
 	width: auto;
 	margin: 0 auto;

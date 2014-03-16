@@ -13,14 +13,14 @@ abstract class Strass_Views_PagesRenderer_Historique extends Wtk_Pages_Renderer
   function intituleChef($chef, $unite) {
     $type = $unite->findParentTypesUnite();
     if ($chef == '##INCONNU##')
-      return '//chef inconnu//';
+      return new Wtk_Emphasis('chef inconnu');
     else if (is_null($chef)) {
       switch($type->slug) {
       case 'troupe':
 	return 'foulard noir';
 	break;
       default:
-	return '//chef inconnu//';
+	return new Wtk_Emphasis('chef inconnu');
 	break;
       }
     }
@@ -52,7 +52,7 @@ abstract class Strass_Views_PagesRenderer_Historique extends Wtk_Pages_Renderer
       return $lien;
     }
     else
-      return new Wtk_Inline($intitule);
+      return $intitule;
   }
 
   function renderLinks($pages, $model)

@@ -73,10 +73,7 @@ a.vignette
     &.individu img,
     &.document img
     {
-	-moz-box-sizing: border-box;
-	box-sizing: border-box;
 	margin: 0 auto;
-	clear: both;
 	border-radius: .5ex;
 	border: 1pt solid $highlight_color;
 	background: white;
@@ -85,9 +82,9 @@ a.vignette
 
     p.label {
 	text-align: center;
-	clear: both;
 	width: 100%;
 	height: 2em;
+	margin-top: 1em;
     }
 }
 
@@ -96,8 +93,7 @@ a.vignette
 {
     height: $size;
 
-    p.label
-    {
+    p.label {
 	display: none;
     }
 }

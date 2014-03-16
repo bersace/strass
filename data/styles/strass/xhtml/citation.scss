@@ -12,5 +12,9 @@
     {
 	@include minipage;
 	@include message;
+
+	p.citation {
+	    white-space: pre-wrap;
+	}
     }
 }

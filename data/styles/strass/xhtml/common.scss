@@ -44,6 +44,7 @@ h6 {
 
 p {
     text-align: justify;
+    margin: 0 0 1ex;
 }
 
 ul {
@@ -108,8 +109,8 @@ a {
 
     div.dialog {
 	&.info, &.warn, &.error {
-	    .h {
-		padding-left: 64px;
+	    & > *:first-child {
+		padding-left: 48px;
 	    }
 	}
 
@@ -154,6 +155,9 @@ a {
     }
 }
 
+#statique {
+    @include minipage;
+}
 
 .signature {
     text-align: right;
@@ -291,6 +295,8 @@ a {
 	p {
 	    font-size: 140%;
 	    font-style: italic;
+	    text-align: left;
+	    white-space: pre-wrap;
 	}
 
 	.signature
@@ -311,7 +317,7 @@ a {
 	    margin-left: 1ex;
 	}
 
-	.h, a {
+	.h, li a {
 	    font-size: 130%;
 	}
 
@@ -351,12 +357,11 @@ a {
 		background-repeat: no-repeat;
 		background-position: left center;
 		background-size: auto 80%;
+		line-height: 1.5em;
 
 		a {
 		    display: inline-block;
 		    vertical-align: middle;
-		    height: 1.5em;
-		    line-height: 1.5em;
 
 		    &:hover {
 			text-shadow: 1pt 1pt 10pt rgba(50, 51, 48, .25);
@@ -453,7 +458,7 @@ a {
 	    background-image: url("icones/lock.png");
 	}
 
-	li.prevoir, li.fonder, li.inscrire, li.citation.enregistrer
+	li.prevoir, li.fonder, li.inscrire, li.citation.enregistrer, li.envoyer
 	{
 	    background-image: url("icones/plus.png");
 	}
@@ -570,8 +575,6 @@ a {
 
     /* Historique */
     #historique.pagelinks {
-	-moz-box-sizing: border-box;
-	box-sizing: border-box;
 	clear: both;
 	background: lighten($alt_background, 10%);
 	border-radius: 1ex;
@@ -586,8 +589,6 @@ a {
 	}
 
 	div.section {
-	    -moz-box-sizing: border-box;
-	    box-sizing: border-box;
 	    display: inline-block;
 	    vertical-align: top;
 	    width: 32.5%;

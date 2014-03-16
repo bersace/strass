@@ -2,13 +2,13 @@
 
 @import "lib";
 
-.section.commentaire
+.section.commentaire,
+.photos.voir #description
 {
     @include message;
 }
 
 #contentwrapper #document.voir {
-
     h1 {
 	background: none;
 	border: none;
@@ -109,8 +109,7 @@
 	margin-bottom: 2em;
     }
 
-    .photo
-    {
+    .photo {
 	text-align: center;
 	vertical-align: middle;
 	height: 24em;
@@ -121,7 +120,8 @@
 #document.envoyer form,
 #document.editer form,
 #document.supprimer form,
-.voir #commentaires
+.voir #commentaires,
+.voir #description
 {
     @include minipage;
 }

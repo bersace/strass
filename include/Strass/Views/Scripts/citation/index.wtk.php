@@ -12,12 +12,13 @@ class Strass_Pages_RendererCitation extends Strass_Pages_Renderer
       $l->addItem()->addChild($this->view->lien(array('controller' => 'citation',
 						      'action' => 'editer',
 						      'citation' => $citation->id),
-						"Éditer", true));
+						"Éditer", true))
+	->addFlags('adminlink', 'editer');
       $l->addItem()->addChild($this->view->lien(array('controller' => 'citation',
 						      'action' => 'supprimer',
 						      'citation' => $citation->id),
 						"Supprimer", true))
-	->addFlags('critical');
+	->addFlags('adminlink', 'supprimer', 'critical');
     }
   }
 }

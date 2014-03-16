@@ -3,6 +3,7 @@
 class CitationController extends Strass_Controller_Action
 {
   protected $_titreBranche = 'Citations';
+  public $_afficherMenuUniteRacine = true;
 
   function indexAction()
   {

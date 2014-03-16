@@ -3,22 +3,17 @@
 @import "lib";
 
 /* ACCUEIL */
-#presentation
-{
-    -moz-box-sizing: border-box;
-    box-sizing: border-box;
+#presentation {
     width: 100%;
     max-width: 40em;
-    min-height: 290px;
     margin: 0 auto;
-    padding: 1ex;
-    font-size: 125%;
+    padding: 2em;
+    font-size: 130%;
     text-align: left;
     background: lighten($alt_background, 10%);
     border-radius: 1ex;
 
-    .image
-    {
+    .image {
 	float: left;
 	margin: 1em;
 
@@ -68,8 +63,6 @@
 	thead { display: none; }
 
 	tbody {
-	    -moz-box-sizing: border-box;
-	    box-sizing: border-box;
 	    display: inline-block;
 	    vertical-align: top;
 	    padding: 1%;
@@ -87,8 +80,7 @@
     }
 }
 
-tr.category td
-{
+tr.category td {
     padding-top: 1em;
 }
 
@@ -107,14 +99,12 @@ td.telephone
     text-align: center;
 }
 
-td.numero
-{
+td.numero {
     text-align: center;
 }
 
 /* barrettes */
-td.accr
-{
+td.accr {
     width: 1em;
     padding-left: 28px;
     text-align: right;
@@ -133,7 +123,6 @@ table.europa tr.cr td.accr
 {
     background-image: url("postes/aumonier-fse.png") !important;
 }
-
 
 tr.cg td.accr {
     background-image: url("postes/cg.png");
@@ -220,8 +209,7 @@ tr.seconde td.accr
 }
 
 @media print {
-    table.effectifs
-    {
+    table.effectifs {
 	width: 100%;
     }
 
@@ -234,14 +222,12 @@ tr.seconde td.accr
 	padding-bottom: 0;
     }
 
-    table.effectifs td a
-    {
+    table.effectifs td a {
 	text-decoration: none;
 	color: black;
     }
 
-    table.td.accr
-    {
+    table.td.accr {
 	color: grey;
     }
 
@@ -251,10 +237,4 @@ tr.seconde td.accr
     {
 	text-align: left;
     }
-
-    /* .effectifs th.accr */
-    /* { */
-    /* 	visibility: hidden; */
-    /* 	border: none; */
-    /* } */
 }

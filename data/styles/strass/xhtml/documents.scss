@@ -2,8 +2,7 @@
 
 @import "lib";
 
-#document form
-{
+#document form {
     @include minipage;
 }
 
@@ -11,13 +10,7 @@
     position: relative;
 }
 
-.supprimer #vignette
-{
+.supprimer #vignette {
     text-align: center;
     margin: 1em auto;
 }
-
-#actions li.envoyer
-{
-  list-style-image: url("icones/envoyer.png");
-  }

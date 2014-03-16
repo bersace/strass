@@ -3,7 +3,7 @@ if ($this->liens->count()) {
   $l = $this->document->addList();
   foreach($this->liens as $lien) {
     $i = $l->addItem();
-    $i->addParagraph()->addLink($lien->url, $lien->nom);
+    $i->addParagraph()->addFlags('lien')->addLink($lien->url, $lien->nom);
     $i->addParagraph()->addFlags('description')->addInline($lien->description);
   }
 }

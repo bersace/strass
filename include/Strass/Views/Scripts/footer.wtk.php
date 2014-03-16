@@ -4,8 +4,7 @@ $s = $this->document->getFooter()->current()->addSection('about', "À propos");
 
 $created = $this->document->metas->get('DC.Date.created');
 $l = $s->addList();
-$l->addItem('Copyright © '.
-	    $created.($created == date('Y') ? '' : '-'.date('Y'))." ".
+$l->addItem('© '.$created.($created == date('Y') ? '' : '-'.date('Y'))." ".
 	    $this->document->metas->get('DC.Creator'))->addFlags('copyright');
 
 

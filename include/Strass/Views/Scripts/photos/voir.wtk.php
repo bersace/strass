@@ -20,10 +20,9 @@ $renderer = new Strass_Pages_Renderer_Photo($this->url(array('photo' => '%i')).'
 						  'next'		=> "Suivante"));
 $s = $this->document->addSection('visionneuse');
 $s->addPages(null, $this->model, $renderer);
-$description = $this->photo->findParentCommentaires()->message;
-if ($description) {
-  $this->document->addText($description);
-}
+;
+if ($description = $this->photo->getDescription())
+  $this->document->addSection('description')->addText($description);
 
 if ($this->commentaires->count() || $this->com_model) {
   $s = $this->document->addSection('commentaires', "Commentaires");

@@ -82,6 +82,11 @@ class Photo extends Strass_Db_Table_Row_Abstract implements Zend_Acl_Resource_In
     return $this->getChemin($data).'-vignette.jpeg';
   }
 
+  function getDescription()
+  {
+    return $this->findParentCommentaires()->message;
+  }
+
   function storeFile($path)
   {
     $activite = $this->findParentActivites();

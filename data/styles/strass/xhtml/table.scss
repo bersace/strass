@@ -2,24 +2,17 @@
 
 @import "lib";
 
-table
-{
+table {
     border-collapse: separate;
     border-spacing: 0 1pt;
 }
 
-thead th
-{
+thead th {
     border-bottom: 2px solid #845d18;
-}
-
-th
-{
     text-align: center;
 }
 
-td
-{
+td {
     padding: .5ex .75ex;
 }
 
@@ -35,19 +28,16 @@ td span.treecellnode {
     vertical-align: middle;
 }
 
-tr.odd
-{
+tr.odd {
     background: lighten($alt_background, 15%);
 }
 
 @media print {
-    td
-    {
+    td {
 	padding: .25ex .75ex;
     }
 
-    tr.odd
-    {
-	background: #F0F0F0;
+    tr.odd {
+	background-color: #F0F0F0;
     }
 }

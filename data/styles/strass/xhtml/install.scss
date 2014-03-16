@@ -1,17 +1,14 @@
 /*-*- css -*-*/
 
-.control.select label {
-    display: block;
-}
-
 #wait {
     /* masqué par défaut, à activer en JS */
     display: none;
 
-    img {
+    img { /* animation de patience */
 	display: block;
 	margin: 1em auto;
     }
+
     p {
 	text-align: center;
     }
