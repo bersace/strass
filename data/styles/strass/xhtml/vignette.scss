@@ -46,7 +46,9 @@ a.vignette
 
     .section.wrapper
     {
-	img {
+	height: $size;
+
+	.image {
 	    display: inline-block;
 	    vertical-align: middle;
 	}
@@ -59,22 +61,21 @@ a.vignette
 	width: auto;
 	height: auto;
 	padding: 1ex;
+	margin: 0 auto;
+	border-radius: .5ex;
 
 	&.empty {
-	    height: 90%;
-	    width: 90%;
+	    width: 100%;
 	    vertical-align: middle;
 	    color: $disabled;
 	}
     }
 
-    &.photo img,
-    &.album img,
-    &.individu img,
-    &.document img
+    &.photo .image,
+    &.album .image,
+    &.individu .image,
+    &.document .image
     {
-	margin: 0 auto;
-	border-radius: .5ex;
 	border: 1pt solid $highlight_color;
 	background: white;
 	box-shadow: .25ex .25ex .75em rgba(40, 40, 40, .75);
@@ -84,7 +85,6 @@ a.vignette
 	text-align: center;
 	width: 100%;
 	height: 2em;
-	margin-top: 1em;
     }
 }
 

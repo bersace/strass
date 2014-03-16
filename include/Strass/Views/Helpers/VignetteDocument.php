@@ -13,14 +13,14 @@ class Strass_View_Helper_VignetteDocument
   {
     $this->view->document->addStyleComponents('vignette');
     $label = $document->titre;
+    $wrapper = new Wtk_Section;
+    $wrapper->addFlags('wrapper');
     if ($url = $document->getCheminVignette())
-      $image = new Wtk_Image($document->getCheminVignette(),
-			     $document->titre, $document->titre);
-    else {
-      $image = new Wtk_Paragraph("Pas d'aperçu");
-      $image->addFlags('image', 'empty');
-    }
-    $item = new Wtk_Link($document->getUri(), $label, $image);
+      $wrapper->addImage($document->getCheminVignette(),
+			 $document->titre, $document->titre);
+    else
+      $wrapper->addParagraph("Pas d'aperçu")->addFlags('image', 'empty');
+    $item = new Wtk_Link($document->getUri(), $label, $wrapper);
 
     $item->addFlags('vignette', 'document', $document->suffixe)
       ->addParagraph($label)->addFlags('label');
