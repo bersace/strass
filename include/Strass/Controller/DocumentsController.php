@@ -26,13 +26,13 @@ class DocumentsController extends Strass_Controller_Action
 
   function envoyerAction()
   {
-    $this->view->unite = $unite = $this->_helper->Unite(false);
     $this->view->doc = $d = $this->_helper->Document(false);
     if ($d) {
       $this->metas(array('DC.Title' => 'Éditer'));
-      $unite = $d->findUnite();
+      $this->view->unite = $unite = $d->findUnite();
     }
     else {
+      $this->view->unite = $unite = $this->_helper->Unite(false);
       $this->metas(array('DC.Title' => 'Envoyer un document'));
       $this->branche->append();
     }
