@@ -2,9 +2,6 @@
 
 @import 'lib';
 
-/* À peu près 1/3 du contenu sur un écran 1024 */
-$basesize: 210px;
-
 /* Vignette seule, pour suppression */
 #vignette {
     text-align: center;
@@ -32,21 +29,18 @@ $basesize: 210px;
     }
 }
 
-/* taille + ombre */
-$size: $basesize + 24px;
-
 a.vignette
 {
     color: black;
     display: block;
-    width: $size;
+    width: $taille_vignette;
     text-decoration: none;
     text-overflow: ellipsis;
     text-align: center;
 
     .section.wrapper
     {
-	height: $size;
+	height: $taille_vignette;
 
 	.image {
 	    display: inline-block;
@@ -69,7 +63,7 @@ a.vignette
 	    vertical-align: middle;
 	    color: $disabled;
 	    padding: 0;
-	    line-height: .9 * $size;
+	    line-height: .9 * $taille_vignette;
 	}
     }
 
@@ -92,8 +86,6 @@ a.vignette
 .vignette.nolabel,
 .vignettes.photos .vignette
 {
-    height: $size;
-
     p.label {
 	display: none;
     }

@@ -14,6 +14,12 @@ $warn: $error;
 $warn_bg: #EDDF9A;
 $critical: $error;
 $critical_bg: $error_bg;
+/* À peu près 1/3 du contenu sur un écran 1024 */
+$taille_vignette: 248px;
+$taille_logo: 80pt;
+$taille_menu: 18em;
+$taille_piedpage: 20em;
+
 
 @mixin headfont {
     font-family: "Old Newspaper Types";
