@@ -49,9 +49,8 @@ class Orror {
     if ($sink_handler)
       $_ENV['ORROR_SINK'] = $sink_handler;
     set_error_handler(array('Orror', 'error_handler'));
-    if ($handle_exceptions) {
+    if ($handle_exceptions)
       set_exception_handler(array('Orror', 'exception_handler'));
-    }
     Orror::$html = ini_get('html_errors');
   }
 

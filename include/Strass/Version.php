@@ -28,6 +28,11 @@ final class Strass_Version {
     exit(0);
   }
 
+  static function onDevelopment()
+  {
+    return file_exists('devel.php');
+  }
+
   static function dataCurrent() {
     if (file_exists(self::$version_filename)) {
       return intval(trim(@file_get_contents(self::$version_filename)));

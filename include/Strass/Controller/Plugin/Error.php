@@ -6,8 +6,16 @@ class Strass_Controller_Plugin_Error extends Zend_Controller_Plugin_Abstract
 {
   public function routeStartup()
   {
-    // passer à E_USER_ERROR en prod, automatiquement ?
-    Orror::init(E_ALL &~ (E_STRICT|E_DEPRECATED),
+    if (Strass_Version::onDevelopment()) {
+      $level = E_ALL &~ (E_STRICT|E_DEPRECATED);
+      ini_set('display_errors', 1);
+    }
+    else {
+      $level = 0;
+      init_set('display_errors', 0);
+    }
+
+    Orror::init($level,
 		array($this, 'errorHandler'),
 		array($this, 'kill'),
 		false);
