@@ -41,6 +41,7 @@ a.vignette
     .section.wrapper
     {
 	height: $taille_vignette;
+	line-height: $taille_vignette;
 
 	.image {
 	    display: inline-block;
@@ -58,12 +59,13 @@ a.vignette
 	margin: 0 auto;
 	border-radius: .5ex;
 
-	&.empty {
+	&.empty.paragraph {
 	    width: 100%;
 	    vertical-align: middle;
 	    color: $disabled;
 	    padding: 0;
 	    line-height: .9 * $taille_vignette;
+	    background-color: rgba(255, 255, 255, .7);
 	}
     }
 

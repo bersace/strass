@@ -11,6 +11,11 @@
     padding: 2em;
     font-size: 130%;
     text-align: left;
+
+    .image {
+	float: left;
+	margin: 0 1em 1em 0;
+    }
 }
 
 .effectifs tr.category td a {
