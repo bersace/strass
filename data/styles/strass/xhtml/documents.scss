@@ -8,13 +8,32 @@
 }
 
 #document .section.documents {
-    width: 80%;
-    max-width: 80em;
     margin: 1em auto;
-}
+    text-align: center;
 
-.section.document {
-    @include smallcontent;
+    & > .section.document {
+	@include smallcontent;
+
+	font-size: 110%;
+	width: 47%;
+	min-width: 40em;
+	margin: 1%;
+	display: inline-block;
+	vertical-align: top;
+	text-align: left;
+
+	ul.infos {
+	    top: 6em;
+
+	    .description {
+		font-size: 110%;
+		margin-top: 1em;
+		padding-right: 1ex;
+		max-height: 5em;
+		overflow-y: auto;
+	    }
+	}
+    }
 }
 
 .supprimer #vignette {

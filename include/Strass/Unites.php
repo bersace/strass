@@ -758,7 +758,8 @@ class Unite extends Strass_Db_Table_Row_Abstract implements Zend_Acl_Resource_In
       ->distinct()
       ->from('document')
       ->join('unite_document', 'unite_document.document = document.id', array())
-      ->where('unite_document.unite IN ?', $uids);
+      ->where('unite_document.unite IN ?', $uids)
+      ->order('date DESC');
 
     return $t->fetchAll($s);
   }

@@ -35,6 +35,9 @@ $taille_piedpage: 20em;
     margin: 1em auto;
 }
 
+/* Il s'agit d'un contenu comme une carte de visite, un évènement, un
+   document, etc. qui contient un titre, une vignette, un listing
+   d'information détaillés et peut-être plus */
 @mixin smallcontent {
     position: relative;
     display: block;
@@ -49,20 +52,21 @@ $taille_piedpage: 20em;
 	font-size: 120%;
 	text-align: right;
 	margin-right: 1em;
-	padding-left: 35%;
-    }
-
-    a.vignette, ul.infos {
-	display: inline-block;
-	vertical-align: top;
+	padding-left: $taille_vignette + 10;
     }
 
     a.vignette {
+	display: inline-block;
+	vertical-align: top;
 	margin-top: -3em;
     }
 
     ul.infos
     {
+	position: absolute;
+	top: 4em;
+	left: $taille_vignette;
+	right: 1em;
 	padding: 1ex 0 1ex 2em;
 	max-width: 60%;
 

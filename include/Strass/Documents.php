@@ -27,8 +27,9 @@ class Document extends Strass_Db_Table_Row_Abstract implements Zend_Acl_Resource
     return '/'.$this->getFichier();
   }
 
-  function getCheminVignette($data = null, $test = true)
+  function getCheminVignette($data = null, $test = null)
   {
+    $test = $test === null ? (bool) !$data : $test;
     if (!$data) $data = $this->_cleanData;
     $path = 'data/documents/'.$data['slug'].'-vignette.jpeg';
     if ($test && !file_exists($path))
@@ -39,7 +40,7 @@ class Document extends Strass_Db_Table_Row_Abstract implements Zend_Acl_Resource
 
   function getFichier($data = null)
   {
-    if (!$data) $data = $this->_cleanData;
+    if (!$data) $data = $this->_data;
     return 'data/documents/'.$data['slug'].'.'.$data['suffixe'];
   }
 
@@ -47,14 +48,14 @@ class Document extends Strass_Db_Table_Row_Abstract implements Zend_Acl_Resource
   {
     $config = Zend_Registry::get('config');
 
-    $fichier = $this->getFichier();
+    $fichier = $this->getFichier($this->_data);
     if (!file_exists($dossier = dirname($fichier)))
 	mkdir($dossier, 0700, true);
 
     if (!move_uploaded_file($tmp, $fichier))
       throw new Exception("Impossible de copier le fichier !");
 
-    $vignette = $this->getCheminVignette(null, false);
+    $vignette = $this->getCheminVignette($this->_data);
     $load = $fichier;
     if ($this->suffixe == 'pdf')
       $load .= '[0]';
@@ -83,9 +84,9 @@ class Document extends Strass_Db_Table_Row_Abstract implements Zend_Acl_Resource
   function _postUpdate()
   {
     rename($this->getFichier($this->_cleanData),
-	   $this->getFichier());
-    if ($from = $this->getCheminVignette($this->_cleanData))
-      rename($from, $this->getCheminVignette());
+	   $this->getFichier(null, false));
+    if ($from = $this->getCheminVignette())
+      rename($from, $this->getCheminVignette($this->_data));
   }
 
   function countLiaisons($tables = null)

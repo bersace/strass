@@ -22,6 +22,9 @@ class Strass_View_Helper_Document
     $l->addItem("Format ".strtoupper($document->suffixe))
       ->addFlags('format');
 
+    if ($document->description)
+      $l->addItem()->addFlags('description')
+	->addText($document->description);
 
     if (!$this->view->assert(null, $document, 'editer'))
       return $s;
