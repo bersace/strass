@@ -489,11 +489,12 @@ class MembresController extends Strass_Controller_Action implements Zend_Acl_Res
   function sudoAction()
   {
     $cible = $this->_helper->Individu();
+    $user = $cible->findUser();
 
-    $this->assert(null, $cible, 'sudo',
+    $this->assert(null, $user, 'sudo',
 		  "Vous n'avez pas le droit de prendre l'identité de cet individu.");
 
-    $this->_helper->Auth->sudo($cible->findUser());
+    $this->_helper->Auth->sudo($user);
 
     $this->redirectSimple('fiche', 'individus', null,
 			  array('individu' => $cible->slug), true);

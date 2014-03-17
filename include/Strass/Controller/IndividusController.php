@@ -40,7 +40,7 @@ class IndividusController extends Strass_Controller_Action
     $moi = Zend_Registry::get('individu');
     if ($individu->findUser()
 	&& !Zend_Registry::offsetExists('sudoer')
-	&& $this->assert(null, $individu, 'sudo')) {
+	&& $this->assert(null, $individu->findUser(), 'sudo')) {
       $this->actions->append("Prendre l'identité",
 			     array('controller'	=> 'membres',
 				   'action' => 'sudo',
