@@ -117,6 +117,16 @@ class DELE(FTPOperation):
         client.delete(self.path)
 
 
+class CHMOD(FTPOperation):
+    def __init__(self, mode, path):
+        super(CHMOD, self).__init__(path)
+        self.mode = mode
+
+
+    def __call__(self, client):
+        client.sendcmd('SITE CHMOD %o %s' % (self.mode, self.path))
+
+
 class FTPEntry(object):
     log = logging.getLogger('strass.ftp')
     exclude = ['*~', 'zend_cache*', '*.xcf', '*.scss', 'README', 'LICENSE']
@@ -360,6 +370,10 @@ class FTPEntry(object):
                 yield STOR(self.path)
 
 
+    def chmod(self, mode):
+        yield CHMOD(mode, self.path)
+
+
 class FTPLogger(object):
     log = logging.getLogger('strass.ftp')
 
@@ -468,6 +482,13 @@ class FTPManager(object):
         for path in pathes:
             entry = self.tree[path]
             for op in entry.remove():
+                self.operations.add(op)
+
+
+    def chmod(self, mode, *pathes):
+        for path in pathes:
+            entry = self.tree[path]
+            for op in entry.chmod(mode):
                 self.operations.add(op)
 
 
@@ -625,6 +646,7 @@ class mirror(object):
         ftp = FTPManager(config)
         self.log.info("Préparation de la mise à jour")
         ftp.mirror('index.php', 'private/', 'include/', 'data/')
+        ftp.chmod(0700, 'private/')
         # nettoyage v1
         ftp.remove('resources/', 'config/', 'cache/')
         self.log.info("Démarrage de la mise à jour")
