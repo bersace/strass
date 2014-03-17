@@ -330,6 +330,7 @@ class FTPEntry(object):
 
         if not self.remoteexists:
             yield MKD(self.path)
+            yield CHMOD(0750, self.path)
 
 
     def download(self):
