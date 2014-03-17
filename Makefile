@@ -102,5 +102,10 @@ mirror:
 	$(REMOTE) $@
 	make unsetmaint
 
+partialmirror:
+	make setmaint
+	$(REMOTE) mirror --partial
+	make unsetmaint
+
 .PHONY: all doc clean setup serve restore restore1 test
-.PHONY: config setmaint unsetmaint backup1 migrate mirror upgrade
+.PHONY: config setmaint unsetmaint backup1 migrate mirror partialmirror upgrade
