@@ -318,9 +318,8 @@ class Unite extends Strass_Db_Table_Row_Abstract implements Zend_Acl_Resource_In
 		    " inactif.unite = unite.parent)").
 		     ' AND inactif.fin IS NOT NULL',
 		     array());
-	if ($annee == true) {
-	  $select->where('actif.fin IS NULL AND inactif.id IS NOT NULL');
-	}
+	if ($annee === true)
+	  $select->where('actif.fin IS NULL OR inactif.id IS NULL');
 	else {
 	  $date = ($annee+1).'-06-01';
 	  $select->where("(actif.debut < ? AND (actif.fin IS NULL OR ?<= actif.fin))".
