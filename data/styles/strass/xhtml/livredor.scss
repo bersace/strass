@@ -3,6 +3,12 @@
 @import "lib";
 
 #document.livredor {
+    background-image: url("illustrations/courrier.png");
+    background-position: center bottom;
+    background-size: auto 15em;
+    background-repeat: no-repeat;
+    padding-bottom: 20em;
+
     & > .section,
     & > .form
     {

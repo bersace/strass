@@ -3,13 +3,16 @@
 @import "lib";
 
 #document.citation {
-    form
-    {
+    background-image: url("illustrations/portrait-bp.png");
+    background-position: 5% 10em;
+    background-size: 12% auto;
+    background-repeat: no-repeat;
+
+    form {
 	@include minipage;
     }
 
-    .section.citation
-    {
+    .section.citation {
 	@include minipage;
 	@include message;
 
