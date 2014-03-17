@@ -24,7 +24,8 @@ $g->addParagraph()->addFlags('info')
 $g->addEntry('intitule', 32);
 
 $g = $f->addForm_Fieldset("Pièces-jointes");
-$g->addTable('documents', array('fichier'  => array('File'),
+$g->addTable('documents', array('document'  => array('Select', true),
+				'fichier'  => array('File'),
 				'titre'    => array('Entry', 16)));
 
 $f->addCheck('prevoir');

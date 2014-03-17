@@ -53,6 +53,8 @@ class PhotosController extends Strass_Controller_Action
       $as = array($activite);
     }
     else {
+      $tu = new Unites;
+      $this->_helper->Unite->liensConnexes($tu->findRacines()->current());
       $annee = $this->_helper->Annee(false);
       $as = $individu->findActivites($annee);
 

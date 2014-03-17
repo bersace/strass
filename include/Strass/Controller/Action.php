@@ -23,13 +23,8 @@ abstract class Strass_Controller_Action extends Zend_Controller_Action implement
     catch (Exception $e) {
       $config = Zend_Registry::get('config');
 
-      try {
-	$t = new Unites;
-	$racine = $t->findRacine();
-      }
-      catch (Strass_Db_Table_NotFound $e) {
-	$racine = null;
-      }
+      $t = new Unites;
+      $racine = $t->findRacines()->current();
 
       /* instanciation de la page courante */
       $metas = $config->metas;

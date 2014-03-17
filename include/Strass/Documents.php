@@ -102,6 +102,7 @@ class Document extends Strass_Db_Table_Row_Abstract implements Zend_Acl_Resource
       $func = 'find'.$tn;
       $count+= call_user_func(array($this, $func))->count();
     }
+
     return $count;
   }
 

@@ -79,9 +79,13 @@ class ActivitesController extends Strass_Controller_Action
     $m->addString('intitule', 'Intitulé explicite', "");
     $m->addString('lieu', 'Lieu');
 
+    $enum = array(null => 'Nouveau document');
+    foreach ($u->findDocuments() as $doc)
+      $enum[$doc->id] = $doc->titre;
     $t = $m->addTable('documents', "Pièces-jointes",
-                     array('fichier' => array('File', "Fichier"),
-                           'titre' => array('String', "Titre")),
+		      array('document' => array('Enum', "Document", $enum),
+			    'fichier' => array('File', "Envoi"),
+			    'titre' => array('String', "Titre")),
                      false);
     $t->addRow();
 
@@ -92,6 +96,7 @@ class ActivitesController extends Strass_Controller_Action
     if ($m->validate()) {
       $t = new Activites;
       $tu = new Unites;
+      $td = new Documents;
 
       $a = new Activite;
       $a->debut = $m->debut;
@@ -113,15 +118,19 @@ class ActivitesController extends Strass_Controller_Action
 
 	foreach($m->getInstance('documents') as $row) {
 	  $if = $row->getChild('fichier');
-	  if (!$if->isUploaded())
-	    continue;
 
-	  $d = new Document;
-	  $d->slug = $d->getTable()->createSlug($row->titre);
-	  $d->titre = $row->titre;
-	  $d->suffixe = end(explode('.', $row->fichier['name']));
-	  $d->save();
-	  $d->storeFile($if->getTempFilename());
+	  if ($row->document)
+	    $d = $td->findOne($row->document);
+	  elseif (!$if->isUploaded())
+	    continue;
+	  else {
+	    $d = new Document;
+	    $d->slug = $d->getTable()->createSlug($row->titre);
+	    $d->titre = $row->titre;
+	    $d->suffixe = end(explode('.', $row->fichier['name']));
+	    $d->save();
+	    $d->storeFile($if->getTempFilename());
+	  }
 
 	  $pj = new PieceJointe;
 	  $pj->activite = $a->id;
@@ -211,14 +220,20 @@ class ActivitesController extends Strass_Controller_Action
     $m->addDate('debut', 'Début', $a->debut, '%Y-%m-%d %H:%M');
     $m->addDate('fin', 'Fin', $a->fin, '%Y-%m-%d %H:%M');
     $m->addString('description', 'Description', $a->description);
+
+    $enum = array(null => 'Nouveau document');
+    foreach ($explicites->rewind()->current()->findDocuments() as $doc)
+      $enum[$doc->id] = $doc->titre;
     $t = $m->addTable('documents', "Pièces-jointes",
-                     array('fichier' => array('File', "Fichier"),
-                           'titre' => array('String', "Titre"),
-			   'origin' => array('Integer')),
-                     false);
+		      array('document' => array('Enum', "Document", $enum),
+			    'fichier' => array('File', "Fichier"),
+			    'titre' => array('String', "Titre"),
+			    'origin' => array('Integer')),
+		      false);
     foreach ($a->findPiecesJointes() as $pj) {
       $doc = $pj->findParentDocuments();
-      $t->addRow(null, $doc->titre, $pj->id);
+      $titre = $doc->countLiaisons() > 1 ? null : $doc->titre;
+      $t->addRow($pj->document, null, $titre, $pj->id);
     }
     $t->addRow();
 
@@ -228,6 +243,7 @@ class ActivitesController extends Strass_Controller_Action
       $t = new Activites;
       $tu = new Unites;
       $tpj = new PiecesJointes;
+      $td = new Documents;
 
       $unites = call_user_func_array(array($tu, 'find'), (array) $m->unites);
 
@@ -243,33 +259,42 @@ class ActivitesController extends Strass_Controller_Action
 	$a->slug = $t->createSlug($a->getIntituleComplet(), $a->slug);
 	$a->save();
 
-
 	$old = $a->findPiecesJointes();
 	$new = array();
 	/* création et mise à jour de pièce jointe */
 	foreach($m->getInstance('documents') as $row) {
+	  $d = null;
+	  if ($row->document)
+	    $d = $td->findOne($row->document);
+
 	  if ($row->origin) {
 	    $pj = $tpj->findOne($row->origin);
-	    $d = $pj->findParentDocuments();
+	    if (!$d)
+	      $d = $pj->findParentDocuments();
 	  }
 	  else {
 	    $pj = new PieceJointe;
 	    $pj->activite = $a->id;
-	    $d = new Document;
+	    if (!$d)
+	      $d = new Document;
 	  }
 
-	  $d->slug = $d->getTable()->createSlug($row->titre);
-	  $d->titre = $row->titre;
+	  /* On ne met à jour que les pièces jointes exclusives */
+	  if (!$row->document) {
+	    $d->slug = $d->getTable()->createSlug($row->titre);
+	    $d->titre = $row->titre;
 
-	  $if = $row->getChild('fichier');
-	  if ($if->isUploaded()) {
-	    $d->suffixe = end(explode('.', $row->fichier['name']));
-	    $d->storeFile($if->getTempFilename());
+	    $if = $row->getChild('fichier');
+	    if ($if->isUploaded()) {
+	      $d->suffixe = end(explode('.', $row->fichier['name']));
+	      $d->storeFile($if->getTempFilename());
+	    }
+	    elseif (!$row->origin)
+	      continue; /* ligne vide */
+
+	    $d->save();
 	  }
-	  elseif (!$row->origin)
-	    continue; /* ligne vide */
 
-	  $d->save();
 	  $pj->document = $d->id;
 	  $pj->save();
 	  $new[] = $pj->id;
@@ -280,8 +305,7 @@ class ActivitesController extends Strass_Controller_Action
 	  if (in_array($opj->id, $new))
 	    continue;
 
-	  $d = $opj->findParentDocuments();
-	  $d->delete();
+	  $opj->delete();
 	}
 
 	$this->logger->info("Activité mise-à-jour",

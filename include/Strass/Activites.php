@@ -294,4 +294,12 @@ class PiecesJointes extends Strass_Db_Table_Abstract
 class PieceJointe extends Strass_Db_Table_Row_Abstract
 {
   protected $_tableClass = 'PiecesJointes';
+
+  function _postDelete()
+  {
+    /* Récursion sur les pièces jointes exclusives */
+    $d = $this->findParentDocuments();
+    if ($d->countLiaisons() == 0)
+      $d->delete();
+  }
 }
