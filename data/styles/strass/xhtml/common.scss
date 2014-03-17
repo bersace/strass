@@ -278,20 +278,24 @@ a {
 
     #admin {
 	ul {
-	    -webkit-transition-property: max-height;
-	    -webkit-transition-duration: 1s;
-	    -webkit-transition-timing-function: ease-out;
-	    -webkit-transition-delay: .25s;
-	    transition-property: max-height;
-	    transition-duration: 1s;
-	    transition-timing-function: ease-out;
-	    transition-delay: .25s;
+	    transition: max-height 1s ease-out;
 	    max-height: 4.5em;
 	    overflow: hidden;
+
+	    li + li + li {
+		transition: opacity .5s ease-out .5s;
+		opacity: 0;
+	    }
 	}
 
 	&:hover ul {
 	    max-height: 30em;
+	    transition-delay: .25s;
+
+	    li + li + li {
+		opacity: 1;
+		transition-delay: .25s;
+	    }
 	}
     }
 
