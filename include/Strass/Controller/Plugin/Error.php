@@ -12,7 +12,7 @@ class Strass_Controller_Plugin_Error extends Zend_Controller_Plugin_Abstract
     }
     else {
       $level = 0;
-      init_set('display_errors', 0);
+      ini_set('display_errors', 0);
     }
 
     Orror::init($level,
