@@ -1,5 +1,5 @@
 <div<?php
-wtk_id_classes ('control-'.$id, $flags, $dojoType);
+wtk_id_classes ('control-'.$id, $flags, $dojoType, $tooltip);
 if (isset($wtkConstraint))
 	foreach($wtkConstraint as $cons)
 		wtk_attr("wtkConstraint", $cons);

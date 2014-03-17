@@ -216,3 +216,10 @@ function wtk_abs_href($href)
 {
 	return (strpos($href, ':') < 3 ? 'http://'.$_SERVER['HTTP_HOST'] : '').$href;
 }
+
+function wtk_format_size($size)
+{
+  $units = array('o', 'Kio', 'Mio', 'Gio');
+   $power = $size > 0 ? floor(log($size, 1024)) : 0;
+  return number_format($size / pow(1024, $power), 2) . ' ' . $units[$power];
+}

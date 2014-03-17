@@ -125,6 +125,12 @@ div.control {
 	    overflow: hidden;
 	    position: relative;
 
+	    .max {
+		font-style: italic;
+		font-size: 80%;
+		color: $alt_color;
+	    }
+
 	    input[type=file] {
 		position: absolute;
 		top: 0;
@@ -167,6 +173,10 @@ table.control {
 
     div.control.check > .input {
 	position: static;
+    }
+
+    .input.file .max {
+	display: none;
     }
 }
 

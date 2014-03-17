@@ -12,6 +12,7 @@ class Wtk_Form_Control_File extends Wtk_Form_Control
       $button->addFlags('label');
     }
     $this->button = $button;
+    $this->tooltip = "Taille maximale : ".ini_get('upload_max_filesize');
   }
 
   function template()
