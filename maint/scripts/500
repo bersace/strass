@@ -1,0 +1,42 @@
+#!/usr/bin/php
+<?php /*-*- php -*-*/
+umask(0022);
+date_default_timezone_set('Europe/Paris');
+
+$paths = explode(':', get_include_path());
+array_shift($paths);
+array_unshift($paths, dirname(dirname(dirname(__FILE__))).'/include');
+set_include_path(implode(':',$paths));
+
+require_once 'Wtk.php';
+require_once 'Zend/Loader/Autoloader.php';
+
+$loader = Zend_Loader_Autoloader::getInstance();
+$loader->registerNamespace('Dio_');
+$loader->registerNamespace('Wtk_');
+$loader->registerNamespace('Strass_');
+
+$config = new Strass_Config_Php('strass');
+
+$document = new Wtk_Document(new Wtk_Metas(array('DC.Title' => 'Erreur fatale')));
+$style = $config->get('system/style', 'strass');
+$document->setStyle(new Wtk_Document_Style($style));
+$document->addStyleComponents('layout', 'minilayout', 'common');
+$mouvement = $config->get('system/mouvement', null);
+$document->addFlags($mouvement);
+$document->embedStyle();
+$document->header->setTitle(new Wtk_Link('/', $config->get('metas/title', null)));
+$document->header->addFlags($mouvement);
+
+$dialog = $document->addDialog("Oups !");
+$dialog->addFlags('error');
+$mail = $config->get('system/admin');
+if ($mail)
+  $wm = "[mailto:".$mail." webmestre]";
+else
+  $wm = "webmestre";
+$dialog->addSection('aide')
+->addText("Vous avez rencontré un gros bug. Merci de le rapporter au ".$wm." !");
+
+$render = Wtk_Render::factory($document, 'Xhtml');
+echo $render->render();

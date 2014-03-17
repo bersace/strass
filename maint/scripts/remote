@@ -625,7 +625,7 @@ class upgrade(object):
     def __call__(self, args, config):
         ftp = FTPManager(config)
         self.log.info("Préparation de la mise à jour")
-        ftp.mirror('index.php',
+        ftp.mirror('index.php', '500.html',
                    'include/Strass/', 'include/Wtk/', 'data/styles/', 'include/templates/',
                    'data/scripts/wtk/')
         self.log.info("Démarrage de la mise à jour")
@@ -649,7 +649,7 @@ class mirror(object):
     def __call__(self, args, config):
         ftp = FTPManager(config)
         self.log.info("Préparation de la mise à jour")
-        ftp.mirror('index.php', 'private/')
+        ftp.mirror('index.php', '500.html', 'private/')
         ftp.chmod(0700, 'private/')
         if args.partial:
             ftp.mirror('include/Strass/', 'include/Wtk/', 'include/templates/',

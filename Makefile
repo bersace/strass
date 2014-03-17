@@ -15,6 +15,11 @@ maintenance.html: maint/scripts/maintenance $(CSS)
 
 .INTERMEDIATE: maintenance.html
 
+500.html: maint/scripts/500 $(CSS)
+	$< > $@
+
+.INTERMEDIATE: 500.html
+
 $(INSTDB): include/Strass/Installer/sql/schema.sql
 	rm -vf $@
 	sqlite3 -batch $@ ".read $<"
@@ -26,7 +31,7 @@ suf.sqlite: $(INSTDB) include/Strass/Installer/sql/suf.sql
 clean:
 	rm -vf $(CSS)
 	rm -vf $(INSTDB)
-	rm -vf maintenance.html
+	rm -vf maintenance.html 500.html
 	rm -vf private/cache/*
 
 setup:
@@ -92,17 +97,17 @@ migrate: all
 	git add --all -- data/ private/ config/ resources/;
 	git commit -m 'MIGRATION';
 
-upgrade:
+upgrade: 500.html
 	make setmaint
 	$(REMOTE) $@
 	make unsetmaint
 
-mirror:
+mirror: 500.html
 	make setmaint
 	$(REMOTE) $@
 	make unsetmaint
 
-partialmirror:
+partialmirror: 500.html
 	make setmaint
 	$(REMOTE) mirror --partial
 	make unsetmaint
