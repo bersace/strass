@@ -24,9 +24,8 @@ class ActivitesController extends Strass_Controller_Action
       $this->redirectUrl(array('action' => 'calendrier',
 			       'unite' => $u->slug));
     else
-      throw new Strass_Controller_Action_Exception_Notice("Vous n'appartenez à aucune ".
-							  "unité, impossible de vous ".
-							  "présenter vos activités !");
+      throw new Strass_Controller_Action_Exception_Notice("Vous n'appartenez à aucune unité", 404,
+							  "Impossible de vous présenter vos activités !");
   }
 
   /* Afficher les activités d'une unité pour une année. On affiche aussi un
@@ -80,6 +79,12 @@ class ActivitesController extends Strass_Controller_Action
     $m->addString('intitule', 'Intitulé explicite', "");
     $m->addString('lieu', 'Lieu');
 
+    $t = $m->addTable('documents', "Pièces-jointes",
+                     array('fichier' => array('File', "Fichier"),
+                           'titre' => array('String', "Titre")),
+                     false);
+    $t->addRow();
+
     $m->addBool('prevoir', "J'ai d'autres activités à prévoir", true);
     $m->addNewSubmission('ajouter', 'Ajouter');
     $m->addConstraintRequired($m->getInstance('unites'));
@@ -93,25 +98,36 @@ class ActivitesController extends Strass_Controller_Action
       $a->fin = $m->fin;
       $a->lieu = $m->lieu;
 
-      // Sélectionner les sous unités des unités sélectionné à l'année de l'activité
-      $unites = $m->unites;
-      $annee = intval(date('Y', strtotime($m->get('debut')) - 243 * 24 * 60 * 60));
-      $participantes = $tu->getIdSousUnites((array) $unites, $annee);
-
+      $unites = call_user_func_array(array($tu, 'find'), (array) $m->unites);
       // génération de l'intitulé
-      $unites = $tu->find(array_values($participantes));
-      $type = $unites[0]->findParentTypesUnite();
+      $type = $unites->current()->findParentTypesUnite();
       $a->intitule = $m->intitule;
       $intitule = $type->getIntituleCompletActivite($a);
-      $a->slug = $slug = $t->createSlug(wtk_strtoid($intitule));
+      $a->slug = $slug = $t->createSlug($intitule);
 
       $db = $t->getAdapter();
       $db->beginTransaction();
       try {
 	$a->save();
+	$a->updateUnites($unites);
 
-	$tp = new Participations;
-	$tp->updateActivite($a, $participantes);
+	foreach($m->getInstance('documents') as $row) {
+	  $if = $row->getChild('fichier');
+	  if (!$if->isUploaded())
+	    continue;
+
+	  $d = new Document;
+	  $d->slug = $d->getTable()->createSlug($row->titre);
+	  $d->titre = $row->titre;
+	  $d->suffixe = end(explode('.', $row->fichier['name']));
+	  $d->save();
+	  $d->storeFile($if->getTempFilename());
+
+	  $pj = new PieceJointe;
+	  $pj->activite = $a->id;
+	  $pj->document = $d->id;
+	  $pj->save();
+	}
 
 	$this->_helper->Flash->info("Activité enregistrée");
 	$this->logger->info("Nouvelle activite",
@@ -195,12 +211,25 @@ class ActivitesController extends Strass_Controller_Action
     $m->addDate('debut', 'Début', $a->debut, '%Y-%m-%d %H:%M');
     $m->addDate('fin', 'Fin', $a->fin, '%Y-%m-%d %H:%M');
     $m->addString('description', 'Description', $a->description);
+    $t = $m->addTable('documents', "Pièces-jointes",
+                     array('fichier' => array('File', "Fichier"),
+                           'titre' => array('String', "Titre"),
+			   'origin' => array('Integer')),
+                     false);
+    foreach ($a->findPiecesJointes() as $pj) {
+      $doc = $pj->findParentDocuments();
+      $t->addRow(null, $doc->titre, $pj->id);
+    }
+    $t->addRow();
+
     $m->addNewSubmission('enregistrer', 'Enregistrer');
 
     if ($m->validate()) {
       $t = new Activites;
       $tu = new Unites;
-      $unites = $tu->getIdSousUnites((array) $m->get('unites'), $a->getAnnee());
+      $tpj = new PiecesJointes;
+
+      $unites = call_user_func_array(array($tu, 'find'), (array) $m->unites);
 
       $db = $a->getTable()->getAdapter();
       $db->beginTransaction();
@@ -209,14 +238,51 @@ class ActivitesController extends Strass_Controller_Action
 	foreach($champs as $champ)
 	  $a->$champ = $m->get($champ);
 
-	$data = $m->get();
-	unset($data['unites']);
+	$a->updateUnites($unites);
 	$a->intitule = $m->intitule;
-	$a->slug = $t->createSlug(wtk_strtoid($a->getIntituleComplet()), $a->slug);
+	$a->slug = $t->createSlug($a->getIntituleComplet(), $a->slug);
 	$a->save();
 
-	$tp = new Participations;
-	$tp->updateActivite($a, $unites);
+
+	$old = $a->findPiecesJointes();
+	$new = array();
+	/* création et mise à jour de pièce jointe */
+	foreach($m->getInstance('documents') as $row) {
+	  if ($row->origin) {
+	    $pj = $tpj->findOne($row->origin);
+	    $d = $pj->findParentDocuments();
+	  }
+	  else {
+	    $pj = new PieceJointe;
+	    $pj->activite = $a->id;
+	    $d = new Document;
+	  }
+
+	  $d->slug = $d->getTable()->createSlug($row->titre);
+	  $d->titre = $row->titre;
+
+	  $if = $row->getChild('fichier');
+	  if ($if->isUploaded()) {
+	    $d->suffixe = end(explode('.', $row->fichier['name']));
+	    $d->storeFile($if->getTempFilename());
+	  }
+	  elseif (!$row->origin)
+	    continue; /* ligne vide */
+
+	  $d->save();
+	  $pj->document = $d->id;
+	  $pj->save();
+	  $new[] = $pj->id;
+	}
+
+	// Nettoyage des documents supprimés
+	foreach ($old as $opj) {
+	  if (in_array($opj->id, $new))
+	    continue;
+
+	  $d = $opj->findParentDocuments();
+	  $d->delete();
+	}
 
 	$this->logger->info("Activité mise-à-jour",
 			    $this->_helper->Url('consulter', null, null, array('activite' => $a->slug)));
@@ -250,16 +316,6 @@ class ActivitesController extends Strass_Controller_Action
 	$db = $a->getTable()->getAdapter();
 	$db->beginTransaction();
 	try {
-	  // desctruction des documents
-	  // liés *uniquement* à cette
-	  // activité.
-	  $das = $a->findPiecesJointes();
-	  foreach($das as $da) {
-	    $doc = $da->findParentDocuments();
-	    if ($doc->countLiaisons() == 1)
-	      $doc->delete();
-	  }
-	  // destruction de l'activité.
 	  $unite = $a->findUnitesParticipantesExplicites()->current();
 	  $intitule = $a->getIntituleComplet();
 	  $a->delete();
@@ -271,12 +327,11 @@ class ActivitesController extends Strass_Controller_Action
 	}
 	catch(Exception $e) { $db->rollBack(); throw $e; }
 
-	$this->redirectSimple('index', 'activites');
+	$this->redirectSimple('calendrier', 'activites', null, array('unite' => $unite->slug));
       }
-      else {
+      else
 	$this->redirectSimple('consulter', 'activites', null,
 			      array('activite' => $a->slug));
-      }
     }
   }
 }

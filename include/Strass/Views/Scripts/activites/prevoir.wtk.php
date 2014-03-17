@@ -22,6 +22,11 @@ $g->addParagraph()->addFlags('info')
 ->addChild("Laisser ce champ vide et l'intitulé sera généré, sinon le remplir sans date. ".
 	   "(Ex: Rentrée, JN, RNR, Vezelay, etc.)");
 $g->addEntry('intitule', 32);
+
+$g = $f->addForm_Fieldset("Pièces-jointes");
+$g->addTable('documents', array('fichier'  => array('File'),
+				'titre'    => array('Entry', 16)));
+
 $f->addCheck('prevoir');
 
 $b = $f->addForm_ButtonBox();

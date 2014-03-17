@@ -135,11 +135,9 @@ class JournauxController extends Strass_Controller_Action
                            'nom' => array('String', "Renommer en"),
 			   'origin' => array('String')),
                      false);
-    if ($a) {
-      foreach ($a->getImages() as $image) {
+    if ($a)
+      foreach ($a->getImages() as $image)
 	$t->addRow(null, $image, $image);
-      }
-    }
     $t->addRow();
     $m->addNewSubmission('poster', "Poster");
 

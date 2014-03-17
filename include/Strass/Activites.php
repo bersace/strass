@@ -190,6 +190,14 @@ class Activite extends Strass_Db_Table_Row_Abstract implements Zend_Acl_Resource
 	throw new Exception("Impossible de supprimer le dossier ".$d);
       }
     }
+
+    // desctruction des documents liés *uniquement* à cette activité.
+    $pjs = $this->findPiecesJointes();
+    foreach($pjs as $pj) {
+      $doc = $pj->findParentDocuments();
+      if ($doc->countLiaisons() == 1)
+	$doc->delete();
+    }
   }
 
   function findUnitesParticipantes()
@@ -219,11 +227,37 @@ class Activite extends Strass_Db_Table_Row_Abstract implements Zend_Acl_Resource
       ->where('part_mere.id IS NULL');
     return $t->fetchAll($s);
   }
+
+  function updateUnites($participantes)
+  {
+    $tu = new Unites;
+    $annee = $this->getAnnee();
+
+    // d'abord nettoyer l'ancien.
+    foreach ($this->findParticipations() as $p)
+      $p->delete();
+
+    // Reconstruire la liste des participants
+    foreach ($participantes as $parente) {
+      $p = new Participation;
+      $p->activite = $this->id;
+      $p->unite = $parente->id;
+      $p->save();
+
+      foreach ($parente->findSousUnites($annee, true) as $unite) {
+	$p = new Participation;
+	$p->activite = $this->id;
+	$p->unite = $unite->id;
+	$p->save();
+      }
+    }
+  }
 }
 
 class Participations extends Strass_Db_Table_Abstract
 {
   protected $_name = 'participation';
+  protected $_rowClass = 'Participation';
   protected $_referenceMap = array('Unite' => array('columns' => 'unite',
 						    'refTableClass' => 'Unites',
 						    'refColumns' => 'id',
@@ -234,53 +268,30 @@ class Participations extends Strass_Db_Table_Abstract
 						       'refColumns' => 'id',
 						       'onUpdate' => self::CASCADE,
 						       'onDelete' => self::CASCADE));
-
-
-  function updateActivite($activite, $participantes)
-  {
-    $tu = new Unites();
-
-    // boucler sur *toutes* les unités existantes pour ajout ou
-    // suppression de la participation.
-    $rows = $tu->fetchAll();
-    foreach($rows as $unite) {
-      $s = $this->select()
-	->setIntegrityCheck(false)
-	->where('activite = ?', $activite->id)
-	->where('unite = ?', $unite->id);
-
-      if (in_array($unite->id, $participantes)) {
-	// ajouter un unités nouvellement participante
-	try {
-	  $p = $this->fetchOne($s);
-	} catch (Strass_Db_Table_NotFound $e) {
-	  $id = $this->insert(array ('activite' => $activite->id,
-				     'unite' => $unite->id));
-	}
-      }
-      // supprimer une unité anciennement participante
-      else {
-	try {
-	  $p = $this->fetchOne($s);
-	  $p->delete();
-	} catch (Strass_Db_Table_NotFound $e) {}
-      }
-    }
-  }
-
 }
 
-class PiecesJointes extends Zend_Db_Table_Abstract
+class Participation extends Strass_Db_Table_Row_Abstract
 {
-	protected $_name = 'activite_document';
-	protected $_referenceMap = array('Document' => array('columns' => 'document',
-							     'refTableClass' => 'Documents',
-							     'refColumns' => 'id',
-							     'onUpdate' => self::CASCADE,
-							     'onDelete'  => self::CASCADE),
-					 'Activite' => array('columns' => 'activite',
-							     'refTableClass' => 'Activites',
-							     'refColumns' => 'id',
-							     'onUpdate' => self::CASCADE,
-							     'onDelete' => self::CASCADE));
+  protected $_tableClass = 'Participations';
+}
+
+class PiecesJointes extends Strass_Db_Table_Abstract
+{
+  protected $_name = 'activite_document';
+  protected $_rowClass = 'PieceJointe';
+  protected $_referenceMap = array('Document' => array('columns' => 'document',
+						       'refTableClass' => 'Documents',
+						       'refColumns' => 'id',
+						       'onUpdate' => self::CASCADE,
+						       'onDelete'  => self::CASCADE),
+				   'Activite' => array('columns' => 'activite',
+						       'refTableClass' => 'Activites',
+						       'refColumns' => 'id',
+						       'onUpdate' => self::CASCADE,
+						       'onDelete' => self::CASCADE));
+}
+
+class PieceJointe extends Strass_Db_Table_Row_Abstract
+{
+  protected $_tableClass = 'PiecesJointes';
 }

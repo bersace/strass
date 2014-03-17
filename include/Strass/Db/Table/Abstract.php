@@ -14,6 +14,8 @@ abstract class Strass_Db_Table_Abstract extends Zend_Db_Table_Abstract
 
   function createSlug($base, $current=null)
   {
+    $base = wtk_strtoid($base);
+
     if ($current && strpos($current, $base) === 0)
       return $current;
 

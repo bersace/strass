@@ -4,8 +4,8 @@
 if ($this->activite->isFuture())
   $this->document->addDialog()
     ->addFlags('warn')
-    ->addInline("**La présence de chacun est primordiale** ".
-		"pour le bon déroulement de cette activité.");
+    ->addText("**La présence de chacun est primordiale** ".
+	      "pour le bon déroulement de cette activité.");
 
 $s = $this->document->addSection('evenement', $this->activite->getIntituleComplet());
 $s->addChild($this->vignetteAlbum($this->activite)->addFlags('nolabel'));

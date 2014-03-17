@@ -39,7 +39,7 @@ class Strass_Controller_Action_Helper_Activite extends Zend_Controller_Action_He
 						array(), true);
     }
 
-    $this->_actionController->branche->append($activite->getIntitule(),
+    $this->_actionController->branche->append($activite->getIntituleCourt(),
 					      array('controller'=> 'activites',
 						    'action'	=> 'consulter',
 						    'activite'	=> $activite->slug),
