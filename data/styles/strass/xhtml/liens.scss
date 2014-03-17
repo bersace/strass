@@ -3,6 +3,12 @@
 @import "lib";
 
 #document.liens {
+    background-image: url("illustrations/poignee.png");
+    background-position: center 95%;
+    background-size: 15em auto;
+    background-repeat: no-repeat;
+    padding-bottom: 20em;
+
     ul {
 	width: 80%;
 	padding: 0;

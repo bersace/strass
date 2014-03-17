@@ -37,6 +37,24 @@
     @include minipage;
 }
 
+#document.archives
+{
+    background-image: url("illustrations/ancien-moderne.png");
+    background-position: 95% bottom;
+    background-size: 15em auto;
+    background-repeat: no-repeat;
+    padding-bottom: 20em;
+}
+
+#document.effectifs
+{
+    background-image: url("illustrations/panorama-rassemblement.png");
+    background-position: bottom;
+    background-size: auto 10em;
+    background-repeat: no-repeat;
+    padding-bottom: 12em;
+}
+
 /* EFFECTIFS */
 #document.effectifs table.effectifs {
     width: 30em;

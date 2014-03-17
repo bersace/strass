@@ -172,8 +172,7 @@ a {
 
 @media screen {
     #header {
-	& > .h
-	{
+	& > .h {
 	    @include headfont;
 	    text-shadow: 1pt 1pt 2pt rgba(250, 251, 248, .75);
 
@@ -260,7 +259,10 @@ a {
     #footer
     {
 	color: $content_background;
-	background: $highlight_color;
+	background-color: $highlight_color;
+	background-image: url('illustrations/tente.png');
+	background-position: bottom left;
+	background-repeat: no-repeat;
 
 	.h, .h a {
 	    @include headfont;
@@ -695,10 +697,6 @@ a {
 
     div.dialog {
 	font-size: 140%;
-    }
-
-    #document h1 {
-	border-bottom: 1pt solid $highlight_color;
     }
 
     #footer #about .author {

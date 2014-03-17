@@ -36,20 +36,20 @@ body {
 #contentwrapper {
     margin: 0 auto;
 
-    #document {
-	overflow: auto;
-	border-width: 1pt;
-
-	#flash {
-	    margin: 1em auto 2em;
-	}
-    }
-
     div.dialog {
 	position: relative;
 	width: 30em;
 	padding: 1em;
 	margin: 3em auto;
+    }
+}
+
+#document {
+    overflow: auto;
+    border-width: 1pt;
+
+    #flash {
+	margin: 1em auto 2em;
     }
 }
 
@@ -84,12 +84,12 @@ body {
     #contentwrapper {
 	float: right;
 	width: 100%;
+    }
 
-	#document {
-	    padding: .9em;
-	    padding-top: 5em;
-	    margin-right: $taille_menu;
-	}
+    #document {
+	padding: .9em;
+	padding-top: 5em;
+	margin-right: $taille_menu;
     }
 
     .suf, .fse, .europa {
