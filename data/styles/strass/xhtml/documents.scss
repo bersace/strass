@@ -2,7 +2,7 @@
 
 @import "lib";
 
-.documents form
+#document .documents form
 {
     @include minipage;
 }

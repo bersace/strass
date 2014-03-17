@@ -44,6 +44,11 @@ class Document extends Strass_Db_Table_Row_Abstract implements Zend_Acl_Resource
     return 'data/documents/'.$data['slug'].'.'.$data['suffixe'];
   }
 
+  function getTaille()
+  {
+    return filesize($this->getFichier());
+  }
+
   function storeFile($tmp)
   {
     $config = Zend_Registry::get('config');

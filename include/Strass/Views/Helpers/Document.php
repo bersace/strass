@@ -21,6 +21,8 @@ class Strass_View_Helper_Document
       ->addFlags('date');
     $l->addItem("Format ".strtoupper($document->suffixe))
       ->addFlags('format');
+    $l->addItem(wtk_format_size($document->getTaille()))
+      ->addFlags('taille');
 
     if ($document->description)
       $l->addItem()->addFlags('description')
