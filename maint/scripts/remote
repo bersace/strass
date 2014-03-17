@@ -129,7 +129,7 @@ class CHMOD(FTPOperation):
 
 class FTPEntry(object):
     log = logging.getLogger('strass.ftp')
-    exclude = ['*~', 'zend_cache*', '*.xcf', '*.scss', 'README', 'LICENSE']
+    exclude = ['*~', 'zend_cache*', '*.xcf', '*.scss', 'README', 'LICENSE', 'local']
 
     TYPE_UNKNOWN = FileType('Inconnu')
     TYPE_FILE = FileType('Fichier')
