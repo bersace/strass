@@ -18,6 +18,14 @@ textarea:focus
     background: lighten($alt_background, 25%);
 }
 
+select {
+    max-width: 20em;
+}
+
+table select {
+    max-width: 12em;
+}
+
 fieldset {
     margin-top: 1em;
     border: 1pt solid $highlight_color;
@@ -108,6 +116,20 @@ div.control {
 
 	    &:after {
 		content: "";
+	    }
+	}
+    }
+
+    .input.file {
+	div.wrapper {
+	    overflow: hidden;
+	    position: relative;
+
+	    input[type=file] {
+		position: absolute;
+		top: 0;
+		left: 0;
+		opacity: 0;
 	    }
 	}
     }
