@@ -42,6 +42,20 @@ fieldset {
     }
 }
 
+/* Aide en ligne dans le formulaire */
+form p.info {
+    color: $info;
+    box-shadow: 2pt 4pt 1ex rgba(4, 4, 4, 0.5);
+    border-radius: 1ex;
+    background-position: 1ex .72ex;
+    background-repeat: no-repeat;
+    background-color: $info_bg;
+    background-image: url("dialog/information.png");
+    padding: 1ex 1em 1ex 48px;
+    margin: 1ex 1ex .5ex;
+    font-size: 120%;
+}
+
 div.control {
     text-align: left;
     clear: both;
@@ -91,6 +105,10 @@ div.control {
 	    text-align: left;
 	    position: relative;
 	    left: 1.5em;
+
+	    &:after {
+		content: "";
+	    }
 	}
     }
 
@@ -176,7 +194,7 @@ div.required > label:before {
 /* FORMULAIRE LATÉRAUX */
 #aside div.control {
     label {
-	width: 8em;
+	width: 7em;
 	overflow: hidden;
     }
 
