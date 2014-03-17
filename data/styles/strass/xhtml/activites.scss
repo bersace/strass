@@ -7,9 +7,14 @@
 }
 
 #calendrier table {
+    font-size: 130%;
     width: 80%;
     max-width: 40em;
     margin: 1em auto;
+
+    td.date {
+	white-space: nowrap;
+    }
 }
 
 #evenement {
