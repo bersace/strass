@@ -56,7 +56,7 @@ class Strass_View_Helper_ModelTableEffectifs
 					 'action' => 'effectifs',
 					 'unite' => $unite->slug));
       $etape = $individu->findParentEtapes();
-      $maitrise = $unite->id == $racine->id && !$unite->isTerminale();
+      $maitrise = $racine && $unite->id == $racine->id && !$unite->isTerminale();
 
       // insertion du tuple
       $m->append($unite->slug,

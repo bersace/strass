@@ -35,4 +35,6 @@ class Strass_Pages_Renderer_UnitesInscrire extends Wtk_Pages_Renderer_Form
   }
 }
 
+$this->document->addChild($this->tableEffectifs($this->unite, $this->modelTableEffectifs($this->apps),
+						true, array()));
 $this->document->addPages(null, $this->model, new Strass_Pages_Renderer_UnitesInscrire($this));

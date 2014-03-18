@@ -289,6 +289,8 @@ class UnitesController extends Strass_Controller_Action
     $this->assert(null, $u, 'inscrire',
 		  "Vous n'avez pas le droit d'inscrire dans cette unité");
 
+    $this->view->apps = $u->findAppartenances($a, 0);
+
     $ti = new Individus;
     $db = $ti->getAdapter();
 

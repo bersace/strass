@@ -55,6 +55,17 @@
     padding-bottom: 12em;
 }
 
+#document.inscrire table.effectifs
+{
+    width: 40%;
+    max-width: 50em;
+    margin: 4em auto;
+
+    thead, tr.category {
+	display: none;
+    }
+}
+
 /* EFFECTIFS */
 #document.effectifs table.effectifs {
     width: 30em;
