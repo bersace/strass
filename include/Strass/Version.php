@@ -25,7 +25,7 @@ final class Strass_Version {
   static function showMaintenance()
   {
     header('HTTP/1.0 503 Service Unavailable');
-    include 'maintenance.html';
+    readfile('maintenance.html');
     exit(0);
   }
 
