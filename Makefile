@@ -94,12 +94,18 @@ backup1:
 	make setmaint
 	$(REMOTE) $@
 	git add data/ resources/ config/;
-	git commit -m 'BACKUP';
+	git commit -m BACKUP
+
+backup:
+	make setmaint
+	$(REMOTE) $@
+	git add data/ private/;
+	git diff --staged --exit-code --quiet || git commit -m BACKUP
 
 migrate: all
 	maint/scripts/migrate;
 	git add --all -- data/ private/ config/ resources/;
-	git commit -m 'MIGRATION';
+	git commit -m MIGRATION
 
 upgrade: 500.html
 	make setmaint
@@ -117,4 +123,4 @@ partialmirror: 500.html
 	make unsetmaint
 
 .PHONY: all doc clean setup serve restore restore1 test
-.PHONY: config setmaint unsetmaint backup1 migrate mirror partialmirror upgrade
+.PHONY: config setmaint unsetmaint backup1 migrate mirror partialmirror upgrade backup

@@ -137,7 +137,7 @@ class CHMOD(FTPOperation):
 
 class FTPEntry(object):
     log = logging.getLogger('strass.ftp')
-    exclude = ['*~', 'zend_cache*', '*.xcf', '*.scss', 'README', 'LICENSE', 'local']
+    exclude = ['.*', '*~', 'zend_cache*', '*.xcf', '*.scss', 'README', 'LICENSE', 'local']
 
     TYPE_UNKNOWN = FileType('Inconnu')
     TYPE_FILE = FileType('Fichier')
@@ -152,7 +152,9 @@ class FTPEntry(object):
         self._children = None
         self._type = type_
         self._localmtime = None
+        self._localsize = None
         self._remotemtime = None
+        self._remotesize = None
         self._remoteexists = None
 
 
@@ -191,8 +193,10 @@ class FTPEntry(object):
                     if entry.name in ('.', '..'):
                         continue
 
+                    remoteentry = entry
                     entry = self._children.setdefault(entry.name, entry)
                     entry._remoteexists = True
+                    entry._remotesize = remoteentry._remotesize
 
         for child in self._children.values():
             yield child
@@ -241,6 +245,7 @@ class FTPEntry(object):
 
         self = cls(client, fullpath=fullpath, type_=type_, parent=parent)
         self._remoteexists = True
+        self._remotesize = int(parts[4])
         return self
 
 
@@ -302,6 +307,21 @@ class FTPEntry(object):
     def outdated(self, reverse=False):
         """Teste si la version en ligne est obsolète. L'inverse si reverse est à True"""
 
+        if not self._localsize and os.path.exists(self.path):
+            self._localsize = os.stat(self.path).st_size
+
+        # Pour les fichiers de plus de 32k, on test la taille plutôt
+        # que la date.
+        if self.type_ is self.TYPE_FILE and self._localsize and self._remotesize:
+            maxsz = max(self._localsize, self._remotesize)
+            # Pour les vignettes, icônes, etc. on réduit le seuil
+            image = self.name.endswith('jpeg') or self.name.endswith('jpg') \
+                    or self.name.endswith('png') or self.name.endswith('svg') \
+                    or self.name.endswith('gif') or self.name.endswith('webp')
+            threshold = 0 if image else 32
+            if image and self._localsize == self._remotesize:
+                return False
+
         if not self._localmtime:
             if not os.path.exists(self.path):
                 return reverse
@@ -310,9 +330,10 @@ class FTPEntry(object):
                 subprocess.check_output([
                     'git', 'ls-files', '--error-unmatch', self.path],
                                         stderr=subprocess.PIPE)
-                subprocess.check_output([
-                    'git', 'diff', '--exit-code', self.path],
-                                        stderr=subprocess.PIPE)
+                hasdiff = subprocess.call([
+                    'git', 'diff', '--exit-code', '--quiet', 'HEAD', self.path],
+                                stderr=subprocess.PIPE)
+                assert not hasdiff
             except Exception, e:
                 timestamp = os.stat(self.path).st_mtime
             else:
@@ -350,6 +371,20 @@ class FTPEntry(object):
             yield DELE(self.path)
 
 
+    def localremove(self):
+        if not os.path.exists(self.path):
+            return
+
+        if self.isdir():
+            for child in self:
+                for op in child.localremove():
+                    yield op
+
+            os.rmdir(self.path)
+        else:
+            os.remove(self.path)
+
+
     def mkdir(self):
         if self.parent:
             for op in self.parent.mkdir():
@@ -360,7 +395,7 @@ class FTPEntry(object):
             yield CHMOD(0750, self.path)
 
 
-    def download(self):
+    def download(self, clean=False):
         if self.isdir():
             try:
                 os.makedirs(self.path, mode=0755)
@@ -371,13 +406,11 @@ class FTPEntry(object):
                 if self.isignored(child.name):
                     continue
 
-                if not child._remoteexists:
-                    # Ne traiter que les enfants venant de la commande
-                    # LIST
-                    continue
-
-                for op in child.download():
-                    yield op
+                if clean and not child._remoteexists:
+                    child.localremove()
+                else:
+                    for op in child.download(clean=clean):
+                        yield op
         else:
             if self.outdated(reverse=True):
                 yield RETR(self.path)
@@ -522,6 +555,13 @@ class FTPManager(object):
                 self.operations.add(op)
 
 
+    def backup(self, *pathes):
+        for path in pathes:
+            entry = self.tree[path]
+            for op in entry.download(clean=True):
+                self.operations.add(op)
+
+
     def remove(self, *pathes):
         for path in pathes:
             entry = self.tree[path]
@@ -543,6 +583,7 @@ class FTPManager(object):
                 op(self.client)
             except Exception, e:
                 self.log.warn(u"Échec de l'opération %s: %s", op, e)
+        self.log.info('Transfert terminé')
 
 
 @command
@@ -686,6 +727,26 @@ class backup1(object):
         ftp.connect(config, args.production)
         self.log.info("Préparation de la sauvegarde")
         ftp.download('resources/styles', 'config/', 'data/')
+        self.log.info("Démarrage de la sauvegarde")
+        ftp.run()
+
+
+@command
+class backup(object):
+    """Télécharge un site strass"""
+    log = logging.getLogger('strass.backup')
+
+    def __init__(self, parser):
+        pass
+
+
+    def __call__(self, args, config):
+        ftp = FTPManager()
+        ftp.connect(config, args.production)
+        self.log.info("Préparation de la sauvegarde")
+        ftp.backup('private/',
+                   # tout data sauf scripts, install et styles
+                   'data/avatars/', 'data/documents/', 'data/journaux/', 'data/photos/', 'data/unites/')
         self.log.info("Démarrage de la sauvegarde")
         ftp.run()
 
