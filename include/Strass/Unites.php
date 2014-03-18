@@ -205,8 +205,8 @@ class Unite extends Strass_Db_Table_Row_Abstract implements Zend_Acl_Resource_In
   function getWiki($slug = null, $test = true)
   {
     $slug = $slug ? $slug : $this->slug;
-    $image = 'private/unites/'.$slug.'.wiki';
-    return !$test || is_readable($image) ? $image : null;
+    $wiki = 'private/unites/'.$slug.'.wiki';
+    return !$test || is_readable($wiki) ? $wiki : null;
   }
 
   function storePresentation($wiki)
@@ -839,10 +839,10 @@ class Unite extends Strass_Db_Table_Row_Abstract implements Zend_Acl_Resource_In
     $this->clearCacheSousUnites();
     Zend_Registry::get('cache')->remove('strass_acl');
 
-    if ($i = $this->getImage($this->_cleanData['id']))
+    if ($i = $this->getImage($this->_cleanData['slug']))
       rename($i, $this->getImage(null, false));
 
-    if ($w = $this->getWiki($this->_cleanData['id']))
+    if ($w = $this->getWiki($this->_cleanData['slug']))
       rename($w, $this->getWiki());
   }
 }
