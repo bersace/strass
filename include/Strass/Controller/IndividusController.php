@@ -38,16 +38,6 @@ class IndividusController extends Strass_Controller_Action
 			   array(null, $individu));
 
     $moi = Zend_Registry::get('individu');
-    if ($individu->findUser()
-	&& !Zend_Registry::offsetExists('sudoer')
-	&& $this->assert(null, $individu->findUser(), 'sudo')) {
-      $this->actions->append("Prendre l'identité",
-			     array('controller'	=> 'membres',
-				   'action' => 'sudo',
-				   'username' => $user->username),
-			     array(null, null, 'admin'));
-    }
-
     if ($individu->isMember()) {
       $this->actions->append("Paramètres utilisateur",
 			     array('controller'	=> 'membres',
@@ -55,7 +45,18 @@ class IndividusController extends Strass_Controller_Action
 				   'membre' => $user->username,
 				   'individu' => null),
 			     array(null, null, 'admin'));
+      if (!Zend_Registry::offsetExists('sudoer')
+	  && $this->assert(null, $individu->findUser(), 'sudo'))
+	$this->actions->append("Prendre l'identité",
+			       array('controller'	=> 'membres',
+				     'action' => 'sudo',
+				     'username' => $user->username),
+			       array(null, null, 'admin'));
     }
+
+    $this->actions->append("Supprimer",
+			   array('action'	=> 'supprimer'),
+			   array(null, $individu));
   }
 
   function editerAction()
