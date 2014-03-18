@@ -38,7 +38,7 @@ class Strass_Controller_Action_Helper_Membre extends Zend_Controller_Action_Help
 
     if ($user->isMember()) {
       $individu = $user->findParentIndividus();
-      $this->_actionController->branche->append(wtk_ucfirst($individu->getFullname()),
+      $this->_actionController->branche->append($individu->getFullname(),
 						array('controller' => 'individus',
 						      'action'	 => 'fiche',
 						      'individu'   => $individu->slug),

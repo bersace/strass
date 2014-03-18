@@ -17,7 +17,7 @@ class Strass_Controller_Action_Helper_Journal extends Zend_Controller_Action_Hel
     }
 
     $this->setBranche($journal);
-    $this->_actionController->metas(array('DC.Title' => wtk_ucfirst($journal->nom),
+    $this->_actionController->metas(array('DC.Title' => $journal->nom,
 					  'DC.Subject' => 'journaux,journal,gazette,blog'));
     return $journal;
   }
@@ -26,7 +26,7 @@ class Strass_Controller_Action_Helper_Journal extends Zend_Controller_Action_Hel
   {
     $unite = $journal->findParentUnites();
     $this->_actionController->_helper->Unite->liensConnexes($unite, 'index', 'unites');
-    $this->_actionController->branche->append(wtk_ucfirst($journal->nom),
+    $this->_actionController->branche->append($journal->nom,
 					      array('controller'=> 'journaux',
 						    'action'	=> 'index',
 						    'journal'	=> $journal->slug),

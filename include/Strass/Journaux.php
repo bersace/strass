@@ -227,7 +227,7 @@ class Article extends Strass_Db_Table_Row_Abstract implements Zend_Acl_Resource_
 
   function __toString()
   {
-    return wtk_ucfirst($this->titre);
+    return $this->titre;
   }
 
 

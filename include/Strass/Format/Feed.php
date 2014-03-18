@@ -11,7 +11,7 @@ abstract class Strass_Format_Feed extends Strass_Format
 		$view = $controller->view;
 		$p = Zend_Registry::get('page');
 		$m = $p->metas;
-		$view->feed = array('title'	=> wtk_ucfirst($m->get('DC.Title')),
+		$view->feed = array('title'	=> $m->get('DC.Title'),
 				    'link'	=> $view->url(array('format' => 'xhtml'), false, true),
 				    'charset'	=> 'UTF-8',
 				    'language'	=> 'fr',

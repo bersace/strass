@@ -10,7 +10,7 @@ if ($this->assert(null, $this->individu, 'totem'))
   $l->addItem()->addFlags('totem')->addRawText($this->individu->totem);
 if ($this->etape) {
   $l->addItem()->addFlags('etape', $this->etape->slug)
-    ->addInline("**".wtk_ucfirst($this->etape->titre)."**");
+    ->addInline("**".$this->etape->titre."**");
   $this->document->addFlags($this->etape->slug);
 }
 

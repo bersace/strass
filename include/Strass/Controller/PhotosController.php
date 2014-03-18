@@ -140,7 +140,7 @@ class PhotosController extends Strass_Controller_Action
   {
     $this->view->photo = $photo = $this->_helper->Photo();
     $this->view->activite = $a = $photo->findParentActivites();
-    $this->metas(array('DC.Title' => wtk_ucfirst($photo->titre),
+    $this->metas(array('DC.Title' => $photo->titre,
 		       'DC.Subject' => 'photo',
 		       'DC.Date.created' => $photo->date));
 

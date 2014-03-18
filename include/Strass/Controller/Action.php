@@ -31,7 +31,7 @@ abstract class Strass_Controller_Action extends Zend_Controller_Action implement
       if ($metas->title)
 	$site = $metas->title;
       elseif ($racine)
-	  $site = wtk_ucfirst($racine->getName());
+	  $site = $racine->getName();
       else
 	$site = null;
 

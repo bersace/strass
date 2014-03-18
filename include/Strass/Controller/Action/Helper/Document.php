@@ -32,6 +32,6 @@ class Strass_Controller_Action_Helper_Document extends Zend_Controller_Action_He
     }
     catch (Strass_Db_Table_NotFound $e) {}
 
-    $this->_actionController->branche->append(wtk_ucfirst($d->titre));
+    $this->_actionController->branche->append($d->titre);
   }
 }

@@ -31,7 +31,7 @@ class Strass_Pages_Model_UniteInscrire extends Strass_Pages_Model_Historique
     $roles = $u->findParentTypesUnite()->findRoles();
     $enum = array();
     foreach ($roles as $role) {
-      $enum[$role->id.'__'] = wtk_ucfirst($role->titre);
+      $enum[$role->id.'__'] = $role->titre;
       foreach ($role->findTitres() as $titre) {
 	$enum[$role->id.'__'.$titre->nom] = $titre->nom;
       }

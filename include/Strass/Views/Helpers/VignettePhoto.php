@@ -20,7 +20,7 @@ class Strass_View_Helper_VignettePhoto
 			      $urlOptions);
 
     $this->view->document->addStyleComponents('vignette');
-    $label = $label ? $label : wtk_ucfirst($photo->titre);
+    $label = $label ? $label : $photo;
     $page = Zend_Registry::get('page');
     $item = new Wtk_Container;
     $item->addSection()

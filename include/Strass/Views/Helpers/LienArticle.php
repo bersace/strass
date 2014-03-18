@@ -15,8 +15,7 @@ class Strass_View_Helper_LienArticle
 			      $controller = 'journaux',
 			      $reset = true)
   {
-    $label = $label ? $label : wtk_ucfirst($article->titre);
-    $acl = Zend_Registry::get('acl');
+    $label = $label ? $label : $article->titre;
     $lien = $this->view->lien(array('controller' => $controller,
 				    'action'	=> $action,
 				    'article'	=> $article->slug),

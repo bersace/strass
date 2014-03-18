@@ -158,7 +158,7 @@ class Photo extends Strass_Db_Table_Row_Abstract implements Zend_Acl_Resource_In
 
   function __toString()
   {
-    return wtk_ucfirst($this->titre);
+    return $this->titre;
   }
 
   function _postUpdate()

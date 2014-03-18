@@ -28,7 +28,7 @@ class Strass_Controller_Action_Helper_Photo extends Strass_Controller_Action_Hel
 
     parent::setBranche($a);
 
-    $this->_actionController->branche->append(wtk_ucfirst($p->titre),
+    $this->_actionController->branche->append($p->titre,
 					      array('controller'=> 'photos',
 						    'action'	=> 'voir',
 						    'photo'	=> $p->slug),

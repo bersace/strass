@@ -21,7 +21,7 @@ class Strass_View_Helper_ActiviteEvent
     $calendrier->addEvent(strtotime($activite->debut),
 			  strtotime($activite->fin),
 			  $activite->lieu,
-			  wtk_ucfirst($activite->getIntitule()),
+			  $activite->getIntitule(),
 			  $this->view->tw->transform($activite->description, 'Plain'),
 			  $attachments);
   }

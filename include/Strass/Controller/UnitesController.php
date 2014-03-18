@@ -114,7 +114,7 @@ class UnitesController extends Strass_Controller_Action
       if ($en)
 	array_push($ens, $en);
 
-      $label = wtk_ucfirst($type->nom);
+      $label = $type->nom;
       /* en cas de nom doublon (ex: équipe, sizaine), inclure le nom du type parent */
       $homonymes = $ttu->countRows($ttu->select()->where('nom = ?', $type->nom)) > 1;
       if (!$unite && $homonymes)
@@ -130,13 +130,13 @@ class UnitesController extends Strass_Controller_Action
     if (key($enum) == 'sizloup') {
       // préselectionner les couleurs des loups.
       $couleurs =
-	array('noir', 'gris', 'brun', 'blanc', 'fauve', 'tacheté');
+	array('Noir', 'Gris', 'Brun', 'Blanc', 'Fauve', 'Tacheté');
       $enum = array();
       foreach($couleurs as $couleur) {
 	// ne pas permettre de recréer une sizaine.
 	$ex = $unite->findUnites("unites.nom = '".$couleur."'")->current();
 	if (!$ex)
-	  $enum[wtk_strtoid($couleur)] = wtk_ucfirst($couleur);
+	  $enum[wtk_strtoid($couleur)] = $couleur;
       }
       $m->addEnum('nom', 'Nom', null, $enum);
     }
@@ -338,9 +338,8 @@ class UnitesController extends Strass_Controller_Action
 	$db = $u->getTable()->getAdapter();
 	$db->beginTransaction();
 	try {
-	  $nom = (string) $u;
 	  $u->delete();
-	  $message = wtk_ucfirst($nom)." supprimé";
+	  $message = $u." supprimé";
 	  $this->logger->warn($message,
 			      $this->_helper->Url('index', 'unites'));
 	  $this->_helper->Flash->info($message);

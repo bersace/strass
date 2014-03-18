@@ -73,7 +73,7 @@ class JournauxController extends Strass_Controller_Action
   function editerAction()
   {
     $this->view->journal = $j = $this->_helper->Journal();
-    $this->metas(array('DC.Title' => "Modifier ".wtk_ucfirst($j->nom)));
+    $this->metas(array('DC.Title' => "Modifier ".$j->nom));
 
     $this->assert(null, $j, 'editer',
 		  "Vous n'avez pas le droit de modifier ce journal");

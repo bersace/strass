@@ -31,7 +31,7 @@ class Strass_Controller_Action_Helper_Individu extends Zend_Controller_Action_He
 
   function setBranche($individu)
   {
-    $this->_actionController->branche->append(wtk_ucfirst($individu->getFullname()),
+    $this->_actionController->branche->append($individu->getFullname(),
 					      array('controller'	=> 'individus',
 						    'action'	=> 'fiche',
 						    'individu'	=> $individu->slug),

@@ -86,7 +86,7 @@ class IndividusController extends Strass_Controller_Action
     $p = $individu->findParentEtapes();
     $i = $m->addEnum('etape', "Progression", $p ? $p->id : null, array(null => 'Aucune'));
     foreach($individu->findEtapesCanditates() as $e)
-      $i->addItem($e->id, wtk_ucfirst($e->titre));
+      $i->addItem($e->id, $e->titre);
 
     // contacts;
     if (!$individu->isMember())
@@ -213,9 +213,9 @@ class IndividusController extends Strass_Controller_Action
       $roles = $unite->findParentTypesUnite()->findRoles();
       $i = $g->getChild('role');
       foreach ($roles as $role) {
-	$i->addItem($role->id.'__', wtk_ucfirst($role->titre));
+	$i->addItem($role->id.'__', $role->titre);
 	foreach ($role->findTitres() as $titre) {
-	  $i->addItem($role->id.'__'.$titre->nom, wtk_ucfirst($titre->nom));
+	  $i->addItem($role->id.'__'.$titre->nom, $titre->nom);
 	}
       }
     }
@@ -297,7 +297,7 @@ class IndividusController extends Strass_Controller_Action
     $i = $m->addEnum('role', 'Rôle', $app->role);
     $roles = $individu->findRolesCandidats($unite, false);
     foreach($roles as $role)
-      $i->addItem($role->id, wtk_ucfirst($role->titre));
+      $i->addItem($role->id, $role->titre);
     $m->addString('titre', 'Titre', $app->titre);
     $m->addDate('debut', 'Début', $app->debut);
     $i0 = $m->addBool('clore', 'Clore', (bool) $app->fin);
