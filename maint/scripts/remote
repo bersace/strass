@@ -31,6 +31,9 @@ class Script(object):
         action='store_const', dest='loglevel', const=logging.CRITICAL)
     parser.add_argument(
         '-c', '--config', default='maint/strass.conf', metavar='FILE')
+    parser.add_argument(
+        '-p', '--production', help=u'Envoi sur le site en production',
+        action='store_true', dest='production')
 
     subparsers = parser.add_subparsers(metavar='ACTION', help=u'Opération avec le site distant')
 
@@ -469,22 +472,31 @@ class FTPQueue(OrderedDict):
 class FTPManager(object):
     log = logging.getLogger('strass.ftp')
 
-    def __init__(self, config):
+
+    def __init__(self):
         self.operations = FTPQueue()
 
-        self.config = config
-        self.client = FTPLogger(FTP())
-        self.client.connect(self.config.get('remote', 'hostname'))
-        self.client.login(self.config.get('remote', 'username'),
-                       self.config.get('remote', 'password'))
-        self.client.cwd(self.config.get('remote', 'root'))
-        self.log.debug(u"Connecté à %s", self.config.get('remote', 'hostname'))
-        self.log.debug(self.client.getwelcome())
 
+    def connect(self, config, production):
+        section = 'production' if production else 'test'
+        self.config = config
+        client = FTPLogger(FTP())
+        hostname = self.config.get(section, 'hostname')
+        client.connect(hostname)
+        client.login(self.config.get(section, 'username'),
+                       self.config.get(section, 'password'))
+        client.cwd(self.config.get(section, 'root'))
+        self.log.debug(u"Connecté au server de %s : %s", section, hostname)
+        self.log.debug(client.getwelcome())
+
+        self.client = client
         self.tree = FTPEntry(client=self.client, parent=None, fullpath='.')
 
 
     def __del__(self):
+        if not hasattr(self, 'client'):
+            return
+
         self.client.quit()
         self.client.close()
 
@@ -543,9 +555,9 @@ class config(object):
         pass
 
 
-    def prompt_config(self, config, name, label):
+    def prompt_config_string(self, config, section, name, label):
         try:
-            default = config.get('remote', name)
+            default = config.get(section, name)
             prompt = "%s [%s] : " % (label, default)
         except Exception, e:
             prompt = "%s : " % (label,)
@@ -553,13 +565,13 @@ class config(object):
         if not value:
             value = default
 
-        config.set('remote', name, value)
+        config.set(section, name, value)
         return value
 
 
-    def prompt_config_password(self, config, name, label):
+    def prompt_config_password(self, config, section, name, label):
         try:
-            default = config.get('remote', name)
+            default = config.get(section, name)
             prompt = "%s [%s] : " % (label, 6 * '*')
         except Exception, e:
             prompt = "%s : " % (label,)
@@ -567,8 +579,30 @@ class config(object):
         if not value:
             value = default
 
-        config.set('remote', name, value)
+        config.set(section, name, value)
         return value
+
+
+    def prompt_config(self, config, section):
+        while 1:
+            print
+            print "  Serveur de %s :" % (section,)
+            print
+            try:
+                config.add_section(section)
+            except Exception, e:
+                pass
+            self.prompt_config_string(config, section, 'hostname', "Serveur")
+            self.prompt_config_string(config, section, 'username', "Identifiant")
+            self.prompt_config_password(config, section, 'password', "Mot de passe")
+            self.prompt_config_string(config, section, 'root', "Dossier")
+
+            try:
+                FTPManager().connect(config, production=section == 'production')
+                break
+            except Exception, e:
+                self.log.error("Configuration incorrecte ?")
+                self.log.error("%s", e)
 
 
     def __call__(self, args, config):
@@ -579,19 +613,25 @@ de connaître votre accès FTP.
 
 """
         try:
-            config.add_section('remote')
+            self.prompt_config(config, 'test')
+        except EOFError:
+                return 1
+
+        # Par défaut, on recopie les valeurs de test dans la prod
+        try:
+            config.add_section('production')
         except Exception, e:
             pass
-        self.prompt_config(config, 'hostname', "Serveur")
-        self.prompt_config(config, 'username', "Identifiant")
-        self.prompt_config_password(config, 'password', "Mot de passe")
-        self.prompt_config(config, 'root', "Dossier")
+
+        for k in 'hostname', 'username', 'password', 'root':
+            if config.has_option('production', k):
+                continue
+            config.set('production', k, config.get('test', k))
 
         try:
-            FTPManager(config)
-        except Exception, e:
-            self.log.error("%s", e)
-            return 1
+            self.prompt_config(config, 'production')
+        except EOFError:
+                return 1
 
         config.write(open(args.config, 'w'))
         os.chmod(args.config, 0600)
@@ -609,7 +649,8 @@ class setmaint(object):
 
 
     def __call__(self, args, config):
-        ftp = FTPManager(config)
+        ftp = FTPManager()
+        ftp.connect(config, args.production)
         ftp.upload('maintenance.html', 'include/Strass/Version.php', 'index.php')
         ftp.run()
 
@@ -625,7 +666,8 @@ class unsetmaint(object):
 
 
     def __call__(self, args, config):
-        ftp = FTPManager(config)
+        ftp = FTPManager()
+        ftp.connect(config, args.production)
         ftp.remove('maintenance.html')
         ftp.run()
 
@@ -640,7 +682,8 @@ class backup1(object):
 
 
     def __call__(self, args, config):
-        ftp = FTPManager(config)
+        ftp = FTPManager()
+        ftp.connect(config, args.production)
         self.log.info("Préparation de la sauvegarde")
         ftp.download('resources/styles', 'config/', 'data/')
         self.log.info("Démarrage de la sauvegarde")
@@ -658,7 +701,8 @@ class upgrade(object):
 
 
     def __call__(self, args, config):
-        ftp = FTPManager(config)
+        ftp = FTPManager()
+        ftp.connect(config, args.production)
         self.log.info("Préparation de la mise à jour")
         ftp.mirror('index.php', '500.html',
                    'include/Strass/', 'include/Wtk/', 'data/styles/', 'include/templates/',
@@ -680,9 +724,9 @@ class mirror(object):
             help="Ne pas Envoyer les photos, les dépendances, etc.")
 
 
-
     def __call__(self, args, config):
-        ftp = FTPManager(config)
+        ftp = FTPManager()
+        ftp.connect(config, args.production)
         self.log.info("Préparation de la mise à jour")
         ftp.mirror('index.php', '500.html', 'private/')
         ftp.chmod(0700, 'private/')

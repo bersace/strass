@@ -75,7 +75,11 @@ test: $(TESTDB)
 	phpunit --bootstrap tests/bootstrap.php tests
 endif
 
+ifdef PROD
+REMOTE=maint/scripts/remote --production --verbose --config maint/strass.conf
+else
 REMOTE=maint/scripts/remote --verbose --config maint/strass.conf
+endif
 
 config:
 	$(REMOTE) config
