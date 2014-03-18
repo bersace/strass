@@ -81,7 +81,7 @@ class Strass_View_Helper_TableEffectifs
       $t->setCategoryColumn('unite_nom',
 			    new Wtk_Table_CellRenderer_Link('href', 'unite_lien',
 							    'label', 'unite_nom'),
-			    array('unite_slug', 'unite_type'));
+			    array('unite_slug', 'unite_type', 'cat_flags'));
 
     return $t;
   }

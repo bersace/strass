@@ -74,6 +74,7 @@
 
     /* simple listing, façon 27eparis.net */
     &.sansfiche {
+	display: block;
 	width: 98%;
 
 	&.terminale {
@@ -84,7 +85,6 @@
 	    }
 	}
 
-	display: block;
 	thead { display: none; }
 
 	tbody {
@@ -97,6 +97,11 @@
 	    td + td {
 		width: 100%;
 	    }
+	}
+
+	tbody.maitrise {
+	    display: block;
+	    margin: 1em auto;
 	}
     }
 

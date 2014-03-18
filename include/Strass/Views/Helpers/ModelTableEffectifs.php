@@ -30,7 +30,8 @@ class Strass_View_Helper_ModelTableEffectifs
 			       'naissance',
 			       'age',
 			       'totem',
-			       'numero');
+			       'numero',
+			       'cat_flags');
     }
     $this->append($m, $apps, $racine);
     return $m;
@@ -77,7 +78,8 @@ class Strass_View_Helper_ModelTableEffectifs
 		 strftime('%d-%m-%Y', strtotime($individu->naissance)),
 		 $individu->getAge(),
 		 $individu->totem,
-		 $individu->numero ? $individu->numero : null
+		 $individu->numero ? $individu->numero : null,
+		 $maitrise ? 'maitrise' : null
 		 );
     }
   }
