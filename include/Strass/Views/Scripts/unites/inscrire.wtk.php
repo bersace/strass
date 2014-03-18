@@ -10,9 +10,14 @@ class Strass_Pages_Renderer_UnitesInscrire extends Wtk_Pages_Renderer_Form
     $this->view = $view;
   }
 
-  function renderIndividu($g, $f)
+  function renderInscription($g, $f)
   {
-    $f->addSelect('individu/individu');
+    $f->addSelect('inscription/individu');
+    $f->addSelect('inscription/role', true);
+    $f->addDate('inscription/debut');
+    $c = $f->addForm_Compound();
+    $c->addCheck('inscription/clore')->useLabel(true);
+    $c->addDate('inscription/fin', '%e-%m-%Y');
   }
 
   function renderFiche($g, $f)
@@ -24,14 +29,6 @@ class Strass_Pages_Renderer_UnitesInscrire extends Wtk_Pages_Renderer_Form
     }
     catch (Exception $e) {}
     $f->addDate('fiche/naissance');
-  }
-
-  function renderApp($g, $f)
-  {
-    $f->addSelect('app/role', true);
-    $f->addDate('app/debut');
-    $f->addCheck('app/clore');
-    $f->addDate('app/fin');
   }
 }
 

@@ -298,14 +298,27 @@ class UnitesController extends Strass_Controller_Action
     $this->view->model = $pm = new Wtk_Pages_Model_Form($m);
 
     /* Sélection de l'individu à inscrire */
-    $g = $m->addGroup('individu');
+    $g = $m->addGroup('inscription');
     $candidats = $u->findCandidats($a);
     $enum = array();
     $enum['$$nouveau$$'] = 'Inscrire un nouveau';
-    foreach($candidats as $candidat) {
+    foreach($candidats as $candidat)
       $enum[$candidat->id] = $candidat->getFullname(false, false);
-    }
     $g->addEnum('individu', 'Individu', null, $enum);
+    $roles = $u->findParentTypesUnite()->findRoles();
+    $enum = array();
+    foreach ($roles as $role) {
+      $enum[$role->id.'__'] = wtk_ucfirst($role->titre);
+      foreach ($role->findTitres() as $titre) {
+	$enum[$role->id.'__'.$titre->nom] = $titre->nom;
+      }
+    }
+    $default = $u->findRolesCandidats($a)->current();
+    $g->addEnum('role', 'Rôle', $default ? $default->id.'__' : null, $enum);
+    $g->addDate('debut', 'Début', $a.'-10-08');
+    $i0 = $g->addBool('clore', 'Clore', false);
+    $i1 = $g->addDate('fin', 'Fin', ($a+1).'-10-08');
+    $m->addConstraintDepends($i1, $i0);
 
     /* Enregistrement d'un nouvel individu */
     $g = $m->addGroup('fiche');
@@ -319,56 +332,21 @@ class UnitesController extends Strass_Controller_Action
 
     $g->addDate('naissance', 'Date de naissance', ($a - $tu->age_min) . '-01-01');
 
-    /* Détails du mandat */
-    $g = $m->addGroup('app');
-    $roles = $u->findParentTypesUnite()->findRoles();
-    $enum = array();
-    foreach ($roles as $role) {
-      $enum[$role->id.'__'] = wtk_ucfirst($role->titre);
-      foreach ($role->findTitres() as $titre) {
-	$enum[$role->id.'__'.$titre->nom] = wtk_ucfirst($titre->nom);
-      }
-    }
-    $g->addEnum('role', 'Rôle', null, $enum);
-    $g->addDate('debut', 'Début', $a.'-10-08');
-    $i0 = $g->addBool('clore', 'Inscription terminée', false);
-    $i1 = $g->addDate('fin', 'Fin', ($a+1).'-10-08');
-    $m->addConstraintDepends($i1, $i0);
-
     $page = $pm->partialValidate();
 
-    if ($m->get('individu/individu') == '$$nouveau$$') {
-      /* Proposer un role inoccupé */
-      if ($role = $u->findRolesCandidats($u, $a)->current())
-	$m->getInstance('app/role')->set($role->id);
-    } else {
-      if ($page == 'fiche') {
-	/* Sauter l'étape fiche si l'individu est déjà en base */
-	if ($m->sent_submission->id == 'continuer')
-	  $pm->gotoPage('app');
-	else if ($m->sent_submission->id == 'precedent')
-	  $pm->gotoPage('individu');
-      }
-      else if ($pm->pageCmp($page, 'app') >= 0) {
-	/* préremplir l'inscription selon l'individu */
-	$individu = $ti->findOne($m->get('individu/individu'));
-
-	if ($role = $individu->findRolesCandidats($u)->current())
-	  $m->getInstance('app/role')->set($role->id);
-
-	$m->getInstance('app/clore')->set($individu->estActifDans($u));
-
-	if ($app = $individu->findInscriptionSuivante($a)) {
-	  $m->getInstance('app/fin')->set($app->debut);
-	}
-      }
+    if ($m->get('inscription/individu') != '$$nouveau$$' && $page == 'fiche') {
+      /* Sauter l'étape fiche si l'individu est déjà en base */
+      if ($m->sent_submission->id == 'continuer')
+	$pm->gotoEnd();
+      else if ($m->sent_submission->id == 'precedent')
+	$pm->gotoPage('inscription');
     }
 
     if ($pm->validate()) {
       $t = new Appartenances;
       $db->beginTransaction();
       try {
-	if ($m->get('individu/individu') == '$$nouveau$$') {
+	if ($m->get('inscription/individu') == '$$nouveau$$') {
 	  $i = new Individu;
 	  $i->prenom = $m->get('fiche/prenom');
 	  $i->nom = $m->get('fiche/nom');
@@ -378,18 +356,18 @@ class UnitesController extends Strass_Controller_Action
 	  $i->save();
 	}
 	else {
-	  $i = $individu;
+	  $i = $ti->findOne($m->get('inscription/individu'));
 	}
 
 	$app = new Appartient;
 	$app->unite = $u->id;
 	$app->individu = $i->id;
-	$app->debut = $m->get('app/debut');
-	list($role, $titre) = explode('__', $m->get('app/role'));
+	$app->debut = $m->get('inscription/debut');
+	list($role, $titre) = explode('__', $m->get('inscription/role'));
 	$app->role = intval($role);
 	$app->titre = $titre;
-	if ($m->get('app/clore'))
-	  $app->fin = $m->get('app/fin');
+	if ($m->get('inscription/clore'))
+	  $app->fin = $m->get('inscription/fin');
 	$app->save();
 
 	$message = $i->getFullname(false, false)." inscrit.";
@@ -402,7 +380,7 @@ class UnitesController extends Strass_Controller_Action
 	throw $e;
       }
 
-      $this->redirectSimple('index');
+      $this->redirectSimple('effectifs');
     }
   }
 

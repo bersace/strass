@@ -20,34 +20,6 @@ class Unites extends Strass_Db_Table_Abstract
 				   'Type' => array('columns' => 'type',
 						   'refTableClass' => 'TypesUnite',
 						   'refColumns' => 'id'));
-
-  function getIdSousUnites($ids_parent, $annee = NULL) {
-    // mettre à jour les participations
-    $rows = $this->find($ids_parent);
-
-    // sélectionner *toutes* les sous-unités.
-    $unites = $ids_parent;
-    foreach($rows as $unite) {
-      $sus = $unite->findSousUnites($annee, true);
-      foreach($sus as $su)
-	$unites[] = $su->id;
-    }
-    $unites = array_unique($unites);
-    return $unites;
-  }
-
-  /*
-   * Liste les unités dans l'ordre.
-   */
-  function findMany($ids)
-  {
-    $select = $this->select()
-      ->from('unite')
-      ->where('unite.id IN ?', $ids);
-
-    return $this->fetchAll($select);
-  }
-
   function findRacines()
   {
     $s = $this->select()->where('unite.parent IS NULL');
@@ -67,6 +39,7 @@ class Unites extends Strass_Db_Table_Abstract
     return $racines->current();
   }
 
+  /* List les unités qui ne peuvent avoir de parent. */
   function findSuperUnites()
   {
     $s = $this->select()
@@ -805,7 +778,7 @@ class Unite extends Strass_Db_Table_Row_Abstract implements Zend_Acl_Resource_In
     return $t->fetchAll($s);
   }
 
-  function findRolesCandidats($unite, $annee)
+  function findRolesCandidats($annee)
   {
     $t = new Roles;
     $db = $t->getAdapter();
@@ -817,10 +790,13 @@ class Unite extends Strass_Db_Table_Row_Abstract implements Zend_Acl_Resource_In
       ->joinLeft('appartenance',
 		 'appartenance.role = unite_role.id AND '.
 		 'appartenance.unite = unite.id AND '.
-		 'appartenance.fin IS NULL AND '.
-		 $db->quoteInto('appartenance.debut < ?', ($annee+1).'-08-01'),
+		 ('('.
+		  $db->quoteInto('(appartenance.fin IS NULL OR appartenance.fin > ?)', ($annee+1).'-08-01').
+		  ' AND '.
+		  $db->quoteInto('appartenance.debut < ?', ($annee).'-08-01').
+		  ')'),
 		 array())
-      ->where('unite.id = ?', $unite->id)
+      ->where('unite.id = ?', $this->id)
       ->where('appartenance.id IS NULL');
     return $t->fetchAll($s);
   }
