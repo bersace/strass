@@ -15,10 +15,11 @@ FONCTIONS :
 
  * Cohérence des dates d'activités. debut < fin.
 
+ * Script de test de l'hébergeur
 
 BUGS :
 
- * Les NOTICE PHP sont affichés en prod…
+ * …
 
 
 AUTRES :
