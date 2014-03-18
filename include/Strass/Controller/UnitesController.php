@@ -42,7 +42,7 @@ class UnitesController extends Strass_Controller_Action
 			   array('controller' => 'unites', 'action' => 'editer', 'unite' => $u->slug),
 			   array(null, $u));
 
-    $this->actions->append("Paramétrer de la page",
+    $this->actions->append("Paramétrer la page",
 			   array('controller' => 'unites', 'action' => 'parametres', 'unite' => $u->slug),
 			   array(null, $u));
 
