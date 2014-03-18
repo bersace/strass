@@ -98,7 +98,8 @@ SELECT
         TRIM(individu.titre || ' ' || prenom || ' ' || nom) AS nom,
         etape.titre AS etape
 FROM individu
-LEFT OUTER JOIN etape ON etape.id = individu.etape;
+LEFT OUTER JOIN etape ON etape.id = individu.etape
+ORDER BY individu.nom, individu.prenom;
 EOS
 );
   }

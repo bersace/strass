@@ -22,8 +22,8 @@ class Individus extends Strass_Db_Table_Abstract
     return $this->select()
       ->setIntegrityCheck(false)
       ->from($this->_name)
-      ->order('individu.nom')
-      ->order('individu.prenom');
+      ->order('lower(individu.nom)')
+      ->order('lower(individu.prenom)');
   }
 
   function findAdmins()
@@ -137,22 +137,44 @@ class Individu extends Strass_Db_Table_Row_Abstract implements Zend_Acl_Resource
 
   function capitalizedLastname($compact=false)
   {
+    /* http://fr.wikipedia.org/wiki/Particule_(onomastique) */
     $noms = preg_split("`[ '-]`", $this->nom);
     $nom = array();
     foreach($noms as $n) {
       $n = mb_strtolower($n);
       switch($n) {
       case "d":
-      case "l":
 	$nom[] = $n."'";
       break;
+      case 'af':
+      case 'auf':
+      case 'am':
+      case 'an':
+      case 'da':
       case 'de':
-      case 'la':
-      case 'du':
+      case 'del':
+      case 'degli':
+      case 'dei':
+      case 'della':
+      case 'der':
       case 'des':
+      case 'di':
+      case 'dos':
+      case 'du':
+      case 'las':
+      case 'les':
+      case 'lo':
+      case 'los':
+      case 'of':
       case 'van':
       case 'von':
+      case 'vom':
 	$nom[] = $n.' ';
+	break;
+      case 'mac':
+      case 'mc':
+      case 'o': /* O'Connor */
+	$nom[] = wtk_ucfirst($n).' ';
 	break;
       default:
 	if ($compact)
@@ -628,9 +650,9 @@ class Users extends Strass_Db_Table_Abstract
     return $this->select()
       ->setIntegrityCheck(false)
       ->from($this->_name)
-      ->join('individu', 'individu.id = user.id', array())
-      ->order('individu.nom')
-      ->order('individu.prenom');
+      ->join('individu', 'individu.id = user.individu', array())
+      ->order('lower(individu.nom)')
+      ->order('lower(individu.prenom)');
   }
 
   function findByUsername($username) {

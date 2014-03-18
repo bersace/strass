@@ -1,7 +1,5 @@
 FONCTIONS :
 
- * trie des individus par nom. Colonne individu.ordre.
-
  * Début et fin de role via les activités. Activités ->
    inscrire. Pas de pagination par année.
 
