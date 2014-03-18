@@ -36,9 +36,8 @@ class Strass_View_Helper_TableEffectifs
 
     $colonnes = array_merge(array('accr', 'prenom-nom'), $colonnes);
     $headers = array();
-    foreach($colonnes as $colonne) {
-      $headers[$colonne] = $this::$headers[$colonne];
-    }
+    foreach($colonnes as $colonne)
+      $headers[$colonne] = self::$headers[$colonne];
 
     // rendu des colonnes
     foreach($headers as $id => $titre) {

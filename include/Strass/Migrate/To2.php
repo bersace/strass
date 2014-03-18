@@ -27,7 +27,7 @@ class Strass_Migrate_To2 extends Strass_MigrateHandler {
     // Renommages
     rename("resources/styles/".$config->site->style, "data/styles/".$config->site->style);
     shell_exec("rsync -av data/statiques/ private/statiques/");
-    $this::rrmdir('data/statiques');
+    self::rrmdir('data/statiques');
 
     rename("private/statiques/strass/unites", "private/unites");
     rename("data/images/strass/unites/", "data/unites");
@@ -38,14 +38,14 @@ class Strass_Migrate_To2 extends Strass_MigrateHandler {
 
     // Nettoyages
     @unlink('resources/templates/.htaccess');
-    $this::rrmdir('resources/');
+    self::rrmdir('resources/');
     @unlink('config/.htaccess');
-    $this::rrmdir('config/');
+    self::rrmdir('config/');
     @unlink('data/db/.htaccess');
-    $this::rrmdir('data/db/');
-    $this::rrmdir('data/images/');
-    $this::rrmdir('private/statiques/strass');
-    @$this::rrmdir('private/statiques/scout');
+    self::rrmdir('data/db/');
+    self::rrmdir('data/images/');
+    self::rrmdir('private/statiques/strass');
+    @self::rrmdir('private/statiques/scout');
 
     Strass_Version::setInstalled();
   }
