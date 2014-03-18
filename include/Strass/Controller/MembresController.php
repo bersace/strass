@@ -333,20 +333,15 @@ class MembresController extends Strass_Controller_Action implements Zend_Acl_Res
 	  $user->setPassword($m->get('motdepasse'));
 	  $user->save();
 
-	  $this->_helper->Log("Migration du compte", array($individu),
+	  $this->logger->info("Migration du compte",
 			      $this->_helper->Url('fiche', 'individus', null,
-						  array('individu' => $individu->slug)),
-			      (string) $individu);
+						  array('individu' => $individu->slug)));
 	  $db->commit();
 
 	  $auth = Zend_Auth::getInstance();
 	  $id = $auth->getIdentity();
 	  $id['username'] = $user->username;
 	  $auth->getStorage()->write($id);
-
-	  $this->redirectSimple('fiche', 'individus', null,
-				array('individu' => $individu->slug),
-				true);
 	} catch(Wtk_Form_Model_Exception $e) {
 	  $db->rollBack();
 	  $m->errors[] = $e;
@@ -354,6 +349,8 @@ class MembresController extends Strass_Controller_Action implements Zend_Acl_Res
 	  $db->rollBack();
 	  throw $e;
 	}
+
+	$this->redirectSimple('fiche', 'individus', null, array('individu' => $individu->slug), true);
       }
     }
 
@@ -386,15 +383,10 @@ class MembresController extends Strass_Controller_Action implements Zend_Acl_Res
 	  $individu->adelec = $m->get('adelec');
 	  $individu->save();
 
-	  $this->_helper->Log("Changement d'adélec", array($individu),
+	  $this->logger->info("Changement d'adélec",
 			      $this->_helper->Url('fiche', 'individus', null,
-						  array('individu' => $individu->slug)),
-			      (string) $individu);
+						  array('individu' => $individu->slug)));
 	  $db->commit();
-
-	  $this->redirectSimple('fiche', 'individus', null,
-	  			array('individu' => $individu->slug),
-	  			true);
 	} catch(Wtk_Form_Model_Exception $e) {
 	  $db->rollBack();
 	  $m->errors[] = $e;
@@ -402,6 +394,8 @@ class MembresController extends Strass_Controller_Action implements Zend_Acl_Res
 	  $db->rollBack();
 	  throw $e;
 	}
+
+	$this->redirectSimple('fiche', 'individus', null, array('individu' => $individu->slug), true);
       }
     }
 
@@ -433,15 +427,11 @@ class MembresController extends Strass_Controller_Action implements Zend_Acl_Res
 	$user->setPassword($mdp['nouveau']);
 	$user->save();
 
-	$this->_helper->Log("Mot de passe changé", array($individu),
+	$this->logger->info("Mot de passe changé",
 			    $this->_helper->Url('fiche', 'individus', null,
-						array('individu' => $individu->slug)),
-			    (string) $individu);
+						array('individu' => $individu->slug)));
 
 	$db->commit();
-	$this->redirectSimple('fiche', 'individus', null,
-			      array('individu' => $individu->slug),
-			      true);
       }
       catch(Wtk_Form_Model_Exception $e) {
 	$db->rollBack();
@@ -451,6 +441,8 @@ class MembresController extends Strass_Controller_Action implements Zend_Acl_Res
 	$db->rollBack();
 	throw $e;
       }
+
+      $this->redirectSimple('fiche', 'individus', null, array('individu' => $individu->slug), true);
     }
 
     /* Promotion à l'administration */
@@ -469,19 +461,15 @@ class MembresController extends Strass_Controller_Action implements Zend_Acl_Res
 	  $db->commit();
 
 	  $msg = $user->admin ? "Privilèges accordés" : "Privilèges refusés";
-	  $this->_helper->Log($msg, array($individu),
-			      $this->_helper->Url('fiche', 'individus', null,
-						  array('individu' => $individu->slug)),
-			      (string) $individu);
-
-	  $this->redirectSimple('fiche', 'individus', null,
-				array('individu' => $individu->slug),
-				true);
+	  $this->logger->warn($msg, $this->_helper->Url('fiche', 'individus', null,
+							array('individu' => $individu->slug)));
 	}
 	catch(Exception $e) {
 	  $db->rollBack();
 	  throw $e;
 	}
+
+	$this->redirectSimple('fiche', 'individus', null, array('individu' => $individu->slug), true);
       }
     }
   }
@@ -496,8 +484,7 @@ class MembresController extends Strass_Controller_Action implements Zend_Acl_Res
 
     $this->_helper->Auth->sudo($user);
 
-    $this->redirectSimple('fiche', 'individus', null,
-			  array('individu' => $cible->slug), true);
+    $this->redirectSimple('fiche', 'individus', null, array('individu' => $cible->slug), true);
   }
 
   function unsudoAction()

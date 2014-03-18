@@ -1,6 +1,4 @@
 <?php
-$this->document->setTitle(new Wtk_Container(new Wtk_RawText("Éditer "),
-					    $this->lienUnite($this->unite)));
 
 $f = $this->document->addForm($this->model);
 

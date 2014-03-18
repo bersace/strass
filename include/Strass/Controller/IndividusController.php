@@ -37,7 +37,6 @@ class IndividusController extends Strass_Controller_Action
 			   array('action'	=> 'editer'),
 			   array(null, $individu));
 
-    $moi = Zend_Registry::get('individu');
     if ($individu->isMember()) {
       $this->actions->append("Paramètres utilisateur",
 			     array('controller'	=> 'membres',
