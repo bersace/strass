@@ -2,9 +2,11 @@ FONCTIONS :
 
  * trie des individus par nom. Colonne individu.ordre.
 
- * Début et fin de role via les activités. Action "rentrée", "montées" ?
+ * Début et fin de role via les activités. Activités ->
+   inscrire. Pas de pagination par année.
 
- * Gérer le sexe et l'âge min-max par rôle et non par type d'unité.
+ * Gérer le sexe et l'âge min-max par rôle et non par type
+   d'unité. Permettre notamment n'importe quel âge pour les aumôniers…
 
  * Inscrire un scout dans une troupe sans le mettre dans une patrouille.
 
