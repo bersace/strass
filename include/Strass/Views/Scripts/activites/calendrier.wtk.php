@@ -12,6 +12,12 @@ class Strass_Views_PagesRenderer_Calendrier extends Strass_Views_PagesRenderer_H
     }
 
     $ss = $s->addSection('calendrier');
+
+    if($future)
+      $ss->addDialog()->addFlags('warn')
+	->addText("**La présence de chacun est primordiale** pour le bon déroulement ".
+		  "des activités et pour la progression de tous.");
+
     $tam = new Wtk_Table_Model('id', 'slug', 'type', 'lieu', 'date', 'intitule');
 
     foreach($activites as $a) {
@@ -31,10 +37,6 @@ class Strass_Views_PagesRenderer_Calendrier extends Strass_Views_PagesRenderer_H
     $url = $this->view->url(array('controller' => 'activites', 'action' => 'consulter', 'activite' => '%s'));
     $c->setUrlFormat(urldecode($url));
 
-    if($future)
-      $ss->addDialog()->addFlags('warn')
-	->addText("**La présence de chacun est primordiale** pour le bon déroulement ".
-		  "des activités et pour la progression de tous.");
     return $s;
   }
 }
