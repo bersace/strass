@@ -2,37 +2,28 @@
 
 @import "lib";
 
-#document .documents form
+#document.documents form
 {
     @include minipage;
 }
 
-#document .section.documents {
-    margin: 1em auto;
-    text-align: center;
+.section.document {
+    @include smallcontent;
 
-    & > .section.document {
-	@include smallcontent;
-
+    .telechargement a {
+	@include adminlink;
+	font-weight: bold;
 	font-size: 110%;
-	width: 47%;
-	min-width: 40em;
-	margin: 1%;
-	display: inline-block;
-	vertical-align: top;
-	text-align: left;
+	margin: 1ex 0;
+	line-height: 2em;
+	padding-left: 3em;
+	background: $info_bg url("icones/sign-up.png") .5em center no-repeat;
+	background-size: auto 2em;
+    }
 
-	ul.infos {
-	    top: 6em;
-
-	    .description {
-		font-size: 110%;
-		margin-top: 1em;
-		padding-right: 1ex;
-		max-height: 5em;
-		overflow-y: auto;
-	    }
-	}
+    #description {
+	font-size: 110%;
+	margin: 1em;
     }
 }
 

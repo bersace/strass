@@ -7,22 +7,20 @@ class DocumentsController extends Strass_Controller_Action
 {
   function indexAction()
   {
+    $this->branche->append('Documents',
+			   array('controller' => 'documents',
+				 'action' => 'index'),
+			   array(), true);
+
     $this->view->unite = $unite = $this->_helper->Unite();
 
     $this->view->docs = $unite->findDocuments();
     $this->metas(array('DC.Title' => 'Documents'));
-    $this->branche->append('Documents',
-			   array('controller' => 'documents',
-				 'action' => 'index',
-				 'unite' => $unite->slug),
-			   array(),
-			   true);
 
     $this->actions->append('Envoyer',
 			   array('action' => 'envoyer'),
 			   array(null, $unite, 'envoyer-document'));
   }
-
 
   function envoyerAction()
   {
@@ -106,9 +104,28 @@ class DocumentsController extends Strass_Controller_Action
       }
       catch(Exception $e) { $db->rollBack(); throw $e; }
 
-      $this->redirectSimple('index', null, null,
-			    array('unite' => $du->findParentUnites()->slug));
+      $this->redirectSimple('details', null, null, array('document' => $d->slug));
     }
+  }
+
+  function detailsAction()
+  {
+    $this->view->doc = $d = $this->_helper->Document();
+
+    try {
+      $this->view->unite = $u = $d->findUnite();
+      $urlArgs = array('index', 'documents', null, array('unite' => $u->slug), true);
+    }
+    catch (Strass_Db_Table_NotFound $e) {
+      $urlArgs = array('index', 'documents', null, null, true);
+    }
+
+    $this->actions->append("Éditer",
+			   array('action' => 'envoyer'),
+			   array(null, $d, 'editer'));
+    $this->actions->append("Supprimer",
+			   array('action' => 'supprimer'),
+			   array(null, $d, 'supprimer'));
   }
 
   function supprimerAction()

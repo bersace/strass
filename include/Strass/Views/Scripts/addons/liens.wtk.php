@@ -7,7 +7,7 @@ if (count($this->liens)) {
   foreach ($this->liens as $lien) {
     $url = $this->url($lien['urlOptions'], $lien['reset']);
     $i = $list->addItem();
-    $i->addLink($url, new Wtk_Metas ($lien['metas']));
+    $i->addLink($url, new Wtk_Metas($lien['metas']));
     $i->addFlags($lien['urlOptions'], split('/', $url), $lien['flags']);
     if ($current_uri == $url)
       $i->addFlags('current');

@@ -1,6 +1,6 @@
 <?php
 
-class Strass_View_Helper_Url extends Zend_View_Helper_Url	
+class Strass_View_Helper_Url extends Zend_View_Helper_Url
 {
 	function url(array $urlOptions = array(), $reset = false, $prefix = false)
 	{

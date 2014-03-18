@@ -9,13 +9,10 @@ class Strass_View_Helper_VignettePhoto
     $this->view = $view;
   }
 
-  public function vignettePhoto($photo,
-				$label = null,
-				$urlOptions = array())
+  public function vignettePhoto($photo, $label = null,$urlOptions = array())
   {
-    if (!$photo) {
+    if (!$photo)
       return;
-    }
 
     $urlOptions = array_merge(array('controller'	=> 'photos',
 				    'action'		=> 'voir',

@@ -41,8 +41,10 @@ $taille_piedpage: 25em;
 @mixin smallcontent {
     position: relative;
     display: block;
+    width: 80%;
+    max-width: 55em;
+    margin: 1em auto 4em;
     padding: 1ex;
-    margin: 1em auto;
     background: lighten($alt_background, 10%);
     border-radius: 1ex;
     font-size: 130%;

@@ -15,6 +15,8 @@ class Strass_View_Helper_Document
     $s->addFlags('document', $document->suffixe);
     $s->addChild($this->view->vignetteDocument($document)->addFlags('nolabel'));
     $l = $s->addList()->addFlags('infos');
+    $l->addItem()->addFlags('telechargement')
+      ->addLink($document->getUri(), "Télécharger");
     if ($document->auteur)
       $l->addItem("Par ".$document->auteur)->addFlags('auteur');
     $l->addItem("Publié le ".strftime("%x", strtotime($document->date)))
@@ -25,23 +27,8 @@ class Strass_View_Helper_Document
       ->addFlags('taille');
 
     if ($document->description)
-      $l->addItem()->addFlags('description')
+      $s->addSection('description')
 	->addText($document->description);
-
-    if (!$this->view->assert(null, $document, 'editer'))
-      return $s;
-
-    $al = $s->addList()->addFlags('adminlinks');
-    $al->addItem()->addChild($this->view->lien(array('controller' => 'documents',
-						     'action' => 'envoyer',
-						     'document' => $document->slug),
-					       "Éditer", true))
-      ->addFlags('adminlink', 'editer');
-    $al->addItem()->addChild($this->view->lien(array('controller' => 'documents',
-						     'action' => 'supprimer',
-						     'document' => $document->slug),
-					       "Supprimer", true))
-      ->addFlags('adminlink', 'supprimer', 'critical');
 
     return $s;
   }

@@ -9,7 +9,7 @@ class Strass_View_Helper_VignetteDocument
     $this->view = $view;
   }
 
-  public function vignetteDocument($document)
+  public function vignetteDocument($document, $urlOptions=null)
   {
     $this->view->document->addStyleComponents('vignette');
     $label = $document->titre;
@@ -20,8 +20,11 @@ class Strass_View_Helper_VignetteDocument
 			 $document->titre, $document->titre);
     else
       $wrapper->addParagraph("Pas d'aperçu")->addFlags('image', 'empty');
-    $item = new Wtk_Link($document->getUri(), $label, $wrapper);
-
+    if ($urlOptions)
+      $url = $this->view->url($urlOptions, true, true);
+    else
+      $url = $document->getUri();
+    $item = new Wtk_Link($url, $label, $wrapper);
     $item->addFlags('vignette', 'document', $document->suffixe)
       ->addParagraph($label)->addFlags('label');
 
