@@ -8,15 +8,17 @@ $m->append('URL', $this->event->url, $this->event->url, 'url');
 $m->append('Date', $this->event->date, null, 'date');
 
 $user = $this->event->findParentUsers();
+if (!$user)
+  $user = new Nobody;
+
 $individu = $user->findParentIndividus();
-if ($user->isMember()) {
+if ($user->isMember())
   $url = $this->url(array('controller' => 'individus',
 			  'action' => 'fiche',
 			  'individu' => $individu->slug));
-}
-else {
+else
   $url = null;
-}
+
 $m->append('Utilisateur', $individu->getFullname(), $url, 'user');
 
 $s = $this->document->addSection('event');
