@@ -307,6 +307,9 @@ class FTPEntry(object):
                 subprocess.check_output([
                     'git', 'ls-files', '--error-unmatch', self.path],
                                         stderr=subprocess.PIPE)
+                subprocess.check_output([
+                    'git', 'diff', '--exit-code', self.path],
+                                        stderr=subprocess.PIPE)
             except Exception, e:
                 timestamp = os.stat(self.path).st_mtime
             else:
