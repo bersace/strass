@@ -5,7 +5,7 @@ import sys
 import os.path
 import logging
 import argparse
-from ftplib import FTP
+from ftplib import FTP, Error as FTPError
 from ConfigParser import RawConfigParser
 from datetime import datetime
 import fnmatch
@@ -93,7 +93,12 @@ class FTPOperation(object):
 
 class MKD(FTPOperation):
     def __call__(self, client):
-        client.mkd(self.path)
+        try:
+            client.mkd(self.path)
+        except FTPError, e:
+            # Existe déjà
+            if e.message[:3] != '550':
+                raise
 
 
 class STOR(FTPOperation):
@@ -161,9 +166,6 @@ class FTPEntry(object):
             # listage local
             if os.path.exists(self.path):
                 for name in os.listdir(self.path):
-                    if self.isignored(name):
-                        continue
-
                     entry = self.__class__(self.client, fullpath=os.path.join(self.path, name), parent=self)
                     # On met par défaut à False, car on va tester juste après
                     entry._remoteexists = False
@@ -171,19 +173,23 @@ class FTPEntry(object):
 
             # listage distant
             lines = []
-            self.client.retrlines('LIST -a %s' % self.path, lines.append)
-            self._remoteexists = len(lines) > 0
-            for line in lines:
-                try:
-                    entry = self.__class__.parse(self.client, self, line)
-                except ValueError:
-                    continue
+            try:
+                self.client.retrlines('LIST -a %s' % self.path, lines.append)
+            except FTPError, e:
+                self._remoteexists = False
+            else:
+                self._remoteexists = len(lines) > 0
+                for line in lines:
+                    try:
+                        entry = self.__class__.parse(self.client, self, line)
+                    except ValueError:
+                        continue
 
-                if self.isignored(entry.name):
-                    continue
+                    if entry.name in ('.', '..'):
+                        continue
 
-                entry = self._children.setdefault(entry.name, entry)
-                entry._remoteexists = True
+                    entry = self._children.setdefault(entry.name, entry)
+                    entry._remoteexists = True
 
         for child in self._children.values():
             yield child
@@ -253,12 +259,21 @@ class FTPEntry(object):
                     self._type = self.TYPE_FILE
             else:
                 lines = []
-                self.client.retrlines('LIST -a %s' % self.path, lines.append)
+                try:
+                    self.client.retrlines('LIST -a %s' % self.path, lines.append)
+                except FTPError, e:
+                    lines = []
+
                 if not lines:
                     self._remoteexists = False
                     self._type = self.TYPE_UNKNOWN
+                elif len(lines) == 1: # un dossier a au moins . et ..
+                    self._remoteexists = True
+                    self._type = self.TYPE_FILE
                 else:
-                    import pdb; pdb.set_trace()
+                    self._remoteexists = True
+                    self._type = self.TYPE_DIR
+
         return self._type
 
 
@@ -270,6 +285,8 @@ class FTPEntry(object):
                 self.client.retrlines('LIST -a %s' % self.path, lines.append)
                 self._remoteexists = len(lines) > 0
             elif self.type_ is self.TYPE_DIR:
+                # On pourrait faire un CWD, mais ça ferait une
+                # opération de plus. Donc on liste.
                 list(iter(self))
 
         return self._remoteexists
@@ -318,6 +335,10 @@ class FTPEntry(object):
             return
 
         if self.isdir():
+            for child in self:
+                for op in child.remove():
+                    yield op
+
             yield RMD(self.path)
         else:
             yield DELE(self.path)
@@ -335,11 +356,15 @@ class FTPEntry(object):
 
     def download(self):
         if self.isdir():
-            for op in self.mkdir():
-                yield op
-
+            try:
+                os.makedirs(self.path, mode=0755)
+            except OSError, e:
+                pass
 
             for child in self:
+                if self.isignored(child.name):
+                    continue
+
                 if not child._remoteexists:
                     # Ne traiter que les enfants venant de la commande
                     # LIST
@@ -348,7 +373,7 @@ class FTPEntry(object):
                 for op in child.download():
                     yield op
         else:
-            if not self.outdated(reverse=True):
+            if self.outdated(reverse=True):
                 yield RETR(self.path)
 
 
@@ -358,6 +383,9 @@ class FTPEntry(object):
                 yield op
 
             for child in self:
+                if self.isignored(child.name):
+                    continue
+
                 for op in child.upload(force=force, clean=clean):
                     yield op
         else:
