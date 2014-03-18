@@ -18,7 +18,7 @@
    version="1.0"
    sodipodi:docname="bandes.svg"
    inkscape:output_extension="org.inkscape.output.svg.inkscape"
-   inkscape:export-filename="/home/bersace/Projets/strass/data/styles/strass/xhtml/postes/cp.png"
+   inkscape:export-filename="/home/bersace/Projets/strass/data/styles/strass/xhtml/postes/pcp.png"
    inkscape:export-xdpi="90"
    inkscape:export-ydpi="90">
   <defs
@@ -107,11 +107,11 @@
      borderopacity="1.0"
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
-     inkscape:zoom="12.166667"
-     inkscape:cx="32.063772"
-     inkscape:cy="-0.4749393"
+     inkscape:zoom="48"
+     inkscape:cx="12"
+     inkscape:cy="12"
      inkscape:document-units="px"
-     inkscape:current-layer="layer2"
+     inkscape:current-layer="layer3"
      width="24px"
      height="24px"
      borderlayer="false"
@@ -148,7 +148,7 @@
      inkscape:groupmode="layer"
      id="layer2"
      inkscape:label="Assistant"
-     style="display:none">
+     style="display:inline">
     <rect
        transform="matrix(0.98682947,0,0,0.91467486,0.15804638,1.0013208)"
        rx="0"
@@ -339,5 +339,83 @@
        ry="0"
        rx="0"
        transform="matrix(0,1,-1,0,0,0)" />
+  </g>
+  <g
+     inkscape:groupmode="layer"
+     id="layer3"
+     inkscape:label="Croix"
+     style="display:none">
+    <g
+       style="display:inline"
+       transform="matrix(0.01085445,0,0,0.01085445,7.0001157,11.442406)"
+       id="layer1-7"
+       inkscape:label="Calque 1">
+      <path
+         inkscape:connector-curvature="0"
+         id="path3034-2"
+         d=""
+         style="fill:#000000" />
+      <path
+         inkscape:connector-curvature="0"
+         id="path3034-7"
+         d=""
+         style="fill:#000000" />
+      <path
+         inkscape:connector-curvature="0"
+         id="path3034"
+         d=""
+         style="fill:#000000" />
+      <path
+         inkscape:connector-curvature="0"
+         id="path3034-9"
+         d=""
+         style="fill:#000000" />
+      <path
+         inkscape:connector-curvature="0"
+         id="path3034-4"
+         d=""
+         style="fill:#000000" />
+      <path
+         inkscape:connector-curvature="0"
+         id="path3034-6"
+         d=""
+         style="fill:#000000" />
+      <path
+         inkscape:connector-curvature="0"
+         id="path3034-2-1"
+         d=""
+         style="fill:#000000" />
+      <path
+         inkscape:connector-curvature="0"
+         id="path3034-7-7"
+         d=""
+         style="fill:#000000" />
+      <path
+         inkscape:connector-curvature="0"
+         id="path3034-96"
+         d=""
+         style="fill:#000000" />
+      <path
+         inkscape:connector-curvature="0"
+         id="path3034-9-9"
+         d=""
+         style="fill:#000000" />
+      <path
+         inkscape:connector-curvature="0"
+         id="path3034-4-7"
+         d=""
+         style="fill:#000000" />
+      <path
+         sodipodi:nodetypes="ccccccccccccccccccccccccccccc"
+         inkscape:connector-curvature="0"
+         id="path3045-5"
+         d="m 186.03616,-409.27052 0,106.3125 168.31255,0 0,248.031248 -248.0313,0 0,-168.312498 -106.31249667,0 0,549.21875 106.31249667,0 0,-168.3125 248.0313,0 0,248.03125 -168.31255,0 0,106.3125 549.21875,0 0,-106.3125 -168.3125,0 0,-248.03125 248.0313,0 0,168.3125 106.2812,0 0,-549.21875 -106.2812,0 0,168.312498 -248.0313,0 0,-248.031248 168.3125,0 0,-106.3125 z"
+         style="fill:#ca0c1c;fill-opacity:1;stroke:none" />
+      <path
+         inkscape:connector-curvature="0"
+         id="path3034-6-3"
+         d=""
+         style="fill:#000000" />
+    </g>
   </g>
 </svg>

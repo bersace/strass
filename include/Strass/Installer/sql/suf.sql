@@ -147,6 +147,7 @@ VALUES
 ('aumonier-c',	'Aumônier',	4),	--  clan
 ('aumonier-f',	'Aumônier',	8),	--  feu
 ('aumonier-t',	'Aumônier',	14),	--  troupe
+('pcp', 	'PCP',	15),
 ('aumonier-ccie','Aumônier',	24),	--  compagnie
 ('aumonier-m',	'Aumônier',	34),	--  meute
 ('ahdeek',	'Ahdeek',	34),
