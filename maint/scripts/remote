@@ -556,8 +556,11 @@ de connaître votre accès FTP.
         self.prompt_config_password(config, 'password', "Mot de passe")
         self.prompt_config(config, 'root', "Dossier")
 
-        ftp = FTPHelper(config)
-        ftp.connect()
+        try:
+            FTPManager(config)
+        except Exception, e:
+            self.log.error("%s", e)
+            return 1
 
         config.write(open(args.config, 'w'))
         os.chmod(args.config, 0600)
