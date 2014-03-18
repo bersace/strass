@@ -1,6 +1,6 @@
 <?php
 
-class Strass_Pages_Renderer_UnitesInscrire extends Wtk_Pages_Renderer_Form
+class Strass_Views_PagesRenderer_UnitesInscrireAssistant extends Wtk_Pages_Renderer_Form
 {
   protected $view;
 
@@ -15,7 +15,7 @@ class Strass_Pages_Renderer_UnitesInscrire extends Wtk_Pages_Renderer_Form
     $f->addSelect('inscription/individu');
     $f->addSelect('inscription/role', true);
     $f->addDate('inscription/debut');
-    $c = $f->addForm_Compound();
+    $c = $f->addForm_Compound('Fin');
     $c->addCheck('inscription/clore')->useLabel(true);
     $c->addDate('inscription/fin', '%e-%m-%Y');
   }
@@ -32,6 +32,16 @@ class Strass_Pages_Renderer_UnitesInscrire extends Wtk_Pages_Renderer_Form
   }
 }
 
-$this->document->addChild($this->tableEffectifs($this->unite, $this->modelTableEffectifs($this->apps),
-						true, array()));
-$this->document->addPages(null, $this->model, new Strass_Pages_Renderer_UnitesInscrire($this));
+class Strass_Views_PagesRenderer_UnitesInscrireAnnee extends Strass_Views_PagesRenderer_Historique
+{
+  function render($annee, $data, $container)
+  {
+    extract($data);
+    $form_model = $model;
+    $apps_model = $this->view->modelTableEffectifs($apps);
+    $container->addChild($this->view->tableEffectifs($unite, $apps_model, true, array()));
+    $container->addPages(null, $model, new Strass_Views_PagesRenderer_UnitesInscrireAssistant($this->view));
+  }
+}
+
+$this->document->addPages(null, $this->model, new Strass_Views_PagesRenderer_UnitesInscrireAnnee($this));

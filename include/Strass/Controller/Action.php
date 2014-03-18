@@ -84,14 +84,14 @@ abstract class Strass_Controller_Action extends Zend_Controller_Action implement
     $this->initPage();
   }
 
-  protected function redirectUrl($urlOptions = array(), $route = null, $reset = false)
+  function redirectUrl($urlOptions = array(), $route = null, $reset = false)
   {
     $url = $this->_helper->Url->url($urlOptions, $route, $reset);
     $this->_redirect($url, array('prependBase' => false,
 				 'exit' => true));
   }
 
-  protected function redirectSimple($action, $controller = null, $module = null, array $params = null, $reset = false)
+  function redirectSimple($action, $controller = null, $module = null, array $params = null, $reset = false)
   {
     $val = array('action', 'controller', 'module');
     foreach($val as $v)
