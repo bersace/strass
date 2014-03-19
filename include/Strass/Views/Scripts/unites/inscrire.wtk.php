@@ -38,6 +38,10 @@ class Strass_Views_PagesRenderer_UnitesInscrireAnnee extends Strass_Views_PagesR
   {
     extract($data);
     $form_model = $model;
+    if ($parente && $unite->isTerminale()) {
+      $apps_model = $this->view->modelTableEffectifs($apps_parente);
+      $container->addChild($this->view->tableEffectifs($parente, $apps_model, true, array()));
+    }
     $apps_model = $this->view->modelTableEffectifs($apps);
     $container->addChild($this->view->tableEffectifs($unite, $apps_model, true, array()));
     $container->addPages(null, $model, new Strass_Views_PagesRenderer_UnitesInscrireAssistant($this->view));

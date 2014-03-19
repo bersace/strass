@@ -107,9 +107,12 @@ class Strass_Pages_Model_UniteInscrire extends Strass_Pages_Model_Historique
       $this->controller->redirectSimple('effectifs');
     }
 
+    $parente = $this->unite->findParentUnites();
     return array('unite' => $this->unite,
 		 /* récursion=0 : uniquement la maîtrise */
 		 'apps' => $u->findAppartenances($a, 0),
+		 'parente' => $parente,
+		 'apps_parente' => $parente ? $parente->findAppartenances($a, 0) : array(),
 		 'model' => $pm);
   }
 }
