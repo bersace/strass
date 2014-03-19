@@ -192,6 +192,12 @@ class IndividusController extends Strass_Controller_Action
 	$m->addConstraintDepends($i1, $i0);
       }
     }
+    else {
+      $message = "Aucune unitée pour ".$individu->getFullname()." !";
+      $aide = "Les contraintes d'âge et de sexe ne permettent pas ".
+	"d'inscrire {$individu->getFullname()} dans une unité.";
+	throw new Strass_Controller_Action_Exception_Notice($message, 500, $aide);
+    }
 
     $g = $m->addGroup('role');
     $g->addEnum('role', 'Rôle');
