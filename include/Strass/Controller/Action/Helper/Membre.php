@@ -24,13 +24,11 @@ class Strass_Controller_Action_Helper_Membre extends Zend_Controller_Action_Help
 
     if (!$user) {
       if ($throw) {
-	if ($username) {
-	  throw new Strass_Controller_Action_Exception
+	if ($username)
+	  throw new Strass_Controller_Action_Exception_NotFound
 	    ("Aucun membre ne correspond à //".$username."//.");
-	}
-	else {
-	  throw new Strass_Controller_Action_Exception("Aucun membre spécifié.");
-	}
+	else
+	  throw new Strass_Controller_Action_Exception_Notice("Aucun membre spécifié.");
       }
       else
 	return null;

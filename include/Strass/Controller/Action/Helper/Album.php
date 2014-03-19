@@ -13,7 +13,7 @@ class Strass_Controller_Action_Helper_Album extends Zend_Controller_Action_Helpe
     }
     catch (Strass_Db_Table_NotFound $e) {
       if ($throw)
-	throw new Strass_Controller_Action_Exception_Notice("Album ".$slug." inexistant");
+	throw new Strass_Controller_Action_Exception_NotFound("Album ".$slug." inexistant");
       else
 	return null;
     }

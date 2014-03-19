@@ -18,7 +18,7 @@ class Strass_Controller_Action_Helper_Unite extends Zend_Controller_Action_Helpe
     catch (Strass_Db_Table_NotFound $e) {
       if ($throw) {
 	if ($slug)
-	  throw new Strass_Controller_Action_Exception_Notice("Unité ".$slug." inconnue");
+	  throw new Strass_Controller_Action_Exception_NotFound("Unité ".$slug." inconnue");
 	else {
 	  $url = $this->_actionController->_helper->Url('fonder', 'unites', null, null, true);
 	  $aide = "Vous devez [".$url." enregistrer une unité] pour commencer.";

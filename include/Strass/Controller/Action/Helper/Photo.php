@@ -13,7 +13,7 @@ class Strass_Controller_Action_Helper_Photo extends Strass_Controller_Action_Hel
     }
     catch (Strass_Db_Table_NotFound $e) {
       if ($throw)
-	throw new Zend_Controller_Exception("Photo inconnue");
+	throw new Strass_Controller_Action_Exception_NotFound("Photo ".$slug." inconnue");
       else
 	return null;
     }

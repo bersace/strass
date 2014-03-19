@@ -12,7 +12,7 @@ class Strass_Controller_Action_Helper_Inscription extends Zend_Controller_Action
       $app = $t->findOne($id);
     }
     catch (Strass_Db_Table_NotFound $e) {
-      throw new Strass_Controller_Action_Exception_Notice("Inscription #".$id." inconnue.");
+      throw new Strass_Controller_Action_Exception_NotFound("Inscription #".$id." inconnue.");
     }
 
     $this->setBranche($app);

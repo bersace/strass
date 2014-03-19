@@ -19,7 +19,7 @@ class Strass_Controller_Action_Helper_Individu extends Zend_Controller_Action_He
     }
     catch (Strass_Db_Table_NotFound $e) {
       if ($throw)
-	throw new Strass_Controller_Action_Exception_Notice("Individu ".$slug." inconnu.");
+	throw new Strass_Controller_Action_Exception_NotFound("Individu ".$slug." inconnu.");
       else
 	return null;
     }

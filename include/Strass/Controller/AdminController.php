@@ -126,7 +126,7 @@ class AdminController extends Strass_Controller_Action
     $this->branche->append();
 
     $s = $t->select()->from('log')->order('date DESC');
-    $this->view->events = new Strass_Pages_Model_Rowset($s, 30, $this->_helper->Page());
+    $this->view->events = new Strass_Pages_Model_Rowset($s, 30, $this->_getParam('page'));
   }
 
   function eventAction()
