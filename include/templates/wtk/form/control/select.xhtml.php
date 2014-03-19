@@ -20,6 +20,7 @@ wtk_attr ('selected', (is_array($selected) ? in_array($value, $selected) : $valu
 <?php $for = wtk_strtoid($name.$value); ?>
 <label<?php
 wtk_attr ('for', $for);
+wtk_classes(wtk_strtoid($value));
 ?>><input<?php
 wtk_attr ('id', $for);
 wtk_attr ('name', $name.($multiple ? '[]' : ''));
