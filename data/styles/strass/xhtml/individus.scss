@@ -61,6 +61,16 @@
     @include minipage;
 }
 
+#document.individus.inscrire .effectifs
+{
+    width: 80%;
+    max-width: 40em;
+
+    td {
+	white-space: nowrap;
+    }
+}
+
 .individus.admin form {
     table {
 	width: auto;

@@ -163,6 +163,7 @@ class IndividusController extends Strass_Controller_Action
     $this->assert(null, $individu, 'inscrire',
 		  "Vous n'avez pas le droit d'inscrire cet individu dans une unité.");
 
+    $this->view->apps = $individu->findAppartenances();    /* CV scout */
     $apps = $individu->findInscriptionsActives();
     $unites = $individu->findUnitesCandidates();
 

@@ -87,10 +87,11 @@ div.control {
     padding: .5ex;
     width: 100%;
 
-    & > label, & > .input, &.compound div.control {
+    & > label, & > .input, div.control {
 	display: inline-block;
 	vertical-align: top;
 	margin: 0;
+	width: auto;
     }
 
     & > label {
