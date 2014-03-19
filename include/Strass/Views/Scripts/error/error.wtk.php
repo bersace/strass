@@ -10,7 +10,9 @@ $aide = $dialog->addSection('aide');
 $details = $dialog->addSection('details', 'Détails');
 
 foreach ($this->errors as $i => $error) {
-  if ($error instanceof Strass_Controller_Action_Exception_Forbidden) {
+  $this->document->addFlags('http-'.$error->getCode());
+
+  if ($error->getCode() == 403) {
     $dialog->title = $titre = "Accès refusé";
     $dialog->addFlags('forbidden');
     if (Zend_Registry::get('user')->isMember()) {
@@ -30,9 +32,10 @@ foreach ($this->errors as $i => $error) {
     $dialog->title = $titre = $error->getMessage();
     $aide->addText($error->aide);
   }
-  else if ($error instanceof Strass_Controller_Action_Exception) {
+  else if ($error instanceof Strass_Controller_Action_Exception)
     $aide->addText($error->aide);
-  }
+  else if ($error->getCode() == 404)
+    $dialog->title = $titre = "Page inexistante !";
   else if ($i == 0) {
     $dialog->title = "Bug !";
     $titre = null;
