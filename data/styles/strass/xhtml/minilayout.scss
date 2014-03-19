@@ -1,18 +1,17 @@
 /*-*- css -*-*/
 
-#header,
-#contentwrapper {
+#body {
     float: none;
     width: 80%;
     max-width: 60em;
-    margin: 5em auto;
+    margin: 0 auto;
 }
 
 #contentwrapper
 {
+    margin-top: 2em;
     border-width: 1pt;
 }
-
 
 #document {
     padding: 5em 3em 3em;

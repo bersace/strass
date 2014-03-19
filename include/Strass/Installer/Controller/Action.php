@@ -21,7 +21,7 @@ class Strass_Installer_Controller_Action extends Zend_Controller_Action
 
     $page = new Strass_Page(new Wtk_Metas(array('DC.Title'	=> 'Installation',
 						'DC.Language'	=> 'fr',
-						'site' => 'Strass')));
+						'site' => 'Installation')));
     Zend_Registry::set('page', $page);
 
     return $view;
