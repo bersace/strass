@@ -68,7 +68,7 @@ else {
 <?php endforeach; ?>
 <?php endforeach; ?>
 
-  <?php $cssbaseurl = dirname($files[0]['file']).'/'; ?>
+  <?php $cssbaseurl = @dirname($files[0]['file']).'/'; ?>
 <?php foreach($embeded as $medium => $css): ?>
 <style type="text/css" media="<?php echo $medium; ?>" title="<?php echo $et; ?>">
 <!--/*--><![CDATA[<!--*/
