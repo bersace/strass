@@ -10,6 +10,33 @@ form.site {
     background: url("illustrations/panorama-scouts-du-monde.png") bottom no-repeat;
     background-size: auto 10em;
     padding-bottom: 15em;
+
+    #control-installation-site-mouvement span.control {
+	label {
+	    display: list-item;
+	    list-style-type: none;
+	    font-size: 130%;
+	    line-height: 2em;
+	    vertical-align: middle;
+	    padding-left: 3em;
+	    margin: 1ex 0;
+	    background-position: left;
+	    background-repeat: no-repeat;
+	    background-size: 2em auto;
+
+	    &.suf {
+		background-image: url("mouvements/suf.png");
+	    }
+
+	    &.fse {
+		background-image: url("mouvements/fse.png");
+	    }
+
+	    &.europa {
+		background-image: url("mouvements/europa.png");
+	    }
+	}
+    }
 }
 
 form.admin {
