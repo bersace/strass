@@ -14,7 +14,7 @@ class Strass_Views_PagesRenderer_UnitesInscrireAssistant extends Wtk_Pages_Rende
   {
     $f->addSelect('inscription/individu');
     $f->addSelect('inscription/role', true);
-    $f->addDate('inscription/debut');
+    $f->addDate('inscription/debut', '%e-%m-%Y');
     $c = $f->addForm_Compound('Fin');
     $c->addCheck('inscription/clore')->useLabel(true);
     $c->addDate('inscription/fin', '%e-%m-%Y');

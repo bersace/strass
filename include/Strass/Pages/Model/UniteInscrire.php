@@ -4,7 +4,8 @@ class Strass_Pages_Model_UniteInscrire extends Strass_Pages_Model_Historique
 {
   function __construct($controller, $unite, $annee)
   {
-    parent::__construct($unite, $annee);
+    /* forcer la validité de l'année */
+    parent::__construct($unite, $annee, true);
     $this->controller = $controller;
   }
 

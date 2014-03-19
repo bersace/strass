@@ -106,6 +106,10 @@ div.control {
 	}
     }
 
+    &.compound div.control label {
+	width: auto;
+    }
+
     input.spin {
 	text-align: right;
     }
@@ -129,8 +133,7 @@ div.control {
 
 	& > label {
 	    text-align: left;
-	    position: relative;
-	    left: 1.5em;
+	    margin-left: 1.5em;
 
 	    &:after {
 		content: "";
