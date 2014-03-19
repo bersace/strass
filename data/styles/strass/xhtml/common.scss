@@ -72,21 +72,26 @@ a {
     }
 }
 
+.development #body {
+    background: url("illustrations/travaux.png") 4% top no-repeat;
+    background-size: auto .7 * $taille_logo;
+}
+
 #header {
     background-repeat: no-repeat;
     background-position: 96% center;
     background-size: $taille_logo auto;
 
     &.suf {
-	background-image: url("mouvements/suf.png");
+    	background-image: url("mouvements/suf.png");
     }
 
     &.fse {
-	background-image: url("mouvements/fse.png");
+    	background-image: url("mouvements/fse.png");
     }
 
     &.europa {
-	background-image: url("mouvements/europa.png");
+    	background-image: url("mouvements/europa.png");
     }
 }
 

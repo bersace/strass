@@ -38,7 +38,8 @@ body {
 
     div.dialog {
 	position: relative;
-	width: 30em;
+	width: 50%;
+	max-width: 40em;
 	padding: 1em;
 	margin: 3em auto;
     }
@@ -113,6 +114,7 @@ body {
 	    width: 96%;
 	    min-width: 50em;
 	    max-width: 80em;
+	    text-align: center;
 
 	    div.section {
 		display: inline-block;
@@ -121,6 +123,7 @@ body {
 		vertical-align: top;
 		width: 30%;
 		max-width: 15em;
+		text-align: left;
 	    }
 
 	    #citation {
