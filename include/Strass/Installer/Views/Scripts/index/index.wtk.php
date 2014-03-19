@@ -34,6 +34,7 @@ class Strass_Pages_Renderer_Install extends Wtk_Pages_Renderer_Form
     $f->addEntry('admin/prenom', 24);
     $f->addEntry('admin/nom', 24);
     $f->addSelect('admin/sexe', false);
+    $f->addDate('admin/naissance', '%e-%m-%Y');
     $f->addEntry('admin/adelec', 32);
     $f->addPassword('admin/motdepasse', 12);
     $f->addPassword('admin/confirmation', 12);
@@ -41,5 +42,4 @@ class Strass_Pages_Renderer_Install extends Wtk_Pages_Renderer_Form
   }
 }
 
-$this->document->addPages(null, $this->model,
-			  new Strass_Pages_Renderer_Install($this));
+$this->document->addPages(null, $this->model, new Strass_Pages_Renderer_Install($this));

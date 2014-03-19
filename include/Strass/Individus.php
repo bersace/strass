@@ -679,6 +679,7 @@ class Users extends Strass_Db_Table_Abstract
 
 class User extends Strass_Db_Table_Row_Abstract implements Zend_Acl_Role_Interface, Zend_Acl_Resource_Interface
 {
+  protected $_tableClass = 'Users';
 
   public function getResourceId()
   {

@@ -97,28 +97,25 @@ class Strass_Installer
 
   function initAdmin()
   {
-    $t = new Individus;
-    $slug = wtk_strtoid($this->data['admin']['prenom'].' '.$this->data['admin']['nom']);
-    $data = array('slug' => $slug,
-		  'prenom' => $this->data['admin']['prenom'],
-		  'nom' => $this->data['admin']['nom'],
-		  'sexe' => $this->data['admin']['sexe'],
-		  'naissance' => 0,
-		  'adelec' => $this->data['admin']['adelec'],
-		  );
-    $t->insert($data);
+    extract($this->data['admin']);
 
-    $i = $t->findBySlug($slug);
+    $i = new Individu;
+    $i->prenom = $prenom;
+    $i->nom = $nom;
+    $i->sexe = $sexe;
+    $i->adelec = $adelec;
+    $i->naissance = $naissance;
+    $i->slug = $i->getTable()->createSlug($i->getFullname());
+    $i->save();
 
-    $t = new Users;
-    $data = array('individu' => $i->id,
-		  'username' => $this->data['admin']['adelec'],
-		  'password' => Users::hashPassword($this->data['admin']['adelec'],
-						    $this->data['admin']['motdepasse']),
-		  'admin' => TRUE,
-		  );
-    $k = $t->insert($data);
-    Zend_Registry::set('user', $t->findOne($k));
+    $u = new User;
+    $u->individu = $i->id;
+    $u->username = $adelec;
+    $u->password = Users::hashPassword($adelec, $motdepasse);
+    $u->admin = true;
+    $u->save();
+
+    Zend_Registry::set('user', $u);
   }
 
   function run()

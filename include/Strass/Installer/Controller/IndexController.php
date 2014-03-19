@@ -24,6 +24,9 @@ class IndexController extends Strass_Installer_Controller_Action
     $i = $g->addEnum('sexe', "Sexe", null, array('h' => 'Masculin', 'f' => 'Féminin'));
     $m->addConstraintRequired($i);
 
+    $i = $g->addDate('naissance', "Date de naissance", 0);
+    $m->addConstraintRequired($i);
+
     $i = $g->addString('adelec', "Adélec");
     $m->addConstraintRequired($i);
 
