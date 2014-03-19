@@ -8,20 +8,21 @@ class Strass_Mail_Article extends Strass_Mail
     $this->article = $article;
     $auteur = $article->findAuteur();
     $this->setFrom($auteur->adelec, $auteur->getFullname());
-    $this->notifyChefsDe($article->findParentJournaux()->findParentUnites());
+    $this->notifyChefsDe($article->findUnite());
   }
 
   function render()
   {
+    $j = $this->article->findParentJournaux();
     $d = $this->getDocument();
     $d->addText("L'article suivant a été posté dans ".$j->nom.". ".
 		"Vous êtes convié à la modérer.");
-    $s = $d->addSection(null, $data['titre']);
-    $s->addText($this->article->boulet);
+    $d->addSection(null, $this->article->titre)
+      ->addText($this->article->getBoulet(true));
     $l = $d->addList();
     $l->addItem()->addLink($this->url(array('controller' => 'journaux',
 					    'action' => 'ecrire',
 					    'article' => $this->article->slug)),
-			   "Éditer ou publier cet article");
+			   "Valider cet article");
   }
 }

@@ -99,3 +99,11 @@ CAS :
  * Attacher, éditer, supprimer une nouvelle pièce jointe
 
  * Attacher, éditer, détacher un document à une activité
+
+ * Un scout écrit dans la gazette de troupe
+
+ * Un chef valide un article d'un scout
+
+ * Un chef écrit un article dans la gazette d'une patrouille
+
+ * Une jeannette veut écrire dans la gazette de la troupe, pas de lien

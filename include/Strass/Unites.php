@@ -407,6 +407,66 @@ class Unite extends Strass_Db_Table_Row_Abstract implements Zend_Acl_Resource_In
     return $t->fetchAll($select);
   }
 
+  /* Comme findAppartenances, mais retourne les individus, par ordre
+     de nom */
+  public function findInscrits($annee = null, $recursion = 0)
+  {
+    $db = $this->getTable()->getAdapter();
+
+    $t = new Individus;
+    $select = $t->select()
+      ->setIntegrityCheck(false)
+      ->distinct()
+      ->from('individu')
+      ->join('appartenance', 'appartenance.individu = individu.id', array())
+      ->join('unite_type', $db->quoteInto('unite_type.id = ?', $this->type), array());
+
+    $virtuelle = $this->findParentTypesUnite()->virtuelle;
+    if ($virtuelle) {
+      $select
+	->joinLeft(array('soeur' => 'unite'),
+		   $db->quoteInto('soeur.parent = ?', $this->parent ? $this->parent : null),
+		   array())
+	->where('(unite_type.virtuelle AND '."\n".
+		('(appartenance.unite = soeur.id OR '.
+		 $db->quoteInto('appartenance.unite = ?', $this->parent ? $this->parent : null).')').
+		"AND unite_role.acl_role IN ('chef', 'assistant')) OR ".
+		'appartenance.unite = ?', $this->id);
+    }
+    else if ($recursion) {
+      $select->joinLeft(array('fille' => 'unite'), $db->quoteInto('fille.parent = ?', $this->id), array());
+      if ($recursion == 1)
+	$select->where('appartenance.unite IN (?, fille.id)'."\n", $this->id);
+      else if ($recursion >= 2)
+	$select
+	  ->joinLeft(array('petitefille' => 'unite'), 'petitefille.parent = fille.id', array())
+	  ->where('appartenance.unite IN (?, fille.id, petitefille.id)'."\n", $this->id);
+    }
+    else {
+      $select->where('appartenance.unite = ?'."\n", $this->id);
+    }
+
+    $select
+      ->join('unite_role', 'unite_role.id = appartenance.role', array())
+      ->join(array('app_unite' => 'unite'), 'app_unite.id = appartenance.unite', array())
+      ->join(array('app_type' => 'unite_type'), 'app_type.id = app_unite.type'."\n", array())
+      ->order('lower(individu.nom)')
+      ->order('lower(individu.prenom)')
+      ->order('naissance');
+
+    if ($annee === false)
+      $select->where('fin IS NULL');
+    elseif ($annee) {
+      // Est considéré comme inscrit pour une année donnée un personne inscrite
+      // avant le 24 août de l'année suivante …
+      $select->where('STRFTIME("%Y-%m-%d", debut) <= ?'."\n", ($annee+1).'-08-24');
+      // … toujours en exercice ou en exercice au moins jusqu'au 1er janvier de l'année suivante.
+      $select->where('fin IS NULL OR STRFTIME("%Y-%m-%d", fin) >= ?'."\n", ($annee+1).'-01-01');
+    }
+
+    return $t->fetchAll($select);
+  }
+
   function findChef($annee = false)
   {
     $db = $this->getTable()->getAdapter();
@@ -433,6 +493,30 @@ class Unite extends Strass_Db_Table_Row_Abstract implements Zend_Acl_Resource_In
       $select->where("STRFTIME('%Y', appartenance.fin, '-6 months'),  >= ?", $annee);
 
     return $t->fetchAll($select)->current();
+  }
+
+  function findMaitrise()
+  {
+    $db = $this->getTable()->getAdapter();
+    $t = new Individus;
+    $select = $t->select()
+      ->setIntegrityCheck(false)
+      ->distinct()
+      ->from('individu')
+      ->join('appartenance', 'appartenance.individu = individu.id', array())
+      ->join('unite', 'unite.id = appartenance.unite', array())
+      ->join('unite_role', 'unite_role.id = appartenance.role', array())
+      ->join('unite_type', 'unite_type.id = unite.type', array())
+      ->where("unite_role.acl_role IN ('chef', 'assistant')")
+      ->where('appartenance.fin IS NULL')
+      ->order('appartenance.debut DESC');
+
+    if ($this->findParentTypesUnite()->virtuelle)
+      $select->where('unite.id = ?', $this->parent);
+    else
+      $select->where('unite.id = ?', $this->id);
+
+    return $t->fetchAll($select);
   }
 
   function isFermee()

@@ -1,6 +1,6 @@
 <?php
 
-$this->document->addStyleComponents('signature', 'article');
+$this->document->setTitle($this->lienArticle($this->article));
 
 $this->document->addChild($this->vignetteIndividu($this->article->findAuteur()));
 

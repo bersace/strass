@@ -13,7 +13,7 @@ class Strass_Controller_Action_Helper_Article extends Zend_Controller_Action_Hel
     }
     catch (Strass_Db_Table_NotFound $e) {
       if ($throw)
-	throw new Strass_Controller_Action_Exception_Notice("Article  inconnu");
+	throw new Strass_Controller_Action_Exception_Notice("Article ".$slug." inconnu");
       else
 	return null;
     }

@@ -1,5 +1,7 @@
 <?php
 
+require_once 'Strass/Commentaires.php';
+
 class Journaux extends Strass_Db_Table_Abstract
 {
   protected $_name = 'journal';
@@ -117,6 +119,7 @@ class Articles extends Strass_Db_Table_Abstract
 
 class Article extends Strass_Db_Table_Row_Abstract implements Zend_Acl_Resource_Interface
 {
+  protected $_tableClass = 'Articles';
   protected $_privileges = array(array('chef', NULL),
 				 array('assistant', NULL));
 

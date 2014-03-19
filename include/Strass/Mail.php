@@ -119,4 +119,10 @@ class Strass_Mail extends Zend_Mail
     foreach($chefs as $chef)
       $this->addBcc($chef->adelec, $chef->getFullName(false));
   }
+
+  function notifyChefsDe($unite)
+  {
+    foreach($unite->findMaitrise() as $chef)
+      $this->addBcc($chef->adelec, $chef->getFullName(false));
+  }
 }

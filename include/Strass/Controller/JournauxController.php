@@ -114,6 +114,8 @@ class JournauxController extends Strass_Controller_Action
       $j = $this->_helper->Journal();
     }
 
+    $this->view->unite = $u = $j->findParentUnites();
+
     $this->metas(array('DC.Title' => "Écrire un article"));
     $this->assert(null, $j, 'ecrire',
 		  "Vous n'avez pas le droit d'écrire un nouvel article dans ce journal");
@@ -121,6 +123,20 @@ class JournauxController extends Strass_Controller_Action
     $publier = $this->assert(null, $j, 'publier');
 
     $this->view->model = $m = new Wtk_Form_Model('ecrire');
+    if ($publier) {
+      $i = $m->addEnum('auteur', "Auteur");
+      /* on inclus les membres de sous-unité : le scout peuvent écrire
+	 dans la gazette de troupe */
+      foreach($u->findInscrits(null, 1) as $individu)
+	$i->addItem($individu->id, $individu->getFullname(false));
+      if ($a)
+	$i->set($a->findAuteur()->id);
+    }
+    else {
+      $me = Zend_Registry::get('individu');
+      $i = $m->addInteger('auteur', "Auteur", $me->id, true);
+    }
+
     $i = $m->addString('titre', "Titre", $a ? $a->titre : null);
     $m->addConstraintRequired($i);
     if ($publier)
@@ -142,37 +158,35 @@ class JournauxController extends Strass_Controller_Action
     $m->addNewSubmission('poster', "Poster");
 
     if ($m->validate()) {
-      $me = Zend_Registry::get('individu');
-
       $t = new Articles;
-      $tc = new Commentaires;
       $db = $t->getAdapter();
       $db->beginTransaction();
       try {
 	if ($a) {
-	  $a->titre = $m->titre;
-	  $a->slug = $t->createSlug(wtk_strtoid($a->titre), $a->slug);
-	  $a->boulet = $m->boulet;
-	  $a->article = $m->article;
-	  $a->public = $m->public;
-	  $a->save();
+	  $a->slug = $t->createSlug(wtk_strtoid($m->titre), $a->slug);
+	  $c = $a->findParentCommentaires();
 	  $message = "Article édité";
 	}
 	else {
-	  $data = array('auteur' => $me->id);
-	  $c = $tc->findOne($tc->insert($data));
-
-	  $data = array('journal' => $j->id,
-			'slug' => $t->createSlug(wtk_strtoid($m->get('titre'))),
-			'titre' => $m->get('titre'),
-			'boulet' => $m->get('boulet'),
-			'article' => $m->get('article'),
-			'public' => $m->get('public', null),
-			'commentaires' => $c->id,
-			);
-	  $a = $t->findOne($t->insert($data));
+	  $c = new Commentaire;
+	  $a = new Article;
+	  $a->slug = $t->createSlug(wtk_strtoid($m->titre));
 	  $message = "Nouvel article";
 	}
+
+	$c->auteur = $m->auteur;
+	$c->save();
+
+	$a->journal = $j->id;
+	$a->titre = $m->titre;
+	$a->boulet = $m->boulet;
+	$a->article = $m->article;
+	try {
+	  $a->public = $m->get('public', null);
+	}
+	catch (Exception $e) {}
+	$a->commentaires = $c->id;
+	$a->save();
 
 	$oldImages = $a->getImages();
 	$table = $m->getInstance('images');
@@ -232,7 +246,7 @@ class JournauxController extends Strass_Controller_Action
 
     $this->actions->append("Éditer",
 			   array('action' => 'ecrire'),
-			   array(null, $a));
+			   array(null, $a, 'editer'));
     $this->actions->append("Supprimer",
 			   array('action' => 'supprimer'),
 			   array(null, $a));

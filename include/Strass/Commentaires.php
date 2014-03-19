@@ -19,6 +19,8 @@ class Commentaires extends Strass_Db_Table_Abstract
 
 class Commentaire extends Strass_Db_Table_Row_Abstract implements Zend_Acl_Resource_Interface
 {
+  protected $_tableClass = 'Commentaires';
+
   function initAclResource($acl)
   {
     $acl->add(new Zend_Acl_Resource($this->getResourceId()));
