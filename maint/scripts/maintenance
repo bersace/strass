@@ -23,7 +23,7 @@ $style = $config->get('system/style', 'strass');
 $document->setStyle(new Wtk_Document_Style($style));
 $document->addStyleComponents('layout', 'minilayout', 'common');
 $mouvement = $config->get('system/mouvement', null);
-$document->addFlags($mouvement);
+$document->addFlags('maintenance', $mouvement);
 $document->embedStyle();
 $document->header->setTitle(new Wtk_Link('/', $config->get('metas/title', null)));
 $document->header->addFlags($mouvement);

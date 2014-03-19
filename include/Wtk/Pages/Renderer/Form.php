@@ -40,6 +40,7 @@ class Wtk_Pages_Renderer_Form extends Wtk_Pages_Renderer
   function render($id, $data, $container)
   {
     $method = 'render'.ucfirst($id);
+    $container->addFlags($id);
     if (!method_exists($this, $method))
       throw new Exception("Missing render method $method");
     call_user_func(array($this, $method), $data, $container);

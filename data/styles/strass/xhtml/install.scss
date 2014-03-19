@@ -1,8 +1,33 @@
 /*-*- css -*-*/
 
+form.site {
+    background: url("illustrations/panorama-scouts-du-monde.png") bottom no-repeat;
+    background-size: auto 10em;
+    padding-bottom: 15em;
+}
+
+form.admin {
+    background: url("illustrations/salut-etendard-sdf.png") right bottom no-repeat;
+    background-size: auto 90%;
+    padding: 0 10em;
+}
+
 #wait {
-    /* masqué par défaut, à activer en JS */
-    display: none;
+    /* masqué par défaut, à activer en JS. On utilise visibility + height pour charger les images. */
+    visibility: hidden;
+    height: 0;
+    overflow: hidden;
+
+    &.show {
+	height: auto;
+	visibility: visible;
+    }
+
+    .h {
+	background: url("illustrations/froissartage.png") bottom no-repeat;
+	background-size: 20em auto;
+	padding-bottom: 18em;
+    }
 
     img { /* animation de patience */
 	display: block;

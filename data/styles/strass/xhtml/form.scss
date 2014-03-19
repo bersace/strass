@@ -81,13 +81,16 @@ form {
     }
 }
 
+$taille_etiquette: 12em;
+
 div.control {
     text-align: left;
     clear: both;
-    padding: .5ex;
+    padding: .5ex 1em;
+    margin: .5ex;
     width: 100%;
 
-    & > label, & > .input, div.control {
+    & > label, & > .input, & > div.control {
 	display: inline-block;
 	vertical-align: top;
 	margin: 0;
@@ -95,7 +98,7 @@ div.control {
     }
 
     & > label {
-	width: 12em;
+	width: $taille_etiquette;
 	padding: .5ex 0;
 	margin-bottom: 1ex;
 	white-space: nowrap;
@@ -158,6 +161,16 @@ div.control {
 		left: 0;
 		opacity: 0;
 	    }
+	}
+    }
+
+    .input.select {
+	margin-left: -1 * $taille_etiquette;
+	padding-left: $taille_etiquette;
+	max-width: 90%;
+
+	label {
+	    display: inline-block;
 	}
     }
 

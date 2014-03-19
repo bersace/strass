@@ -114,6 +114,22 @@ a {
 	}
     }
 
+    &.error {
+	background-image: url("illustrations/accident.png");
+	background-position: center 90%;
+	background-repeat: no-repeat;
+	background-size: auto 20em;
+	padding-bottom: 25em;
+    }
+
+    &.maintenance {
+	background-image: url("illustrations/froissartage.png");
+	background-position: center 90%;
+	background-repeat: no-repeat;
+	background-size: auto 20em;
+	padding-bottom: 25em;
+    }
+
     div.dialog {
 	&.info, &.warn, &.error {
 	    & > *:first-child {

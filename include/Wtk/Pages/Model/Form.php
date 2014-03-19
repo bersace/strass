@@ -108,6 +108,7 @@ class Wtk_Pages_Model_Form extends Wtk_Pages_Model
 	  $p = $i->path;
 	  if (strpos($p, $model->id."/".$current) === false) {
 	    $i->valid = null;
+	    $i->errors = array();
 	    unset($model->errors[$j]);
 	  }
 	}
