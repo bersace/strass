@@ -24,6 +24,5 @@ class Strass_Pages_Renderer_Livredor extends Strass_Pages_Renderer
   }
 }
 
-$this->document->addStyleComponents('signature');
 $renderer = new Strass_Pages_Renderer_Livredor($this, $this->url(array('page' => '%i')));
 $p = $this->document->addPages(null, $this->messages, $renderer);

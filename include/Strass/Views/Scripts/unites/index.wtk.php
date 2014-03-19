@@ -23,7 +23,6 @@ class Strass_Views_Unite_Index_BlocGenerator
     $unite = $this->view->unite;
     $unites = $this->view->unites;
 
-    $this->view->document->addStyleComponents('vignette');
     $ss = $s->addSection('unites', 'Les '.$unite->getSousTypeName(true));
     $ss->addFlags('bloc');
     if ($unites->count()) {
@@ -44,7 +43,6 @@ class Strass_Views_Unite_Index_BlocGenerator
     $unite = $this->view->unite;
     $photos = $this->view->photos;
 
-    $this->view->document->addStyleComponents('vignette');
     $ss = $s->addSection('photos',
 			 $this->view->lien(array('controller' => 'photos',
 						 'action' => null,
@@ -71,7 +69,6 @@ class Strass_Views_Unite_Index_BlocGenerator
     $unite = $this->view->unite;
     $activites = $this->view->activites;
 
-    $this->view->document->addStyleComponents('vignette');
     $ss = $s->addSection('activites',
 			 $this->view->lien(array('controller' => 'activites',
 						 'action' => 'calendrier',

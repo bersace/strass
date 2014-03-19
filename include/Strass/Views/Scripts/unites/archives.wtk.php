@@ -1,6 +1,5 @@
 <?php
 
-$this->document->addStyleComponents('vignette');
 if ($this->fermees->count()) {
   $l = $this->document->addList();
   $l->addFlags('vignettes', 'unites');

@@ -1,9 +1,7 @@
 <?php
-$this->document->addStyleComponents('vignette');
-$s = $this->document;
 
 if ($this->photos->count()) {
-  $l = $s->addList();
+  $l = $this->document->addList();
   $l->addFlags('vignettes', 'photos');
   foreach($this->photos as $photo) {
     $i = $l->addItem($this->vignettePhoto($photo));
@@ -11,5 +9,5 @@ if ($this->photos->count()) {
   }
 }
 else {
-  $s->addParagraph("Pas de photos")->addFlags('empty');
+  $this->document->addParagraph("Pas de photos")->addFlags('empty');
 }

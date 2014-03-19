@@ -14,7 +14,6 @@ class Strass_Pages_Renderer_Photo extends Wtk_Pages_Renderer
   }
 }
 
-$this->document->addStyleComponents('signature');
 $renderer = new Strass_Pages_Renderer_Photo($this->url(array('photo' => '%i')).'#document', false,
 					    array('previous'	=> "Précédente",
 						  'next'		=> "Suivante"));

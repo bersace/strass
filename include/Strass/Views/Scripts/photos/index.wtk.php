@@ -18,6 +18,4 @@ class Strass_Pages_Renderer_Albums extends Strass_Views_PagesRenderer_Historique
   }
 }
 
-$this->document->addStyleComponents('vignette');
-
-$s = $this->document->addPages('albums', $this->model, new Strass_Pages_Renderer_Albums($this));
+$this->document->addPages('albums', $this->model, new Strass_Pages_Renderer_Albums($this));
