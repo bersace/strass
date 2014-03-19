@@ -42,8 +42,10 @@
     background-repeat: no-repeat;
 
     .article {
+	font-size: 120%;
 	clear: both;
 	position: relative;
+	margin-bottom: 4em;
 
 	.avatar {
 	    margin-right: -12em;
@@ -52,6 +54,10 @@
 	.h {
 	    font-size: 140%;
 	    margin-left: -1em;
+	}
+
+	.contenu {
+	    font-size: 110%;
 	}
 
 	& + .article {
