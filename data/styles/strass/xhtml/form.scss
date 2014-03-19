@@ -66,14 +66,14 @@ form {
 	color: $info;
 	background-position: 1ex .72ex;
 	background-color: $info_bg;
-	background-image: url("dialog/information.png");
+	background-image: url("ui/information.png");
     }
 
     p.warn {
 	color: $warn;
 	background-position: 1ex .72ex;
 	background-color: $warn_bg;
-	background-image: url("dialog/attention.png");
+	background-image: url("ui/attention.png");
 
 	strong {
 	    line-height: 30px;

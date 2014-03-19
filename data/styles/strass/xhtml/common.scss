@@ -139,14 +139,14 @@ a {
 
 	&.info {
 	    color: $info;
-	    background-image: url("dialog/information.png");
+	    background-image: url("ui/information.png");
 	    background-position: 1ex .72ex;
 	    background-repeat: no-repeat;
 	}
 
 	&.warn, &.error {
 	    color: $warn;
-	    background-image: url("dialog/attention.png");
+	    background-image: url("ui/attention.png");
 	    background-position: 1em 1em;
 	    background-repeat: no-repeat;
 
