@@ -197,7 +197,8 @@ class UnitesController extends Strass_Controller_Action
     $m->addString('extra',
 		  $u->findParentTypesUnite()->extra,
 		  $u->extra);
-    $m->addFile('image', "Image");
+    $m->addFile('image', "Nouvelle");
+    $m->addBool('supprimer_image', "Supprimer l'image");
     $w = $u->getWiki(null, false);
     $m->addString('presentation', "Message d'accueil", is_readable($w) ? file_get_contents($w) : '');
     $m->addNewSubmission('enregistrer', "Enregistrer");
@@ -217,6 +218,8 @@ class UnitesController extends Strass_Controller_Action
 	$i = $m->getInstance('image');
 	if ($i->isUploaded())
 	  $u->storeImage($i->getTempFilename());
+	elseif ($m->supprimer_image)
+	  $u->supprimerImage();
 
 	$this->logger->info("Édition de ".$u->getFullname(),
 			    array('controller' => 'unites', 'action' => 'index', 'unite' => $u->slug));

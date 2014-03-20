@@ -2,21 +2,26 @@
 
 $f = $this->document->addForm($this->model);
 
+$g = $f->addForm_Fieldset("Informations");
 $i = $this->model->getInstance('parente');
-if (count($i) > 1) {
-  $f->addSelect('parente', true);
-}
-else {
-  $f->addHidden('parente');
-}
-
-$f->addEntry('nom', 24);
+if (count($i) > 1)
+  $g->addSelect('parente', true);
+else
+  $g->addHidden('parente');
+$g->addEntry('nom', 24);
 $i = $this->model->getInstance('extra');
-if ($i->label) {
-	$f->addEntry('extra', 32);
- }
-$f->addFile('image');
-$f->addEntry('presentation', 38, 8);
+if ($i->label)
+  $g->addEntry('extra', 32);
 
-$b = $f->addForm_ButtonBox();
-$b->addForm_Submit($this->model->getSubmission('enregistrer'));
+$g = $f->addForm_Fieldset("Image d'unité");
+$g->addSection('vignette')->addChild($this->vignetteUnite($this->unite));
+if ($this->unite->getCheminImage())
+  $g->addCheck('supprimer_image');
+else
+  $g->addParagraph("Pas d'image, repli sur une photo aléatoire.")->addFlags('info');
+$g->addFile('image');
+
+$f->addForm_Fieldset("Message d'accueil")
+->addEntry('presentation', 38, 8)->useLabel(false);
+
+$f->addForm_ButtonBox()->addForm_Submit($this->model->getSubmission('enregistrer'));
