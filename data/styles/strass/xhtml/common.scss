@@ -256,6 +256,7 @@ a {
 
 		&.showtrace {
 		    width: 80%;
+		    overflow-x: auto;
 
 		    .h {
 			margin-left: 48px;
@@ -265,25 +266,28 @@ a {
 		    #details {
 			display: block;
 
-			> .h {
+			& > .h {
 			    font-size: 1em;
 			    text-align: right;
 			    cursor: pointer;
 			    color: lighten($highlight_color, 10%);
 			}
-
-			> * + * {
-			    display: none;
-			}
-
-			&:hover > *,
-			&:active > *
-			{
-			    display: block;
-			}
 		    }
 		}
 	    }
+	}
+    }
+
+    /* Masquer la trace par défaut en prod */
+    body.production #page #document #details {
+	& > .error {
+	    display: none;
+	}
+
+	&:hover > *,
+	&:active > *
+	{
+	    display: block;
 	}
     }
 
