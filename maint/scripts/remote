@@ -177,13 +177,15 @@ class FTPEntry(object):
                     self._children[entry.name] = entry
 
             # listage distant
-            lines = []
-            try:
-                self.client.retrlines('LIST -a %s' % self.path, lines.append)
-            except FTPError, e:
-                self._remoteexists = False
-            else:
-                self._remoteexists = len(lines) > 0
+            if self._remoteexists in (None, True):
+                lines = []
+                try:
+                    self.client.retrlines('LIST -a %s' % self.path, lines.append)
+                except FTPError, e:
+                    self._remoteexists = False
+                else:
+                    self._remoteexists = len(lines) > 0
+
                 for line in lines:
                     try:
                         entry = self.__class__.parse(self.client, self, line)
