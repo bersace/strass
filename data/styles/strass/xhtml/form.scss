@@ -109,8 +109,18 @@ div.control {
 	}
     }
 
-    &.compound div.control label {
+    &.compound div.control {
+	display: inline-block;
 	width: auto;
+	padding-left: 0;
+	padding-right: 0;
+	margin-left: 0;
+	margin-right: 0;
+	vertical-align: baseline;
+
+	label {
+	    width: auto;
+	}
     }
 
     input.spin {
