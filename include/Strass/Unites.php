@@ -7,6 +7,7 @@ class Unites extends Strass_Db_Table_Abstract
 {
   protected $_name = 'unite';
   protected $_rowClass = 'Unite';
+  protected $_rowsetClass = 'SetUnites';
   protected $_dependentTables = array('Unites',
 				      'Appartenances',
 				      'Participations',
@@ -73,6 +74,11 @@ class Unites extends Strass_Db_Table_Abstract
       ->order('strass_unite_ordre.ordre')
       ->order('strass_unite_ordre.id');
   }
+}
+
+class SetUnites extends Strass_Db_Table_Rowset
+{
+  protected $_tableClass = 'Unites';
 }
 
 class Unite extends Strass_Db_Table_Row_Abstract implements Zend_Acl_Resource_Interface
@@ -785,20 +791,16 @@ class Unite extends Strass_Db_Table_Row_Abstract implements Zend_Acl_Resource_In
 
   function findDocuments()
   {
-    $uids = array($this->id, $this->parent);
-    $gp = $this->findParentUnites();
-    if ($gp)
-      array_push($uids, $gp->parent);
-    $uids = array_filter($uids);
-    $uids = array_map('intval', $uids);
-
     $t = new Documents;
+    $db = $t->getAdapter();
     $s = $t->select()
       ->setIntegrityCheck(false)
       ->distinct()
       ->from('document')
       ->join('unite_document', 'unite_document.document = document.id', array())
-      ->where('unite_document.unite IN ?', $uids)
+      ->joinLeft(array('parent' => 'unite'),
+		 $db->quoteInto('parent.id = ?', $this->parent), array())
+      ->where('unite_document.unite IN (?, parent.id, parent.parent)', $this->id)
       ->order('date DESC');
 
     return $t->fetchAll($s);
