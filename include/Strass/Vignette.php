@@ -10,18 +10,24 @@ class Strass_Vignette {
     if (!file_exists($dossier))
       mkdir($dossier, 0700, true);
 
-    $image = new Imagick;
-    $image->setBackgroundColor(new ImagickPixel('transparent'));
-    $image->readImage($src);
-    if ($flatten) {
-      $image->setImageAlphaChannel(Imagick::ALPHACHANNEL_RESET);
-      $image->setBackgroundColor('white');
+    if ($src instanceof Imagick)
+      $image = $src;
+    else {
+      $image = new Imagick;
+      $image->setBackgroundColor(new ImagickPixel('transparent'));
+      $image->readImage($src);
+      if ($flatten) {
+	$photo = $image;
+	$image = new Imagick;
+	$image->newImage($photo->getImageWidth(), $photo->getImageHeight(), "white");
+	$image->compositeImage($photo, Imagick::COMPOSITE_OVER, 0, 0);
+      }
     }
 
     return $image;
   }
 
-  static protected function _estGrande($image)
+  static function estGrande($image)
   {
     $config = Zend_Registry::get('config');
     $width = $image->getImageWidth();
@@ -34,21 +40,28 @@ class Strass_Vignette {
   {
     $image = self::charger($src, $dst, $flatten);
 
-    if ($MAX = self::_estGrande($image))
+    if ($MAX = self::estGrande($image))
       $image->scaleImage($MAX, $MAX, true);
 
-    $image->setImageFormat('png');
+    $image->setImageFormat(pathinfo($dst, PATHINFO_EXTENSION));
     $image->writeImage($dst);
   }
 
   static function decouper($src, $dst)
   {
+    $config = Zend_Registry::get('config');
     $image = self::charger($src, $dst);
 
-    if ($MAX = self::_estGrande($image))
+    if ($MAX = self::estGrande($image))
       $image->cropThumbnailImage($MAX, $MAX);
 
-    $image->setImageFormat('png');
+    $format = pathinfo($dst, PATHINFO_EXTENSION);
+    if ($format == 'jpeg') {
+      $image->setImageCompression(Imagick::COMPRESSION_JPEG);
+      $image->setImageCompressionQuality($config->get('photo/qualite', 85));
+    }
+
+    $image->setImageFormat($format);
     $image->writeImage($dst);
   }
 }

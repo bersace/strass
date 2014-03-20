@@ -107,32 +107,20 @@ class Photo extends Strass_Db_Table_Row_Abstract implements Zend_Acl_Resource_In
       mkdir($dossier, 0755, true);
 
     $suffixe = '.jpeg';
-    $fichier = $dossier.'/'.$this->slug.$suffixe;
     $vignette = $dossier.'/'.$this->slug.'-vignette'.$suffixe;
+    $fichier = $dossier.'/'.$this->slug.$suffixe;
 
     $config = Zend_Registry::get('config');
 
-    $photo = new Imagick($path);
+    $photo = Strass_Vignette::charger($path, $fichier, true);
     $width = $photo->getImageWidth();
     $height = $photo->getImageHeight();
-
-    $image = new Imagick;
-    $image->newImage($width, $height, "white", 'jpeg');
-    $image->setImageCompression(Imagick::COMPRESSION_JPEG);
-    $image->setImageCompressionQuality($config->get('photo/qualite', 85));
-    $image->compositeImage($photo, Imagick::COMPOSITE_OVER, 0, 0);
-
     $MAX = $config->get('photo/taille', 2048);
     if (min($width, $height) > $MAX)
-      $image->scaleImage($MAX, $MAX, true);
-    $image->writeImage($fichier);
+      $photo->scaleImage($MAX, $MAX, true);
+    $photo->writeImage($fichier);
 
-    $MAX = $config->get('photo/taille_vignette', 256);
-    if (min($width, $height) > $MAX)
-      $image->cropThumbnailImage($MAX, $MAX);
-    $image->writeImage($vignette);
-
-    unset($image);
+    Strass_Vignette::decouper($photo, $vignette);
 
     $this->save();
   }
