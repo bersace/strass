@@ -51,8 +51,6 @@ class Document extends Strass_Db_Table_Row_Abstract implements Zend_Acl_Resource
 
   function storeFile($tmp)
   {
-    $config = Zend_Registry::get('config');
-
     $fichier = $this->getFichier($this->_data);
     if (!file_exists($dossier = dirname($fichier)))
 	mkdir($dossier, 0700, true);
@@ -66,18 +64,12 @@ class Document extends Strass_Db_Table_Row_Abstract implements Zend_Acl_Resource
       $load .= '[0]';
 
     try {
-      $im = new Imagick($load);
+      Strass_Vignette::reduire($load, $vignette, true);
     }
     catch (ImagickException $e) {
       /* pas supporté par Imagick */
-      return;
+      error_log("Échec de la vignette de ".$load." : ".$e->getMessage());
     }
-    $im->setImageAlphaChannel(Imagick::ALPHACHANNEL_RESET);
-    $im->setImageFormat('png');
-    $im->setBackgroundColor('white');
-    $MAX = $config->get('photo/taille_vignette', 256);
-    $im->thumbnailImage(0, $MAX);
-    $im->writeImage($vignette);
   }
 
   function _postDelete()
