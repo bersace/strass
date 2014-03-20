@@ -15,8 +15,9 @@
  * @category   Zend
  * @package    Zend_View
  * @subpackage Helper
- * @copyright  Copyright (c) 2005-2008 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright  Copyright (c) 2005-2014 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
+ * @version    $Id$
  */
 
 /**
@@ -30,20 +31,20 @@ require_once 'Zend/View/Helper/HtmlElement.php';
  * @category   Zend
  * @package    Zend_View
  * @subpackage Helper
- * @copyright  Copyright (c) 2005-2008 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright  Copyright (c) 2005-2014 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  */
 abstract class Zend_View_Helper_FormElement extends Zend_View_Helper_HtmlElement
 {
     /**
-     * @var Zend_Translate
+     * @var Zend_Translate_Adapter|null
      */
     protected $_translator;
 
     /**
      * Get translator
      *
-     * @return Zend_Translate
+     * @return Zend_Translate_Adapter|null
      */
     public function getTranslator()
     {
@@ -53,7 +54,7 @@ abstract class Zend_View_Helper_FormElement extends Zend_View_Helper_HtmlElement
     /**
      * Set translator
      *
-     * @param  $translator|null Zend_Translate
+     * @param  Zend_Translate|Zend_Translate_Adapter|null $translator
      * @return Zend_View_Helper_FormElement
      */
     public function setTranslator($translator = null)
@@ -65,8 +66,10 @@ abstract class Zend_View_Helper_FormElement extends Zend_View_Helper_HtmlElement
         } elseif ($translator instanceof Zend_Translate) {
             $this->_translator = $translator->getAdapter();
         } else {
-            require_once 'Zend/Form/Exception.php';
-            throw new Zend_Form_Exception('Invalid translator specified');
+            require_once 'Zend/View/Exception.php';
+            $e = new Zend_View_Exception('Invalid translator specified');
+            $e->setView($this->view);
+            throw $e;
         }
          return $this;
     }
@@ -111,65 +114,67 @@ abstract class Zend_View_Helper_FormElement extends Zend_View_Helper_HtmlElement
                     $info[$key] = $name[$key];
                 }
             }
+
+            // If all helper options are passed as an array, attribs may have
+            // been as well
+            if (null === $attribs) {
+                $attribs = $info['attribs'];
+            }
         }
 
-        // force attribs to an array, per note from Orjan Persson.
-        settype($info['attribs'], 'array');
+        $attribs = (array)$attribs;
 
         // Normalize readonly tag
-        if (isset($info['attribs']['readonly'])
-            && $info['attribs']['readonly'] != 'readonly')
-        {
-            $info['attribs']['readonly'] = 'readonly';
+        if (array_key_exists('readonly', $attribs)) {
+            $attribs['readonly'] = 'readonly';
         }
 
         // Disable attribute
-        if (isset($info['attribs']['disable'])
-            && is_scalar($info['attribs']['disable']))
-        {
-            // disable the element
-            $info['disable'] = (bool)$info['attribs']['disable'];
-            unset($info['attribs']['disable']);
-        } elseif (isset($info['attribs']['disable'])
-            && is_array($info['attribs']['disable']))
-        {
-            $info['disable'] = $info['attribs']['disable'];
-            unset($info['attribs']['disable']);
+        if (array_key_exists('disable', $attribs)) {
+           if (is_scalar($attribs['disable'])) {
+                // disable the element
+                $info['disable'] = (bool)$attribs['disable'];
+            } else if (is_array($attribs['disable'])) {
+                $info['disable'] = $attribs['disable'];
+            }
         }
 
         // Set ID for element
-        if (isset($info['attribs']['id'])) {
-            $info['id'] = (string) $info['attribs']['id'];
-        } elseif (!isset($info['attribs']['id']) && !empty($info['name'])) {
-            $id = $info['name'];
-            if (substr($id, -2) == '[]') {
-                $id = substr($id, 0, strlen($id) - 2);
-            }
-            if (strstr($id, ']')) {
-                $id = trim($id, ']');
-                $id = str_replace('][', '-', $id);
-                $id = str_replace('[', '-', $id);
-            }
-            $info['id'] = $id;
+        if (array_key_exists('id', $attribs)) {
+            $info['id'] = (string)$attribs['id'];
+        } else if ('' !== $info['name']) {
+            $info['id'] = trim(strtr($info['name'],
+                                     array('[' => '-', ']' => '')), '-');
+        }
+        
+        // Remove NULL name attribute override
+        if (array_key_exists('name', $attribs) && is_null($attribs['name'])) {
+        	unset($attribs['name']);
+        }
+        
+        // Override name in info if specified in attribs
+        if (array_key_exists('name', $attribs) && $attribs['name'] != $info['name']) {
+            $info['name'] = $attribs['name'];
         }
 
         // Determine escaping from attributes
-        if (isset($info['attribs']['escape'])) {
-            $info['escape'] = (bool) $info['attribs']['escape'];
+        if (array_key_exists('escape', $attribs)) {
+            $info['escape'] = (bool)$attribs['escape'];
         }
 
         // Determine listsetp from attributes
-        if (isset($info['attribs']['listsep'])) {
-            $info['listsep'] = (string) $info['attribs']['listsep'];
+        if (array_key_exists('listsep', $attribs)) {
+            $info['listsep'] = (string)$attribs['listsep'];
         }
 
         // Remove attribs that might overwrite the other keys. We do this LAST
         // because we needed the other attribs values earlier.
         foreach ($info as $key => $val) {
-            if (isset($info['attribs'][$key])) {
-                unset($info['attribs'][$key]);
+            if (array_key_exists($key, $attribs)) {
+                unset($attribs[$key]);
             }
         }
+        $info['attribs'] = $attribs;
 
         // done!
         return $info;
@@ -183,11 +188,9 @@ abstract class Zend_View_Helper_FormElement extends Zend_View_Helper_HtmlElement
      *
      * @access protected
      *
-     * @param $name The element name.
-     *
-     * @param $value The element value.
-     *
-     * @param $attribs Attributes for the element.
+     * @param string $name The element name.
+     * @param string $value The element value.
+     * @param array  $attribs Attributes for the element.
      *
      * @return string A hidden element.
      */

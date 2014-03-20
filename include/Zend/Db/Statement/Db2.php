@@ -12,10 +12,12 @@
  * obtain it through the world-wide-web, please send an email
  * to license@zend.com so we can send you a copy immediately.
  *
+ * @category   Zend
  * @package    Zend_Db
  * @subpackage Statement
- * @copyright  Copyright (c) 2005-2008 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright  Copyright (c) 2005-2014 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
+ * @version    $Id$
  */
 
 /**
@@ -28,15 +30,11 @@ require_once 'Zend/Db/Statement.php';
  *
  * @package    Zend_Db
  * @subpackage Statement
- * @copyright  Copyright (c) 2005-2008 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright  Copyright (c) 2005-2014 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  */
 class Zend_Db_Statement_Db2 extends Zend_Db_Statement
 {
-    /**
-     * Statement resource handle.
-     */
-    protected $_stmt = null;
 
     /**
      * Column names.
@@ -98,7 +96,7 @@ class Zend_Db_Statement_Db2 extends Zend_Db_Statement
             $datatype = DB2_CHAR;
         }
 
-        if (!db2_bind_param($this->_stmt, $position, "variable", $type, $datatype)) {
+        if (!db2_bind_param($this->_stmt, $parameter, "variable", $type, $datatype)) {
             /**
              * @see Zend_Db_Statement_Db2_Exception
              */
@@ -156,7 +154,7 @@ class Zend_Db_Statement_Db2 extends Zend_Db_Statement
 
         $error = db2_stmt_error();
         if ($error === '') {
-        	return false;
+            return false;
         }
 
         return $error;
@@ -170,10 +168,10 @@ class Zend_Db_Statement_Db2 extends Zend_Db_Statement
      */
     public function errorInfo()
     {
-    	$error = $this->errorCode();
-    	if ($error === false){
-    		return false;
-    	}
+        $error = $this->errorCode();
+        if ($error === false){
+            return false;
+        }
 
         /*
          * Return three-valued array like PDO.  But DB2 does not distinguish

@@ -14,8 +14,9 @@
  *
  * @category   Zend
  * @package    Zend_Mime
- * @copyright  Copyright (c) 2005-2008 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright  Copyright (c) 2005-2014 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
+ * @version    $Id$
  */
 
 
@@ -24,7 +25,7 @@
  *
  * @category   Zend
  * @package    Zend_Mime
- * @copyright  Copyright (c) 2005-2008 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright  Copyright (c) 2005-2014 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  */
 class Zend_Mime
@@ -129,7 +130,7 @@ class Zend_Mime
         $str = self::_encodeQuotedPrintable($str);
 
         // Split encoded text into separate lines
-        while ($str) {
+        while(strlen($str) > 0) {
             $ptr = strlen($str);
             if ($ptr > $lineLength) {
                 $ptr = $lineLength;
@@ -193,7 +194,7 @@ class Zend_Mime
         $str = self::_encodeQuotedPrintable($str);
 
         // Mail-Header required chars have to be encoded also:
-        $str = str_replace(array('?', ' ', '_'), array('=3F', '=20', '=5F'), $str);
+        $str = str_replace(array('?', ' ', '_', ','), array('=3F', '=20', '=5F', '=2C'), $str);
 
         // initialize first line, we need it anyways
         $lines = array(0 => "");
@@ -206,8 +207,7 @@ class Zend_Mime
             $str         = substr($str, strlen($token));
 
             $tmp .= $token;
-            if( (strlen($token) == 1 && strpbrk($token, '!%,.:;<>'))
-                || in_array($token, array("=3F", "=20", "=5F")) ) {
+            if($token == '=20') {
                 // only if we have a single char token or space, we can append the
                 // tempstring it to the current line or start a new line if necessary.
                 if(strlen($lines[$currentLine].$tmp) > $lineLength) {

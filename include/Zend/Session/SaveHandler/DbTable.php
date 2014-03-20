@@ -15,9 +15,9 @@
  *
  * @category   Zend
  * @package    Zend_Session
- * @copyright  Copyright (c) 2005-2008 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright  Copyright (c) 2005-2014 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
- * @version    $Id: DbTable.php 12585 2008-11-12 17:02:49Z alexander $
+ * @version    $Id$
  */
 
 /**
@@ -46,10 +46,12 @@ require_once 'Zend/Config.php';
  * @category   Zend
  * @package    Zend_Session
  * @subpackage SaveHandler
- * @copyright  Copyright (c) 2005-2008 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright  Copyright (c) 2005-2014 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  */
-class Zend_Session_SaveHandler_DbTable extends Zend_Db_Table_Abstract implements Zend_Session_SaveHandler_Interface
+class Zend_Session_SaveHandler_DbTable
+    extends Zend_Db_Table_Abstract
+    implements Zend_Session_SaveHandler_Interface
 {
     const PRIMARY_ASSIGNMENT                   = 'primaryAssignment';
     const PRIMARY_ASSIGNMENT_SESSION_SAVE_PATH = 'sessionSavePath';
@@ -384,8 +386,8 @@ class Zend_Session_SaveHandler_DbTable extends Zend_Db_Table_Abstract implements
      */
     public function gc($maxlifetime)
     {
-        $this->delete($this->getAdapter()->quoteIdentifier($this->_modifiedColumn) . ' + '
-                    . $this->getAdapter()->quoteIdentifier($this->_lifetimeColumn) . ' < '
+        $this->delete($this->getAdapter()->quoteIdentifier($this->_modifiedColumn, true) . ' + '
+                    . $this->getAdapter()->quoteIdentifier($this->_lifetimeColumn, true) . ' < '
                     . $this->getAdapter()->quote(time()));
 
         return true;
@@ -514,7 +516,7 @@ class Zend_Session_SaveHandler_DbTable extends Zend_Db_Table_Abstract implements
      */
     protected function _getPrimary($id, $type = null)
     {
-    	$this->_setupPrimaryKey();
+        $this->_setupPrimaryKey();
 
         if ($type === null) {
             $type = self::PRIMARY_TYPE_NUM;
@@ -546,7 +548,7 @@ class Zend_Session_SaveHandler_DbTable extends Zend_Db_Table_Abstract implements
                     $primaryArray[$primary] = $value;
                     break;
                 case self::PRIMARY_TYPE_WHERECLAUSE:
-                    $primaryArray[] = $this->getAdapter()->quoteIdentifier($primary) . ' = '
+                    $primaryArray[] = $this->getAdapter()->quoteIdentifier($primary, true) . ' = '
                                     . $this->getAdapter()->quote($value);
                     break;
                 case self::PRIMARY_TYPE_NUM:

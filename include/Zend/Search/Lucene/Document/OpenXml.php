@@ -15,15 +15,17 @@
  * @category   Zend
  * @package    Zend_Search_Lucene
  * @subpackage Document
- * @copyright  Copyright (c) 2005-2008 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright  Copyright (c) 2005-2014 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
+ * @version    $Id$
  */
 
 
 /** Zend_Search_Lucene_Document */
 require_once 'Zend/Search/Lucene/Document.php';
 
-if (class_exists('ZipArchive', false)) {
+/** Zend_Xml_Security */
+require_once 'Zend/Xml/Security.php';
 
 /**
  * OpenXML document.
@@ -31,7 +33,7 @@ if (class_exists('ZipArchive', false)) {
  * @category   Zend
  * @package    Zend_Search_Lucene
  * @subpackage Document
- * @copyright  Copyright (c) 2005-2008 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright  Copyright (c) 2005-2014 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  */
 abstract class Zend_Search_Lucene_Document_OpenXml extends Zend_Search_Lucene_Document
@@ -81,13 +83,13 @@ abstract class Zend_Search_Lucene_Document_OpenXml extends Zend_Search_Lucene_Do
     {
         // Data holders
         $coreProperties = array();
-        
+
         // Read relations and search for core properties
-        $relations = simplexml_load_string($package->getFromName("_rels/.rels"));
+        $relations = Zend_Xml_Security::scan($package->getFromName("_rels/.rels"));
         foreach ($relations->Relationship as $rel) {
             if ($rel["Type"] == Zend_Search_Lucene_Document_OpenXml::SCHEMA_COREPROPERTIES) {
                 // Found core properties! Read in contents...
-                $contents = simplexml_load_string(
+                $contents = Zend_Xml_Security::scan(
                     $package->getFromName(dirname($rel["Target"]) . "/" . basename($rel["Target"]))
                 );
 
@@ -102,10 +104,10 @@ abstract class Zend_Search_Lucene_Document_OpenXml extends Zend_Search_Lucene_Do
                 }
             }
         }
-        
+
         return $coreProperties;
     }
-    
+
     /**
      * Determine absolute zip path
      *
@@ -127,5 +129,3 @@ abstract class Zend_Search_Lucene_Document_OpenXml extends Zend_Search_Lucene_Do
         return implode('/', $absolutes);
     }
 }
-
-} // end if (class_exists('ZipArchive'))

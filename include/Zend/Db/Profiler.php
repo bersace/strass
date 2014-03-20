@@ -15,9 +15,9 @@
  * @category   Zend
  * @package    Zend_Db
  * @subpackage Profiler
- * @copyright  Copyright (c) 2005-2008 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright  Copyright (c) 2005-2014 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
- * @version    $Id: Profiler.php 15403 2009-05-08 12:13:49Z yoshida@zend.co.jp $
+ * @version    $Id$
  */
 
 
@@ -25,7 +25,7 @@
  * @category   Zend
  * @package    Zend_Db
  * @subpackage Profiler
- * @copyright  Copyright (c) 2005-2008 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright  Copyright (c) 2005-2014 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  */
 class Zend_Db_Profiler
@@ -68,6 +68,15 @@ class Zend_Db_Profiler
      */
     const TRANSACTION = 64;
 
+    /**
+     * Inform that a query is stored (in case of filtering)
+     */
+    const STORED = 'stored';
+
+    /**
+     * Inform that a query is ignored (in case of filtering)
+     */
+    const IGNORED = 'ignored';
 
     /**
      * Array of Zend_Db_Profiler_Query objects.
@@ -216,7 +225,9 @@ class Zend_Db_Profiler
     }
 
     /**
-     * @param  integer $queryId
+     * Clone a profiler query
+     *
+     * @param  Zend_Db_Profiler_Query $query
      * @return integer or null
      */
     public function queryClone(Zend_Db_Profiler_Query $query)
@@ -278,18 +289,18 @@ class Zend_Db_Profiler
     }
 
     /**
-     * Ends a query.  Pass it the handle that was returned by queryStart().
+     * Ends a query. Pass it the handle that was returned by queryStart().
      * This will mark the query as ended and save the time.
      *
      * @param  integer $queryId
      * @throws Zend_Db_Profiler_Exception
-     * @return void
+     * @return string   Inform that a query is stored or ignored.
      */
     public function queryEnd($queryId)
     {
         // Don't do anything if the Zend_Db_Profiler is not enabled.
         if (!$this->_enabled) {
-            return;
+            return self::IGNORED;
         }
 
         // Check for a valid query handle.
@@ -321,7 +332,7 @@ class Zend_Db_Profiler
          */
         if (null !== $this->_filterElapsedSecs && $qp->getElapsedSecs() < $this->_filterElapsedSecs) {
             unset($this->_queryProfiles[$queryId]);
-            return;
+            return self::IGNORED;
         }
 
         /**
@@ -330,8 +341,10 @@ class Zend_Db_Profiler
          */
         if (null !== $this->_filterTypes && !($qp->getQueryType() & $this->_filterTypes)) {
             unset($this->_queryProfiles[$queryId]);
-            return;
+            return self::IGNORED;
         }
+
+        return self::STORED;
     }
 
     /**

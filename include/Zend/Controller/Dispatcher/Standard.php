@@ -15,8 +15,9 @@
  * @category   Zend
  * @package    Zend_Controller
  * @subpackage Dispatcher
- * @copyright  Copyright (c) 2005-2008 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright  Copyright (c) 2005-2014 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
+ * @version    $Id$
  */
 
 /** Zend_Loader */
@@ -29,7 +30,7 @@ require_once 'Zend/Controller/Dispatcher/Abstract.php';
  * @category   Zend
  * @package    Zend_Controller
  * @subpackage Dispatcher
- * @copyright  Copyright (c) 2005-2008 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright  Copyright (c) 2005-2014 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  */
 class Zend_Controller_Dispatcher_Standard extends Zend_Controller_Dispatcher_Abstract
@@ -205,7 +206,13 @@ class Zend_Controller_Dispatcher_Standard extends Zend_Controller_Dispatcher_Abs
             return false;
         }
 
-        if (class_exists($className, false)) {
+        $finalClass  = $className;
+        if (($this->_defaultModule != $this->_curModule)
+            || $this->getParam('prefixDefaultModule'))
+        {
+            $finalClass = $this->formatClassName($this->_curModule, $className);
+        }
+        if (class_exists($finalClass, false)) {
             return true;
         }
 
@@ -250,6 +257,19 @@ class Zend_Controller_Dispatcher_Standard extends Zend_Controller_Dispatcher_Abs
         }
 
         /**
+         * If we're in a module or prefixDefaultModule is on, we must add the module name
+         * prefix to the contents of $className, as getControllerClass does not do that automatically.
+         * We must keep a separate variable because modules are not strictly PSR-0: We need the no-module-prefix
+         * class name to do the class->file mapping, but the full class name to insantiate the controller
+         */
+        $moduleClassName = $className;
+        if (($this->_defaultModule != $this->_curModule)
+            || $this->getParam('prefixDefaultModule'))
+        {
+            $moduleClassName = $this->formatClassName($this->_curModule, $className);
+        }
+
+        /**
          * Load the controller class file
          */
         $className = $this->loadClass($className);
@@ -258,12 +278,12 @@ class Zend_Controller_Dispatcher_Standard extends Zend_Controller_Dispatcher_Abs
          * Instantiate controller with request, response, and invocation
          * arguments; throw exception if it's not an action controller
          */
-        $controller = new $className($request, $this->getResponse(), $this->getParams());
-        if (!($controller instanceof Zend_Controller_Action_Interface) && 
+        $controller = new $moduleClassName($request, $this->getResponse(), $this->getParams());
+        if (!($controller instanceof Zend_Controller_Action_Interface) &&
             !($controller instanceof Zend_Controller_Action)) {
             require_once 'Zend/Controller/Dispatcher/Exception.php';
             throw new Zend_Controller_Dispatcher_Exception(
-                'Controller "' . $className . '" is not an instance of Zend_Controller_Action_Interface'
+                'Controller "' . $moduleClassName . '" is not an instance of Zend_Controller_Action_Interface'
             );
         }
 
@@ -295,7 +315,6 @@ class Zend_Controller_Dispatcher_Standard extends Zend_Controller_Dispatcher_Abs
                     $curObLevel = ob_get_level();
                 } while ($curObLevel > $obLevel);
             }
-
             throw $e;
         }
 
@@ -334,7 +353,9 @@ class Zend_Controller_Dispatcher_Standard extends Zend_Controller_Dispatcher_Abs
         $dispatchDir = $this->getDispatchDirectory();
         $loadFile    = $dispatchDir . DIRECTORY_SEPARATOR . $this->classToFilename($className);
 
-        if (!include_once $loadFile) {
+        if (Zend_Loader::isReadable($loadFile)) {
+            include_once $loadFile;
+        } else {
             require_once 'Zend/Controller/Dispatcher/Exception.php';
             throw new Zend_Controller_Dispatcher_Exception('Cannot load controller class "' . $className . '" from file "' . $loadFile . "'");
         }

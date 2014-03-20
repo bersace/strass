@@ -15,8 +15,9 @@
  * @category   Zend
  * @package    Zend_View
  * @subpackage Helper
- * @copyright  Copyright (c) 2005-2008 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright  Copyright (c) 2005-2014 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
+ * @version    $Id$
  */
 
 
@@ -32,7 +33,7 @@ require_once 'Zend/View/Helper/FormElement.php';
  * @category   Zend
  * @package    Zend_View
  * @subpackage Helper
- * @copyright  Copyright (c) 2005-2008 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright  Copyright (c) 2005-2014 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  */
 class Zend_View_Helper_FormSelect extends Zend_View_Helper_FormElement
@@ -51,6 +52,9 @@ class Zend_View_Helper_FormSelect extends Zend_View_Helper_FormElement
      * multiple-select elements).
      *
      * @param array|string $attribs Attributes added to the 'select' tag.
+     * the optional 'optionClasses' attribute is used to add a class to
+     * the options within the select (associative array linking the option
+     * value to the desired class)
      *
      * @param array $options An array of key-value pairs where the array
      * key is the radio value, and the array value is the radio text.
@@ -66,7 +70,7 @@ class Zend_View_Helper_FormSelect extends Zend_View_Helper_FormElement
         $info = $this->_getInfo($name, $value, $attribs, $options, $listsep);
         extract($info); // name, id, value, attribs, options, listsep, disable
 
-        // force $value to array so we can compare multiple values to multiple 
+        // force $value to array so we can compare multiple values to multiple
         // options; also ensure it's a string for comparison purposes.
         $value = array_map('strval', (array) $value);
 
@@ -93,8 +97,15 @@ class Zend_View_Helper_FormSelect extends Zend_View_Helper_FormElement
                 $multiple = '';
             }
             unset($attribs['multiple']);
-        } 
+        }
 
+        // handle the options classes
+        $optionClasses = array();
+        if (isset($attribs['optionClasses'])) {
+            $optionClasses = $attribs['optionClasses'];
+            unset($attribs['optionClasses']);
+        }
+        
         // now start building the XHTML.
         $disabled = '';
         if (true === $disable) {
@@ -122,15 +133,18 @@ class Zend_View_Helper_FormSelect extends Zend_View_Helper_FormElement
                 if (null !== $translator) {
                     $opt_value = $translator->translate($opt_value);
                 }
+                $opt_id = ' id="' . $this->view->escape($id) . '-optgroup-'
+                        . $this->view->escape($opt_value) . '"';
                 $list[] = '<optgroup'
                         . $opt_disable
+                        . $opt_id
                         . ' label="' . $this->view->escape($opt_value) .'">';
                 foreach ($opt_label as $val => $lab) {
-                    $list[] = $this->_build($val, $lab, $value, $disable);
+                    $list[] = $this->_build($val, $lab, $value, $disable, $optionClasses);
                 }
                 $list[] = '</optgroup>';
             } else {
-                $list[] = $this->_build($opt_value, $opt_label, $value, $disable);
+                $list[] = $this->_build($opt_value, $opt_label, $value, $disable, $optionClasses);
             }
         }
 
@@ -147,18 +161,27 @@ class Zend_View_Helper_FormSelect extends Zend_View_Helper_FormElement
      * @param string $label Options Label
      * @param array  $selected The option value(s) to mark as 'selected'
      * @param array|bool $disable Whether the select is disabled, or individual options are
+     * @param array $optionClasses The classes to associate with each option value
      * @return string Option Tag XHTML
      */
-    protected function _build($value, $label, $selected, $disable)
+    protected function _build($value, $label, $selected, $disable, $optionClasses = array())
     {
         if (is_bool($disable)) {
             $disable = array();
         }
 
-        $opt = '<option'
-             . ' value="' . $this->view->escape($value) . '"'
-             . ' label="' . $this->view->escape($label) . '"';
+        $class = null;
+        if (array_key_exists($value, $optionClasses)) {
+            $class = $optionClasses[$value];
+        }
 
+
+        $opt = '<option'
+             . ' value="' . $this->view->escape($value) . '"';
+
+             if ($class) {
+             $opt .= ' class="' . $class . '"';
+         }
         // selected?
         if (in_array((string) $value, $selected)) {
             $opt .= ' selected="selected"';
