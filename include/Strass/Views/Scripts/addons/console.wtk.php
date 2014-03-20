@@ -11,7 +11,7 @@ if ($user->username == 'nobody') {
   $l = $section->addList();
   $l->addItem($this->lien(array('controller'	=> 'membres',
 				'action'	=> 'inscription'),
-			  "Inscription", true))->addFlags('inscription');
+			  "S'enregistrer", true))->addFlags('inscription');
 
   $l->addItem($this->lien(array('controller'	=> 'membres',
 				'action'	=> 'index'),
