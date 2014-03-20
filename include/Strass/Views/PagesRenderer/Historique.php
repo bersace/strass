@@ -14,6 +14,8 @@ abstract class Strass_Views_PagesRenderer_Historique extends Wtk_Pages_Renderer
     $type = $unite->findParentTypesUnite();
     if ($chef == '##INCONNU##')
       return new Wtk_Emphasis('chef inconnu');
+    if (is_string($chef))
+      return new Wtk_Emphasis($chef);
     else if (is_null($chef)) {
       switch($type->slug) {
       case 'troupe':

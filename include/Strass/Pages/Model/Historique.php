@@ -8,10 +8,25 @@ abstract class Strass_Pages_Model_Historique extends Wtk_Pages_Model_Assoc
   {
     $this->unite = $unite;
     $annees = $unite->getAnneesOuverte();
-    if ($force && !array_key_exists($annee, $annees)) {
-      $annees[$annee] = '##INCONNU##';
+    if ($force) {
+      if (!array_key_exists($annee, $annees))
+	$annees[$annee] = '##INCONNU##';
       ksort($annees);
+
+      $keys = array_keys($annees);
+      sort($keys);
+      $precedente = current($keys) - 1;
+      $annees[$precedente] = 'précédente';
+      $suivante = end($keys) + 1;
+      $annees[$suivante] = 'suivante';
+      ksort($annees);
+
+      /* Filtrer les années futures */
+      foreach($annees as $annee => $chef)
+	if ($annee > date('Y', time() - 120 * 24 * 3600))
+	  unset($annees[$annee]);
     }
+
     parent::__construct($annees, $annee);
   }
 
