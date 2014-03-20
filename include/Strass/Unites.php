@@ -169,7 +169,7 @@ class Unite extends Strass_Db_Table_Row_Abstract implements Zend_Acl_Resource_In
     return trim($this->getTypeName()." ".$this->nom);
   }
 
-  function getImage($slug = null, $test = true)
+  function getCheminImage($slug = null, $test = true)
   {
     $slug = $slug ? $slug : $this->slug;
     $image = 'data/unites/'.$slug.'.png';
@@ -178,28 +178,12 @@ class Unite extends Strass_Db_Table_Row_Abstract implements Zend_Acl_Resource_In
 
   function storeImage($path)
   {
-    if ($fichier = $this->getImage())
-      unlink($fichier);
+    Strass_Vignette::reduire($path, $this->getCheminImage(null, false));
+  }
 
-    $fichier = $this->getImage(null, false);
-    $dossier = dirname($fichier);
-    if (!file_exists($dossier))
-      mkdir($dossier, 0700, true);
-
-    $config = Zend_Registry::get('config');
-
-    $image = new Imagick;
-    $image->setBackgroundColor(new ImagickPixel('transparent'));
-    $image->readImage($path);
-    $width = $image->getImageWidth();
-    $height = $image->getImageHeight();
-
-    $MAX = $config->get('photo/taille_vignette', 256);
-    if (min($width, $height) > $MAX)
-      $image->scaleImage($MAX, $MAX, true);
-
-    $image->setImageFormat('png');
-    $image->writeImage($fichier);
+  function supprimerImage()
+  {
+    @unlink($this->getCheminImage());
   }
 
   function getWiki($slug = null, $test = true)
@@ -911,7 +895,7 @@ class Unite extends Strass_Db_Table_Row_Abstract implements Zend_Acl_Resource_In
 
     Zend_Registry::get('cache')->remove('strass_acl');
 
-    if ($i = $this->getImage())
+    if ($i = $this->getCheminImage())
       unlink($i);
 
     if ($w = $this->getWiki())
@@ -923,8 +907,8 @@ class Unite extends Strass_Db_Table_Row_Abstract implements Zend_Acl_Resource_In
     $this->clearCacheSousUnites();
     Zend_Registry::get('cache')->remove('strass_acl');
 
-    if ($i = $this->getImage($this->_cleanData['slug']))
-      rename($i, $this->getImage(null, false));
+    if ($i = $this->getCheminImage($this->_cleanData['slug']))
+      rename($i, $this->getCheminImage(null, false));
 
     if ($w = $this->getWiki($this->_cleanData['slug']))
       rename($w, $this->getWiki());

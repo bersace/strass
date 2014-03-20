@@ -94,7 +94,7 @@ class Strass_Views_Unite_Index_BlocGenerator
   }
 }
 
-$src = $this->unite->getImage();
+$src = $this->unite->getCheminImage();
 if ($this->presentation || $src) {
   $s = $this->document->addSection('presentation');
 

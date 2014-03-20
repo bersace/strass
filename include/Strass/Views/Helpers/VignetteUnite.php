@@ -17,10 +17,8 @@ class Strass_View_Helper_VignetteUnite
     $this->view->document->addStyleComponents('vignette');
     $label = $label ? $label : $unite->getName();
 
-    $src = $unite->getImage();
-    if ($src) {
+    if ($src = $unite->getCheminImage())
       $image = new Wtk_Image($src, "Photo d'unité", $label);
-    }
     else {
       $photo = $unite->findPhotoAleatoire($annee);
       if (!$photo)
