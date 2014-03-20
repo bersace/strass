@@ -1,10 +1,8 @@
 <?php
 
 class Strass_Vignette {
-  static function reduire($src, $dst)
+  static function charger($src, $dst)
   {
-    $config = Zend_Registry::get('config');
-
     if (file_exists($dst))
       unlink($dst);
 
@@ -15,12 +13,35 @@ class Strass_Vignette {
     $image = new Imagick;
     $image->setBackgroundColor(new ImagickPixel('transparent'));
     $image->readImage($src);
+
+    return $image;
+  }
+
+  static protected function _estGrande($image)
+  {
+    $config = Zend_Registry::get('config');
     $width = $image->getImageWidth();
     $height = $image->getImageHeight();
-
     $MAX = $config->get('photo/taille_vignette', 256);
-    if (min($width, $height) > $MAX)
+    return min(max($width, $height) > $MAX) ? $MAX : null;
+  }
+
+  static function reduire($src, $dst)
+  {
+    $image = self::charger($src, $dst);
+    if ($MAX = self::_estGrande($image))
       $image->scaleImage($MAX, $MAX, true);
+
+    $image->setImageFormat('png');
+    $image->writeImage($dst);
+  }
+
+  static function decouper($src, $dst)
+  {
+    $image = self::charger($src, $dst);
+
+    if ($MAX = self::_estGrande($image))
+      $image->cropThumbnailImage($MAX, $MAX);
 
     $image->setImageFormat('png');
     $image->writeImage($dst);

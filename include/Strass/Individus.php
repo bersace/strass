@@ -264,34 +264,7 @@ class Individu extends Strass_Db_Table_Row_Abstract implements Zend_Acl_Resource
 
   function storeImage($path)
   {
-    if ($fichier = $this->getImage())
-      unlink($fichier);
-
-    $fichier = $this->getImage(null, false);
-
-    $dossier = dirname($fichier);
-    if (!file_exists($dossier))
-      mkdir($dossier, 0700, true);
-
-    $config = Zend_Registry::get('config');
-
-    $photo = new Imagick($path);
-    $width = $photo->getImageWidth();
-    $height = $photo->getImageHeight();
-
-    $image = new Imagick;
-    $image->newImage($width, $height, "white", 'jpeg');
-    $image->setImageCompression(Imagick::COMPRESSION_JPEG);
-    $image->setImageCompressionQuality($config->get('photo/qualite', 85));
-    $image->compositeImage($photo, Imagick::COMPOSITE_OVER, 0, 0);
-
-    $MAX = $config->get('photo/taille_vignette', 256);
-    if (min($width, $height) > $MAX)
-      $image->cropThumbnailImage($MAX, $MAX);
-
-    $image->writeImage($fichier);
-
-    unset($image);
+    Strass_Vignette::decouper($path, $this->getCheminImage(null, false));
   }
 
   function findAppartenances($s=null)
@@ -400,7 +373,7 @@ class Individu extends Strass_Db_Table_Row_Abstract implements Zend_Acl_Resource
     return $t->fetchAll($s);
   }
 
-  function getImage($slug = null, $test = true)
+  function getCheminImage($slug = null, $test = true)
   {
     $ind = Zend_Registry::get('user');
     if (!$ind)
@@ -480,14 +453,14 @@ class Individu extends Strass_Db_Table_Row_Abstract implements Zend_Acl_Resource
 
   function _postDelete()
   {
-    if ($i = $this->getImage())
+    if ($i = $this->getCheminImage())
       unlink($i);
   }
 
   function _postUpdate()
   {
-    if ($i = $this->getImage($this->_cleanData['id']))
-      rename($i, $this->getImage());
+    if ($i = $this->getCheminImage($this->_cleanData['id']))
+      rename($i, $this->getCheminImage());
   }
 }
 

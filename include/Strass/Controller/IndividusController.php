@@ -124,13 +124,18 @@ class IndividusController extends Strass_Controller_Action
 
 	$individu->fixe = $this->_helper->Telephone($individu->fixe);
 	$individu->portable = $this->_helper->Telephone($individu->portable);
-	$individu->slug = $t->createSlug(wtk_strtoid($individu->getFullname(false, false)), $individu->slug);
+	$individu->slug = $t->createSlug($individu->getFullname(false, false), $individu->slug);
 	$individu->save();
 
 	$image = $m->getInstance('image');
 	if ($image->isUploaded()) {
 	  $tmp = $image->getTempFilename();
-	  $individu->storeImage($tmp);
+	  try {
+	    $individu->storeImage($tmp);
+	  }
+	  catch (ImagickException $e) {
+	    throw new Wtk_Form_Model_Exception($e->getMessage(), $image);
+	  }
 	}
 
 	$this->logger->info("Fiche individu mis-à-jour",
@@ -141,6 +146,11 @@ class IndividusController extends Strass_Controller_Action
 	$this->redirectSimple('fiche', 'individus', null,
 			      array('individu' => $individu->slug));
 
+      }
+      catch (Wtk_Form_Model_Exception $e) {
+	$db->rollBack();
+	$m->errors[] = $e;
+	return;
       }
       catch (Exception $e) {
 	$db->rollBack();
