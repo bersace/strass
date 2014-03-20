@@ -9,26 +9,25 @@ class JournauxController extends Strass_Controller_Action
     $this->view->journal = $j = $this->_helper->Journal();
     $this->formats('rss', 'atom');
 
-    $s = $j->selectArticles();
-    $s->where('public = 1');
+    $this->view->select = $s = $j->selectArticles()->where('public = 1');
     $this->view->model = new Strass_Pages_Model_Rowset($s, 7, $this->_getParam('page'));
 
-    $this->actions->append("Écrire un article",
-			   array('action' => 'ecrire',
-				 'journal' => $j->slug),
-			   array(null, $j));
-    $this->actions->append("Éditer",
-			   array('action' => 'editer',
-				 'journal' => $j->slug),
-			   array(null, $j));
-    $brouillons = $j->findArticles('public != 1');
-    if ($brouillons->count()) {
-      $this->actions->insert(0,
-			     "Brouillons",
-			     array('action' => 'brouillons',
-				   'journal' => $j->slug),
-			     array(null, $j));
-    }
+    /* $this->actions->append("Écrire un article", */
+    /* 			   array('action' => 'ecrire', */
+    /* 				 'journal' => $j->slug), */
+    /* 			   array(null, $j)); */
+    /* $this->actions->append("Éditer", */
+    /* 			   array('action' => 'editer', */
+    /* 				 'journal' => $j->slug), */
+    /* 			   array(null, $j)); */
+    /* $brouillons = $j->countRows($j->selectArticles()->where('public != 1')); */
+    /* if ($brouillons->count()) { */
+    /*   $this->actions->insert(0, */
+    /* 			     "Brouillons", */
+    /* 			     array('action' => 'brouillons', */
+    /* 				   'journal' => $j->slug), */
+    /* 			     array(null, $j)); */
+    /* } */
   }
 
   function fonderAction()

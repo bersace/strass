@@ -50,9 +50,7 @@ class Journal extends Strass_Db_Table_Row_Abstract implements Zend_Acl_Resource_
     $s = $t->select()
       ->setIntegrityCheck(false)
       ->from('article')
-      ->join('commentaire', 'commentaire.id = article.commentaires', array())
-      ->where('article.journal = ?', $this->id)
-      ->order('commentaire.date DESC');
+      ->where('article.journal = ?', $this->id);
     return $s;
   }
 
@@ -104,16 +102,19 @@ class Articles extends Strass_Db_Table_Abstract
   function fetchAll($where = NULL, $order = NULL, $count = NULL, $offset = NULL)
   {
     $args = func_get_args();
-    if ($args && $args[0] instanceof Zend_Db_Table_Select)
+    if ($args && $args[0] instanceof Zend_Db_Table_Select) {
+      $args[0] = clone $args[0];
       $this->_ordonner($args[0]);
+    }
     return call_user_func_array(array('parent', 'fetchAll'), $args);
   }
 
   protected function _ordonner($select)
   {
     $select->distinct()
-      ->join('commentaire', 'commentaire.id = article.commentaires', array())
-      ->order('commentaire.date DESC');
+      ->join(array('strass_article_ordre' => 'commentaire'),
+	     'strass_article_ordre.id = article.commentaires'."\n", array())
+      ->order('strass_article_ordre.date DESC');
   }
 }
 
