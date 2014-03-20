@@ -11,12 +11,12 @@ class Strass_Views_PagesRenderer_Calendrier extends Strass_Views_PagesRenderer_H
       return $s;
     }
 
-    $ss = $s->addSection('calendrier');
-
     if($future)
-      $ss->addDialog()->addFlags('warn')
+      $s->addDialog()->addFlags('warn')
 	->addText("**La présence de chacun est primordiale** pour le bon déroulement ".
 		  "des activités et pour la progression de tous.");
+
+    $ss = $s->addSection('calendrier');
 
     $tam = new Wtk_Table_Model('id', 'slug', 'type', 'lieu', 'date', 'intitule');
 
