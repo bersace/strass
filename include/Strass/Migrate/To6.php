@@ -41,19 +41,19 @@ INSERT INTO unite_type
 VALUES
 ('groupe',		'Groupe',		NULL,	0,  'm', 30, 130),
 ('aines',		'Communauté des aînés',	1,	1,  NULL, NULL, NULL),
-('clan',		'Clan',			1,	0,  'h', 17, 30),
+('clan',		'Clan',			1,	0,  'h', 16, 130),
 ('eqclan',		'Équipe',		3,	0,  'h', 16, 30),
-('feu',			'Feu',			1,	0,  'f', 17, 30),
+('feu',			'Feu',			1,	0,  'm', 16, 130),
 ('eqfeu',		'Équipe',		5,	0,  'f', 16, 30),
-('troupe',		'Troupe',		1,	0,  'h', 18, 30),
+('troupe',		'Troupe',		1,	0,  'h', 18, 130),
 ('hp',			'Haute-Patrouille',	7,	1,  NULL, NULL, NULL),
 ('patrouille',		'Patrouille',		7,	0,  'h', 11, 17),
-('compagnie',		'Compagnie',		1,	0,  'f', 18, 30),
+('compagnie',		'Compagnie',		1,	0,  'm', 18, 130),
 ('he',			'Haute-Équipe',		10,	1,  NULL, NULL, NULL),
 ('equipe',		'Équipe',		10,	0,  'f', 11, 17),
-('meute',		'Meute',		1,	0,  'f', 17, 30),
+('meute',		'Meute',		1,	0,  'm', 17, 130),
 ('sizloup',		'Sizaine',		13,	0,  'h', 7, 12),
-('ronde',		'Ronde',		1,	0,  'f', 17, 30),
+('ronde',		'Ronde',		1,	0,  'm', 17, 130),
 ('sizjeannette',	'Sizaine',		15,	0,  'f', 7, 12);
 
 UPDATE unite_type SET accr_we = 'WEG', nom_we = 'Weekend de groupe' WHERE slug = 'groupe';

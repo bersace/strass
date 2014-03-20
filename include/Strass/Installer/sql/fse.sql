@@ -14,19 +14,19 @@ INSERT INTO unite_type
 (slug, nom, parent, virtuelle, sexe, age_min, age_max)
 VALUES
 ('groupe',		'Groupe',		NULL,	0,  'm', 30, 130),
-('clan',		'Clan',			NULL,	0,  'h', 17, 50),
+('clan',		'Clan',			NULL,	0,  'h', 17, 130),
 ('eqclan',		'Équipe',		2,	0,  'h', 16, 30),
-('feu',			'Feu',			NULL,	0,  'f', 17, 30),
+('feu',			'Feu',			NULL,	0,  'm', 17, 130),
 ('eqfeu',		'Équipe',		4,	0,  'f', 16, 30),
-('troupe',		'Troupe',		1,	0,  'h', 18, 30),
+('troupe',		'Troupe',		1,	0,  'h', 18, 130),
 ('hp',			'Haute-Patrouille',	6,	1,  NULL, NULL, NULL),
 ('patrouille',		'Patrouille',		6,	0,  'h', 11, 17),
-('compagnie',		'Compagnie',		1,	0,  'f', 18, 30),
+('compagnie',		'Compagnie',		1,	0,  'm', 18, 130),
 ('hpc',			'Haute-Patrouille',	9,	1,  NULL, NULL, NULL),
 ('patguide',		'Patrouille',		9,	0,  'f', 11, 17),
-('meute',		'Meute',		1,	0,  'm', 17, 30),
+('meute',		'Meute',		1,	0,  'm', 17, 130),
 ('sizloup',		'Sizaine',		12,	0,  'h', 7, 12),
-('clairiere',		'Clairière',		1,	0,  'f', 17, 30),
+('clairiere',		'Clairière',		1,	0,  'm', 17, 130),
 ('sizlouvette',		'Sizaine',		14,	0,  'f', 7, 12);
 
 UPDATE unite_type SET accr_we = 'WEG', nom_we = 'Weekend de groupe' WHERE slug = 'groupe';
