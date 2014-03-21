@@ -137,7 +137,7 @@ class CHMOD(FTPOperation):
 
 class FTPEntry(object):
     log = logging.getLogger('strass.ftp')
-    exclude = ['.*', '*~', 'zend_cache*', '*.xcf', '*.scss', 'README', 'LICENSE', 'local']
+    exclude = ['.gitignore', '*~', 'zend_cache*', '*.xcf', '*.scss', 'README', 'LICENSE', 'local']
 
     TYPE_UNKNOWN = FileType('Inconnu')
     TYPE_FILE = FileType('Fichier')
@@ -767,7 +767,7 @@ class upgrade(object):
         ftp = FTPManager()
         ftp.connect(config, args.production)
         self.log.info("Préparation de la mise à jour")
-        ftp.mirror('index.php', '500.html',
+        ftp.mirror('.htaccess', 'index.php', '500.html',
                    'include/Strass/', 'include/Wtk/', 'data/styles/', 'include/templates/',
                    'data/scripts/wtk/')
         self.log.info("Démarrage de la mise à jour")
@@ -791,7 +791,7 @@ class mirror(object):
         ftp = FTPManager()
         ftp.connect(config, args.production)
         self.log.info("Préparation de la mise à jour")
-        ftp.mirror('index.php', '500.html', 'private/')
+        ftp.mirror('.htaccess', 'index.php', '500.html', 'private/')
         ftp.chmod(0700, 'private/')
         if args.partial:
             ftp.mirror('include/Strass/', 'include/Wtk/', 'include/templates/',
