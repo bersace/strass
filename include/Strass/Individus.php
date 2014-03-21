@@ -70,8 +70,12 @@ class Individu extends Strass_Db_Table_Row_Abstract implements Zend_Acl_Resource
     $this->initPrivileges($acl, $this->findUnites());
 
     $acl->allow('membres', $this, 'fiche');
-    $acl->deny(NULL, $this, 'voir-nom');
+    if ($app = $this->findAppartenances()->current()) {
+      if ($app->findParentRoles()->nom_jungle)
+	$acl->deny(NULL, $this, 'voir-nom');
+    }
     $acl->allow('membres', $this, 'voir-nom');
+
     if ($acl->hasRole($this)) {
       $acl->allow($this, $this, array('editer', 'desinscrire'));
       $acl->deny($this, $this, 'desinscrire');
@@ -203,13 +207,14 @@ class Individu extends Strass_Db_Table_Row_Abstract implements Zend_Acl_Resource
       return trim(wtk_ucfirst($this->prenom)." ".$this->capitalizedLastname($compact));
     else if ($compute && $app = $this->findAppartenances()->current()) {
       $role = $app->findParentRoles();
-      $mineur = $role->findParentTypesUnite()->age_min < 17;
       if ($role->nom_jungle)
 	/* Branche jaune, préférer Akéla, Guillemette pour les inconnus */
 	return $app->getTitre();
-      else
+      else {
 	/* Prénom et initiales des mineurs pour les visiteurs*/
+	$mineur = $role->findParentTypesUnite()->age_min < 17;
 	return trim(wtk_ucfirst($this->prenom)." ".$this->capitalizedLastname($compact || $mineur));
+      }
     }
     else
       /* dans le doute, on masque plutôt que de fuiter un prénom de cheftaine à un louveteau*/
@@ -375,9 +380,6 @@ class Individu extends Strass_Db_Table_Row_Abstract implements Zend_Acl_Resource
 
   function getCheminImage($slug = null, $test = true)
   {
-    $ind = Zend_Registry::get('user');
-    if (!$ind)
-      return null;
     $slug = $slug ? $slug : $this->slug;
     $image = 'data/avatars/'.$slug.'.png';
     return !$test || is_readable($image) ? $image : null;

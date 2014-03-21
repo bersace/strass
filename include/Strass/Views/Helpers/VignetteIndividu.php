@@ -26,7 +26,7 @@ class Strass_View_Helper_VignetteIndividu
     $item = new Wtk_Container;
     $section = $item->addSection()
       ->addFlags('wrapper');
-    if ($src = $individu->getCheminImage())
+    if ($this->view->assert(null, $individu, 'voir-nom') && $src = $individu->getCheminImage())
       $section->addImage($src, $individu->getFullname(), $individu->getFullname());
     else
       $section->addParagraph("Pas de photo")->addFlags('empty', 'image');
