@@ -12,10 +12,11 @@ $details = $dialog->addSection('details', 'Détails');
 foreach ($this->errors as $i => $error) {
   $this->document->addFlags('http-'.$error->getCode());
   $titre = null;
-  if ($error->getCode() == 403) {
+  if (in_array($error->getCode(), array(401, 403))) {
     $dialog->title = $titre = "Accès refusé";
     $dialog->addFlags('forbidden');
     $aide->addParagraph($error->getMessage());
+    $aide->addParagraph($error->aide);
     if (Zend_Registry::get('user')->isMember()) {
       $config = Zend_Registry::get('config');
       $aide->addText("Si vous devriez avoir accès au site, ".

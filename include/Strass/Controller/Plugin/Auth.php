@@ -155,18 +155,8 @@ class Strass_Controller_Plugin_Auth extends Zend_Controller_Plugin_Abstract
       $this->http->setResponse($this->getResponse());
       $result = $auth->authenticate($this->http);
 
-      if (!$result->isValid()) {
-	// Close session, if started
-	if (class_exists('Zend_Session', false) && Zend_Session::isStarted()) {
-	  Zend_Session::writeClose();
-	} elseif (isset($_SESSION)) {
-	  session_write_close();
-	}
-
-	$this->getResponse()->sendHeaders();
-	error_log('EXIT 401');
-	exit();
-      }
+      if (!$result->isValid())
+	return false;
     }
     return $this->getUser();
   }

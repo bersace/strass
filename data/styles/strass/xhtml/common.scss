@@ -130,7 +130,7 @@ a {
 	    background-image: url("illustrations/perdu.png");
 	}
 
-	&.http-403 {
+	&.http-403, &.http-401 {
 	    background-image: url("illustrations/commissaire.png");
 	    background-size: auto 28em;
 	    padding-bottom: 30em;

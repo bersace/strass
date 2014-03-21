@@ -107,6 +107,11 @@ abstract class Strass_Controller_Action extends Zend_Controller_Action implement
     if (!$role->isMember() && $message) {
       /* Déclencher l'authentification HTTP Digest */
       $res = $this->_helper->Auth->http();
+      /* si pas d'auth HTTP, en génère une page d'erreur, avec le code
+	 401. Si le popup d'auth est annulé, c'est la page d'erreur
+	 401 qui est affichée. */
+      if ($res === false)
+	throw new Strass_Controller_Action_Exception_Authentification($message);
       $role = Zend_Registry::get('user');
     }
     $acl = Zend_Registry::get('acl');
