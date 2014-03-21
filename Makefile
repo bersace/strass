@@ -1,8 +1,9 @@
 SCSS=$(shell find data/styles/ -name "*.scss")
 CSS=$(patsubst %.scss,%.css,$(SCSS))
-INSTDB=include/Strass/Installer/sql/strass.sqlite
+SUFSQL=include/Strass/Installer/sql/dump-suf.sql
+FSESQL=include/Strass/Installer/sql/dump-fse.sql
 
-all: $(CSS) $(INSTDB)
+all: $(CSS) $(SUFSQL) $(FSESQL)
 
 help:
 	less maint/DOC
@@ -20,17 +21,24 @@ maintenance.html: maint/scripts/maintenance $(CSS)
 
 .INTERMEDIATE: 500.html
 
-$(INSTDB): include/Strass/Installer/sql/schema.sql
-	rm -vf $@
-	sqlite3 -batch $@ ".read $<"
+$(SUFDUMP): $(SUFDB)
+	sqlite3 $< .dump > $@
 
-suf.sqlite: $(INSTDB) include/Strass/Installer/sql/suf.sql
-	cp $< $@
-	sqlite3 $@ ".read include/Strass/Installer/sql/suf.sql"
+$(SUFSQL): include/Strass/Installer/sql/schema.sql include/Strass/Installer/sql/suf.sql
+	rm -vf $@.db
+	for f in $^ ; do sqlite3 -batch $@.db ".read $$f"; done
+	sqlite3 $@.db .dump > $@
+	rm -vf $@.db
+
+$(FSESQL): include/Strass/Installer/sql/schema.sql include/Strass/Installer/sql/suf.sql
+	rm -vf $@.db
+	for f in $^ ; do sqlite3 -batch $@.db ".read $$f"; done
+	sqlite3 $@.db .dump > $@
+	rm -vf $@.db
 
 clean:
 	rm -vf $(CSS)
-	rm -vf $(INSTDB)
+	rm -vf $(SUFSQL) $(FSESQL)
 	rm -vf maintenance.html 500.html
 	rm -vf private/cache/*
 

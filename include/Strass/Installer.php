@@ -63,7 +63,6 @@ class Strass_Installer
 		     'system' => array ('short_title' => null,
 					'mouvement' => $this->data['site']['mouvement'],
 					'realm' => $this->generateRealm(),
-					'realm_suffixe' => '',
 					'duree_connexion' => 2678400,
 					'admin' => $this->data['admin']['adelec'],
 					'mail' => array('enable' => true,
@@ -81,13 +80,17 @@ class Strass_Installer
   {
     /* optimisation car la création du schéma peut prendre pas mal de
        temps, et nous somme online */
-    copy($this->sql_dir . '/strass.sqlite', $this->dbname);
-    /* injection des données spécifique au mouvement */
-    $sql = @file_get_contents($this->sql_dir . $this->data['site']['mouvement'] . '.sql');
-    if ($sql === false)
-      throw new Exception("Fichier ${name}.sql manquant");
+    /* copy($this->sql_dir . '/'.$this->data['site']['mouvement'].'.sqlite', $this->dbname); */
+    @unlink($this->dbname);
     $db = Strass_Db::setup($this->dbname);
-    $db->exec($sql);
+
+    $dump = $this->sql_dir . '/dump-' .$this->data['site']['mouvement']. '.sql';
+    if (!file_exists($dump))
+      throw new Exception("Pas de données pour ce mouvement !");
+    $sql = file_get_contents($dump);
+    $snippets = array_filter(explode(";\n", $sql));
+    foreach($snippets as $snippet)
+      $db->exec($snippet);
 
     Strass_Version::save(self::VERSION);
 
