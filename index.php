@@ -46,6 +46,8 @@ try {
 		'annee'      => array('([[:digit:]]{4})', null));
 
   $pattern = '[%controller%[/%action%][.%format%][/%annee%]*]';
+  if ($prefix = @getenv('STRASS_ROUTE_PREFIX'))
+    $pattern = $prefix.$pattern;
   $opattern = null;
   $route = new Strass_Controller_Router_Route_Uri($vars, $pattern, $opattern);
   $routeur->addRoute('default', $route);
