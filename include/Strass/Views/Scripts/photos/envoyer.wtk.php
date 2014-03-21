@@ -12,7 +12,7 @@ else {
   $f->addHidden('activite');
   $f->addParagraph()
     ->addFlags('info')
-    ->addInline("Vous allez envoyer une photos pour l'activité ".$this->activite.".");
+    ->addInline("Vous envoyez une photo pour **".$this->activite."**.");
  }
 $f->addFile('photo');
 $f->addEntry('titre', 32);

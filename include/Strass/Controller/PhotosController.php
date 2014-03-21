@@ -59,8 +59,8 @@ class PhotosController extends Strass_Controller_Action
       $as = $individu->findActivites($annee);
 
       if (count($as) == 1) {
-	$this->view->activite = current($as);
-	$this->_helper->Album->setBranche($as);
+	$this->view->activite = $as->current();
+	$this->_helper->Album->setBranche($this->view->activite);
       }
     }
 
