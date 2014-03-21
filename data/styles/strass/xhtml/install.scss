@@ -1,9 +1,17 @@
 /*-*- css -*-*/
 
-#body {
+@import 'lib';
+
+.document #body {
     background: url("illustrations/ratelier.png") 1em 2em no-repeat;
     background-size: auto 16em;
     padding-top: 6em;
+}
+
+
+body.development div#body {
+    background: url("illustrations/travaux.png") 1em 10em no-repeat;
+    background-size: auto .7 * $taille_logo;
 }
 
 form.site {
