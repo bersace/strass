@@ -91,8 +91,7 @@ class Strass_Controller_Action_Helper_Unite extends Zend_Controller_Action_Helpe
 		      array('controller' => 'activites',
 			    'action' => 'calendrier',
 			    'unite' => $unite->slug),
-		      array(null, $unite, 'calendrier'),
-		      true);
+		      array(), true);
 
     $connexes->append("Documents",
 		      array('controller' => 'documents',

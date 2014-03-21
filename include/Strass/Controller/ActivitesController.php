@@ -21,8 +21,7 @@ class ActivitesController extends Strass_Controller_Action
     $u = current($i->findUnites());
 
     if ($u)
-      $this->redirectUrl(array('action' => 'calendrier',
-			       'unite' => $u->slug));
+      $this->redirectUrl(array('action' => 'calendrier', 'unite' => $u->slug));
     else
       throw new Strass_Controller_Action_Exception_Notice("Vous n'appartenez à aucune unité", 404,
 							  "Impossible de vous présenter vos activités !");
@@ -38,10 +37,6 @@ class ActivitesController extends Strass_Controller_Action
     $this->metas(array('DC.Title' => 'Calendrier '.$annee,
 		       'DC.Title.alternative' => 'Calendrier '.$annee.
 		       ' – '.$u->getFullname()));
-
-    if ($annee >= date('Y', time()-243*24*60*60))
-      $this->assert(null, $u, 'calendrier',
-		    "Vous n'avez pas le droit de voir le calendrier de cette unité.");
 
     $this->actions->append("Nouvelle activité",
 			   array('action' => 'prevoir'),

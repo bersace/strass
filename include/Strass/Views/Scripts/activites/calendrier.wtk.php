@@ -21,6 +21,9 @@ class Strass_Views_PagesRenderer_Calendrier extends Strass_Views_PagesRenderer_H
     $tam = new Wtk_Table_Model('id', 'slug', 'type', 'lieu', 'date', 'intitule');
 
     foreach($activites as $a) {
+      if ($a->isFuture() && !$this->view->assert(null, $a, 'voir'))
+	continue;
+
       $tam->append($a->id, $a->slug,  $a->getIntitule(), $a->lieu,
 		   $a->getDate(), $a->getIntituleComplet());
     }
