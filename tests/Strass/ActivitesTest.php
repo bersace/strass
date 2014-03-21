@@ -36,7 +36,7 @@ class ActivitesTest extends PHPUnit_Framework_TestCase
 		       'Camp de Pâques Confrécourt 2014', 'Camp de Pâques Confrécourt', 'Camp Confrécourt'),
 		 array($troupe,
 		       '2014-07-07 8:30:00', '2014-07-29 16:00:00', null, 'Confrécourt',
-		       'Camp Confrécourt 2014', 'Camp Confrécourt', 'Camp Confrécourt'),
+		       "Camp d'été Confrécourt 2014", "Camp d'été Confrécourt", 'Camp Confrécourt'),
 		 );
   }
 

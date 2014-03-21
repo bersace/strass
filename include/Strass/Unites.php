@@ -942,6 +942,29 @@ class TypeUnite extends Strass_Db_Table_Row_Abstract
     return trim(preg_replace('/ +/', ' ', $intitule));
   }
 
+  static function saisonCamp($activite)
+  {
+    $mois = substr($activite->debut, 5, 2);
+    switch($mois) {
+    case '01':
+    case '02':
+      return " d'hiver";
+    case '04':
+    case '05':
+      return ' de Pâques';
+    case '07':
+    case '08':
+      return " d'été";
+    case '10':
+    case '11':
+      return " de Toussaint";
+    case '12':
+      return " de Noël";
+    default:
+      return '';
+    }
+  }
+
   function getIntituleCourtActivite($activite)
   {
     if ($activite->intitule)
@@ -961,30 +984,8 @@ class TypeUnite extends Strass_Db_Table_Row_Abstract
     else {
       $type = $activite->getType();
       $i = $this->{'nom_'.$type};
-      if ($type == 'camp') {
-	$mois = substr($activite->debut, 5, 2);
-	switch($mois) {
-	case '01':
-	case '02':
-	  $i.= " d'hiver";
-	  break;
-	case '04':
-	case '05':
-	  $i.= ' de Pâques';
-	  break;
-	case '07':
-	case '08':
-	  $i.= " d'été";
-	  break;
-	case '10':
-	case '11':
-	  $i.= " de Toussaint";
-	  break;
-	case '12':
-	  $i.= " de Noël";
-	  break;
-	}
-      }
+      if ($type == 'camp')
+	$i.= self::saisonCamp($activite);
       $i.= ' '.$activite->lieu;
     }
 
@@ -1010,15 +1011,8 @@ class TypeUnite extends Strass_Db_Table_Row_Abstract
       $type = $activite->getType();
       $i = $this->{'nom_'.$type};
       $datefmt = $datefmts[$type];
-      if ($type == 'camp') {
-	$mois = substr($activite->debut, 5, 2);
-	switch($mois) {
-	case '03':
-	case '04':
-	  $i.= ' de Pâques';
-	  break;
-	}
-      }
+      if ($type == 'camp')
+	$i.= self::saisonCamp($activite);
       $i.= ' '.$activite->lieu;
     }
     $i .= ' '.strftime($datefmt, strtotime($activite->debut));
