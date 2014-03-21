@@ -21,7 +21,7 @@ class JournauxController extends Strass_Controller_Action
     				 'journal' => $j->slug),
     			   array(null, $j));
     $t = new Articles;
-    $brouillons = $t->countRows($j->selectArticles()->where('public != 1'));
+    $brouillons = $t->countRows($j->selectArticles()->where('public IS NULL OR public != 1'));
     if ($brouillons) {
       $this->actions->insert(0,
     			     "Brouillons",
