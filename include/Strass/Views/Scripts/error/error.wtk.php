@@ -11,7 +11,7 @@ $details = $dialog->addSection('details', 'Détails');
 
 foreach ($this->errors as $i => $error) {
   $this->document->addFlags('http-'.$error->getCode());
-
+  $titre = null;
   if ($error->getCode() == 403) {
     $dialog->title = $titre = "Accès refusé";
     $dialog->addFlags('forbidden');
@@ -29,12 +29,10 @@ foreach ($this->errors as $i => $error) {
 			     ".");
     }
   }
-  else if ($error instanceof Strass_Controller_Action_Exception_Notice) {
+  else if ($error instanceof Strass_Controller_Action_Exception) {
     $dialog->title = $titre = $error->getMessage();
     $aide->addText($error->aide);
   }
-  else if ($error instanceof Strass_Controller_Action_Exception)
-    $aide->addText($error->aide);
   else if ($error->getCode() == 404)
     $dialog->title = $titre = "Page inexistante !";
   else if ($i == 0) {
@@ -46,7 +44,6 @@ foreach ($this->errors as $i => $error) {
 		   "pour le corriger. //En attendant, essayez de le contourner !//");
     $dialog->addFlags('showtrace');
   }
-
   $section = $details->addSection(null, $titre)->addFlags('error');
   $section->addText("{{".get_class($error). "}}: // ".$error->getMessage()." // \n");
 
