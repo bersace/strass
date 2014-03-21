@@ -784,7 +784,7 @@ class Unite extends Strass_Db_Table_Row_Abstract implements Zend_Acl_Resource_In
   {
     /* Économise une cinquantaine de requête sur la page d'acceuil de SAQV */
     if (!$this->_type)
-      $this->_type = parent::findParentTypesUnite();
+      $this->_type = parent::__call('findParentTypesUnite', array());
 
     return $this->_type;
   }

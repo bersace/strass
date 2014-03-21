@@ -41,7 +41,7 @@ class Photo extends Strass_Db_Table_Row_Abstract implements Zend_Acl_Resource_In
     $cache = Strass_Db_Table_Abstract::$_rowCache;
     $id = 'activites-'.$this->activite;
     if (($a = $cache->load($id)) === false) {
-      $a = parent::findParentActivites();
+      $a = parent::__call('findParentActivites', array());
       $cache->save($a, $id);
     }
     return $a;

@@ -276,7 +276,7 @@ class Individu extends Strass_Db_Table_Row_Abstract implements Zend_Acl_Resource
 	->order(new Zend_Db_Expr('(CASE WHEN appartenance.fin IS NULL THEN 0 ELSE 1 END)'))
 	->order('appartenance.fin DESC');
     }
-    return parent::findAppartenances($s);
+    return parent::__call('findAppartenances', array($s));
   }
 
   function findEtapesCanditates()
@@ -294,7 +294,7 @@ class Individu extends Strass_Db_Table_Row_Abstract implements Zend_Acl_Resource
   function findInscriptionsActives()
   {
     $s = $this->getTable()->select()->where('fin IS NULL');
-    return parent::findAppartenances($s);
+    return parent::__call('findAppartenances', array($s));
   }
 
   function findUnitesCandidates()
@@ -410,7 +410,7 @@ class Individu extends Strass_Db_Table_Row_Abstract implements Zend_Acl_Resource
   function findCommentaires($select)
   {
     $select->where('commentaire.parent IS NOT NULL');
-    return parent::findCommentaires($select);
+    return parent::__call('findCommentaires', array($select));
   }
 
   /*
@@ -694,7 +694,7 @@ class User extends Strass_Db_Table_Row_Abstract implements Zend_Acl_Role_Interfa
     /* cache pour économiser pas tant la requête individu que les ACL
        qui vont avec */
     if (!$this->_individu)
-      $this->_individu = parent::findParentIndividus();
+      $this->_individu = parent::__call('findParentIndividus', array());
 
     return $this->_individu;
   }
