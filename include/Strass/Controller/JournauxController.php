@@ -12,22 +12,23 @@ class JournauxController extends Strass_Controller_Action
     $this->view->select = $s = $j->selectArticles()->where('public = 1');
     $this->view->model = new Strass_Pages_Model_Rowset($s, 7, $this->_getParam('page'));
 
-    /* $this->actions->append("Écrire un article", */
-    /* 			   array('action' => 'ecrire', */
-    /* 				 'journal' => $j->slug), */
-    /* 			   array(null, $j)); */
-    /* $this->actions->append("Éditer", */
-    /* 			   array('action' => 'editer', */
-    /* 				 'journal' => $j->slug), */
-    /* 			   array(null, $j)); */
-    /* $brouillons = $j->countRows($j->selectArticles()->where('public != 1')); */
-    /* if ($brouillons->count()) { */
-    /*   $this->actions->insert(0, */
-    /* 			     "Brouillons", */
-    /* 			     array('action' => 'brouillons', */
-    /* 				   'journal' => $j->slug), */
-    /* 			     array(null, $j)); */
-    /* } */
+    $this->actions->append("Écrire un article",
+    			   array('action' => 'ecrire',
+    				 'journal' => $j->slug),
+    			   array(null, $j));
+    $this->actions->append("Éditer",
+    			   array('action' => 'editer',
+    				 'journal' => $j->slug),
+    			   array(null, $j));
+    $t = new Articles;
+    $brouillons = $t->countRows($j->selectArticles()->where('public != 1'));
+    if ($brouillons) {
+      $this->actions->insert(0,
+    			     "Brouillons",
+    			     array('action' => 'brouillons',
+    				   'journal' => $j->slug),
+    			     array(null, $j));
+    }
   }
 
   function fonderAction()
@@ -37,7 +38,7 @@ class JournauxController extends Strass_Controller_Action
 		       'DC.Subject' => 'journaux,journal,gazette,blog'));
 
     $tu = $u->findParentTypesUnite();
-    if ($tu->isTerminale() && $tu->age_min < 12)
+    if ($tu->isTerminale() && $tu->age_min && $tu->age_min < 12)
       throw new Strass_Controller_Action_Exception("Impossible de créer un journal d'unité ".
 						   "pour ".$u->getFullName());
 
