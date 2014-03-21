@@ -602,7 +602,7 @@ class Unite extends Strass_Db_Table_Row_Abstract implements Zend_Acl_Resource_In
 		 ' AND '.
 		 "parent_participation.unite = unite.parent\n",
 		 array())
-      ->where('parent_participation.unite IS NULL')
+      ->order('parent_participation.unite')
       ->order('year DESC')
       ->order('RANDOM()')
       ->limit(1);

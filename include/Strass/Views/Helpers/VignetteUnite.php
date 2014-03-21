@@ -21,8 +21,6 @@ class Strass_View_Helper_VignetteUnite
       $image = new Wtk_Image($src, "Photo d'unité", $label);
     else {
       $photo = $unite->findPhotoAleatoire($annee);
-      if (!$photo)
-	$photo = $unite->findParentUnites()->findPhotoAleatoire($annee);
       if ($photo)
 	$image = new Wtk_Image($photo->getCheminVignette(),
 			       $photo->titre, $unite->getFullname());
