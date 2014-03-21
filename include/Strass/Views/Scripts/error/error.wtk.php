@@ -15,6 +15,7 @@ foreach ($this->errors as $i => $error) {
   if ($error->getCode() == 403) {
     $dialog->title = $titre = "Accès refusé";
     $dialog->addFlags('forbidden');
+    $aide->addParagraph($error->getMessage());
     if (Zend_Registry::get('user')->isMember()) {
       $config = Zend_Registry::get('config');
       $aide->addText("Si vous devriez avoir accès au site, ".
