@@ -265,11 +265,14 @@ class Orror {
 		    E_USER_WARNING  => "Warning",
 		    E_USER_ERROR    => "Error",
 		    E_STRICT	    => "Strict",
-		    E_EXCEPTION	    => $exception." "."Exception",
-		    E_DEPRECATED    => "Deprecated");
+		    E_EXCEPTION	    => $exception." "."Exception");
 
     if (defined('E_RECOVERABLE_ERROR')) {
       $errors[E_RECOVERABLE_ERROR] = "Recoverable error";
+    }
+
+    if (defined('E_DEPRECATED')) {
+      $errors[E_DEPRECATED] = "Obsolète";
     }
 
     if (ini_get('html_errors')) {
