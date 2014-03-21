@@ -7,7 +7,9 @@ abstract class Strass_Db_Table_Row_Abstract extends Zend_Db_Table_Row_Abstract
   function init()
   {
     if (!$this->_data) {
-      $this->_data = array_fill_keys($this->getTable()->getColumns(), null);
+      $this->_data = array();
+      foreach($this->getTable()->getColumns() as $name)
+	$this->_data[$name] = null;
     }
   }
 
