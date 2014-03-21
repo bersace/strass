@@ -1,6 +1,6 @@
 !.gitignore
 *~
 cache/
-include/Strass/Installer/sql/strass.sqlite
+include/Strass/Installer/sql/dump*.sql
 maintenance.html
 500.html

@@ -1,0 +1,9 @@
+AddDefaultCharset UTF-8
+
+<ifDefine Free>
+	  PHP 1
+	  Options +Multiviews
+	  ErrorDocument 404 /index
+	  ErrorDocument 500 /500.html
+	  SetEnv STRASS_ROUTE_PREFIX index/
+</ifDefine>
