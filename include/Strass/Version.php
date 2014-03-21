@@ -7,14 +7,22 @@ final class Strass_Version {
   static $version_filename = 'private/STRASS_VERSION';
   static $install_filename = 'private/INSTALLED';
 
+  static function getRoot()
+  {
+    if (isset($_ENV['STRASS_ROOT']))
+      return $_ENV['STRASS_ROOT'];
+    else
+      return '';
+  }
+
   static function isInstalled()
   {
-    return file_exists(self::$install_filename);
+    return file_exists(Strass_Version::getRoot().self::$install_filename);
   }
 
   static function setInstalled()
   {
-    return file_put_contents(self::$install_filename, strftime('%Y-%m-%d %H-%M'));
+    return file_put_contents(Strass_Version::getRoot().self::$install_filename, strftime('%Y-%m-%d %H-%M'));
   }
 
   static function onMaintenance()
@@ -35,8 +43,8 @@ final class Strass_Version {
   }
 
   static function dataCurrent() {
-    if (file_exists(self::$version_filename)) {
-      return intval(trim(@file_get_contents(self::$version_filename)));
+    if (file_exists(Strass_Version::getRoot().self::$version_filename)) {
+      return intval(trim(@file_get_contents(Strass_Version::getRoot().self::$version_filename)));
     }
     else if (file_exists('config/knema/db.php')) {
       /* Installation non versionnée (morel et suf1520) */
@@ -49,6 +57,6 @@ final class Strass_Version {
   }
 
   static function save($version) {
-    file_put_contents(self::$version_filename, (string) $version);
+    file_put_contents(Strass_Version::getRoot().self::$version_filename, (string) $version);
   }
 }

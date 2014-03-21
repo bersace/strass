@@ -6,7 +6,7 @@ class Strass_Installer
 {
   const VERSION = 15;
 
-  function __construct($data, $dbname = 'private/strass.sqlite')
+  function __construct($data, $dbname = null)
   {
     $this->sql_dir = dirname(__FILE__) . '/Installer/sql/';
     $this->data = $data;

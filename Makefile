@@ -71,17 +71,18 @@ restore1: restore
 	git checkout resources/ config/
 endif
 
-TESTDB=tests/strass.sqlite
+TESTROOT=tests/root/
+TESTDB=$(TESTROOT)/private/strass.sqlite
 $(TESTDB): include/Strass/Installer/sql/schema.sql
 	rm -vf $@
+	mkdir -p $$(dirname $@)
 	sqlite3 -batch $@ ".read $<"
 .INTERMEDIATE: $(TESTDB)
 
-ifdef TESTDB
-test: $(TESTDB)
-	rm -rf private/cache
+test:
+	rm -rf $(TESTROOT)/*
+	make $(TESTDB)
 	phpunit --bootstrap tests/bootstrap.php tests
-endif
 
 ifdef PROD
 REMOTE=maint/scripts/remote --production --verbose --config maint/strass.conf

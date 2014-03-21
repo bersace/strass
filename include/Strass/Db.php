@@ -1,11 +1,13 @@
 <?php
 
 class Strass_Db extends Zend_Db {
-  static function setup($dbname = 'private/strass.sqlite')
+  static function setup($dbname = null, $reset=false)
   {
-    if (!file_exists('private/cache'))
-      mkdir('private/cache', 0700, true);
+    if ($dbname === null)
+      $dbname = Strass_Version::getRoot().'private/strass.sqlite';
 
+    if ($reset)
+      @unlink($dbname);
 
     $db = Zend_Db::factory('Pdo_SQLite', array ('dbname' => $dbname));
     @$db->getProfiler()->setEnabled(strpos($_SERVER['QUERY_STRING'], 'PROFILE') !== false);
@@ -18,7 +20,7 @@ class Strass_Db extends Zend_Db {
     catch (Exception $e) {
       $cache = Zend_Cache::factory('Core', 'File',
 				   array('automatic_serialization' => true),
-				   array('cache_dir' => 'private/cache'));
+				   array('cache_dir' => Strass_Version::getRoot().'private/cache'));
     }
     Zend_Db_Table_Abstract::setDefaultMetadataCache($cache);
 

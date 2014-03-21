@@ -381,7 +381,7 @@ class Individu extends Strass_Db_Table_Row_Abstract implements Zend_Acl_Resource
   function getCheminImage($slug = null, $test = true)
   {
     $slug = $slug ? $slug : $this->slug;
-    $image = 'data/avatars/'.$slug.'.png';
+    $image = Strass_Version::getRoot().'data/avatars/'.$slug.'.png';
     return !$test || is_readable($image) ? $image : null;
   }
 
