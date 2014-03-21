@@ -616,7 +616,7 @@ class Users extends Strass_Db_Table_Abstract
        hash avec le suffixe pour que ça corresponde. */
     $config = Zend_Registry::get('config');
     $realm = $config->system->realm;
-    if (ini_get('safe_mode') !== 0)
+    if (ini_get('safe_mode'))
       $realm.= '-'.getmyuid();
     return hash('md5', $username.':'.$realm.':'.$password);
   }
