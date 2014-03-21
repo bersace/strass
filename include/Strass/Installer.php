@@ -80,9 +80,7 @@ class Strass_Installer
   {
     /* optimisation car la création du schéma peut prendre pas mal de
        temps, et nous somme online */
-    /* copy($this->sql_dir . '/'.$this->data['site']['mouvement'].'.sqlite', $this->dbname); */
-    @unlink($this->dbname);
-    $db = Strass_Db::setup($this->dbname);
+    $db = Strass_Db::setup($this->dbname, true);
 
     $dump = $this->sql_dir . '/dump-' .$this->data['site']['mouvement']. '.sql';
     if (!file_exists($dump))

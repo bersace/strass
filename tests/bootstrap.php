@@ -1,5 +1,8 @@
 <?php
 
+$_ENV['STRASS_ROOT'] = 'tests/root/';
+$_ENV['STRASS_UNIT_TEST']  = '1';
+
 umask(0022);
 date_default_timezone_set('Europe/Paris');
 setlocale(LC_TIME, 'fr', 'fr_FR', 'fr_FR@euro', 'fr_FR.utf8', 'fr-FR', 'fra');
@@ -17,4 +20,6 @@ $loader->registerNamespace('Wtk_');
 $loader->registerNamespace('Strass_');
 
 Orror::init(E_ALL | E_STRICT);
-Strass_Db::setup('tests/strass.sqlite');
+mkdir($_ENV['STRASS_ROOT'].'/private/cache/', 0700, true);
+Strass_Db::setup();
+Zend_Registry::set('config', new Zend_Config(array(), true));

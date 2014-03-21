@@ -21,6 +21,7 @@ class Photos extends Strass_Db_Table_Abstract
 
 class Photo extends Strass_Db_Table_Row_Abstract implements Zend_Acl_Resource_Interface
 {
+  protected $_tableClass = 'Photos';
   protected $_privileges	= array(array('chef',		NULL),
 					array('assistant',	NULL),
 					array(NULL,		'commenter'));

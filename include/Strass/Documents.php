@@ -53,9 +53,14 @@ class Document extends Strass_Db_Table_Row_Abstract implements Zend_Acl_Resource
   {
     $fichier = $this->getFichier($this->_data);
     if (!file_exists($dossier = dirname($fichier)))
-	mkdir($dossier, 0700, true);
+	mkdir($dossier, 0750, true);
 
-    if (!move_uploaded_file($tmp, $fichier))
+    if (isset($_ENV['STRASS_UNIT_TEST']))
+      $ret = copy($tmp, $fichier);
+    else
+      $ret = move_uploaded_file($tmp, $fichier);
+
+    if ($ret === false)
       throw new Exception("Impossible de copier le fichier !");
 
     $vignette = $this->getCheminVignette($this->_data);

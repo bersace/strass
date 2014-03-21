@@ -10,7 +10,8 @@ class Strass_Db extends Zend_Db {
       @unlink($dbname);
 
     $db = Zend_Db::factory('Pdo_SQLite', array ('dbname' => $dbname));
-    @$db->getProfiler()->setEnabled(strpos($_SERVER['QUERY_STRING'], 'PROFILE') !== false);
+    $doProfile = strpos(@$_SERVER['QUERY_STRING'], 'PROFILE') !== false || isset($_ENV['STRASS_UNIT_TEST']);
+    $db->getProfiler()->setEnabled($doProfile);
 
     Zend_Db_Table_Abstract::setDefaultAdapter($db);
     Zend_Registry::set('db', $db);
