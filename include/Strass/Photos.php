@@ -114,12 +114,12 @@ class Photo extends Strass_Db_Table_Row_Abstract implements Zend_Acl_Resource_In
     $config = Zend_Registry::get('config');
 
     $photo = Strass_Vignette::charger($path, $fichier, true);
-    $width = $photo->getImageWidth();
-    $height = $photo->getImageHeight();
+    $width = $photo->getWidth();
+    $height = $photo->getHeight();
     $MAX = $config->get('photo/taille', 2048);
     if (min($width, $height) > $MAX)
-      $photo->scaleImage($MAX, $MAX, true);
-    $photo->writeImage($fichier);
+      $photo->scale($MAX, $MAX);
+    $photo->ecrire();
 
     Strass_Vignette::decouper($photo, $vignette);
 

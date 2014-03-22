@@ -69,9 +69,9 @@ class Document extends Strass_Db_Table_Row_Abstract implements Zend_Acl_Resource
       $load .= '[0]';
 
     try {
-      Strass_Vignette::reduire($load, $vignette, true);
+      @Strass_Vignette::reduire($load, $vignette, true);
     }
-    catch (ImagickException $e) {
+    catch (Exception $e) {
       /* pas supporté par Imagick */
       error_log("Échec de la vignette de ".$load." : ".$e->getMessage());
     }
