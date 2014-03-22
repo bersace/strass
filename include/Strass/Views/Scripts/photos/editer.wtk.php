@@ -9,9 +9,11 @@ $s->addParagraph()
 
 $f = $this->document->addForm($this->model);
 $i = $this->model->getInstance('activite');
-if ($i->count() > 1) {
+if ($i->count() > 1)
   $f->addSelect('activite', true)->useLabel(false);
-}
+else
+  $f->addHidden('activite');
+
 $f->addFile('photo');
 $f->addEntry('titre', 32);
 
