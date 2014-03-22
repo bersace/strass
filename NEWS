@@ -60,6 +60,10 @@ NOUVEAUTÉS UTILISATEUR
 
 CHANGEMENTS WEBMESTRE
 
+ - Un mode développement avec l'affichage des erreurs et un mode
+   production où les erreurs sont masquées. Le CSS peut s'adapter au
+   mode de déploiement.
+
  - Outils de gestions d'un site distant à partir d'un mirroir
    local. Des règles Make backup, restore, migrate, upgrade,
    etc. permettent de mettre le site en maintenance, de faire des
@@ -108,3 +112,5 @@ CHANGEMENTS WEBMESTRE
    développeur.
 
  - Gros nettoyage des dépendances. De 35Mo à 13Mo !
+
+ - Portabilité pour les pages perso free.fr.
