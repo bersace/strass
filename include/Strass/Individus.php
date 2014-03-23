@@ -549,9 +549,7 @@ class Appartient extends Strass_Db_Table_Row_Abstract implements Zend_Acl_Role_I
   function clearCache()
   {
     $cache = Zend_Registry::get('cache');
-    $tags = array('apps');
-    foreach($cache->getIdsMatchingTags($tags) as $id)
-      $cache->remove($id);
+    $cache->clean(Zend_Cache::CLEANING_MODE_MATCHING_ANY_TAG, array('apps'));
   }
 
   function _postInsert()

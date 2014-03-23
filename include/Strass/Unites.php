@@ -778,7 +778,7 @@ class Unite extends Strass_Db_Table_Row_Abstract implements Zend_Acl_Resource_In
 	  $chef->homonymes = count(array_unique($homonymes[$chef->prenom]));
 
       ksort($annees);
-      $cache->save($annees, $cacheId, array('apps'));
+      $cache->save($annees, $cacheId, array('unites', 'apps'));
     }
 
     return $annees;
@@ -880,9 +880,7 @@ class Unite extends Strass_Db_Table_Row_Abstract implements Zend_Acl_Resource_In
   function clearCache()
   {
     $cache = Zend_Registry::get('cache');
-    $tags = array('unites');
-    foreach($cache->getIdsMatchingTags($tags) as $id)
-      $cache->remove($id);
+    $cache->clean(Zend_Cache::CLEANING_MODE_MATCHING_ANY_TAG, array('unites'));
   }
 
   function _postInsert()

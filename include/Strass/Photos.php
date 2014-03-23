@@ -153,9 +153,7 @@ class Photo extends Strass_Db_Table_Row_Abstract implements Zend_Acl_Resource_In
   function clearCache()
   {
     $cache = Zend_Registry::get('cache');
-    $tags = array('photos');
-    foreach($cache->getIdsMatchingTags($tags) as $id)
-      $cache->remove($id);
+    $cache->clean(Zend_Cache::CLEANING_MODE_MATCHING_ANY_TAG, array('photos'));
   }
 
   function _postInsert()
