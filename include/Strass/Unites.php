@@ -290,7 +290,7 @@ class Unite extends Strass_Db_Table_Row_Abstract implements Zend_Acl_Resource_In
 	}
       }
       $su = $t->fetchAll($select);
-      $c->save($su, $id, array('apps'));
+      $c->save($su, $id, array('unites', 'apps'));
     }
 
     return $su;
@@ -397,7 +397,7 @@ class Unite extends Strass_Db_Table_Row_Abstract implements Zend_Acl_Resource_In
       }
 
       $apps = $t->fetchAll($select);
-      $cache->save($apps, $cacheId, array('apps'));
+      $cache->save($apps, $cacheId, array('unites', 'apps'));
     }
 
     return $apps;
@@ -541,46 +541,41 @@ class Unite extends Strass_Db_Table_Row_Abstract implements Zend_Acl_Resource_In
     return $this->fermee;
   }
 
-  function fermer($fin, $recursif = true) {
-
-    $t = new Appartenances;
-    $s = $t->select()
-      ->from('appartenance')
-      ->where('fin IS NULL')
-      ->where('appartenance.unite = ?', $this->id);
-    $apps = $t->fetchAll($s);
-    foreach($apps as $app) {
+  function fermer($fin)
+  {
+    /* Inscriptions actives de l'unité, sous-unités et sous-sous-unités.
+       Ex : groupe, troupe, patrouille */
+    foreach($this->findAppartenances(false, 2) as $app) {
       $app->fin = $fin;
       $app->save();
-    }
-
-    if ($recursif) {
-      $us = $this->findSousUnites(false, false);
-      foreach($us as $u) {
-	$u->fermer($fin, $recursif);
-      }
     }
   }
 
   function findAlbums($annee)
   {
-    $t = new Activites;
-    $db = $t->getAdapter();
-    $s = $this->select()
-      ->setIntegrityCheck(false)
-      ->distinct()
-      ->from('activite')
-      ->join('participation', 'participation.activite = activite.id', array())
-      ->joinLeft(array('fille' => 'unite'), $db->quoteInto('fille.parent = ?', $this->id), array())
-      ->joinLeft(array('petitefille' => 'unite'), 'petitefille.parent = fille.id', array())
-      ->join('photo', 'photo.activite = activite.id', array())
-      ->where('participation.unite IN (?, fille.id, petitefille.id)', $this->id)
-      ->where("? < activite.debut", $annee.'-08-31')
-      ->where("activite.debut < ?", ($annee+1).'-08-31')
-      ->where("activite.debut < STRFTIME('%Y-%m-%d %H:%M', CURRENT_TIMESTAMP)")
-      ->order('fin');
+    $cache = Zend_Registry::get('cache');
+    $cacheId = wtk_strtoid('strass-albums-'.$this->slug.'-'.$annee, '_');
+    if (($albums = $cache->load($cacheId)) === false ) {
+      $t = new Activites;
+      $db = $t->getAdapter();
+      $s = $this->select()
+	->setIntegrityCheck(false)
+	->distinct()
+	->from('activite')
+	->join('participation', 'participation.activite = activite.id', array())
+	->joinLeft(array('fille' => 'unite'), $db->quoteInto('fille.parent = ?', $this->id), array())
+	->joinLeft(array('petitefille' => 'unite'), 'petitefille.parent = fille.id', array())
+	->join('photo', 'photo.activite = activite.id', array())
+	->where('participation.unite IN (?, fille.id, petitefille.id)', $this->id)
+	->where("? < activite.debut", $annee.'-08-31')
+	->where("activite.debut < ?", ($annee+1).'-08-31')
+	->where("activite.debut < STRFTIME('%Y-%m-%d %H:%M', CURRENT_TIMESTAMP)")
+	->order('fin');
+      $albums = $t->fetchAll($s);
+      $cache->save($albums, $cacheId, array('unites', 'photos'));
+    }
 
-    return $t->fetchAll($s);
+    return $albums;
   }
 
   function findPhotoAleatoire($annee = NULL)
@@ -882,16 +877,17 @@ class Unite extends Strass_Db_Table_Row_Abstract implements Zend_Acl_Resource_In
     return $t->fetchAll($s);
   }
 
-  function clearCache($tags)
+  function clearCache()
   {
     $cache = Zend_Registry::get('cache');
+    $tags = array('unites');
     foreach($cache->getIdsMatchingTags($tags) as $id)
       $cache->remove($id);
   }
 
   function _postInsert()
   {
-    $this->clearCache(array('apps'));
+    $this->clearCache();
 
     Zend_Registry::get('cache')->remove('strass_acl');
     /* Est-ce que ça vaut la peine de réinitialiser les ACL ? Vu qu'on
@@ -901,7 +897,7 @@ class Unite extends Strass_Db_Table_Row_Abstract implements Zend_Acl_Resource_In
 
   function _postDelete()
   {
-    $this->clearCache(array('apps'));
+    $this->clearCache();
 
     Zend_Registry::get('cache')->remove('strass_acl');
 
@@ -914,7 +910,7 @@ class Unite extends Strass_Db_Table_Row_Abstract implements Zend_Acl_Resource_In
 
   function _postUpdate()
   {
-    $this->clearCache(array('apps'));
+    $this->clearCache();
     Zend_Registry::get('cache')->remove('strass_acl');
 
     if ($i = $this->getCheminImage($this->_cleanData['slug']))

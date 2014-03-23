@@ -150,14 +150,29 @@ class Photo extends Strass_Db_Table_Row_Abstract implements Zend_Acl_Resource_In
     return $this->titre;
   }
 
+  function clearCache()
+  {
+    $cache = Zend_Registry::get('cache');
+    $tags = array('photos');
+    foreach($cache->getIdsMatchingTags($tags) as $id)
+      $cache->remove($id);
+  }
+
+  function _postInsert()
+  {
+    $this->clearCache();
+  }
+
   function _postUpdate()
   {
+    $this->clearCache();
     rename($this->getCheminImage($this->_cleanData), $this->getCheminImage());
     rename($this->getCheminVignette($this->_cleanData), $this->getCheminVignette());
   }
 
   function _postDelete()
   {
+    $this->clearCache();
     unlink($this->getCheminVignette());
     unlink($this->getCheminImage());
   }

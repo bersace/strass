@@ -546,19 +546,27 @@ class Appartient extends Strass_Db_Table_Row_Abstract implements Zend_Acl_Role_I
     return $this->getAccronyme().' '.$this->findParentUnites()->getName();
   }
 
+  function clearCache()
+  {
+    $cache = Zend_Registry::get('cache');
+    $tags = array('apps');
+    foreach($cache->getIdsMatchingTags($tags) as $id)
+      $cache->remove($id);
+  }
+
   function _postInsert()
   {
-    $this->findParentUnites()->clearCache(array('apps'));
+    $this->clearCache();
   }
 
   function _postUpdate()
   {
-    $this->findParentUnites()->clearCache(array('apps'));
+    $this->clearCache();
   }
 
   function _postDelete()
   {
-    $this->findParentUnites()->clearCache(array('apps'));
+    $this->clearCache();
   }
 }
 
