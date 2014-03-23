@@ -5,23 +5,19 @@ class Strass_Views_PagesRenderer_PhotosEnvoyer extends Strass_Views_PagesRendere
   function __construct($view)
   {
     parent::__construct($view);
-    $this->href = $view->url(array('annee' => '%i'));
+    $this->href = $view->url(array('controller' => 'photos',
+				   'action' => 'envoyer',
+				   'unite' => $view->unite->slug,
+				   'annee' => '%i'),
+			     true);
   }
 
   function render($annee, $data, $container)
   {
     extract($data);
 
-    if ($photo)
-      $container->addSection('vignette')->addChild($this->view->vignettePhoto($photo));
-
-    $i = $form_model->getInstance('activite');
-    if ($i->count() == 0) {
-      $container->addParagraph("Aucun album en ".$annee)->addFlags('empty');
-      return;
-    }
-
     $f = $container->addForm($form_model);
+    $i = $form_model->getInstance('activite');
     if ($i->count() > 1) {
       $f->addParagraph()
 	->addFlags('info')
@@ -32,14 +28,12 @@ class Strass_Views_PagesRenderer_PhotosEnvoyer extends Strass_Views_PagesRendere
       $f->addHidden('activite');
       $f->addParagraph()
 	->addFlags('info')
-	->addInline("Vous ajoutez une photo à l'album **".$activite."**.");
+	->addInline("Vous envoyez une photo pour **".$activite."**.");
     }
     $f->addFile('photo');
     $f->addEntry('titre', 32);
     $f->addEntry('commentaire', 38, 8);
-    try {
-      $f->addCheck('envoyer');
-    } catch (Exception $_) {}
+    $f->addCheck('envoyer');
 
     $b = $f->addForm_ButtonBox();
     $b->addForm_Submit($form_model->getSubmission('envoyer'));
