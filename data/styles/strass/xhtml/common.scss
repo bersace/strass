@@ -367,12 +367,15 @@ a {
 	}
 
 	.h {
+	    @include headfont;
 	    text-align: right;
 	    margin: 0;
 	    padding: 1ex;
-	    @include headfont;
+	    max-height: 3em;
 	    color: lighten($content_background, 10%);
 	    background: $highlight_color;
+	    white-space: nowrap;
+	    overflow: hidden;
 
 	    a {
 		color: inherit;

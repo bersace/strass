@@ -72,7 +72,7 @@ class Strass_Controller_Action_Helper_Unite extends Zend_Controller_Action_Helpe
     // CONNEXES
     $connexes = $this->_actionController->connexes;
     $url = $this->_actionController->_helper->Url('index', 'unites', null, null, true);
-    $connexes->titre = new Wtk_Link($url, $unite->getTypeName());
+    $connexes->titre = new Wtk_Link($url, $unite->getName());
 
     $connexes->append("Photos",
 		      array('controller' => 'photos',
