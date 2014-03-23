@@ -547,12 +547,17 @@ class Appartient extends Strass_Db_Table_Row_Abstract implements Zend_Acl_Role_I
 
   function _postInsert()
   {
-    $this->findParentUnites()->clearCacheSousUnites();
+    $this->findParentUnites()->clearCache(array('apps'));
+  }
+
+  function _postUpdate()
+  {
+    $this->findParentUnites()->clearCache(array('apps'));
   }
 
   function _postDelete()
   {
-    $this->findParentUnites()->clearCacheSousUnites();
+    $this->findParentUnites()->clearCache(array('apps'));
   }
 }
 

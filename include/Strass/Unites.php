@@ -290,8 +290,7 @@ class Unite extends Strass_Db_Table_Row_Abstract implements Zend_Acl_Resource_In
 	}
       }
       $su = $t->fetchAll($select);
-      $tags = array('sous_unites');
-      $c->save($su, $id, $tags);
+      $c->save($su, $id, array('apps'));
     }
 
     return $su;
@@ -711,70 +710,75 @@ class Unite extends Strass_Db_Table_Row_Abstract implements Zend_Acl_Resource_In
   // retourne les années où l'unité fut ouverte.
   function getAnneesOuverte()
   {
-    // sélectionner les années où l'unité à eut au moins un membre
-    $db = $this->getTable()->getAdapter();
-    $t = new Individus;
-    // DISTINCT ON dans SQLite est fait avec MIN() hors group by.
-    $select = $t->select()
-      ->setIntegrityCheck(false)
-      ->from('appartenance',
-	     array('debut' => "strftime('%Y', debut)",
-		   'fin' => "strftime('%Y', fin)",
-		   'unite' => 'appartenance.unite'))
-      ->join('unite_role', 'unite_role.id = appartenance.role',
-	     array('role' => 'unite_role.acl_role',
-		   'ordre' => 'MIN(unite_role.ordre)'))
-      ->join('individu',
-	     'individu.id = appartenance.individu',
-	     array('individu.*', 'homonymes' => 'COUNT(individu.prenom)'))
-      ->join('unite',
-	     'unite.id = appartenance.unite',
-	     array())
-      ->group('debut')
-      ->order('debut ASC');
+    $cacheId = str_replace('-', '_', wtk_strtoid('annes-ouvertes-'.$this->slug));
+    $cache = Zend_Registry::get('cache');
+    if (($annees = $cache->load($cacheId)) === false) {
+      // sélectionner les années où l'unité à eut au moins un membre
+      $db = $this->getTable()->getAdapter();
+      $t = new Individus;
+      // DISTINCT ON dans SQLite est fait avec MIN() hors group by.
+      $select = $t->select()
+	->setIntegrityCheck(false)
+	->from('appartenance',
+	       array('debut' => "strftime('%Y', debut)",
+		     'fin' => "strftime('%Y', fin)",
+		     'unite' => 'appartenance.unite'))
+	->join('unite_role', 'unite_role.id = appartenance.role',
+	       array('role' => 'unite_role.acl_role',
+		     'ordre' => 'MIN(unite_role.ordre)'))
+	->join('individu',
+	       'individu.id = appartenance.individu',
+	       array('individu.*', 'homonymes' => 'COUNT(individu.prenom)'))
+	->join('unite',
+	       'unite.id = appartenance.unite',
+	       array())
+	->group('debut')
+	->order('debut ASC');
 
-    $virtuelle = $this->findParentTypesUnite()->virtuelle;
-    if ($virtuelle) {
-      $select->where("unite.id = ?", $this->parent);
-    }
-    else {
-      $select->where('unite.id = ? OR unite.parent = ?', intval($this->id));
-    }
+      $virtuelle = $this->findParentTypesUnite()->virtuelle;
+      if ($virtuelle)
+	$select->where("unite.id = ?", $this->parent);
+      else
+	$select->where('unite.id = ? OR unite.parent = ?', intval($this->id));
 
-    $is = $t->fetchAll($select);
-    $annees = array();
-    $cette_annee = intval(strftime('%Y', time()-243*24*60*60));
-    $homonymes = array();
-    foreach($is as $individu) {
-      /* pour le dernier chef en cours, inclure l'année courante *incluse* */
-      $fin = $individu->fin ? $individu->fin : $cette_annee + 1;
-      for($annee = $individu->debut; $annee < $fin; $annee++) {
-	if (!array_key_exists($annee, $annees))
-	  $annees[$annee] = null;
+      $is = $t->fetchAll($select);
+      $annees = array();
+      $cette_annee = intval(strftime('%Y', time()-243*24*60*60));
+      $homonymes = array();
+      foreach($is as $individu) {
+	/* pour le dernier chef en cours, inclure l'année courante *incluse* */
+	$fin = $individu->fin ? $individu->fin : $cette_annee + 1;
+	for($annee = $individu->debut; $annee < $fin; $annee++) {
+	  /* on a pas de chef */
+	  if (!array_key_exists($annee, $annees))
+	    $annees[$annee] = '##SANSCHEF##';
 
-	if (is_object($chef = $annees[$annee]))
-	  continue;
+	  if (is_object($chef = $annees[$annee]))
+	    continue;
 
-	if ($individu->unite == $this->id || ($virtuelle && $individu->unite == $this->parent)) {
-	  if ($individu->role == 'chef') {
-	    $annees[$annee] = $individu;
-	    /* Récolte des homonymes */
-	    if (!array_key_exists($individu->prenom, $homonymes))
-	      $homonymes[$individu->prenom] = array($individu->slug);
-	    else
-	      array_push($homonymes[$individu->prenom], $individu->slug);
+	  if ($individu->unite == $this->id || ($virtuelle && $individu->unite == $this->parent)) {
+	    if ($individu->role == 'chef') {
+	      $annees[$annee] = $individu;
+	      /* Récolte des homonymes */
+	      if (!array_key_exists($individu->prenom, $homonymes))
+		$homonymes[$individu->prenom] = array($individu->slug);
+	      else
+		array_push($homonymes[$individu->prenom], $individu->slug);
+	    }
+	    else // on a des assistant, mais pas de chef
+	      $annees[$annee] = '##INCONNU##';
 	  }
-	  else // on a des assistant, mais pas de chef
-	    $annees[$annee] = '##INCONNU##';
 	}
       }
+
+      foreach($annees as $chef)
+	if (is_object($chef))
+	  $chef->homonymes = count(array_unique($homonymes[$chef->prenom]));
+
+      ksort($annees);
+      $cache->save($annees, $cacheId, array('apps'));
     }
 
-    foreach($annees as $chef)
-      if (is_object($chef))
-	$chef->homonymes = count(array_unique($homonymes[$chef->prenom]));
-
-    ksort($annees);
     return $annees;
   }
 
@@ -871,19 +875,16 @@ class Unite extends Strass_Db_Table_Row_Abstract implements Zend_Acl_Resource_In
     return $t->fetchAll($s);
   }
 
-  function clearCacheSousUnites()
+  function clearCache($tags)
   {
     $cache = Zend_Registry::get('cache');
-
-    $tags = array('sous_unites');
-    foreach($cache->getIdsMatchingTags($tags) as $id) {
+    foreach($cache->getIdsMatchingTags($tags) as $id)
       $cache->remove($id);
-    }
   }
 
   function _postInsert()
   {
-    $this->clearCacheSousUnites();
+    $this->clearCache(array('apps'));
 
     Zend_Registry::get('cache')->remove('strass_acl');
     /* Est-ce que ça vaut la peine de réinitialiser les ACL ? Vu qu'on
@@ -893,7 +894,7 @@ class Unite extends Strass_Db_Table_Row_Abstract implements Zend_Acl_Resource_In
 
   function _postDelete()
   {
-    $this->clearCacheSousUnites();
+    $this->clearCache(array('apps'));
 
     Zend_Registry::get('cache')->remove('strass_acl');
 
@@ -906,7 +907,7 @@ class Unite extends Strass_Db_Table_Row_Abstract implements Zend_Acl_Resource_In
 
   function _postUpdate()
   {
-    $this->clearCacheSousUnites();
+    $this->clearCache(array('apps'));
     Zend_Registry::get('cache')->remove('strass_acl');
 
     if ($i = $this->getCheminImage($this->_cleanData['slug']))
