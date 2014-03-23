@@ -22,25 +22,56 @@ function wtk_strtoarray($string)
  * voir http://fr2.php.net/glob
  */
 function wtk_glob($pattern, $flags = 0) {
-	$split=explode('/',$pattern);
-	$match=array_pop($split);
-	$path=implode('/',$split);
-	if (($dir=opendir($path))!==false) {
-		$glob=array();
-		while(($file=readdir($dir))!==false) {
-			if (fnmatch($match,$file)) {
-				if ((is_dir("$path/$file"))||(!($flags&GLOB_ONLYDIR))) {
-					if ($flags&GLOB_MARK) $file.='/';
-					$glob[]=$path.'/'.$file;
-				}
-			}
-		}
-		closedir($dir);
-		if (!($flags&GLOB_NOSORT)) sort($glob);
-		return $glob;
-	} else {
-		return false;
+	$split = explode('/',$pattern);
+	$path = '';
+	$match = null;
+	while($split) {
+	  $part = array_shift($split);
+	  if (strpos($part, '*') !== false) {
+	    $match = $part;
+	    break;
+	  }
+	  else
+	    $path.= $part . DIRECTORY_SEPARATOR;
 	}
+	$path = trim($path, DIRECTORY_SEPARATOR);
+	$append = implode('/', $split);
+
+	if ($match === null && !$append) {
+	  if (file_exists($path))
+	    return $path;
+	  else
+	    return false;
+	}
+
+	$dir = opendir($path);
+	if ($dir === false)
+	  return false;
+
+	$glob = array();
+	while(($file = readdir($dir)) !== false) {
+	  if ($file == '.' or $file == '..')
+	    continue;
+
+	  if (!fnmatch($match, $file))
+	    continue;
+
+	  $found = $path . DIRECTORY_SEPARATOR . $file;
+	  if ($append)
+	    $found = $found . DIRECTORY_SEPARATOR . $append;
+
+	  if (!is_dir($found) || !($flags & GLOB_ONLYDIR)) {
+	    if ($flags & GLOB_MARK)
+	      $found.= '/';
+	    $glob[] = $found;
+	  }
+	}
+	closedir($dir);
+
+	if (!($flags & GLOB_NOSORT))
+	  sort($glob);
+
+	return $glob;
 }
 
 /*
