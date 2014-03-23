@@ -20,6 +20,6 @@ $loader->registerNamespace('Wtk_');
 $loader->registerNamespace('Strass_');
 
 Orror::init(E_ALL | E_STRICT);
-mkdir($_ENV['STRASS_ROOT'].'/private/cache/', 0700, true);
+Strass_Cache::setup();
 Strass_Db::setup();
 Zend_Registry::set('config', new Zend_Config(array(), true));

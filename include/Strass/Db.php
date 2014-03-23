@@ -15,14 +15,7 @@ class Strass_Db extends Zend_Db {
 
     Zend_Db_Table_Abstract::setDefaultAdapter($db);
     Zend_Registry::set('db', $db);
-    try {
-      $cache = Zend_Registry::get('cache');
-    }
-    catch (Exception $e) {
-      $cache = Zend_Cache::factory('Core', 'File',
-				   array('automatic_serialization' => true),
-				   array('cache_dir' => Strass_Version::getRoot().'private/cache'));
-    }
+    $cache = Zend_Registry::get('cache');
     Zend_Db_Table_Abstract::setDefaultMetadataCache($cache);
 
     Strass_Db_Table_Abstract::$_rowCache = new Strass_Cache;
