@@ -22,9 +22,9 @@ abstract class Strass_Pages_Model_Historique extends Wtk_Pages_Model_Assoc
       ksort($annees);
 
       /* Filtrer les années futures */
-      foreach($annees as $annee => $chef)
-	if ($annee > date('Y', time() - 120 * 24 * 3600))
-	  unset($annees[$annee]);
+      foreach($annees as $a => $chef)
+	if ($a > date('Y', time() - 120 * 24 * 3600))
+	  unset($annees[$a]);
     }
 
     parent::__construct($annees, $annee);
