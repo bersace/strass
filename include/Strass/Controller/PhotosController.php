@@ -42,8 +42,6 @@ class PhotosController extends Strass_Controller_Action
 			   array(null, $a,'envoyer-photo'));
   }
 
-  /* On peut envoyer une photo pour une année, une activité ou une
-     photo existante */
   function envoyerAction()
   {
     $this->metas(array('DC.Title' => "Envoyer une photo",
@@ -54,30 +52,25 @@ class PhotosController extends Strass_Controller_Action
 				  'action'  => 'prevoir'));
 
     $ta = new Activites;
+    $a = $activite = $this->_helper->Album(false);
 
-    $this->view->photo = $p = $photo = $this->_helper->Photo(false);
-    if ($p) {
-      $this->view->activite = $activite = $p->findParentActivites();
-      $this->view->unite = $unite = $activite->findUnitesParticipantesExplicites()->current();
-      $annee = $this->_helper->Annee(false);
-      $annee = $annee ? $annee : $activite->getAnnee();
-    }
-    else if ($activite = $this->_helper->Album(false)) {
+    if ($activite) {
       $this->view->activite = $activite;
       $this->view->unite = $unite = $activite->findUnitesParticipantesExplicites()->current();
       $annee = $activite->getAnnee();
     }
     else {
-      $this->view->unite = $unite = $this->_helper->Unite();
-      $this->branche->append("Photos", array('annee' => ''));
-      $annee = $this->_helper->Annee();
+      $tu = new Unites;
+      $this->view->unite = $unite = $tu->findRacines()->current();
+      $this->_helper->Unite->liensConnexes($unite);
+      $annee = $this->_helper->Annee(false);
       $activite = null;
     }
 
     if (!$ta->countRows())
       throw new Strass_Controller_Action_Exception_Notice("Aucune activité enregistrée");
 
-    $this->view->model = new Strass_Pages_Model_PhotosEnvoyer($this, $unite, $annee, $activite, $photo);
+    $this->view->model = new Strass_Pages_Model_PhotosEnvoyer($this, $unite, $annee, $activite);
   }
 
   function voirAction()
@@ -89,7 +82,7 @@ class PhotosController extends Strass_Controller_Action
 		       'DC.Date.created' => $photo->date));
 
     $this->actions->append("Éditer",
-			   array('action' => 'envoyer'),
+			   array('action' => 'editer'),
 			   array(null, $photo));
     $this->actions->append("Supprimer",
 			   array('action' => 'supprimer'),
@@ -135,6 +128,60 @@ class PhotosController extends Strass_Controller_Action
 
     /* Lister les commentaires après l'insertion  */
     $this->view->commentaires = $photo->findCommentaires();
+  }
+
+  function editerAction()
+  {
+    $this->view->photo = $p = $this->_helper->Photo();
+    $this->view->album = $a = $p->findParentActivites();
+    $this->metas(array('DC.Title' => "Éditer ".$p->titre,
+		       'DC.Subject' => 'photo',
+		       'DC.Date.created' => $p->date));
+    $annee = $this->_helper->Annee(false);
+
+    $this->assert(null, $p, 'editer',
+		  "Vous n'avez pas le droit d'éditer cette photo.");
+
+    $individu = Zend_Registry::get('individu');
+    $as = $individu->findActivites($annee);
+    if (!$as)
+      throw new Strass_Controller_Action_Exception_Forbidden("Vous ne pouvez envoyer de photos dans aucune activités.");
+
+    $this->view->model = $m = new Wtk_Form_Model('photo');
+    $enum = array();
+    foreach($as as $a)
+      if ($this->assert(null, $a, 'envoyer-photo'))
+    	$enum[$a->id] = $a->getIntituleComplet();
+
+    $m->addEnum('activite', "Album", $p->activite, $enum);
+    $m->addFile('photo', "Photo");
+    $m->addString('titre', "Titre", $p->titre);
+
+    $m->addNewSubmission('enregistrer', "Enregistrer");
+
+    if ($m->validate()) {
+      $t = $p->getTable();
+      $keys = array('titre', 'activite');
+      foreach($keys as $k)
+	$p->$k = $m->get($k);
+      $p->slug = $t->createSlug(wtk_strtoid($p->titre), $p->slug);
+
+      $db = $t->getAdapter();
+      $db->beginTransaction();
+      try {
+	if ($tmp = $m->getInstance('photo')->getTempFilename())
+	  $p->storeFile($tmp);
+	$p->save();
+	$this->logger->info("Photo éditée",
+			    $this->_helper->Url('voir', null, null, array('photo' => $p->slug)));
+	$db->commit();
+      }
+      catch(Exception $e) {
+	$db->rollBack();
+	throw $e;
+      }
+      $this->redirectSimple('voir', null, null, array('photo' => $p->slug));
+    }
   }
 
   function supprimerAction()
