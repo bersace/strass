@@ -172,7 +172,7 @@ function wtk_args_string($name, $args)
  * with ascii correspondant, and replacing all non alnum chars by
  * hyphen.
  */
-function wtk_strtoid($string)
+function wtk_strtoid($string, $sep='-')
 {
 	static $table = array('á' => 'a', 'à' => 'a',
 			      'â' => 'a', 'ä' => 'a',
@@ -194,11 +194,11 @@ function wtk_strtoid($string)
 			      '—' => '-', '–' => '-',
 			      ' ' => ' ', "\t"=> ' ',
 			      '…' => '...', '°' => '');
-	return trim(preg_replace('/[[:punct:][:space:]]+/', '-',
+	return trim(preg_replace('/[[:punct:][:space:]]+/', $sep,
 				 str_replace(array_keys($table),
 					     array_values($table),
 					     mb_strtolower($string))),
-		    '-');
+		    $sep);
 }
 
 function wtk_context($child, $context)

@@ -338,7 +338,7 @@ class Unite extends Strass_Db_Table_Row_Abstract implements Zend_Acl_Resource_In
    */
   public function findAppartenances($annee = null, $recursion = 0)
   {
-    $cacheId = str_replace('-', '_', wtk_strtoid('apps-'.$annee.'-'.$recursion.'-'.$this->slug));
+    $cacheId = wtk_strtoid('apps-'.$annee.'-'.$recursion.'-'.$this->slug, '_');
     $cache = Zend_Registry::get('cache');
     if (($apps = $cache->load($cacheId)) === false) {
       $db = $this->getTable()->getAdapter();
@@ -717,7 +717,7 @@ class Unite extends Strass_Db_Table_Row_Abstract implements Zend_Acl_Resource_In
   // retourne les années où l'unité fut ouverte.
   function getAnneesOuverte()
   {
-    $cacheId = str_replace('-', '_', wtk_strtoid('annes-ouvertes-'.$this->slug));
+    $cacheId = wtk_strtoid('annes-ouvertes-'.$this->slug, '_');
     $cache = Zend_Registry::get('cache');
     if (($annees = $cache->load($cacheId)) === false) {
       // sélectionner les années où l'unité à eut au moins un membre
