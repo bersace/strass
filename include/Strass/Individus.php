@@ -477,6 +477,7 @@ class Appartenances extends Strass_Db_Table_Abstract
 {
   protected	$_name		= 'appartenance';
   protected	$_rowClass	= 'Appartient';
+  protected $_rowsetClass = 'Strass_Db_Table_Rowset';
   protected	$_referenceMap	= array('Individu'	=> array('columns'		=> 'individu',
 								 'refTableClass'	=> 'Individus',
 								 'refColumns'		=> 'id',
