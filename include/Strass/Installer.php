@@ -17,6 +17,7 @@ class Strass_Installer
   {
     Zend_Registry::set('config', new Strass_Config_Php('strass', array()));
     Zend_Registry::set('acl', new Strass_Installer_FakeAcl);
+    Strass_Cache::setup();
 
     try {
       $fc = Zend_Controller_Front::getInstance();

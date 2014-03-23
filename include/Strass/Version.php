@@ -10,7 +10,7 @@ final class Strass_Version {
   static function getRoot()
   {
     if (isset($_ENV['STRASS_ROOT']))
-      return $_ENV['STRASS_ROOT'];
+      return $_ENV['STRASS_ROOT'] . DIRECTORY_SEPARATOR;
     else
       return '';
   }
