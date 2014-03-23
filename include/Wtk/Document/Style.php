@@ -67,7 +67,7 @@ class Wtk_Document_Style {
 	static function listAvailables($basedir = 'data/styles')
 	{
 	  $styles = array();
-	  foreach(glob($basedir . '/*/metas.php') as $meta) {
+	  foreach(wtk_glob($basedir . '/*/metas.php') as $meta) {
 	    $name = basename(dirname($meta));
 	    array_push($styles, new self($name, $basedir));
 	  }
