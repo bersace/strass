@@ -23,14 +23,7 @@ if (!Strass_Version::isInstalled()) {
 
 try {
   Zend_Registry::set('config', new Strass_Config_Php('strass'));
-  $cachedir = Strass_Version::getRoot().'private/cache';
-  if (!file_exists($cachedir))
-    mkdir($cachedir, 0700, true);
-  Zend_Registry::set('cache',
-		     Zend_Cache::factory('Core', 'File',
-					 array('automatic_serialization' => true),
-					 array('cache_dir' => $cachedir)));
-
+  Strass_Cache::setup();
   $fc = Zend_Controller_Front::getInstance();
 
   $request = new Strass_Controller_Request_Http();
