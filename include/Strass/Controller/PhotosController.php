@@ -44,26 +44,6 @@ class PhotosController extends Strass_Controller_Action
 
   function envoyerAction()
   {
-    $ta = new Activites;
-    $a = $activite = $this->_helper->Album(false);
-
-    $individu = Zend_Registry::get('individu');
-    if ($activite) {
-      $this->view->activite = $activite;
-      $as = array($activite);
-    }
-    else {
-      $tu = new Unites;
-      $this->_helper->Unite->liensConnexes($tu->findRacines()->current());
-      $annee = $this->_helper->Annee(false);
-      $as = $individu->findActivites($annee);
-
-      if (count($as) == 1) {
-	$this->view->activite = $as->current();
-	$this->_helper->Album->setBranche($this->view->activite);
-      }
-    }
-
     $this->metas(array('DC.Title' => "Envoyer une photo",
 		       'DC.Subject' => 'envoyer,photos'));
 
@@ -71,69 +51,24 @@ class PhotosController extends Strass_Controller_Action
 			    array('controller' => 'activites',
 				  'action'  => 'prevoir'));
 
+    $ta = new Activites;
+    $a = $activite = $this->_helper->Album(false);
+
+    if ($activite) {
+      $this->view->activite = $activite;
+      $this->view->unite = $unite = $activite->findUnitesParticipantesExplicites()->current();
+      $annee = $activite->getAnnee();
+    }
+    else {
+      $this->view->unite = $unite = $this->_helper->Unite();
+      $annee = $this->_helper->Annee();
+      $activite = null;
+    }
+
     if (!$ta->countRows())
       throw new Strass_Controller_Action_Exception_Notice("Aucune activité enregistrée");
 
-    $this->view->model = $m = new Wtk_Form_Model('envoyer');
-    $i = $m->addString('titre', 'Titre');
-    $m->addConstraintRequired($i);
-
-    $enum = array();
-    foreach($as as $a)
-      if ($this->assert(null, $a, 'envoyer-photo'))
-	$enum[$a->id] = $a->getIntituleComplet();
-    if (!$enum)
-      throw new Strass_Controller_Action_Exception_Forbidden("Vous ne pouvez envoyer de photos ".
-							     "dans aucune activité.");
-
-    $m->addEnum('activite', "Activité", key($enum), $enum);
-    $m->addFile('photo', "Photo");
-    $m->addString('commentaire', 'Votre commentaire');
-    $m->addBool('envoyer', "J'ai d'autres photos à envoyer", true);
-    $m->addNewSubmission('envoyer', "Envoyer");
-
-    if ($m->validate()) {
-      $t = new Photos;
-      $photo = $m->get();
-      unset($photo['photo']);
-
-      $activite = $ta->find($photo['activite'])->current();
-      $photo['slug'] = $t->createSlug(wtk_strtoid($photo['titre']));
-
-      $action = $photo['envoyer'] ? 'envoyer' : 'consulter';
-      unset($photo['envoyer']);
-      unset($photo['commentaire']);
-
-      $db = $t->getAdapter();
-      $db->beginTransaction();
-
-      try {
-	$tc = new Commentaires;
-	$k = $tc->insert(array('auteur' => $individu->id,
-			       'message' => $m->get('commentaire')));
-	$photo['commentaires'] = $k;
-	$k = $t->insert($photo);
-	$photo = $t->findOne($k);
-
-	$i = $m->getInstance('photo');
-	if ($i->isUploaded()) {
-	  $tmp = $i->getTempFilename();
-	  $photo->storeFile($tmp);
-	}
-
-	$this->_helper->Flash->info("Photo envoyée");
-	$this->logger->info("Photo envoyée",
-			    $this->_helper->Url('voir', null, null, array('photo' => $photo->slug)));
-
-	$db->commit();
-      }
-      catch(Exception $e) {
-	$db->rollBack();
-	throw $e;
-      }
-
-      $this->redirectSimple($action, null, null, array('album' => $activite->slug));
-    }
+    $this->view->model = new Strass_Pages_Model_PhotosEnvoyer($this, $unite, $annee, $activite);
   }
 
   function voirAction()

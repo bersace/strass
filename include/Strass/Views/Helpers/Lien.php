@@ -2,16 +2,16 @@
 
 class Strass_View_Helper_Lien
 {
-	protected	$view;
+  protected	$view;
 
-	public function setView($view)
-	{
-		$this->view = $view;
-	}
+  public function setView($view)
+  {
+    $this->view = $view;
+  }
 
-	public function lien($urlOptions = array(), $label = null, $reset = false)
-	{
-		return new Wtk_Link($this->view->url($urlOptions, $reset),
-				    $label);
-	}
+  public function lien($url = null, $label = null, $reset = false)
+  {
+    $url = is_array($url) ? $this->view->url($url, $reset) : $url;
+    return new Wtk_Link($url, $label);
+  }
 }

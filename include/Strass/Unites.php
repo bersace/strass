@@ -645,6 +645,22 @@ class Unite extends Strass_Db_Table_Row_Abstract implements Zend_Acl_Resource_In
     return $t->fetchAll($select);
   }
 
+  function findActivites($annee)
+  {
+    $t = new Activites;
+    $min = $annee.'-09-01 00:00';
+    $max = ($annee+1).'-08-31 23:59';
+    $select = $t->select()
+      ->setIntegrityCheck(false)
+      ->from('activite')
+      ->join('participation', 'participation.activite = activite.id', array())
+      ->where("participation.unite = ?\n", $this->id)
+      ->where("debut >= ?", $min)
+      ->where("debut <= ?", $max)
+      ->order('activite.debut');
+    return $t->fetchAll($select);
+  }
+
   function findActivitesMarquantes($annee = null, $count = 4)
   {
     $t = new Activites;

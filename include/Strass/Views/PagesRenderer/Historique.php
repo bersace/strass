@@ -77,7 +77,7 @@ abstract class Strass_Views_PagesRenderer_Historique extends Wtk_Pages_Renderer
 	$sss->setTitle($titre);
       }
       $etiq = $annee."-".($annee+1);
-      $i = $l->addItem($this->view->lien(array('annee' => $annee),
+      $i = $l->addItem($this->view->lien(str_replace('%i', $annee, $this->href),
 					 $etiq));
       if ($annee == $model->current) {
 	$i->addFlags('selectionnee');
