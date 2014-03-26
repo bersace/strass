@@ -28,7 +28,7 @@ class Strass_View_Helper_CarteIndividu
       $v->setPhoneNumber($individu->fixe, "HOME");
       $v->setPhoneNumber($individu->portable, "CELL");
 
-      if ($photo = $individu->getImage())
+      if ($photo = $individu->getCheminImage())
 	$v->setPhoto('jpeg', file_get_contents($photo));
 
       $v->setEmail($individu->adelec);
