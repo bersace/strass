@@ -38,7 +38,7 @@ abstract class Strass_Format_Wtk extends Strass_Format
 
     if ($unite)
       $document->addFlags($unite->slug, $unite->findParentTypesUnite()->slug);
-    $document->addFlags(Strass_Version::onDevelopment() ? 'development' : 'production');
+    $document->addFlags(Strass::onDevelopment() ? 'development' : 'production');
 
     $document->addFlags($mouvement);
     $document->header->addFlags($mouvement);

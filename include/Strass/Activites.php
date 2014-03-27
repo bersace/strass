@@ -150,7 +150,7 @@ class Activite extends Strass_Db_Table_Row_Abstract implements Zend_Acl_Resource
 
   function getDossierPhoto($slug = NULL)
   {
-    return Strass_Version::getRoot().'data/photos/'.($slug ? $slug : $this->slug);
+    return Strass::getRoot().'data/photos/'.($slug ? $slug : $this->slug);
   }
 
   function getPhotoAleatoire()

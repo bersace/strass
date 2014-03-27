@@ -129,6 +129,6 @@ class Strass_Installer
     $logger = new Strass_Logger('installeur');
     $logger->info("Installation terminée");
 
-    Strass_Version::setInstalled();
+    Strass::setInstalled();
   }
 }

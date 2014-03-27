@@ -47,6 +47,6 @@ class Strass_Migrate_To2 extends Strass_MigrateHandler {
     self::rrmdir('private/statiques/strass');
     @self::rrmdir('private/statiques/scout');
 
-    Strass_Version::setInstalled();
+    Strass::setInstalled();
   }
 }

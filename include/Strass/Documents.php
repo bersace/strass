@@ -31,7 +31,7 @@ class Document extends Strass_Db_Table_Row_Abstract implements Zend_Acl_Resource
   {
     $test = $test === null ? (bool) !$data : $test;
     if (!$data) $data = $this->_cleanData;
-    $path = Strass_Version::getRoot().'data/documents/'.$data['slug'].'-vignette.jpeg';
+    $path = Strass::getRoot().'data/documents/'.$data['slug'].'-vignette.jpeg';
     if ($test && !file_exists($path))
       return null;
     else
@@ -41,7 +41,7 @@ class Document extends Strass_Db_Table_Row_Abstract implements Zend_Acl_Resource
   function getFichier($data = null)
   {
     if (!$data) $data = $this->_data;
-    return Strass_Version::getRoot().'data/documents/'.$data['slug'].'.'.$data['suffixe'];
+    return Strass::getRoot().'data/documents/'.$data['slug'].'.'.$data['suffixe'];
   }
 
   function getTaille()

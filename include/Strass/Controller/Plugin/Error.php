@@ -6,7 +6,7 @@ class Strass_Controller_Plugin_Error extends Zend_Controller_Plugin_Abstract
 {
   public function routeStartup()
   {
-    if (Strass_Version::onDevelopment()) {
+    if (Strass::onDevelopment()) {
       $level = E_ALL &~ (E_STRICT|E_DEPRECATED);
       ini_set('display_errors', 1);
     }

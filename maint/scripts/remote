@@ -701,7 +701,7 @@ class setmaint(object):
     def __call__(self, args, config):
         ftp = FTPManager()
         ftp.connect(config, args.production)
-        ftp.upload('maintenance.html', 'include/Strass/Version.php', 'index.php')
+        ftp.upload('maintenance.html', 'include/Strass.php', 'index.php')
         ftp.run()
 
 

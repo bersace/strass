@@ -1,0 +1,162 @@
+<?php
+
+class Strass {
+  static $install_filename = 'private/INSTALLED';
+
+  static function getRoot()
+  {
+    if (isset($_ENV['STRASS_ROOT']))
+      return $_ENV['STRASS_ROOT'] . DIRECTORY_SEPARATOR;
+    else
+      return '';
+  }
+
+  static function isInstalled()
+  {
+    return file_exists(self::getRoot().self::$install_filename);
+  }
+
+  static function setInstalled()
+  {
+    return file_put_contents(self::getRoot().self::$install_filename, strftime('%Y-%m-%d %H-%M'));
+  }
+
+  static function onMaintenance()
+  {
+    return file_exists('maintenance.html');
+  }
+
+  static function showMaintenance()
+  {
+    header('HTTP/1.0 503 Service Unavailable');
+    readfile('maintenance.html');
+    exit(0);
+  }
+
+  static function onDevelopment()
+  {
+    return file_exists('devel.php');
+  }
+
+  static function bootstrap()
+  {
+    umask(0022);
+    date_default_timezone_set('Europe/Paris');
+    setlocale(LC_TIME, 'fr', 'fr_FR', 'fr_FR.utf8', 'fr_FR@euro', 'fr-FR', 'fra');
+
+    require_once 'Wtk.php';
+    require_once 'Zend/Loader/Autoloader.php';
+
+    $loader = Zend_Loader_Autoloader::getInstance();
+    $loader->registerNamespace('Dio_');
+    $loader->registerNamespace('Wtk_');
+    $loader->registerNamespace('Strass_');
+  }
+
+  static function main()
+  {
+    if (self::onMaintenance())
+      return self::showMaintenance();
+
+    if (!self::isInstalled())
+      return Strass_Installer::main();
+
+    try {
+      self::run();
+    }
+    catch (Exception $e) {
+      self::saveSession();
+      try {
+	try {
+	  $logger = Zend_Registry::get('logger');
+	}
+	catch (Exception $_) {
+	  $logger = new Strass_Logger;
+	}
+	$logger->critical($e->getMessage(), null, print_r($e, true));
+      }
+      catch(Exception $_) {}
+
+      // Affichage complet des exceptions non interceptées par le
+      // controlleur.
+      $msg = ":(\n\n";
+      $msg.= $e->getMessage()."\n\n";
+      $msg.= " à ".$e->getFile().":".$e->getLine()."\n\n";
+      $msg.= str_replace ('#', '<br/>#', $e->getTraceAsString())."\n";
+      header('HTTP/1.1 500 Internal Server Error');
+      error_log(strtok($e->getMessage(), "\n"));
+      Orror::kill(strip_tags($msg));
+      return;
+    }
+
+    self::saveProfile();
+  }
+
+  static function run()
+  {
+    Zend_Registry::set('config', new Strass_Config_Php('strass'));
+    Strass_Cache::setup();
+    $fc = Zend_Controller_Front::getInstance();
+
+    $request = new Strass_Controller_Request_Http();
+    $fc->setRequest($request);
+
+    $routeur = $fc->getRouter();
+    $routeur->removeDefaultRoutes();
+
+    $p = '([[:alpha:]]+)';
+    $f = '(xhtml|ics|vcf|rss|atom|pdf|tex|txt|od[ts]|csv)';
+    $vars = array('controller' => array($p, 'unites'),
+		  'action'     => array($p, 'index'),
+		  'format'     => array($f, 'xhtml'),
+		  'annee'      => array('([[:digit:]]{4})', null));
+
+    $pattern = '[%controller%[/%action%][.%format%][/%annee%]*]';
+    if ($prefix = @getenv('STRASS_ROUTE_PREFIX'))
+      $pattern = $prefix.$pattern;
+    $opattern = null;
+    $route = new Strass_Controller_Router_Route_Uri($vars, $pattern, $opattern);
+    $routeur->addRoute('default', $route);
+
+    $fc->setParam('noViewRenderer', true);
+
+    $fc->setModuleControllerDirectoryName('Controller');
+    $fc->addControllerDirectory('include/Strass/Controller', 'Strass');
+    Zend_Controller_Action_HelperBroker::addPrefix('Strass_Controller_Action_Helper');
+    $fc->setDefaultModule('Strass');
+
+    // greffons
+    $fc->registerPlugin(new Strass_Controller_Plugin_Error);
+    $fc->registerPlugin(new Strass_Controller_Plugin_Db);
+    $fc->registerPlugin(new Strass_Controller_Plugin_Auth);
+
+    $fc->dispatch();
+
+    self::saveSession();
+  }
+
+  static function saveProfile()
+  {
+    if (@strpos($_SERVER['QUERY_STRING'], 'PROFILE') === false)
+      return;
+
+    $db = Zend_Registry::get('db');
+    $profiler = $db->getProfiler();
+    $fd = fopen('sql-profile.csv', 'w');
+    foreach ($profiler->getQueryProfiles() as $query) {
+      $sql = str_replace("\n", " ", $query->getQuery());
+      $time = $query->getElapsedSecs();
+      fputcsv($fd, array($time, $sql));
+    }
+    fclose($fd);
+  }
+
+  static function saveSession()
+  {
+    if (class_exists('Zend_Session', false) && Zend_Session::isStarted()) {
+      Zend_Session::writeClose();
+    } elseif (isset($_SESSION)) {
+      session_write_close();
+    }
+  }
+}
