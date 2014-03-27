@@ -40,14 +40,8 @@ class Strass_Controller_Action_Helper_Unite extends Zend_Controller_Action_Helpe
     return $unite;
   }
 
-  function setBranche($unite, $action=null, $controller=null)
+  function setBranche($unite)
   {
-    /* hiérarchie des unités */
-    if (!$controller)
-      $controller = $this->getRequest()->getParam('controller');
-    if (!$action)
-      $action = $this->getRequest()->getParam('action');
-
     $us = array();
     $u = $unite;
     while ($u) {
@@ -65,9 +59,9 @@ class Strass_Controller_Action_Helper_Unite extends Zend_Controller_Action_Helpe
     }
   }
 
-  function liensConnexes($unite, $action=null, $controller=null)
+  function liensConnexes($unite)
   {
-    $this->setBranche($unite, $action, $controller);
+    $this->setBranche($unite);
 
     // CONNEXES
     $annee = $this->getRequest()->getParam('annee');

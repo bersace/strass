@@ -30,6 +30,8 @@ class Strass_Controller_Action_Helper_Album extends Zend_Controller_Action_Helpe
       $unite = $unites->current();
       $this->_actionController->_helper->Unite->liensConnexes($unite, 'index', 'photos');
 
+      $this->_actionController->branche->append("Photos", array('annee' => ''));
+
       $urlOptions = array('controller'=> 'photos',
 			  'action'	=> 'index',
 			  'unite'	=> $unite->slug,

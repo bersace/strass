@@ -31,6 +31,8 @@ class Strass_Controller_Action_Helper_Activite extends Zend_Controller_Action_He
       $unite = $unites->current();
       $this->_actionController->_helper->Unite->liensConnexes($unite, 'calendrier');
 
+      $this->_actionController->branche->append('Calendrier', array('annee' => false,
+								    'activite' => false));
       $this->_actionController->branche->append($activite->getAnnee(),
 						array('controller'=> 'activites',
 						      'action'	=> 'calendrier',

@@ -33,10 +33,11 @@ class ActivitesController extends Strass_Controller_Action
   {
     $this->view->unite = $u = $this->_helper->Unite();
     $this->view->model = new Strass_Pages_Model_Calendrier($u, $this->_helper->Annee());
-    $this->_helper->Annee->setBranche($this->view->annee = $annee = $this->view->model->current);
+    $this->view->annee = $annee = $this->view->model->current;
     $this->metas(array('DC.Title' => 'Calendrier '.$annee,
-		       'DC.Title.alternative' => 'Calendrier '.$annee.
-		       ' – '.$u->getFullname()));
+		       'DC.Title.alternative' => 'Calendrier'));
+    $this->branche->append(null, array('annee' => false));
+    $this->_helper->Annee->setBranche($annee);
 
     $this->actions->append("Nouvelle activité",
 			   array('action' => 'prevoir'),

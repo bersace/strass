@@ -287,8 +287,10 @@ class UnitesController extends Strass_Controller_Action
     $this->view->unite = $u = $this->_helper->Unite();
     $this->view->model = new Strass_Pages_Model_UniteInscrire($this, $u, $this->_helper->Annee());
     $this->view->annee = $a = $this->view->model->current;
-    $this->metas(array('DC.Title' => "Inscrire pour l'année $a-".($a+1)));
+    $this->metas(array('DC.Title' => "Inscrire pour l'année $a-".($a+1),
+		       'DC.Title.alternative' => "Inscrire"));
     $this->branche->append(null, array('annee' => false));
+    $this->_helper->Annee->setBranche($a);
 
     $this->assert(null, $u, 'inscrire',
 		  "Vous n'avez pas le droit d'inscrire dans cette unité");
