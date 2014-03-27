@@ -99,7 +99,7 @@ class Strass_Controller_Action_Helper_Unite extends Zend_Controller_Action_Helpe
 			    'unite' => $unite->slug),
 			array(), true);
 
-    if (!$unite->isTerminale() && !$unite->findParentTypesUnite()->virtuelle)
+    if ($unite->findFermees()->count())
       $connexes->append("Archives",
 			array('controller' => 'unites',
 			      'action' => 'archives',
