@@ -42,7 +42,7 @@ class Strass {
   {
     umask(0022);
     date_default_timezone_set('Europe/Paris');
-    setlocale(LC_TIME, 'fr', 'fr_FR', 'fr_FR.utf8', 'fr_FR@euro', 'fr-FR', 'fra');
+    setlocale(LC_TIME, 'fr', 'fr_FR.utf8', 'fr_FR', 'fr_FR@euro', 'fr-FR', 'fra');
 
     require_once 'Wtk.php';
     require_once 'Zend/Loader/Autoloader.php';
@@ -57,6 +57,8 @@ class Strass {
   {
     if (self::onMaintenance())
       return self::showMaintenance();
+
+    self::bootstrap();
 
     if (!self::isInstalled())
       return Strass_Installer::main();
