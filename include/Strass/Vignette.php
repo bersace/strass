@@ -128,6 +128,7 @@ class Strass_Vignette_GD extends Strass_Vignette {
   function __construct($src, $dst, $flatten)
   {
     parent::__construct($dst);
+    $this->target = null;
 
     if ($src instanceof self) {
       /* prendre la propriété de la resource */
@@ -157,7 +158,7 @@ class Strass_Vignette_GD extends Strass_Vignette {
       if ($this->orig === false)
 	throw new Exception("Impossible de charger le fichier ".$src);
 
-    $this->target = $this->orig;
+      $this->target = $this->orig;
     }
   }
 
@@ -229,14 +230,15 @@ class Strass_Vignette_GD extends Strass_Vignette {
 
   function ecrire()
   {
+    $resource = $this->target ? $this->target : $this->orig;
     $config = Zend_Registry::get('config');
     switch($this->format) {
     case 'png':
       $qualite = intval($config->get('photo/qualite', 85) / 10);
-      imagepng($this->target, $this->chemin, $qualite);
+      imagepng($resource, $this->chemin, $qualite);
       break;
     case 'jpeg':
-      imagejpeg($this->target, $this->chemin, $config->get('photo/qualite', 85));
+      imagejpeg($resource, $this->chemin, $config->get('photo/qualite', 85));
       break;
     default:
       throw new Exception("Format ".$this->format." non supporté");
