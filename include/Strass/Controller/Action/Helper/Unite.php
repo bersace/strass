@@ -70,6 +70,7 @@ class Strass_Controller_Action_Helper_Unite extends Zend_Controller_Action_Helpe
     $this->setBranche($unite, $action, $controller);
 
     // CONNEXES
+    $annee = $this->getRequest()->getParam('annee');
     $connexes = $this->_actionController->connexes;
     $url = $this->_actionController->_helper->Url('index', 'unites', null, null, true);
     $connexes->titre = new Wtk_Link($url, $unite->getName());
@@ -77,12 +78,14 @@ class Strass_Controller_Action_Helper_Unite extends Zend_Controller_Action_Helpe
     $connexes->append("Photos",
 		      array('controller' => 'photos',
 			    'action' => 'index',
+			    'annee' => $annee,
 			    'unite' => $unite->slug),
 		      array(), true);
 
     $connexes->append('Effectifs',
 		      array('controller' => 'unites',
 			    'action' => 'effectifs',
+			    'annee' => $annee,
 			    'unite' => $unite->slug),
 		      array(null, $unite, 'effectifs'),
 		      true);
@@ -90,6 +93,7 @@ class Strass_Controller_Action_Helper_Unite extends Zend_Controller_Action_Helpe
     $connexes->append("Calendrier",
 		      array('controller' => 'activites',
 			    'action' => 'calendrier',
+			    'annee' => $annee,
 			    'unite' => $unite->slug),
 		      array(), true);
 
