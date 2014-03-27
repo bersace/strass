@@ -57,8 +57,8 @@ class Strass_Controller_Action_Helper_Unite extends Zend_Controller_Action_Helpe
 
     foreach($us as $u) {
       $this->_actionController->branche->append($u->getName(),
-						array('controller' => $controller,
-						      'action' => $action,
+						array('controller' => 'unites',
+						      'action' => 'index',
 						      'unite' => $u->slug),
 						array(),
 						true);
