@@ -394,7 +394,7 @@ class FTPEntry(object):
 
         if not self.remoteexists:
             yield MKD(self.path)
-            yield CHMOD(0750, self.path)
+            yield CHMOD(0755, self.path)
 
 
     def download(self, clean=False):
@@ -603,9 +603,12 @@ class config(object):
             default = config.get(section, name)
             prompt = "%s [%s] : " % (label, default)
         except Exception, e:
+            default = None
             prompt = "%s : " % (label,)
         value = raw_input(prompt)
         if not value:
+            if not default:
+                raise Exception("Valeur requise")
             value = default
 
         config.set(section, name, value)
@@ -617,9 +620,12 @@ class config(object):
             default = config.get(section, name)
             prompt = "%s [%s] : " % (label, 6 * '*')
         except Exception, e:
+            default = None
             prompt = "%s : " % (label,)
         value = getpass(prompt)
         if not value:
+            if not default:
+                raise Exception("Valeur requise")
             value = default
 
         config.set(section, name, value)
