@@ -28,7 +28,8 @@ class Strass_Pages_Model_UniteInscrire extends Strass_Pages_Model_Historique
     $enum['$$nouveau$$'] = 'Inscrire un nouveau';
     foreach($candidats as $candidat)
       $enum[$candidat->id] = $candidat->getFullname(false, false);
-    $g->addEnum('individu', 'Individu', null, $enum);
+    $i = $g->addEnum('individu', 'Individu', null, $enum);
+    $m->addConstraintRequired($i);
     $roles = $u->findParentTypesUnite()->findRoles();
     $enum = array();
     foreach ($roles as $role) {
