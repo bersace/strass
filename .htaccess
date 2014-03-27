@@ -7,3 +7,12 @@ AddDefaultCharset UTF-8
 	  ErrorDocument 500 /500.html
 	  SetEnv STRASS_ROUTE_PREFIX index/
 </ifDefine>
+
+<IfModule mod_rewrite.c>
+	  AcceptPathInfo On
+	  RewriteEngine On
+	  RewriteBase /
+	  RewriteCond %{REQUEST_FILENAME} !-f
+	  RewriteCond %{REQUEST_FILENAME} !-d
+	  RewriteRule (.*) index.php [QSA,L,E=PATH_INFO:/$1]
+</IfModule>
