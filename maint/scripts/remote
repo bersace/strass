@@ -438,6 +438,7 @@ class FTPEntry(object):
                     for op in self.parent.mkdir():
                         yield op
                 yield STOR(self.path)
+                yield CHMOD(0644, self.path)
 
 
     def chmod(self, mode):
@@ -798,7 +799,7 @@ class mirror(object):
         ftp.connect(config, args.production)
         self.log.info("Préparation de la mise à jour")
         ftp.mirror('.htaccess', 'index.php', '500.html', 'private/')
-        ftp.chmod(0700, 'private/')
+        ftp.chmod(0700, 'private/', 'include/')
         if args.partial:
             ftp.mirror('include/Strass/', 'include/Wtk/', 'include/templates/',
                        'data/scripts/wtk/', 'data/styles/')
