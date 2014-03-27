@@ -164,6 +164,12 @@ class Photo extends Strass_Db_Table_Row_Abstract implements Zend_Acl_Resource_In
   function _postUpdate()
   {
     $this->clearCache();
+
+    $activite = $this->findParentActivites();
+    $dossier = $activite->getDossierPhoto();
+    if (!file_exists($dossier))
+      mkdir($dossier, 0755, true);
+
     rename($this->getCheminImage($this->_cleanData), $this->getCheminImage());
     rename($this->getCheminVignette($this->_cleanData), $this->getCheminVignette());
   }

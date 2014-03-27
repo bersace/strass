@@ -170,10 +170,6 @@ class ActivitesController extends Strass_Controller_Action
 				   'controller' => 'photos',
 				   'activite' => $a->slug),
 			     array(null, $a, 'envoyer-photo'));
-      $this->connexes->append("Photos",
-			     array('action' => 'consulter',
-				   'controller' => 'photos',
-				   'album' => $a->slug));
     }
 
     $this->actions->append('Éditer',
