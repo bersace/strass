@@ -191,7 +191,7 @@ class Strass_Vignette_GD extends Strass_Vignette {
     $new_height = $ratio * $orig_height;
 
     $this->target = imagecreatetruecolor($new_width, $new_height);
-    $bg = imagecolorallocate($this->target, 0, 0, 0);
+    $bg = imagecolorallocate($this->target, 255, 255, 255);
     imagefill($this->target, 0, 0, $bg);
     imagecolortransparent($this->target, $bg);
     imagecopyresampled($this->target, $this->orig,

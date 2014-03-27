@@ -15,31 +15,19 @@ class GDTest extends PHPUnit_Framework_TestCase
   function testReduireJpeg2Jpeg()
   {
     Strass_Vignette::reduire(dirname(__FILE__).'/images/petite.jpeg',
-			     Strass::getRoot().'gd-jpeg-mini.jpeg');
+			     Strass::getRoot().'gd-petite-jpeg-mini.jpeg');
+  }
+
+  function testReduireGrandePng2Jpeg()
+  {
+    Strass_Vignette::reduire(dirname(__FILE__).'/images/grande.png',
+			     Strass::getRoot().'gd-grande-png-mini.jpeg');
   }
 
   function testReduireJpeg2Png()
   {
     Strass_Vignette::reduire(dirname(__FILE__).'/images/petite.jpeg',
-			     Strass::getRoot().'gd-jpeg-mini.png');
-  }
-
-  function testDecouperJpeg2Jpeg()
-  {
-    Strass_Vignette::decouper(dirname(__FILE__).'/images/petite.jpeg',
-			      Strass::getRoot().'gd-jpeg-crop.jpeg');
-  }
-
-  function testDecouperJpeg2Png()
-  {
-    Strass_Vignette::decouper(dirname(__FILE__).'/images/petite.jpeg',
-			      Strass::getRoot().'gd-jpeg-crop.png');
-  }
-
-  function testDecouperInconnu2Jpeg()
-  {
-    Strass_Vignette::decouper(dirname(__FILE__).'/images/jpeg-sans-suffixe',
-			      Strass::getRoot().'gd-inconnu-crop.jpeg');
+			     Strass::getRoot().'gd-petite-jpeg-mini.png');
   }
 
   function testReduirePng2Jpeg()
@@ -52,6 +40,24 @@ class GDTest extends PHPUnit_Framework_TestCase
   {
     Strass_Vignette::reduire(dirname(__FILE__).'/images/transparente.png',
 			     Strass::getRoot().'gd-png-mini.png');
+  }
+
+  function testDecouperJpeg2Jpeg()
+  {
+    Strass_Vignette::decouper(dirname(__FILE__).'/images/petite.jpeg',
+			      Strass::getRoot().'gd-petite-jpeg-crop.jpeg');
+  }
+
+  function testDecouperJpeg2Png()
+  {
+    Strass_Vignette::decouper(dirname(__FILE__).'/images/petite.jpeg',
+			      Strass::getRoot().'gd-petite-jpeg-crop.png');
+  }
+
+  function testDecouperInconnu2Jpeg()
+  {
+    Strass_Vignette::decouper(dirname(__FILE__).'/images/jpeg-sans-suffixe',
+			      Strass::getRoot().'gd-inconnu-crop.jpeg');
   }
 
   function testDecouperPng2Jpeg()
