@@ -118,9 +118,13 @@ class IndividusController extends Strass_Controller_Action
 	  $champs[] = 'numero';
 	}
 
-	foreach($champs as $champ)
-	  if ($m->getInstance($champ))
-	    $individu->$champ = trim($m->get($champ));
+	foreach($champs as $champ) {
+	  try {
+	    $m->getInstance($champ);
+	    $individu->$champ = trim($m->$champ);
+	  }
+	  catch (Exception $e) {}
+	}
 
 	$individu->fixe = $this->_helper->Telephone($individu->fixe);
 	$individu->portable = $this->_helper->Telephone($individu->portable);
