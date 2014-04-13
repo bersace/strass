@@ -135,6 +135,10 @@ a {
 	    background-size: auto 28em;
 	    padding-bottom: 30em;
 	}
+
+	&.http-200 {
+	    background-image: none;
+	}
     }
 
     &.maintenance {

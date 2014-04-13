@@ -132,7 +132,7 @@ class MembresController extends Strass_Controller_Action implements Zend_Acl_Res
       }
     }
     else if (!$ins = $t->fetchAll()->current())
-      throw new Strass_Controller_Action_Exception_NotFound("Aucune inscription à valider.");
+      throw new Strass_Controller_Action_Exception_Notice("Aucune inscription à valider.");
 
     $this->view->individu = $ind = $ins->findIndividus();
     $this->view->inscription = $ins;
