@@ -96,7 +96,7 @@ class MembresController extends Strass_Controller_Action implements Zend_Acl_Res
 	throw $e;
       }
 
-      $this->redirectSimple(null, null, null, array(), true);
+      $this->redirectSimple('index', 'unites', null, array(), true);
     }
   }
 
