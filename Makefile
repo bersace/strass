@@ -9,7 +9,7 @@ help:
 	less maint/DOC
 
 %.css: %.scss
-	sassc $< > $@ || rm $@
+	sassc $< $@ || rm $@
 
 maintenance.html: maint/scripts/maintenance $(CSS)
 	$< > $@
