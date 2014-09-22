@@ -169,6 +169,14 @@ class Strass_Controller_Plugin_Auth extends Zend_Controller_Plugin_Abstract
     return $this->getUser();
   }
 
+  function unsudo()
+  {
+    $this->sudo->unsudo = true;
+    $auth = Zend_Auth::getInstance();
+    $result = $auth->authenticate($this->sudo);
+    return $this->getUser();
+  }
+
   function getUser()
   {
     $auth = Zend_Auth::getInstance();

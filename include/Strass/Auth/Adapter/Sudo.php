@@ -17,8 +17,8 @@ class Strass_Auth_Adapter_Sudo implements Zend_Auth_Adapter_Interface
 	$sudoer = Zend_Registry::get('sudoer');
 	$identity = $sudoer->getIdentity();
 
-	$instance = Zend_Registry::getInstance();
-	$instance->offsetUnset('sudoer');
+	$registry = Zend_Registry::getInstance();
+	$registry->offsetUnset('sudoer');
 
 	$session->sudoer = null;
       }
@@ -52,9 +52,8 @@ class Strass_Auth_Adapter_Sudo implements Zend_Auth_Adapter_Interface
 	$identity = null;
     }
 
-    if ($identity) {
+    if ($identity)
       return new Zend_Auth_Result(Zend_Auth_Result::SUCCESS, $identity);
-    }
     else
       return new Zend_Auth_Result(Zend_Auth_Result::FAILURE_UNCATEGORIZED, $identity);
   }

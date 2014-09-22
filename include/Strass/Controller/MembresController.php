@@ -490,7 +490,7 @@ class MembresController extends Strass_Controller_Action implements Zend_Acl_Res
   function unsudoAction()
   {
     $this->_helper->Auth->unsudo();
-    $this->redirectSimple(null, null, null, array(), true);
+    $this->redirectUrl(array(), null, true);
   }
 
   function logoutAction()
