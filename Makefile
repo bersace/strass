@@ -43,7 +43,8 @@ clean:
 	rm -vf private/cache/*
 
 setup:
-	aptitude install php5-cli php5-sqlite php-pear php5-gd php5-imagick python-pip python-dev sqlite3
+	aptitude install php5-cli php5-sqlite php-pear php5-gd php5-imagick phpunit \
+	python-pip python-dev sqlite3
 	pip install libsass
 
 serve: all
