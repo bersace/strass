@@ -44,5 +44,6 @@ class Strass_Views_PagesRenderer_Calendrier extends Strass_Views_PagesRenderer_H
   }
 }
 
+$this->document->addFlags('printable');
 $this->document->addPages(null, $this->model,
 			 new Strass_Views_PagesRenderer_Calendrier($this));
