@@ -89,7 +89,7 @@ class Unite extends Strass_Db_Table_Row_Abstract implements Zend_Acl_Resource_In
 				 array('assistant',	array('prevoir-activite')),
 				 array('membre',	array('consulter',
 							      'calendrier',
-							      'infos')));
+							      'fiches')));
 
   public function getResourceId()
   {
