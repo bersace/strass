@@ -135,6 +135,11 @@ abstract class Wtk_Element
 		return $this;
 	}
 
+	function hasFlag($flag)
+	{
+	  return in_array($flag, $this->flags);
+	}
+
 	function setDojoType($type)
 	{
 		$this->dojoType = $type;

@@ -18,6 +18,6 @@ class Strass_Views_PagesRenderer_Effectifs extends Strass_Views_PagesRenderer_Hi
   }
 }
 
-$s = $this->document->addFlags($this->unite->findParentTypesUnite()->slug);
+$s = $this->document->addFlags($this->unite->findParentTypesUnite()->slug, 'printable');
 $renderer = new Strass_Views_PagesRenderer_Effectifs($this);
 $s->addPages(null, $this->model, $renderer);
