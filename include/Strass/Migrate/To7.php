@@ -48,7 +48,6 @@ JOIN activite ON activite.slug = participe.activite
 JOIN unite ON unite.slug = participe.unite
 ORDER BY debut;
 
-DROP TABLE participe;
 DROP TABLE activites;
 
 CREATE VIEW vcalendrier AS

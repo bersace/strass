@@ -8,6 +8,7 @@ class Strass_Migrate
   }
 
   static function run() {
+    Strass_Cache::setup();
     $db = Strass_Db::setup();
     Zend_Registry::set('acl', new Strass_Installer_FakeAcl);
     $migrator = new Strass_Migrate($db);
