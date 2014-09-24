@@ -12,6 +12,7 @@ $l->addItem()->addFlags('legal')
 ->addLink($this->url(array('controller' => 'statiques', 'action' => 'index', 'page' => 'legal'), true),
           'Mentions légales');
 
+$l->addItem($this->page->metas->get('DC.Title'))->addFlags('title');
 $l->addItem($this->page->metas->get('DC.Creator'))->addFlags('author');
 $l->addItem(strftime('%x', strtotime($this->page->metas->get('DC.Date.available'))))->addFlags('date');
 $l->addItem()->addFlags('strass')
