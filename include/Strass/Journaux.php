@@ -239,10 +239,7 @@ class Article extends Strass_Db_Table_Row_Abstract implements Zend_Acl_Resource_
   {
     $from = $this->getDossier($this->_cleanData);
     $to = $this->getDossier();
-    if ($from != $to) {
-      if (!is_readable($to))
-	mkdir($to, 0755, true);
-
+    if ($from != $to && is_readable($from)) {
       if (!rename($from, $to))
 	throw new Exception("Impossible de renomer le dossier ".$from.
 			    " en ".$to);
