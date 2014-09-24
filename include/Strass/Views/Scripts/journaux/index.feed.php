@@ -10,7 +10,7 @@ foreach ($articles as $article) {
 			   'article'	=> $article->slug,
 			   'format'	=> 'xhtml'),
 		     null, true);
-  $this->feed['entries'][] = array('title'	=> $article->titre,
+  $this->feed['entries'][] = array('title'	=> $article->titre ? $article->titre : $article->slug,
 				   'link'	=> $link,
 				   'description'=> $this->tw->transform($article->getBoulet(), 'Plain'),
 				   'content'	=> $this->tw->transform($article->article),
