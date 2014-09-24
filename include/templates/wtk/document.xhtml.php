@@ -26,6 +26,7 @@ echo "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n";
 
 <link rel="shortcut icon" type="image/png" href="/<?php echo $default_style->getFavicon(); ?>" />
 
+</style>
 <?php foreach($alternatives as $alt): ?>
 <?php extract($alt); ?>
 <link rel="alternate"<?php
@@ -33,6 +34,13 @@ wtk_attr('type', $type);
 wtk_attr('title', $title);
 wtk_attr('href', 'http://'.$_SERVER['HTTP_HOST'].$href);
 ?> />
+<?php endforeach; ?>
+
+<?php foreach ($default_style->getFiles(array('inline'), 'Xhtml') as $row): ?>
+<?php extract($row); ?>
+<style type="text/css">
+<?php readfile($file); ?>
+</style>
 <?php endforeach; ?>
 
 <?php $embeded = array(); ?>
@@ -43,27 +51,16 @@ wtk_attr('href', 'http://'.$_SERVER['HTTP_HOST'].$href);
 <?php $files = $style->getFiles($style_components, 'Xhtml'); ?>
 <?php foreach ($files as $f): ?>
 <?php extract($f); ?>
-<?php
-$ie = false;
-if(preg_match("`((?:(?:lt|gt)e?_)?ie(?:_[\d\.]+)?)\.css$`i", $file, $match)) {
-    $ie = explode('_', $match[1]);
-}
-else {
-    $ie = null;
-};
-?>
 <?php if ($default && $embed_style): ?>
-<?php if (!isset($embeded[$medium])) { $embeded[$medium] = ''; } ?>
-<?php $embeded[$medium].= !$ie && is_readable($file) ? file_get_contents($file) : ''; ?>
+<?php
+if (!isset($embeded[$medium])) {
+  $embeded[$medium] = '';
+}
+?>
+<?php $embeded[$medium].= is_readable($file) ? file_get_contents($file) : ''; ?>
 <?php else: ?>
-<?php if ($ie): ?>
-<!--[if <?php echo implode(' ', $ie); ?>]>
-<?php endif; ?>
 <link type="text/css" rel="<?php echo $default ? "" : "alternate "; ?>stylesheet" <?php
   wtk_attr('title', $style->title); wtk_attr('media', $medium); wtk_attr('href', $file); ?> />
-<?php if ($ie): ?>
-<![endif]-->
-<?php endif; ?>
 <?php endif; ?>
 <?php endforeach; ?>
 <?php endforeach; ?>
