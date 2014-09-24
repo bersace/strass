@@ -76,6 +76,9 @@ class Individu extends Strass_Db_Table_Row_Abstract implements Zend_Acl_Resource
     }
     $acl->allow('membres', $this, 'voir-nom');
 
+    if ($this->getAge() > 18)
+      $acl->allow(null, $this, 'voir-avatar');
+
     if ($acl->hasRole($this)) {
       $acl->allow($this, $this, array('editer', 'desinscrire'));
       $acl->deny($this, $this, 'desinscrire');
