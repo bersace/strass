@@ -16,10 +16,12 @@ class IndividusController extends Strass_Controller_Action
   {
     $individu = $this->_helper->Individu->param();
 
-    $this->metas(array('DC.Title' => $individu->getFullname(false, false)));
+    $this->metas(array('DC.Title' => "Fiche d'individu"));
 
     $this->assert(null, $individu, 'fiche',
-		  "Vous n'avez pas le droit de voir la fiche de ".$individu->getName().". ");
+		  "Vous n'avez pas le droit de voir cette fiche. ");
+
+    $this->metas(array('DC.Title' => $individu->getFullname(false, false)));
 
     $this->formats('vcf', 'csv');
 
