@@ -173,19 +173,24 @@ class MembresController extends Strass_Controller_Action implements Zend_Acl_Res
 	  $ituple['adelec'] = $ins->adelec;
 	}
 
-	$utuple = array('username' => $ins->adelec,
-			'password' => $ins->password,
-			);
-
 	$db->beginTransaction();
 	try {
 	  if ($creer) {
 	    $k = $ti->insert($ituple);
 	    $ind = $ti->findOne($k);
 	  }
-	  $utuple['individu'] = $ind->id;
-	  $k = $tu->insert($utuple);
-	  $user = $tu->findOne($k);
+
+	  try {
+	    $user = $ind->findUser();
+	  }
+	  catch (Zend_Db_Table_Exception $e) {
+	    $user = new User;
+	  }
+
+	  $user->individu = $ind->id;
+	  $user->username = $ins->adelec;
+	  $user->setPassword($ins->password);
+	  $user->save();
 
 	  $mail = new Strass_Mail_InscriptionValide($user, $m->get('message'));
 	  $mail->send();
