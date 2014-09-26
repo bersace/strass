@@ -64,7 +64,8 @@ abstract class Strass_Views_PagesRenderer_Historique extends Wtk_Pages_Renderer
     $sss = null;
     $pre = null;
 
-    foreach($model->data as $annee => $chef) {
+    $chefs = array_reverse($model->data, true);
+    foreach($chefs as $annee => $chef) {
       $intitule = $this->intituleChef($chef, $model->unite);
       if (!$sss || $pre !== $chef) {
 	$titre = new Wtk_Container("L'année ", $this->titreChef($chef, $intitule));
