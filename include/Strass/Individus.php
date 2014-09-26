@@ -142,7 +142,7 @@ class Individu extends Strass_Db_Table_Row_Abstract implements Zend_Acl_Resource
     }
   }
 
-  function capitalizedLastname($compact=false)
+  function capitalizedLastname($compact=false, $only=false)
   {
     /* http://fr.wikipedia.org/wiki/Particule_(onomastique) */
     $noms = preg_split("`[ '-]`", $this->nom);
@@ -176,7 +176,9 @@ class Individu extends Strass_Db_Table_Row_Abstract implements Zend_Acl_Resource
       case 'van':
       case 'von':
       case 'vom':
-	$nom[] = $n.' ';
+	/* En français, on ne met la particule qu'avec le prénom */
+	if (!$only)
+	  $nom[] = $n.' ';
 	break;
       case 'mac':
       case 'mc':
