@@ -17,12 +17,12 @@ abstract class Strass_Db_Table_Abstract extends Zend_Db_Table_Abstract
   {
     $base = wtk_strtoid($base);
 
-    if ($current && strpos($current, $base) === 0)
-      return $current;
-
     $s = $this->getAdapter()->select()
       ->from($this->_name, array('slug'))
       ->where('slug LIKE ?', $base.'%');
+
+    if ($current)
+      $s->where('slug <> ?', $current);
 
     $r = $this->getAdapter()->query($s)->fetchAll();
     $existants = array();
