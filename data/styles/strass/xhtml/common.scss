@@ -636,6 +636,9 @@ a {
 	border-radius: 1ex;
 	padding: 1ex;
 	margin: 5em 3em 3em;
+	display: flex;
+	flex-direction: row-reverse;
+	flex-wrap: wrap;
 
 	.h {
 	    @include headfont;
@@ -659,7 +662,10 @@ a {
 	}
 
 	ul {
-	    display: block;
+	    display: flex;
+	    flex-direction: row-reverse;
+	    flex-wrap: wrap;
+	    justify-content: flex-end;
 	    margin: 0;
 	    padding: 0;
 
