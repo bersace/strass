@@ -47,9 +47,9 @@ class PhotosController extends Strass_Controller_Action
     $this->metas(array('DC.Title' => "Envoyer une photo",
 		       'DC.Subject' => 'envoyer,photos'));
 
-    $this->connexes->append("Nouvelle activité",
-			    array('controller' => 'activites',
-				  'action'  => 'prevoir'));
+    $this->actions->append("Nouvelle activité",
+			   array('controller' => 'activites',
+				 'action'  => 'prevoir'));
 
     $ta = new Activites;
     $a = $activite = $this->_helper->Album(false);
