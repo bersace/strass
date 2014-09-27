@@ -44,6 +44,7 @@ class Strass_Pages_Model_UniteInscrire extends Strass_Pages_Model_Historique
     $i0 = $g->addBool('clore', 'Clore', false);
     $i1 = $g->addDate('fin', 'Fin', ($a+1).'-10-08');
     $m->addConstraintDepends($i1, $i0);
+    $g->addBool('continuer', "J'ai d'autres inscriptions à enregistrer", false);
 
     /* Enregistrement d'un nouvel individu */
     $g = $m->addGroup('fiche');
@@ -105,7 +106,10 @@ class Strass_Pages_Model_UniteInscrire extends Strass_Pages_Model_Historique
 	throw $e;
       }
 
-      $this->controller->redirectSimple('effectifs');
+      if ($m->get('inscription/continuer'))
+	$this->controller->redirectSimple();
+      else
+	$this->controller->redirectSimple('effectifs');
     }
 
     $parente = $this->unite->findParentUnites();

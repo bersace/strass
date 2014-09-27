@@ -18,6 +18,7 @@ class Strass_Views_PagesRenderer_UnitesInscrireAssistant extends Wtk_Pages_Rende
     $c = $f->addForm_Compound('Fin');
     $c->addCheck('inscription/clore')->useLabel(true);
     $c->addDate('inscription/fin', '%e-%m-%Y');
+    $f->addCheck('inscription/continuer');
   }
 
   function renderFiche($g, $f)
