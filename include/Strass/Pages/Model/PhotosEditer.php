@@ -32,6 +32,7 @@ class Strass_Pages_Model_PhotosEditer extends Strass_Pages_Model_Historique
     if ($enum)
       $m->addEnum('activite', "Activité", $this->photo->activite, $enum);
     $m->addFile('photo', "Photo");
+    $m->addBool('promouvoir', "Promouvoir en page d'accueil", $this->photo->promotion);
     $m->addNewSubmission('enregistrer', "Enregistrer");
 
     if ($m->validate()) {
@@ -52,6 +53,7 @@ class Strass_Pages_Model_PhotosEditer extends Strass_Pages_Model_Historique
 
 	$this->photo->titre = $m->titre;
 	$this->photo->slug = $t->createSlug($m->titre, $this->photo->slug);
+	$this->photo->promotion = (int) $m->promouvoir;
 	$this->photo->save();
 
 	$this->controller->_helper->Flash->info("Photo éditée");

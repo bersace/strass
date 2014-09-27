@@ -172,6 +172,7 @@ class Activite extends Strass_Db_Table_Row_Abstract implements Zend_Acl_Resource
   function findPhotosAleatoires($count=6)
   {
     $select = $this->getTable()->select()
+      ->order('photo.promotion DESC')
       ->order('RANDOM()')
       ->limit($count);
     return $this->findPhotos($select);

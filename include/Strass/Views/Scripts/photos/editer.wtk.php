@@ -39,6 +39,7 @@ class Strass_Views_PagesRenderer_PhotosEditer extends Strass_Views_PagesRenderer
 	  ->addInline("Pas d'activité pour cette année");
     }
 
+    $f->addCheck('promouvoir');
     $b = $f->addForm_ButtonBox();
     $b->addForm_Submit($form_model->getSubmission('enregistrer'));
   }
