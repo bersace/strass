@@ -92,6 +92,34 @@ class Strass_Views_Unite_Index_BlocGenerator
 	->addInline("Pas d'activités marquantes !");
     }
   }
+
+  function blocDocuments()
+  {
+    $s = $this->view->document;
+    $unite = $this->view->unite;
+    $documents = $this->view->documents;
+
+    $ss = $s->addSection('documents',
+			 $this->view->lien(array('controller' => 'documents',
+						 'action' => 'index',
+						 'unite' => $unite->slug),
+					   'Documents', true));
+    $ss->addFlags('bloc');
+    if ($documents->count()) {
+      $l = $ss->addList();
+      $l->addFlags('vignettes', 'documents');
+      foreach($documents as $document) {
+	$l->addItem($this->view->vignetteDocument($document,
+						  array('controller'	=> 'documents',
+							'action'	=> 'details',
+							'document'	=> $document->slug)));
+      }
+    }
+    else {
+      $ss->addParagraph()->addFlags('empty')
+	->addInline("Pas de documents !");
+    }
+  }
 }
 
 $src = $this->unite->getCheminImage();

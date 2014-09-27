@@ -15,6 +15,7 @@ class UnitesController extends Strass_Controller_Action
     $this->view->unites = $u->findSousUnites(true, false);
     $this->view->photos = $u->findPhotosAleatoires();
     $this->view->activites = $u->findActivitesMarquantes();
+    $this->view->documents = $u->findDocuments();
 
     $this->view->fiches = $this->assert(null, $u, 'fiches');
     $config = new Strass_Config_Php($u->slug);
@@ -237,6 +238,7 @@ class UnitesController extends Strass_Controller_Action
     static $blocs = array('unites' => 'Les unités',
 			  'photos' => 'Photos aléatoires',
 			  'activites' => 'Activités marquantes',
+			  'documents' => 'Documents',
 			  );
 
     $this->view->unite = $u = $this->_helper->Unite();
