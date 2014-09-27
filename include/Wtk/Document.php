@@ -11,6 +11,7 @@ class Wtk_Document extends Wtk_Section
 	{
 		parent::__construct ('document', null);
 		$this->setMetas($metas);
+		$this->sitemap = null;
 		$this->styles = array();
 		$this->custom_style_components = array();
 		$this->embedStyle(false);

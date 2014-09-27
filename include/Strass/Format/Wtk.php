@@ -20,6 +20,7 @@ abstract class Strass_Format_Wtk extends Strass_Format
 
     $view = $controller->view;
     $document = new Wtk_Document($page->metas);
+    $document->sitemap = '/sitemap';
     $document->addFlags($mn, $cn, $an);
     $document->setStyle(new Wtk_Document_Style($config->get('system/style', 'strass'), 'data/styles/'));
     $document->addStyleComponents('layout', 'common', $cn, $mn, $mouvement);

@@ -1,0 +1,7 @@
+<?php
+$this->navigation($this->nav);
+$this->navigation()
+      ->sitemap()
+      ->setFormatOutput(true); // default is false
+$this->navigation()->sitemap()->setUseSitemapValidators(false);
+echo $this->navigation()->sitemap();

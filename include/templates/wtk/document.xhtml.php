@@ -25,6 +25,9 @@ echo "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n";
 <base href="<?php echo $baseurl; ?>" />
 
 <link rel="shortcut icon" type="image/png" href="/<?php echo $default_style->getFavicon(); ?>" />
+<?php if ($sitemap): ?>
+<link rel="sitemap" type="application/xml" href="<?php echo $sitemap; ?>" />
+<?php endif; ?>
 
 </style>
 <?php foreach($alternatives as $alt): ?>
