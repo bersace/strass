@@ -6,7 +6,7 @@ class CommentairesController extends Strass_Controller_Action
 {
   function editerAction()
   {
-    $p = $this->_helper->Photo(false);
+    $this->view->photo = $p = $this->_helper->Photo(false);
     $this->metas(array('DC.Title' => 'Éditer un commentaire'));
     $this->view->commentaire = $c = $this->_helper->Commentaire();
     $this->assert(null, $c, 'editer',
