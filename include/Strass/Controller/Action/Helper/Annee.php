@@ -18,17 +18,17 @@ class Strass_Controller_Action_Helper_Annee extends Zend_Controller_Action_Helpe
 	  return $annee;
 	}
 
-	function dateDebut($annee)
+	static function dateDebut($annee)
 	{
 		return $annee.'-09-01';
 	}
 
-	function dateFin($annee)
+	static function dateFin($annee)
 	{
 		return ($annee+1).'-08-31';
 	}
 
-	function cetteAnnee()
+	static function cetteAnnee()
 	{
 		return strftime('%Y', time()-8*30*24*60*60);
 	}

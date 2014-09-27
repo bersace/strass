@@ -17,6 +17,17 @@ class Activites extends Strass_Db_Table_Abstract
     return $this->fetchAll("debut ".($futures ? '>' : '<').
 			   " STRFTIME('%Y-%m-%d %H:%M', CURRENT_TIMESTAMP, '+2 HOURS')");
   }
+
+  function findByAnnee($annee)
+  {
+    $s = $this->select()
+      ->where("? < activite.debut",
+	      Strass_Controller_Action_Helper_Annee::dateDebut($annee))
+      ->where("activite.fin < ?",
+	      Strass_Controller_Action_Helper_Annee::dateFin($annee))
+      ->order('activite.debut');
+    return $this->fetchAll($s);
+  }
 }
 
 
