@@ -161,4 +161,16 @@ class Strass {
       session_write_close();
     }
   }
+
+  static function getSiteTitle()
+  {
+    $config = Zend_Registry::get('config');
+    $t = new Unites;
+    if ($config->metas->title)
+      return $config->metas->title;
+    elseif ($racine = $t->findRacine())
+      return $racine->getName();
+    else
+      return null;
+  }
 }

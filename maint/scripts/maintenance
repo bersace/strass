@@ -7,10 +7,16 @@ array_unshift($paths, dirname(dirname(dirname(__FILE__))).'/include');
 set_include_path(implode(':',$paths));
 
 require_once 'Strass.php';
+require_once 'Orror.php';
 
 Strass::bootstrap();
 
+require_once 'Strass/Unites.php';
+
 $config = new Strass_Config_Php('strass');
+Zend_Registry::set('config', $config);
+Strass_Cache::setup();
+$db = Strass_Db::setup();
 
 $document = new Wtk_Document(new Wtk_Metas(array('DC.Title' => 'Maintenance')));
 $style = $config->get('system/style', 'strass');
@@ -19,7 +25,7 @@ $document->addStyleComponents('layout', 'minilayout', 'common');
 $mouvement = $config->get('system/mouvement', null);
 $document->addFlags('maintenance', $mouvement);
 $document->embedStyle();
-$document->header->setTitle(new Wtk_Link('/', $config->get('metas/title', null)));
+$document->header->setTitle(new Wtk_Link('/', Strass::getSiteTitle()));
 $document->header->addFlags($mouvement);
 $dialog = $document->addDialog("Webmestre au travail !");
 $dialog->addFlags('error');
