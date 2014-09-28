@@ -646,6 +646,7 @@ class Unite extends Strass_Db_Table_Row_Abstract implements Zend_Acl_Resource_In
 	     $db->quoteInto('participation.unite IN (?, fille.id, petitefille.id)', intval($this->id))."\n",
 	     array())
       ->limit(6) // paramétrable ?
+      ->order('photo.promotion DESC')
       ->order('participation.unite') // Les unités parentes en priorité
       ->order("RANDOM()\n");
 
