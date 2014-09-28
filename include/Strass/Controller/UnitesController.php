@@ -14,7 +14,7 @@ class UnitesController extends Strass_Controller_Action
     $this->view->presentation = $w ? file_get_contents($w) : '';
     $this->view->unites = $u->findSousUnites(true, false);
     $this->view->photos = $u->findPhotosAleatoires();
-    $this->view->activites = $u->findActivitesMarquantes();
+    $this->view->activites = $u->findActivitesMarquantes(null, 6);
     $this->view->documents = $u->findDocuments();
 
     $this->view->fiches = $this->assert(null, $u, 'fiches');
