@@ -9,8 +9,9 @@ $dialog = $this->document->addDialog("Bug !")
 $aide = $dialog->addSection('aide');
 $details = $dialog->addSection('details', 'Détails');
 
+$this->document->addFlags('http-'.$this->response->getHttpResponseCode());
+
 foreach ($this->errors as $i => $error) {
-  $this->document->addFlags('http-'.$error->getCode());
   $titre = null;
   if (in_array($error->getCode(), array(401, 403))) {
     $dialog->title = $titre = "Accès refusé";
@@ -34,7 +35,7 @@ foreach ($this->errors as $i => $error) {
     $dialog->title = $titre = $error->getMessage();
     $aide->addText($error->aide);
   }
-  else if ($error->getCode() == 404)
+  else if ($this->response->getHttpResponseCode() == 404)
     $dialog->title = $titre = "Page inexistante !";
   else if ($i == 0) {
     $dialog->title = "Bug !";
@@ -43,7 +44,8 @@ foreach ($this->errors as $i => $error) {
     $aide->addText("Désolé pour la gêne occasionée. ".
 		   "Le bug est enregistré dans le journal et nous ferons notre possible ".
 		   "pour le corriger. //En attendant, essayez de le contourner !//");
-    $dialog->addFlags('showtrace');
+    if (Strass::onDevelopment())
+      $dialog->addFlags('showtrace');
   }
   $section = $details->addSection(null, $titre)->addFlags('error');
   $section->addText("{{".get_class($error). "}}: // ".$error->getMessage()." // \n");

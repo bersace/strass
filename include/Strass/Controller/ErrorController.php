@@ -41,5 +41,6 @@ class ErrorController extends Strass_Controller_Action implements Strass_Control
     }
 
     $this->_request->setParam('format', 'html');
+    $this->view->response = $this->getResponse();
   }
 }
