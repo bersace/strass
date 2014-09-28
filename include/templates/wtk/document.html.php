@@ -14,6 +14,7 @@ $dojodbg = 'false';
 <head>
 <title><?php echo $metas->get('DC.Title.alternative'); ?></title>
 
+<meta charset="utf-8" />
 <?php foreach($metas as $name => $content): ?>
 <?php if($content): ?>
 <meta name="<?php echo $name; ?>" content="<?php echo htmlspecialchars($content); ?>" />
