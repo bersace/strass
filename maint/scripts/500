@@ -10,16 +10,21 @@ require_once 'Strass.php';
 
 Strass::bootstrap();
 
+require_once 'Strass/Unites.php';
+
 $config = new Strass_Config_Php('strass');
+Zend_Registry::set('config', $config);
+Strass_Cache::setup();
+$db = Strass_Db::setup();
 
 $document = new Wtk_Document(new Wtk_Metas(array('DC.Title' => 'Erreur fatale')));
 $style = $config->get('system/style', 'strass');
 $document->setStyle(new Wtk_Document_Style($style));
 $document->addStyleComponents('layout', 'minilayout', 'common');
 $mouvement = $config->get('system/mouvement', null);
-$document->addFlags($mouvement);
+$document->addFlags($mouvement, 'error');
 $document->embedStyle();
-$document->header->setTitle(new Wtk_Link('/', $config->get('metas/title', null)));
+$document->header->setTitle(new Wtk_Link('/', Strass::getSiteTitle()));
 $document->header->addFlags($mouvement);
 
 $dialog = $document->addDialog("Oups !");
