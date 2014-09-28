@@ -32,5 +32,5 @@ else
 $dialog->addSection('aide')
 ->addText("Vous avez rencontré un gros bug. Merci de le rapporter au ".$wm." !");
 
-$render = Wtk_Render::factory($document, 'Xhtml');
+$render = Wtk_Render::factory($document, 'Html5');
 echo $render->render();

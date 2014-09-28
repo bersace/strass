@@ -110,7 +110,7 @@ class Strass {
     $f = '(xhtml|ics|vcf|rss|atom|pdf|tex|txt|od[ts]|csv)';
     $vars = array('controller' => array($p, 'unites'),
 		  'action'     => array($p, 'index'),
-		  'format'     => array($f, 'xhtml'),
+		  'format'     => array($f, 'html'),
 		  'annee'      => array('([[:digit:]]{4})', null));
 
     $pattern = '[%controller%[/%action%][.%format%][/%annee%]*]';

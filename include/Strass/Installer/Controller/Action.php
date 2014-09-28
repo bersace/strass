@@ -63,8 +63,8 @@ class Strass_Installer_Controller_Action extends Zend_Controller_Action
   function postDispatch ()
   {
     $page = Zend_Registry::get('page');
-    $page->addFormat(Strass_Format::factory('Xhtml'));
-    $page->selectFormat('xhtml');
+    $page->addFormat(Strass_Format::factory('Html5'));
+    $page->selectFormat('html');
     $this->viewSuffix = $page->format->viewSuffix.'.php';
 
     $response = $this->getResponse();

@@ -1,17 +1,13 @@
 <?php
 
-class Strass_Format_Xhtml extends Strass_Format_Wtk
+class Strass_Format_Html5 extends Strass_Format_Wtk
 {
-  protected	$_suffix = 'xhtml';
-  protected	$_mimeType = 'application/xhtml+xml';
-  protected	$_title = 'XHTML';
-  protected	$_wtkRender = 'Xhtml';
-  protected	$_renderAddons = true;
+  protected	$_suffix = 'html';
+  protected	$_mimeType = 'text/html';
+  protected	$_title = 'HTML';
+  protected	$_wtkRender = 'Html5';
+  protected    $_renderAddons = true;
 
-  function __construct()
-  {
-    $this->_mimeType = 'text/html';
-  }
 
   function _preRender($controller)
   {

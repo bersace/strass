@@ -10,7 +10,11 @@
 body {
     font-family: "Liberation Sans", "Deja Vu Sans", sans-serif;
     color: black;
-    background: $page_background;
+}
+
+html {
+    background-image: url("ui/fond.png");
+    background-repeat: repeat;
 }
 
 .h, th, h2, h3, h4, h5, h6

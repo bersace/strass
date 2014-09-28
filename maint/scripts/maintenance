@@ -30,5 +30,5 @@ $document->header->addFlags($mouvement);
 $dialog = $document->addDialog("Webmestre au travail !");
 $dialog->addFlags('error');
 $dialog->addSection('aide')->addParagraph("Le site est actuellement en maintance. Désolé et à bientot !");
-$render = Wtk_Render::factory($document, 'Xhtml');
+$render = Wtk_Render::factory($document, 'Html5');
 echo $render->render();

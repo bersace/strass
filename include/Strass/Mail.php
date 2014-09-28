@@ -73,7 +73,7 @@ class Strass_Mail extends Zend_Mail
 
     $r = Wtk_Render::factory($this->_doc, 'Txt');
     $this->setBodyText($r->render());
-    $r = Wtk_Render::factory($this->_doc, 'Xhtml');
+    $r = Wtk_Render::factory($this->_doc, 'Html5');
     $this->setBodyHTML($r->render());
 
     // assure que le courriel est bien envoyé à l'admin,

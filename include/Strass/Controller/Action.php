@@ -3,7 +3,7 @@
 abstract class Strass_Controller_Action extends Zend_Controller_Action implements Zend_Acl_Resource_Interface
 {
   protected $_titreBranche = '';
-  protected $_formats = array('xhtml');
+  protected $_formats = array('html');
   protected $resourceid;
   public $_helper = null;
   public $_afficherMenuUniteRacine = false;
@@ -185,7 +185,7 @@ abstract class Strass_Controller_Action extends Zend_Controller_Action implement
     $page = Zend_Registry::get('page');
 
     if (!in_array($format, $this->_formats))
-      $format = 'xhtml';
+      $format = 'html';
     //throw new Strass_Controller_Action_Exception("Ce document n'est pas disponible dans ce format.");
 
     $available_formats = require('include/Strass/formats.php');

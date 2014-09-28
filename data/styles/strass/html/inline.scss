@@ -1,0 +1,9 @@
+/*-*- css -*-*/
+
+@import "lib";
+
+@media screen {
+    html {
+	background-color: $page_background;
+    }
+}
