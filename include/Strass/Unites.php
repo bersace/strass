@@ -284,6 +284,7 @@ class Unite extends Strass_Db_Table_Row_Abstract implements Zend_Acl_Resource_In
 	if ($annee === true)
 	  $select->where('actif.fin IS NULL OR inactif.id IS NULL');
 	else {
+	  /* On considère que les effectifs sont stable à cette date :x */
 	  $date = ($annee+1).'-06-01';
 	  $select->where("(actif.debut < ? AND (actif.fin IS NULL OR ?<= actif.fin))".
 			 " OR inactif.id IS NULL", $date);
@@ -391,7 +392,8 @@ class Unite extends Strass_Db_Table_Row_Abstract implements Zend_Acl_Resource_In
       elseif ($annee) {
 	// Est considéré comme inscrit pour une année donnée un personne inscrite
 	// avant le 24 août de l'année suivante …
-	$select->where('STRFTIME("%Y-%m-%d", debut) <= ?'."\n", ($annee+1).'-08-24');
+	$select->where('STRFTIME("%Y-%m-%d", debut) <= ?'."\n",
+		       Strass_Controller_Action_Helper_Annee::dateFin($annee));
 	// … toujours en exercice ou en exercice au moins jusqu'au 1er janvier de l'année suivante.
 	$select->where('fin IS NULL OR STRFTIME("%Y-%m-%d", fin) >= ?'."\n", ($annee+1).'-01-01');
       }
@@ -455,7 +457,8 @@ class Unite extends Strass_Db_Table_Row_Abstract implements Zend_Acl_Resource_In
     elseif ($annee) {
       // Est considéré comme inscrit pour une année donnée un personne inscrite
       // avant le 24 août de l'année suivante …
-      $select->where('STRFTIME("%Y-%m-%d", debut) <= ?'."\n", ($annee+1).'-08-24');
+      $select->where('STRFTIME("%Y-%m-%d", debut) <= ?'."\n",
+		     Strass_Controller_Action_Helper_Annee::dateFin($annee));
       // … toujours en exercice ou en exercice au moins jusqu'au 1er janvier de l'année suivante.
       $select->where('fin IS NULL OR STRFTIME("%Y-%m-%d", fin) >= ?'."\n", ($annee+1).'-01-01');
     }
@@ -567,9 +570,9 @@ class Unite extends Strass_Db_Table_Row_Abstract implements Zend_Acl_Resource_In
 	->joinLeft(array('petitefille' => 'unite'), 'petitefille.parent = fille.id', array())
 	->join('photo', 'photo.activite = activite.id', array())
 	->where('participation.unite IN (?, fille.id, petitefille.id)', $this->id)
-	->where("? < activite.debut", $annee.'-08-31')
-	->where("activite.debut < ?", ($annee+1).'-08-31')
-	->where("activite.debut < STRFTIME('%Y-%m-%d %H:%M', CURRENT_TIMESTAMP)")
+	->where("? < activite.debut", Strass_Controller_Action_Helper_Annee::dateDebut($annee))
+	->where("activite.fin < ?", Strass_Controller_Action_Helper_Annee::dateFin($annee))
+	->where("activite.fin < STRFTIME('%Y-%m-%d %H:%M', CURRENT_TIMESTAMP)")
 	->order('fin');
       $albums = $t->fetchAll($s);
       $cache->save($albums, $cacheId, array('unites', 'photos'));
@@ -659,8 +662,8 @@ class Unite extends Strass_Db_Table_Row_Abstract implements Zend_Acl_Resource_In
   function findActivites($annee, $sousunite=false)
   {
     $t = new Activites;
-    $min = $annee.'-09-01 00:00';
-    $max = ($annee+1).'-08-31 23:59';
+    $min = Strass_Controller_Action_Helper_Annee::dateDebut($annee).' 00:00';
+    $max = Strass_Controller_Action_Helper_Annee::dateFin($annee).' 23:59';
     $select = $t->select()
       ->setIntegrityCheck(false)
       ->from('activite')
@@ -879,7 +882,8 @@ class Unite extends Strass_Db_Table_Row_Abstract implements Zend_Acl_Resource_In
 		 ' AND '.
 		 /* Inscription en cours, débutée au plus tard cette année */
 		 '('.('appartenance.fin IS NULL AND '.
-		      $db->quoteInto("appartenance.debut < ?", ($annee+1).'-08-01')
+		      $db->quoteInto("appartenance.debut < ?",
+				     Strass_Controller_Action_Helper_Annee::dateFin($annee))
 		      ).')', array())
       /* n'appartient pas déjà à l'unité */
       ->where('appartenance.id IS NULL')
@@ -907,9 +911,11 @@ class Unite extends Strass_Db_Table_Row_Abstract implements Zend_Acl_Resource_In
 		 'appartenance.role = unite_role.id AND '.
 		 'appartenance.unite = unite.id AND '.
 		 ('('.
-		  $db->quoteInto('(appartenance.fin IS NULL OR appartenance.fin > ?)', ($annee+1).'-08-01').
+		  $db->quoteInto('(appartenance.fin IS NULL OR appartenance.fin > ?)',
+				 Strass_Controller_Action_Helper_Annee::dateFin($annee)).
 		  ' AND '.
-		  $db->quoteInto('appartenance.debut < ?', ($annee).'-08-01').
+		  $db->quoteInto('appartenance.debut < ?',
+				 Strass_Controller_Action_Helper_Annee::dateDebut($annee)).
 		  ')'),
 		 array())
       ->where('unite.id = ?', $this->id)

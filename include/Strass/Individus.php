@@ -352,7 +352,7 @@ class Individu extends Strass_Db_Table_Row_Abstract implements Zend_Acl_Resource
       ->setIntegrityCheck(false)
       ->from('appartenance')
       ->where('appartenance.individu = ?', $this->id)
-      ->where('appartenance.debut >= ?', $annee.'-09-01')
+      ->where('appartenance.debut >= ?', Strass_Controller_Action_Helper_Annee::dateDebut($annee))
       ->order('appartenance.debut')
       ->limit(1);
     return $t->fetchAll($s)->current();
@@ -376,8 +376,8 @@ class Individu extends Strass_Db_Table_Row_Abstract implements Zend_Acl_Resource
       ->order('activite.debut DESC');
 
     if ($annee) {
-      $s->where("activite.debut >= ?", $annee.'-08-31');
-      $s->where("activite.fin <= ?", ($annee+1).'-08-31');
+      $s->where("activite.debut >= ?", Strass_Controller_Action_Helper_Annee::dateDebut($annee));
+      $s->where("activite.fin <= ?", Strass_Controller_Action_Helper_Annee::dabteFin($annee));
     }
 
     return $t->fetchAll($s);
