@@ -25,13 +25,14 @@ class Strass_Controller_Action_Helper_Document extends Zend_Controller_Action_He
 
   function setBranche($d)
   {
-    $this->_actionController->branche->append('Documents', array('action' => 'index', 'unite' => null));
     try {
       $u = $d->findUnite();
       $this->_actionController->_helper->Unite->liensConnexes($u, 'index', 'documents');
     }
     catch (Strass_Db_Table_NotFound $e) {}
 
+    $this->_actionController->branche->append('Documents', array('action' => 'index',
+								 'unite' => null, 'document' => null,));
     $this->_actionController->branche->append($d->titre);
   }
 }

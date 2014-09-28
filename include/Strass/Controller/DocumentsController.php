@@ -7,12 +7,12 @@ class DocumentsController extends Strass_Controller_Action
 {
   function indexAction()
   {
+    $this->view->unite = $unite = $this->_helper->Unite();
+
     $this->branche->append('Documents',
 			   array('controller' => 'documents',
 				 'action' => 'index'),
 			   array(), true);
-
-    $this->view->unite = $unite = $this->_helper->Unite();
 
     $this->view->docs = $unite->findDocuments();
     $this->metas(array('DC.Title' => 'Documents'));
@@ -111,6 +111,7 @@ class DocumentsController extends Strass_Controller_Action
   function detailsAction()
   {
     $this->view->doc = $d = $this->_helper->Document();
+    $this->metas(array('DC.Title' => $d->titre));
 
     try {
       $this->view->unite = $u = $d->findUnite();
