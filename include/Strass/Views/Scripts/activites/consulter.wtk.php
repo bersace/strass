@@ -10,10 +10,16 @@ if ($this->activite->isFuture())
 $s = $this->document->addSection('evenement', $this->activite->getIntituleComplet());
 $s->addChild($this->vignetteAlbum($this->activite)->addFlags('nolabel'));
 $l = $s->addList()->addFlags('infos');
+$datefmts = array('reunion' => 'le %A %e %B à %R',
+		  'sortie' => 'le %A %e %B à %R',
+		  'weekend' => 'le %A %e %B à %R',
+		  'camp' => '%A %e %B',
+		  );
+$datefmt = $datefmts[$this->activite->getType()];
 $l->addItem()->addFlags('debut')
-->addInline("**Début :** ".strftime('le %A %e %B à %R', strtotime($this->activite->debut)));
+->addInline("**Début :** ".strftime($datefmt, strtotime($this->activite->debut)));
 $l->addItem()->addFlags('fin')
-->addInline("**Fin :** ".strftime('le %A %e %B à %R', strtotime($this->activite->fin)));
+->addInline("**Fin :** ".strftime($datefmt, strtotime($this->activite->fin)));
 if ($lieu = $this->activite->lieu)
   $l->addItem()->addFlags('lieu')->addInline("**Lieu :** ".$lieu);
 
