@@ -10,6 +10,7 @@ class Strass_Controller_Action_Helper_Album extends Zend_Controller_Action_Helpe
     $t = new Activites;
     try {
       $activite = $t->findBySlug($slug);
+      $this->getRequest()->setParam('annee', $activite->getAnnee());
     }
     catch (Strass_Db_Table_NotFound $e) {
       if ($throw)
