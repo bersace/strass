@@ -7,7 +7,7 @@ abstract class Strass_Pages_Model_Historique extends Wtk_Pages_Model_Assoc
   function __construct(Unite $unite, $annee, $force=false)
   {
     $this->unite = $unite;
-    $annees = $unite->getAnneesOuverte();
+    $annees = $unite->getAnneesOuvertes();
     if ($force) {
       if (!array_key_exists($annee, $annees))
 	$annees[$annee] = '##INCONNU##';

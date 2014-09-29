@@ -32,6 +32,6 @@ class Strass_Controller_Action_Helper_Annee extends Zend_Controller_Action_Helpe
 
   static function cetteAnnee()
   {
-    return strftime('%Y', time()-8*30*24*60*60);
+    return strftime('%Y', strtotime('-8 month'));
   }
 }

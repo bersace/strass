@@ -753,7 +753,7 @@ class Unite extends Strass_Db_Table_Row_Abstract implements Zend_Acl_Resource_In
   }
 
   // retourne les années où l'unité fut ouverte.
-  function getAnneesOuverte()
+  function getAnneesOuvertes()
   {
     $cacheId = wtk_strtoid('annes-ouvertes-'.$this->slug, '_');
     $cache = Zend_Registry::get('cache');
