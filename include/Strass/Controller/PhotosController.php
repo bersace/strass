@@ -52,23 +52,16 @@ class PhotosController extends Strass_Controller_Action
 				 'action'  => 'prevoir'));
 
     $ta = new Activites;
-    $a = $activite = $this->_helper->Album(false);
-
-    if ($activite) {
-      $this->view->activite = $activite;
-      $this->view->unite = $unite = $activite->findUnitesParticipantesExplicites()->current();
+    try {
+      $activite = $this->_helper->Album();
       $annee = $activite->getAnnee();
+      $this->view->unite = $unite = $activite->findUnitesParticipantesExplicites()->current();
     }
-    else {
-      $tu = new Unites;
-      $this->view->unite = $unite = $tu->findRacines()->current();
-      $this->_helper->Unite->liensConnexes($unite);
-      $annee = $this->_helper->Annee(false);
+    catch (Strass_Controller_Action_Exception_NotFound $e) {
       $activite = null;
+      $this->view->unite = $unite = $this->_helper->Unite();
+      $annee = $this->_helper->Annee();
     }
-
-    if (!$ta->countRows())
-      throw new Strass_Controller_Action_Exception_Notice("Aucune activité enregistrée");
 
     $this->view->model = new Strass_Pages_Model_PhotosEnvoyer($this, $unite, $annee, $activite);
   }

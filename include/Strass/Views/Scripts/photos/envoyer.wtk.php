@@ -14,29 +14,53 @@ class Strass_Views_PagesRenderer_PhotosEnvoyer extends Strass_Views_PagesRendere
 
   function render($annee, $data, $container)
   {
+    if (array_key_exists('model', $data))
+      return $this->renderForm($annee, $data, $container);
+    else
+      return $this->renderAlbums($annee, $data, $container);
+  }
+
+  function renderAlbums($annee, $data, $container)
+  {
+    extract($data);
+    $container->addDialog("Choisissez dans quel albums envoyer une photo")->addFlags('info');
+    $l = $container->addList()->addFlags('albums', 'vignettes');
+    if ($activites->count()) {
+      foreach ($activites as $album) {
+	$l->addItem($this->view->vignetteAlbum($album, null,
+					       array('action' => 'envoyer')));
+      }
+    }
+    else
+      $container->addParagraph("Pas de photos de l'année ".$annee." !")->addFlags('empty');
+
+    return $container;
+  }
+
+  function renderForm($annee, $data, $container)
+  {
     extract($data);
 
-    $f = $container->addForm($form_model);
-    $i = $form_model->getInstance('activite');
-    if ($i->count() > 1) {
-      $f->addParagraph()
-	->addFlags('info')
-	->addInline("Sélectionnez l'activité durant laquelle la photo à été prise.");
-      $f->addSelect('activite', true);
+    if ($photos->count()) {
+      $l = $container->addList();
+      $l->addFlags('vignettes', 'photos');
+      foreach($photos as $photo) {
+	$i = $l->addItem($this->view->vignettePhoto($photo));
+	$i->addFlags('vignette');
+      }
     }
-    else {
-      $f->addHidden('activite');
-      $f->addParagraph()
-	->addFlags('info')
-	->addInline("Vous envoyez une photo pour **".$activite."**.");
-    }
-    $f->addFile('photo');
-    $f->addEntry('titre', 32);
-    $f->addEntry('commentaire', 38, 8);
+    else
+      $container->addParagraph("Pas de photos")->addFlags('empty');
+
+    $f = $container->addForm($model);
+    $g = $f->addForm_Fieldset("Nouvelle photo");
+    $g->addFile('photo');
+    $g->addEntry('titre', 32);
+    $g->addEntry('commentaire', 52, 8);
     $f->addCheck('envoyer');
 
     $b = $f->addForm_ButtonBox();
-    $b->addForm_Submit($form_model->getSubmission('envoyer'));
+    $b->addForm_Submit($model->getSubmission('envoyer'));
   }
 }
 

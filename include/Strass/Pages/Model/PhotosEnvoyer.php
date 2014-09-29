@@ -11,65 +11,45 @@ class Strass_Pages_Model_PhotosEnvoyer extends Strass_Pages_Model_Historique
 
   function fetch($annee = NULL)
   {
-    $as = $this->unite->findActivites($annee);
-
-    $activite = null;
-    if ($as->count() == 1) {
-      $activite = $as->current();
-      $this->controller->_helper->Album->setBranche($activite);
-    }
+    if (!$this->activite)
+      return array('activites' => $this->unite->findActivites($annee),
+		   );
 
     $m = new Wtk_Form_Model('envoyer');
     $i = $m->addString('titre', 'Titre');
     $m->addConstraintRequired($i);
 
-    $enum = array();
-    foreach($as as $a)
-      if ($this->controller->assert(null, $a, 'envoyer-photo'))
-	$enum[$a->id] = $a->getIntituleComplet();
-    if (!$enum)
-      throw new Strass_Controller_Action_Exception_Forbidden("Vous ne pouvez envoyer de photos ".
-							     "dans aucune activité.");
-
-    if ($this->activite)
-      $default = $this->activite->id;
-    else
-      $default = key($enum);
-
-    $m->addEnum('activite', "Activité", $default, $enum);
     $m->addFile('photo', "Photo");
     $m->addString('commentaire', 'Votre commentaire');
     $m->addBool('envoyer', "J'ai d'autres photos à envoyer", true);
     $m->addNewSubmission('envoyer', "Envoyer");
 
+    $t = new Photos;
     if ($m->validate()) {
-      $ta = new Activites;
-      $t = new Photos;
-      $photo = $m->get();
-      unset($photo['photo']);
+      $p = new Photo;
+      $p->titre = $m->titre;
+      $p->slug = $t->createSlug(wtk_strtoid($m->titre));
+      $p->activite = $this->activite->id;
 
-      $activite = $ta->find($photo['activite'])->current();
-      $photo['slug'] = $t->createSlug(wtk_strtoid($photo['titre']));
+      $action = $m->envoyer ? 'envoyer' : 'consulter';
 
-      $action = $photo['envoyer'] ? 'envoyer' : 'consulter';
-      unset($photo['envoyer']);
-      unset($photo['commentaire']);
+      $c = new Commentaire;
+      $c->auteur = $individu->id;
+      $c->message = $m->commentaire;
 
       $db = $t->getAdapter();
       $db->beginTransaction();
 
       try {
-	$tc = new Commentaires;
-	$k = $tc->insert(array('auteur' => $individu->id,
-			       'message' => $m->get('commentaire')));
-	$photo['commentaires'] = $k;
-	$k = $t->insert($photo);
-	$photo = $t->findOne($k);
+	$c->save();
+	$p->commentaires = $c->id;
+
+	$p->save();
 
 	$i = $m->getInstance('photo');
 	if ($i->isUploaded()) {
 	  $tmp = $i->getTempFilename();
-	  $photo->storeFile($tmp);
+	  $p->storeFile($tmp);
 	}
 
 	$this->controller->_helper->Flash->info("Photo envoyée");
@@ -84,13 +64,15 @@ class Strass_Pages_Model_PhotosEnvoyer extends Strass_Pages_Model_Historique
 	throw $e;
       }
 
-      $this->controller->redirectSimple($action, null, null, array('album' => $activite->slug));
+      $this->controller->redirectSimple($action, null, null, array('album' => $this->activite->slug));
     }
 
+    $photos = $this->activite->findPhotos($t->select()->order('date'));
     return array('unite' => $this->unite,
 		 'annee' => $annee,
-		 'form_model' => $m,
-		 'activite' => $activite,
+		 'model' => $m,
+		 'activite' => $this->activite,
+		 'photos' => $photos,
 		 );
   }
 }
