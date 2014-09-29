@@ -697,9 +697,11 @@ class Unite extends Strass_Db_Table_Row_Abstract implements Zend_Acl_Resource_In
       ->from('activite')
       ->join('participation', 'participation.activite = activite.id', array())
       ->where('participation.unite = ?', $this->id)
-      ->join('photo', 'photo.activite = participation.activite', array('photos' => 'COUNT(photo.id)'))
+      ->join('photo', 'photo.activite = participation.activite',
+	     array('photos' => new Zend_Db_Expr('COUNT(photo.id) / 4')))
       ->group('activite.id')
-      ->having('photos > 4')
+      ->having('photos >= 1')
+      ->order('photos DESC')
       ->order('activite.debut DESC')
       ->limit($count);
 
