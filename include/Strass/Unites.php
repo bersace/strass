@@ -911,11 +911,11 @@ class Unite extends Strass_Db_Table_Row_Abstract implements Zend_Acl_Resource_In
 		 'appartenance.role = unite_role.id AND '.
 		 'appartenance.unite = unite.id AND '.
 		 ('('.
-		  $db->quoteInto('(appartenance.fin IS NULL OR appartenance.fin > ?)',
+		  $db->quoteInto('appartenance.debut < ?',
 				 Strass_Controller_Action_Helper_Annee::dateFin($annee)).
 		  ' AND '.
-		  $db->quoteInto('appartenance.debut < ?',
-				 Strass_Controller_Action_Helper_Annee::dateDebut($annee)).
+		  $db->quoteInto('(appartenance.fin IS NULL OR appartenance.fin < ?)',
+				 Strass_Controller_Action_Helper_Annee::dateFin($annee)).
 		  ')'),
 		 array())
       ->where('unite.id = ?', $this->id)

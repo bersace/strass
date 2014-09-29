@@ -39,7 +39,7 @@ class Strass_Pages_Model_UniteInscrire extends Strass_Pages_Model_Historique
       }
     }
     $default = $u->findRolesCandidats($a)->current();
-    $g->addEnum('role', 'Rôle', $default ? $default->id.'__' : null, $enum);
+    $g->addEnum('role', 'Rôle', $default ? $default->id.'__' : end(array_keys($enum)), $enum);
     $g->addDate('debut', 'Début', $a.'-10-08');
     $i0 = $g->addBool('clore', 'Clore', false);
     $i1 = $g->addDate('fin', 'Fin', ($a+1).'-10-08');
