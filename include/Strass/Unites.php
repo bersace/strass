@@ -755,7 +755,8 @@ class Unite extends Strass_Db_Table_Row_Abstract implements Zend_Acl_Resource_In
     $db = $t->getAdapter();
     $s = $db->select()
       ->distinct()
-      ->from('appartenance', array("MAX(STRFTIME('%Y', appartenance.fin))"))
+      ->from('appartenance',
+	     array('annee' => new Zend_Db_Expr("MAX(STRFTIME('%Y', appartenance.fin))")))
       ->where('appartenance.unite = ?', $this->id);
     return $s->query()->fetchColumn();
   }
