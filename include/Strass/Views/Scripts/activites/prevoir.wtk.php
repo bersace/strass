@@ -1,34 +1,45 @@
 <?php
 
-$i = $this->model->getInstance('unites');
-$pour = (count($i) == 1 ? " pour ".current(current($i)) :"");
-$this->document->setTitle("Prévoir une nouvelle activité".$pour);
+class Strass_Views_PagesRenderer_Prevoir extends Strass_Views_PagesRenderer_Historique
+{
+  function render($annee, $data, $s)
+  {
+    extract($data);
 
-$s = $this->document;
-$f = $s->addForm($this->model);
-$g = $f->addForm_Fieldset('Informations générales');
-$i = $this->model->getInstance('unites');
-if (count($i) > 1) {
-  $g->addSelect('unites', true);
- }
- else {
-   $g->addHidden('unites');
- }
-$g->addEntry('lieu', 32);
-$c = $g->addDate('debut', 'le %d-%m-%Y à %H heures %M');
-$c = $g->addDate('fin', 'le %d-%m-%Y à %H heures %M');
+    $i = $model->getInstance('unites');
+    $pour = (count($i) == 1 ? " pour ".current(current($i)) :"");
+    $this->view->document->setTitle("Prévoir une nouvelle activité".$pour);
 
-$g->addParagraph()->addFlags('info')
-->addChild("Laisser ce champ vide et l'intitulé sera généré, sinon le remplir sans date. ".
-	   "(Ex: Rentrée, JN, RNR, Vezelay, etc.)");
-$g->addEntry('intitule', 32);
+    $s->addChild($this->view->Calendrier($calendrier, $annee));
 
-$g = $f->addForm_Fieldset("Pièces-jointes");
-$g->addTable('documents', array('document'  => array('Select', true),
-				'fichier'  => array('File'),
-				'titre'    => array('Entry', 16)));
+    $f = $s->addForm($model);
+    $g = $f->addForm_Fieldset('Informations générales');
+    $i = $model->getInstance('unites');
+    if (count($i) > 1)
+      $g->addSelect('unites', true);
+    else
+      $g->addHidden('unites');
+    $g->addEntry('lieu', 32);
+    $c = $g->addDate('debut', 'le %d-%m-%Y à %H heures %M');
+    $c = $g->addDate('fin', 'le %d-%m-%Y à %H heures %M');
 
-$f->addCheck('prevoir');
+    $g->addParagraph()->addFlags('info')
+      ->addChild("Laisser ce champ vide et l'intitulé sera généré, sinon le remplir sans date. ".
+		 "(Ex: Rentrée, JN, RNR, Vezelay, etc.)");
+    $g->addEntry('intitule', 32);
 
-$b = $f->addForm_ButtonBox();
-$b->addForm_Submit($this->model->getSubmission('ajouter'));
+    $g = $f->addForm_Fieldset("Pièces-jointes");
+    $g->addTable('documents', array('document'  => array('Select', true),
+				    'fichier'  => array('File'),
+				    'titre'    => array('Entry', 16)));
+
+    $f->addCheck('prevoir');
+
+    $b = $f->addForm_ButtonBox();
+    $b->addForm_Submit($model->getSubmission('ajouter'));
+
+    return $s;
+  }
+}
+
+$this->document->addPages(null, $this->model, new Strass_Views_PagesRenderer_Prevoir($this));

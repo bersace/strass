@@ -51,105 +51,10 @@ class ActivitesController extends Strass_Controller_Action
   {
     $this->metas(array('DC.Title' => 'Prévoir une nouvelle activité',
 		       'DC.Title.alternate' => 'Prévoir'));
-    $u = $this->_helper->Unite(false);
+    $this->view->unite = $u = $this->_helper->Unite(false);
     $this->branche->append();
 
-    $this->view->model = $m = new Wtk_Form_Model('prevoir');
-
-    $t = new Unites;
-    $enum = array();
-    foreach($t->fetchAll() as $unite)
-      if ($this->assert(null, $unite, 'prevoir'))
-	$enum[$unite->id] = $unite->getFullname();
-
-    if (!$enum)
-      throw new Strass_Controller_Action_Exception_Notice("Vous ne pouvez pas enregistrer une activité");
-    $i = $m->addEnum('unites', 'Unités participantes', key($enum), $enum, true);    // multiple
-    $m->addConstraintRequired($i);
-
-    $annee = $this->_helper->Annee(false);
-    $debut = $annee ? $annee.'-09-01' : strftime('%Y-%m-%d');
-    $fin = $annee ? $annee.'-09-02' : strftime('%Y-%m-%d', time() + 60 * 60 * 24);
-    $m->addDate('debut', 'Début', $debut.' 14:30', '%Y-%m-%d %H:%M');
-    $m->addDate('fin', 'Fin', $fin.'17:00', '%Y-%m-%d %H:%M');
-    $m->addString('intitule', 'Intitulé explicite', "");
-    $m->addString('lieu', 'Lieu');
-
-    $enum = array(null => 'Nouveau document');
-    foreach ($u->findDocuments() as $doc)
-      $enum[$doc->id] = $doc->titre;
-    $t = $m->addTable('documents', "Pièces-jointes",
-		      array('document' => array('Enum', "Document", $enum),
-			    'fichier' => array('File', "Envoi"),
-			    'titre' => array('String', "Titre")),
-                     false);
-    $t->addRow();
-
-    $m->addBool('prevoir', "J'ai d'autres activités à prévoir", true);
-    $m->addNewSubmission('ajouter', 'Ajouter');
-    $m->addConstraintRequired($m->getInstance('unites'));
-
-    if ($m->validate()) {
-      $t = new Activites;
-      $tu = new Unites;
-      $td = new Documents;
-
-      $a = new Activite;
-      $a->debut = $m->debut;
-      $a->fin = $m->fin;
-      $a->lieu = $m->lieu;
-
-      $unites = call_user_func_array(array($tu, 'find'), (array) $m->unites);
-      // génération de l'intitulé
-      $type = $unites->current()->findParentTypesUnite();
-      $a->intitule = $m->intitule;
-      $intitule = $type->getIntituleCompletActivite($a);
-      $a->slug = $slug = $t->createSlug($intitule);
-
-      $db = $t->getAdapter();
-      $db->beginTransaction();
-      try {
-	$a->save();
-	$a->updateUnites($unites);
-
-	foreach($m->getInstance('documents') as $row) {
-	  $if = $row->getChild('fichier');
-
-	  if ($row->document)
-	    $d = $td->findOne($row->document);
-	  elseif (!$if->isUploaded())
-	    continue;
-	  else {
-	    $d = new Document;
-	    $d->slug = $d->getTable()->createSlug($row->titre);
-	    $d->titre = $row->titre;
-	    $d->suffixe = end(explode('.', $row->fichier['name']));
-	    $d->save();
-	    $d->storeFile($if->getTempFilename());
-	  }
-
-	  $pj = new PieceJointe;
-	  $pj->activite = $a->id;
-	  $pj->document = $d->id;
-	  $pj->save();
-	}
-
-	$this->_helper->Flash->info("Activité enregistrée");
-	$this->logger->info("Nouvelle activite",
-			    $this->_helper->Url('consulter', null, null, array('activite' => $a->slug)));
-
-	$db->commit();
-      }
-      catch(Exception $e) {
-	$db->rollBack();
-	throw $e;
-      }
-
-      if ($m->get('prevoir'))
-	$this->redirectSimple('prevoir');
-      else
-	$this->redirectSimple('consulter', null, null, array('activite' => $slug));
-    }
+    $this->view->model = new Strass_Pages_Model_Prevoir($this, $u, $this->_helper->Annee());
   }
 
   function consulterAction()

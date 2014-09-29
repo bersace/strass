@@ -923,6 +923,26 @@ class Unite extends Strass_Db_Table_Row_Abstract implements Zend_Acl_Resource_In
     return $t->fetchAll($s);
   }
 
+  function findLastDate($annee)
+  {
+    $t = new Activites;
+    $db = $t->getAdapter();
+    $s = $t->select()
+      ->from('activite', array('activite.fin'))
+      ->join('participation', 'participation.activite = activite.id'.
+	     ' AND '.
+	     $db->quoteInto('participation.unite = ?', $this->id),
+	     array())
+      ->order('activite.fin DESC')
+      ->limit(1);
+
+    if ($annee)
+      $s->where('? < activite.fin', Strass_Controller_Action_Helper_Annee::dateDebut($annee))
+	->where('activite.fin < ?', Strass_Controller_Action_Helper_Annee::dateFin($annee));
+
+    return $s->query()->fetchColumn();
+  }
+
   function clearCache()
   {
     $cache = Zend_Registry::get('cache');

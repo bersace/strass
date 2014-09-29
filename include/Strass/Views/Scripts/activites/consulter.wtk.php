@@ -12,7 +12,7 @@ $s->addChild($this->vignetteAlbum($this->activite)->addFlags('nolabel'));
 $l = $s->addList()->addFlags('infos');
 $datefmts = array('reunion' => 'le %A %e %B à %R',
 		  'sortie' => 'le %A %e %B à %R',
-		  'weekend' => 'le %A %e %B à %R',
+		  'we' => 'le %A %e %B à %R',
 		  'camp' => '%A %e %B',
 		  );
 $datefmt = $datefmts[$this->activite->getType()];
