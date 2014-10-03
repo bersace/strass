@@ -180,10 +180,8 @@ class MembresController extends Strass_Controller_Action implements Zend_Acl_Res
 	    $ind = $ti->findOne($k);
 	  }
 
-	  try {
-	    $user = $ind->findUser();
-	  }
-	  catch (Zend_Db_Table_Exception $e) {
+	  $user = $ind->findUser();
+	  if (!$user->isMember()) {
 	    $user = new User;
 	  }
 
