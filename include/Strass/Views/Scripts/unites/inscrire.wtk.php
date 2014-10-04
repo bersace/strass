@@ -29,7 +29,8 @@ class Strass_Views_PagesRenderer_UnitesInscrireAssistant extends Wtk_Pages_Rende
       $f->addSelect('fiche/sexe');
     }
     catch (Exception $e) {}
-    $f->addDate('fiche/naissance');
+    $f->addEntry('fiche/portable', 14);
+    $f->addEntry('fiche/adelec', 14);
   }
 }
 

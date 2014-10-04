@@ -48,15 +48,15 @@ class Strass_Pages_Model_UniteInscrire extends Strass_Pages_Model_Historique
 
     /* Enregistrement d'un nouvel individu */
     $g = $m->addGroup('fiche');
-    $g->addString('prenom', 'Prénom');
-    $g->addString('nom', 'Nom');
+    $m->addConstraintRequired($g->addString('prenom', 'Prénom'));
+    $m->addConstraintRequired($g->addString('nom', 'Nom'));
     $tu = $u->findParentTypesUnite();
     if ($tu->sexe == 'm')
       $g->addEnum('sexe', 'Sexe', null, array('h' => 'Masculin', 'f' => 'Féminin'));
     else
       $g->addString('sexe', null, $tu->sexe)->setReadonly();
-
-    $g->addDate('naissance', 'Date de naissance', ($a - $tu->age_min) . '-01-01');
+    $g->addString('portable', "Mobile");
+    $g->addString('adelec', "Adélec");
 
     $page = $pm->partialValidate();
 
@@ -77,7 +77,9 @@ class Strass_Pages_Model_UniteInscrire extends Strass_Pages_Model_Historique
 	  $i->prenom = $m->get('fiche/prenom');
 	  $i->nom = $m->get('fiche/nom');
 	  $i->sexe = $m->get('fiche/sexe');
-	  $i->naissance = $m->get('fiche/naissance');
+	  $i->naissance = ($a - $tu->age_min) . '-01-01';
+	  $i->portable = $m->get('fiche/portable');
+	  $i->adelec = $m->get('fiche/adelec');
 	  $i->slug = $i->getTable()->createSlug(wtk_strtoid($i->getFullname(false, false)));
 	  $i->save();
 	}
