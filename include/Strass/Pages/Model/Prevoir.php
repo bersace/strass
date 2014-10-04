@@ -81,7 +81,7 @@ class Strass_Pages_Model_Prevoir extends Strass_Pages_Model_Historique
     }
 
     return array('model' => $m,
-		 'calendrier' => $u->findActivites($annee),
+		 'calendrier' => $u->findActivites($this->current),
 		 );
   }
 }
