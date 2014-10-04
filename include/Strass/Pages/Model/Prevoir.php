@@ -35,17 +35,6 @@ class Strass_Pages_Model_Prevoir extends Strass_Pages_Model_Historique
     $m->addDate('debut', 'Début', $debut.' 14:30', '%Y-%m-%d %H:%M');
     $m->addDate('fin', 'Fin', $fin.'17:00', '%Y-%m-%d %H:%M');
     $m->addString('intitule', 'Intitulé explicite', "");
-    $m->addString('lieu', 'Lieu');
-
-    $enum = array(null => 'Nouveau document');
-    foreach ($u->findDocuments() as $doc)
-      $enum[$doc->id] = $doc->titre;
-    $t = $m->addTable('documents', "Pièces-jointes",
-		      array('document' => array('Enum', "Document", $enum),
-			    'fichier' => array('File', "Envoi"),
-			    'titre' => array('String', "Titre")),
-                     false);
-    $t->addRow();
 
     $m->addBool('prevoir', "J'ai d'autres activités à prévoir", true);
     $m->addNewSubmission('ajouter', 'Ajouter');
@@ -59,7 +48,6 @@ class Strass_Pages_Model_Prevoir extends Strass_Pages_Model_Historique
       $a = new Activite;
       $a->debut = $m->debut;
       $a->fin = $m->fin;
-      $a->lieu = $m->lieu;
 
       $unites = call_user_func_array(array($tu, 'find'), (array) $m->unites);
       // génération de l'intitulé
@@ -73,28 +61,6 @@ class Strass_Pages_Model_Prevoir extends Strass_Pages_Model_Historique
       try {
 	$a->save();
 	$a->updateUnites($unites);
-
-	foreach($m->getInstance('documents') as $row) {
-	  $if = $row->getChild('fichier');
-
-	  if ($row->document)
-	    $d = $td->findOne($row->document);
-	  elseif (!$if->isUploaded())
-	    continue;
-	  else {
-	    $d = new Document;
-	    $d->slug = $d->getTable()->createSlug($row->titre);
-	    $d->titre = $row->titre;
-	    $d->suffixe = end(explode('.', $row->fichier['name']));
-	    $d->save();
-	    $d->storeFile($if->getTempFilename());
-	  }
-
-	  $pj = new PieceJointe;
-	  $pj->activite = $a->id;
-	  $pj->document = $d->id;
-	  $pj->save();
-	}
 
 	$this->controller->_helper->Flash->info("Activité enregistrée");
 	$this->controller->logger->info("Nouvelle activite",

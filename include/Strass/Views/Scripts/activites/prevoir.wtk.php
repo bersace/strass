@@ -19,7 +19,6 @@ class Strass_Views_PagesRenderer_Prevoir extends Strass_Views_PagesRenderer_Hist
       $g->addSelect('unites', true);
     else
       $g->addHidden('unites');
-    $g->addEntry('lieu', 32);
     $c = $g->addDate('debut', 'le %d-%m-%Y à %H heures %M');
     $c = $g->addDate('fin', 'le %d-%m-%Y à %H heures %M');
 
@@ -27,11 +26,6 @@ class Strass_Views_PagesRenderer_Prevoir extends Strass_Views_PagesRenderer_Hist
       ->addChild("Laisser ce champ vide et l'intitulé sera généré, sinon le remplir sans date. ".
 		 "(Ex: Rentrée, JN, RNR, Vezelay, etc.)");
     $g->addEntry('intitule', 32);
-
-    $g = $f->addForm_Fieldset("Pièces-jointes");
-    $g->addTable('documents', array('document'  => array('Select', true),
-				    'fichier'  => array('File'),
-				    'titre'    => array('Entry', 16)));
 
     $f->addCheck('prevoir');
 
