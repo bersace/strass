@@ -17,11 +17,35 @@ catch(Exception $e) {
 }
 
 $f->addEntry('boulet', 64, 4);
-$f->addEntry('article', 64, 16);
+$s = $f->addSection('editeur');
+$e = $f->addEntry('article', 64, 16);
+$e->reparent($s);
+
+$aide = <<<EOS
+++ Formatage
+
+EOS
+  ;
+
+$samples = array('//emphase//',
+		 '**emphase forte**',
+		 '__souligné__',
+		 '[http://url.tld/ lien]',
+		 '[[image /data/styles/strass/favicon.png  Image]]',
+		 );
+foreach($samples as $sample)
+  $aide.= "|| {{``".$sample."``}} || ".$sample."||\n";
+$aide.= <<<EOS
+
+  [http://pear.reversefold.com/dokuwiki/doku.php?id=text_wiki#rules Plus de formattage].
+
+EOS
+  ;
+
+$s->addSection('cheatsheet')->addText($aide);
 
 $f->addTable('images', array('image'  => array('File'),
 			     'nom'    => array('Entry', 16),
 			     'origin' => array('Hidden')));
 
-$b = $f->addForm_ButtonBox();
-$b->addForm_Submit($this->model->getSubmission('poster'));
+$f->addForm_ButtonBox()->addForm_Submit($this->model->getSubmission('poster'));
