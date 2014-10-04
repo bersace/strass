@@ -41,7 +41,7 @@ class Strass_Pages_Model_UniteInscrire extends Strass_Pages_Model_Historique
     $default = $u->findRolesCandidats($a)->current();
     $g->addEnum('role', 'Rôle', $default ? $default->id.'__' : end(array_keys($enum)), $enum);
     $g->addDate('debut', 'Début', $a.'-10-08');
-    $i0 = $g->addBool('clore', 'Clore', false);
+    $i0 = $g->addBool('clore', 'Se termine le', false);
     $i1 = $g->addDate('fin', 'Fin', ($a+1).'-10-08');
     $m->addConstraintDepends($i1, $i0);
     $g->addBool('continuer', "J'ai d'autres inscriptions à enregistrer", false);

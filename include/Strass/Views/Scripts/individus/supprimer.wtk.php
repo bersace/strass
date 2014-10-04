@@ -1,7 +1,8 @@
 <?php
 
+$this->document->addSection('vignette')->addChild($this->vignetteIndividu($this->individu));
+
 $f = $this->document->addForm($this->model);
 $f->addCheck('confirmer');
 
-$b = $f->addForm_ButtonBox();
-$b->addForm_Submit($this->model->getSubmission('continuer'));
+$f->addForm_ButtonBox()->addForm_Submit($this->model->getSubmission('continuer'));
