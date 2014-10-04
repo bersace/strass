@@ -940,7 +940,9 @@ class Unite extends Strass_Db_Table_Row_Abstract implements Zend_Acl_Resource_In
 
     if ($annee)
       $s->where('? < activite.fin', Strass_Controller_Action_Helper_Annee::dateDebut($annee))
-	->where('activite.fin < ?', Strass_Controller_Action_Helper_Annee::dateFin($annee));
+	->where('activite.fin < ?',
+		strftime('%Y-%m-%d',
+			 strtotime(Strass_Controller_Action_Helper_Annee::dateFin($annee).' -5 weeks')));
 
     return $s->query()->fetchColumn();
   }
