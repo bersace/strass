@@ -157,8 +157,8 @@ class MembresController extends Strass_Controller_Action implements Zend_Acl_Res
     $m->addConstraintRequired($i);
 
     if ($ind) {
-      $enum = array($ind->id => "Rattacher à ".$ind->getFullname(),
-		    '$$nouveau$$' => "Créer une nouvelle fiche",
+      $enum = array($ind->id => "Oui, rattacher à ".$ind->getFullname(),
+		    '$$nouveau$$' => "Non, c'est un homonyme, créer une nouvelle fiche",
 		    );
       $m->addEnum('fiche', null, $ind->id, $enum);
     }
@@ -175,29 +175,27 @@ class MembresController extends Strass_Controller_Action implements Zend_Acl_Res
       if ($s->id == 'accepter') {
 	$creer = !$ind || $m->get('fiche') == '$$nouveau$$';
 	if ($creer) {
-	  $ituple = array('slug' => $ti->createSlug(wtk_strtoid($ins->getFullname())));
-	  $ituple['prenom'] = $m->get('prenom');
-	  $ituple['nom'] = $m->get('nom');
-	  $ituple['sexe'] = $ins->sexe;
-	  $ituple['naissance'] = $ins->naissance;
-	  $ituple['adelec'] = $ins->adelec;
+	  $ind = new Individu;
+	  $ind->slug = $ti->createSlug(wtk_strtoid($ins->getFullname()));
+	  $ind->prenom = $m->prenom;
+	  $ind->nom = $m->nom;
+	  $ind->sexe = $ins->sexe;
+	  $ind->naissance = $ins->naissance;
+	  $ind->adelec = $ins->adelec;
 	}
 
 	$db->beginTransaction();
 	try {
-	  if ($creer) {
-	    $k = $ti->insert($ituple);
-	    $ind = $ti->findOne($k);
-	  }
+	  if ($creer)
+	    $ind->save();
 
 	  $user = $ind->findUser();
-	  if (!$user->isMember()) {
+	  if (!$user->isMember())
 	    $user = new User;
-	  }
 
 	  $user->individu = $ind->id;
 	  $user->username = $ins->adelec;
-	  $user->setPassword($ins->password);
+	  $user->password = $ins->password;
 	  $user->save();
 
 	  $mail = new Strass_Mail_InscriptionValide($user, $m->get('message'));

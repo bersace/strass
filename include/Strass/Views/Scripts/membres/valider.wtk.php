@@ -12,6 +12,8 @@ $f->addEntry('nom', 24);
 if ($this->individu) {
   $f->addParagraph()->addFlags('warn')
     ->addInline("Êtes-vous **sûr** de l'authenticité de cette inscription ?");
+  $f->addSection('vignette')
+    ->addChild($this->vignetteIndividu($this->individu));
   $f->addSelect('fiche', false);
 }
 
