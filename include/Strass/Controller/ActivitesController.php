@@ -147,9 +147,9 @@ class ActivitesController extends Strass_Controller_Action
       $db = $a->getTable()->getAdapter();
       $db->beginTransaction();
       try {
-	$champs = array('debut', 'fin', 'lieu');
+	$champs = array('debut', 'fin', 'lieu', 'description');
 	foreach($champs as $champ)
-	  $a->$champ = $m->get($champ);
+	  $a->$champ = $m->$champ;
 
 	$a->updateUnites($unites);
 	$a->intitule = $m->intitule;
