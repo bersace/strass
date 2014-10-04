@@ -78,7 +78,6 @@ class JournauxController extends Strass_Controller_Action
     $this->assert(null, $j, 'editer',
 		  "Vous n'avez pas le droit de modifier ce journal");
 
-
     $this->view->model = $m = new Wtk_Form_Model('journal');
     $i = $m->addString('nom', 'Nom', $j->nom);
     $m->addConstraintRequired($i);
@@ -141,7 +140,7 @@ class JournauxController extends Strass_Controller_Action
     $m->addConstraintRequired($i);
     if ($publier)
       $m->addEnum('public', 'Publication', $a ? $a->public : null,
-		  array(null => 'Brouillon', 1 => 'Publier'));
+		  array(0 => 'Brouillon', 1 => 'Publier'));
 
     $m->addString('boulet', "Boulet", $a ? $a->boulet : null);
     $i = $m->addString('article', "Article", $a ? $a->article : null);
@@ -182,7 +181,7 @@ class JournauxController extends Strass_Controller_Action
 	$a->boulet = $m->boulet;
 	$a->article = $m->article;
 	try {
-	  $a->public = $m->get('public', null);
+	  $a->public = (int) $m->public;
 	}
 	catch (Exception $e) {}
 	$a->commentaires = $c->id;
