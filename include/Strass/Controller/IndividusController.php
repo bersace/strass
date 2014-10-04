@@ -83,8 +83,6 @@ class IndividusController extends Strass_Controller_Action
       $m->addString('totem', 'Totem', $individu->totem);
 
     $m->addString('notes', "Notes", $individu->notes);
-    // devrait suffire chez les FSE, et les SUF ?
-    $m->addInteger('numero', "Numéro adhérent", $individu->numero, 1, 999999);
     $p = $individu->findParentEtapes();
     $i = $m->addEnum('etape', "Progression", $p ? $p->id : null, array(null => 'Aucune'));
     foreach($individu->findEtapesCanditates() as $e)

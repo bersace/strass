@@ -36,8 +36,6 @@ $l = $s->addList();
 $info = array();
 $info['portable'] = "**Portable :** %s";
 $info['fixe'] = "**Fixe :** %s";
-if ($this->assert(null, $this->individu, 'voir-nom'))
-  $info['numero'] = "**Numéro adhérent :** %s";
 
 foreach($info as $k => $f) {
   if ($value = $this->individu->$k)

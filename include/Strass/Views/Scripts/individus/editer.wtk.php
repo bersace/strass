@@ -24,10 +24,6 @@ try {
 } catch(Exception $e){}
 
 try {
-  $g->addEntry('numero', 8);
-} catch(Exception $e){}
-
-try {
   $g->addSelect('etape', true);
 } catch(Exception $e){}
 
