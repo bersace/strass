@@ -122,6 +122,7 @@ class JournauxController extends Strass_Controller_Action
     $publier = $this->assert(null, $j, 'publier');
 
     $this->view->model = $m = new Wtk_Form_Model('ecrire');
+    $me = Zend_Registry::get('individu');
     if ($publier) {
       $i = $m->addEnum('auteur', "Auteur");
       /* on inclus les membres de sous-unité : le scout peuvent écrire
@@ -130,9 +131,10 @@ class JournauxController extends Strass_Controller_Action
 	$i->addItem($individu->id, $individu->getFullname(false));
       if ($a)
 	$i->set($a->findAuteur()->id);
+      else
+	$i->set($me->id);
     }
     else {
-      $me = Zend_Registry::get('individu');
       $i = $m->addInteger('auteur', "Auteur", $me->id, true);
     }
 
