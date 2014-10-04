@@ -27,6 +27,20 @@ class Unites extends Strass_Db_Table_Abstract
     return $this->fetchAll($s);
   }
 
+  function findSexesAccueillis()
+  {
+    $db = $this->getAdapter();
+    $s = $db->select()
+      ->distinct()
+      ->from('unite', array())
+      ->join('unite_type', 'unite_type.id = unite.type', array('sexe'));
+    $sexes = array();
+    foreach ($s->query() as $row) {
+      array_push($sexes, $row['sexe']);
+    }
+    return $sexes;
+  }
+
   function findRacine()
   {
     $s = $this->select()

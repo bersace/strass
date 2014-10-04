@@ -18,7 +18,12 @@ class Strass_Pages_RendererInscription extends Wtk_Pages_Renderer_Form
 
     $f->addEntry('fiche/prenom', 24);
     $f->addEntry('fiche/nom', 24);
-    $f->addSelect('fiche/sexe', false);
+    try {
+      $f->addSelect('fiche/sexe', false);
+    }
+    catch (Exception $e) {
+      $f->addHidden('fiche/sexe');
+    }
     $f->addDate('fiche/naissance', '%e-%m-%Y');
   }
 

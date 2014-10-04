@@ -48,9 +48,15 @@ class MembresController extends Strass_Controller_Action implements Zend_Acl_Res
     $i = $g->addString('nom', "Nom");
     $m->addConstraintRequired($i);
 
-    $enum = array('h' => 'Masculin', 'f' => 'Féminin');
-    $i = $g->addEnum('sexe', 'Sexe', null, $enum);
-    $m->addConstraintRequired($i);
+    $t = new Unites;
+    $sexes = $t->findSexesAccueillis();
+    if (in_array('m', $sexes) || count($sexes) > 1) {
+      $enum = array('h' => 'Masculin', 'f' => 'Féminin');
+      $i = $g->addEnum('sexe', 'Sexe', null, $enum);
+      $m->addConstraintRequired($i);
+    }
+    else
+      $i = $g->addString('sexe', $sexes[0])->setReadonly(true);
 
     $i = $g->addDate('naissance', "Date de naissance", 0);
     $m->addConstraintRequired($i);
