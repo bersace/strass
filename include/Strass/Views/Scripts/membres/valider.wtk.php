@@ -1,5 +1,10 @@
 <?php
 
+if (!$this->model) {
+  $this->document->addParagraph("Aucune inscription à valider")->addFlags('empty');
+  return;
+}
+
 $f = $this->document->addForm($this->model);
 
 $f->addEntry('prenom', 24);

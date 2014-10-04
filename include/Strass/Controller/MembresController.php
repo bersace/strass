@@ -135,11 +135,14 @@ class MembresController extends Strass_Controller_Action implements Zend_Acl_Res
 	$ins = $t->findByEMail($adelec);
       }
       catch (Strass_Db_Table_NotFound $e)  {
-	throw new Strass_Controller_Action_Exception_NotFound("Inscription déjà validée");
+	$this->view->model = null;
+	return;
       }
     }
-    else if (!$ins = $t->fetchAll()->current())
-      throw new Strass_Controller_Action_Exception_Notice("Aucune inscription à valider.");
+    else if (!$ins = $t->fetchAll()->current()) {
+      $this->view->model = null;
+      return;
+    }
 
     $this->view->individu = $ind = $ins->findIndividus();
     $this->view->inscription = $ins;
