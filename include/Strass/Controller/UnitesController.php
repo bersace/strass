@@ -65,6 +65,12 @@ class UnitesController extends Strass_Controller_Action
 			     array('action' => 'inscrire', 'unite' => $u->slug),
 			     array(null, $u));
 
+    $soustypename = $u->getSousTypeName();
+    if (!$u->isTerminale() && $soustypename)
+      $this->actions->append(array('label' => "Fonder une ".$soustypename),
+			     array('action' => 'fonder', 'unite' => $u->slug),
+			     array(null, $u));
+
     if ($this->view->fiches)
       $this->formats('vcf', 'csv');
   }
@@ -288,6 +294,12 @@ class UnitesController extends Strass_Controller_Action
 		       'DC.Title.alternative' => "Inscrire"));
     $this->branche->append(null, array('annee' => false));
     $this->_helper->Annee->setBranche($a);
+
+    $soustypename = $u->getSousTypeName();
+    if (!$u->isTerminale() && $soustypename)
+      $this->actions->append(array('label' => "Fonder une ".$soustypename),
+			     array('action' => 'fonder', 'unite' => $u->slug),
+			     array(null, $u));
 
     $this->assert(null, $u, 'inscrire',
 		  "Vous n'avez pas le droit d'inscrire dans cette unité");

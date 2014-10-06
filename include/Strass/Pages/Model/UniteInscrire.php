@@ -9,6 +9,42 @@ class Strass_Pages_Model_UniteInscrire extends Strass_Pages_Model_Historique
     $this->controller = $controller;
   }
 
+  function calculerDates($annee)
+  {
+    $u = $this->unite;
+    $a = $annee;
+
+    $fin = strftime('%Y-%m-%d',
+		    strtotime(Strass_Controller_Action_Helper_Annee::dateFin($annee).
+			      ' next saturday -4 weeks'));
+    $calendrier = $u->findActivites($a);
+    if ($calendrier->count()) {
+      $debut = substr($calendrier->current()->debut, 0, 10);
+      $min_fin = strftime('%Y-%m-%d',
+			  strtotime(Strass_Controller_Action_Helper_Annee::dateFin($annee).
+				    ' next saturday -6 weeks'));
+      $max_fin = strftime('%Y-%m-%d',
+			  strtotime(Strass_Controller_Action_Helper_Annee::dateFin($annee).
+				    ' next saturday'));
+      while ($calendrier->valid()) {
+	$fin = substr($calendrier->current()->fin, 0, 10);
+	$calendrier->next();
+      }
+
+      if ($min_fin > $fin)
+	$fin = $min_fin;
+
+      if ($max_fin < $fin)
+	$fin = $max_fin;
+    }
+    else
+      $debut = strftime('%Y-%m-%d',
+			strtotime(Strass_Controller_Action_Helper_Annee::dateDebut($annee).
+				  ' next saturday +4 weeks'));
+
+    return array($debut, $fin);
+  }
+
   function fetch($annee = NULL)
   {
     $u = $this->unite;
@@ -40,9 +76,11 @@ class Strass_Pages_Model_UniteInscrire extends Strass_Pages_Model_Historique
     }
     $default = $u->findRolesCandidats($a)->current();
     $g->addEnum('role', 'Rôle', $default ? $default->id.'__' : end(array_keys($enum)), $enum);
-    $g->addDate('debut', 'Début', $a.'-10-08');
+
+    list($debut, $fin) = $this->calculerDates($annee);
+    $g->addDate('debut', 'Début', $debut);
     $i0 = $g->addBool('clore', 'Se termine le', false);
-    $i1 = $g->addDate('fin', 'Fin', ($a+1).'-10-08');
+    $i1 = $g->addDate('fin', 'Fin', $fin);
     $m->addConstraintDepends($i1, $i0);
     $g->addBool('continuer', "J'ai d'autres inscriptions à enregistrer", false);
 

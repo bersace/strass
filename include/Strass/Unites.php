@@ -676,10 +676,12 @@ class Unite extends Strass_Db_Table_Row_Abstract implements Zend_Acl_Resource_In
   function findActivites($annee, $sousunite=false)
   {
     $t = new Activites;
+    $db = $t->getAdapter();
     $min = Strass_Controller_Action_Helper_Annee::dateDebut($annee).' 00:00';
     $max = Strass_Controller_Action_Helper_Annee::dateFin($annee).' 23:59';
     $select = $t->select()
       ->setIntegrityCheck(false)
+      ->distinct()
       ->from('activite')
       ->join('participation', 'participation.activite = activite.id', array())
       ->where("debut >= ?", $min)
@@ -696,7 +698,12 @@ class Unite extends Strass_Db_Table_Row_Abstract implements Zend_Acl_Resource_In
 	->where('participation.unite IN (sousunite.id, sousunite.parent)');
     }
     else {
-      $select->where("participation.unite = ?\n", $this->id);
+      $select->joinLeft(array('parent' => 'unite'),
+			$db->quoteInto('parent.id = ?', $this->parent),
+			array());
+      $select->where("participation.unite = ?\n".
+		     " OR participation.unite = parent.id\n".
+		     " OR participation.unite = parent.parent\n", $this->id);
     }
 
     return $t->fetchAll($select);

@@ -34,4 +34,10 @@ class Strass_Controller_Action_Helper_Annee extends Zend_Controller_Action_Helpe
   {
     return strftime('%Y', strtotime('-8 month'));
   }
+
+  static function dateMedianne($annee)
+  {
+    /* On considère que les effectifs sont stables en juin. */
+    return ($annee+1).'-06-01';
+  }
 }
