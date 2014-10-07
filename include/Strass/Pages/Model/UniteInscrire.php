@@ -51,6 +51,7 @@ class Strass_Pages_Model_UniteInscrire extends Strass_Pages_Model_Historique
     $a = $annee;
 
     $ti = new Individus;
+    $individu = $app_active = null;
     $db = $ti->getAdapter();
 
     $m = new Wtk_Form_Model('inscrire');
@@ -66,6 +67,7 @@ class Strass_Pages_Model_UniteInscrire extends Strass_Pages_Model_Historique
       $enum[$candidat->id] = $candidat->getFullname(false, false);
     $i = $g->addEnum('individu', 'Individu', null, $enum);
     $m->addConstraintRequired($i);
+
     $roles = $u->findParentTypesUnite()->findRoles();
     $enum = array();
     foreach ($roles as $role) {
@@ -96,12 +98,27 @@ class Strass_Pages_Model_UniteInscrire extends Strass_Pages_Model_Historique
     $g->addString('portable', "Mobile");
     $g->addString('adelec', "Adélec");
 
+    /* Clore une inscription active */
+    $g = $m->addGroup('cloture');
+    $g->addBool('clore', "Ne l'est plus depuis", true);
+    $g->addDate('fin', "Fin", $debut);
+
     $page = $pm->partialValidate();
 
     if ($m->get('inscription/individu') != '$$nouveau$$' && $page == 'fiche') {
-      /* Sauter l'étape fiche si l'individu est déjà en base */
-      if ($m->sent_submission->id == 'continuer')
-	$pm->gotoEnd();
+      if ($m->sent_submission->id == 'continuer') {
+	$i = $individu = $ti->findOne($m->get('inscription/individu'));
+	$app_active = $i->findInscriptionsActives()->current();
+	if ($app_active
+	    && $app_active->fin === null
+	    && $app_active->debut < $m->get('inscription/fin')) {
+	  /* Proposer de clore une inscription déjà active */
+	  $pm->gotoPage('cloture');
+	}
+	else
+	  /* Sauter l'étape fiche si l'individu est déjà en base et libre */
+	  $pm->gotoEnd();
+      }
       else if ($m->sent_submission->id == 'precedent')
 	$pm->gotoPage('inscription');
     }
@@ -123,6 +140,13 @@ class Strass_Pages_Model_UniteInscrire extends Strass_Pages_Model_Historique
 	}
 	else {
 	  $i = $ti->findOne($m->get('inscription/individu'));
+	  $app_active = $i->findInscriptionsActives()->current();
+	  if ($app_active) {
+	    if ($m->get('cloture/clore')) {
+	      $app_active->fin = $m->get('cloture/fin');
+	      $app_active->save();
+	    }
+	  }
 	}
 
 	$app = new Appartient;
@@ -158,6 +182,9 @@ class Strass_Pages_Model_UniteInscrire extends Strass_Pages_Model_Historique
 		 'apps' => $u->findAppartenances($a, 0),
 		 'parente' => $parente,
 		 'apps_parente' => $parente ? $parente->findAppartenances($a, 0) : array(),
+		 'individu' => $individu,
+		 'cv' => $individu ? $individu->findAppartenances() : null,
+		 'app_active' => $app_active,
 		 'model' => $pm);
   }
 }
