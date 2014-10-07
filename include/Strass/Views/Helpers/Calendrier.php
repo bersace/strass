@@ -31,7 +31,7 @@ class Strass_View_Helper_Calendrier
     $tam = new Wtk_Table_Model('id', 'slug', 'type', 'lieu', 'date', 'intitule');
 
     foreach($activites as $a) {
-      if ($a->isFuture() && !$this->view->assert(null, $a, 'voir'))
+      if ($a->isFuture() && !$this->view->assert(null, $a, 'consulter'))
 	continue;
 
       $tam->append($a->id, $a->slug,  $a->getIntitule(), $a->lieu,
