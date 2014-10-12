@@ -105,7 +105,8 @@ class Strass_Pages_Model_UniteInscrire extends Strass_Pages_Model_Historique
 
     $page = $pm->partialValidate();
 
-    if ($m->get('inscription/individu') != '$$nouveau$$' && $page == 'fiche') {
+    if ($m->get('inscription/individu') != '$$nouveau$$'
+	&& $page == 'fiche') {
       if ($m->sent_submission->id == 'continuer') {
 	$i = $individu = $ti->findOne($m->get('inscription/individu'));
 	$app_active = $i->findInscriptionsActives()->current();
@@ -121,6 +122,11 @@ class Strass_Pages_Model_UniteInscrire extends Strass_Pages_Model_Historique
       }
       else if ($m->sent_submission->id == 'precedent')
 	$pm->gotoPage('inscription');
+    }
+    else if($m->get('inscription/individu') == '$$nouveau$$'
+	    && $page == 'cloture') {
+      /* Ne pas présenter la page cloture pour un nouveau ! */
+      $pm->gotoEnd();
     }
 
     if ($pm->validate()) {
