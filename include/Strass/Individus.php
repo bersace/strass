@@ -460,6 +460,9 @@ class Individu extends Strass_Db_Table_Row_Abstract implements Zend_Acl_Resource
 
   function _postDelete()
   {
+    $cache = Zend_Registry::get('cache');
+    $cache->clean(Zend_Cache::CLEANING_MODE_MATCHING_ANY_TAG, array('apps'));
+
     if ($i = $this->getCheminImage())
       unlink($i);
   }
