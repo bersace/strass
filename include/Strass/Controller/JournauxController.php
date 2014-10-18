@@ -249,6 +249,8 @@ class JournauxController extends Strass_Controller_Action
     $this->view->article = $a = $this->_helper->Article();
     $this->view->auteur = $a->findAuteur();
 
+    $this->assert(null, $a, 'voir', "Cet article n'est pas public.");
+
     $this->actions->append("Éditer",
 			   array('action' => 'ecrire'),
 			   array(null, $a, 'editer'));
