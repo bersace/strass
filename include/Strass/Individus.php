@@ -49,6 +49,15 @@ class Individus extends Strass_Db_Table_Abstract
       ->where('unite.parent IS NULL');
     return $this->fetchAll($s);
   }
+
+  function findByEMail($adelec)
+  {
+    $s = $this->select()
+      ->distinct()
+      ->from($this->_name)
+      ->where('adelec = ?', $adelec);
+    return $this->fetchOne($s);
+  }
 }
 
 class Individu extends Strass_Db_Table_Row_Abstract implements Zend_Acl_Resource_Interface, Zend_Acl_Role_Interface

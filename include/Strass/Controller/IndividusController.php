@@ -14,7 +14,7 @@ class IndividusController extends Strass_Controller_Action
 
   function ficheAction()
   {
-    $individu = $this->_helper->Individu->param();
+    $individu = $this->_helper->Individu();
 
     $this->metas(array('DC.Title' => "Fiche d'individu"));
 

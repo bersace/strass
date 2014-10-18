@@ -4,12 +4,6 @@ require_once 'Strass/Individus.php';
 
 class Strass_Controller_Action_Helper_Individu extends Zend_Controller_Action_Helper_Abstract
 {
-  function param()
-  {
-    $args = func_get_args();
-    return call_user_func_array(array($this, 'direct'), $args);
-  }
-
   function direct($throw = true)
   {
     $slug = $this->getRequest()->getParam('individu');
@@ -18,10 +12,16 @@ class Strass_Controller_Action_Helper_Individu extends Zend_Controller_Action_He
       $individu = $t->findBySlug($slug);
     }
     catch (Strass_Db_Table_NotFound $e) {
-      if ($throw)
-	throw new Strass_Controller_Action_Exception_NotFound("Individu ".$slug." inconnu.");
-      else
-	return null;
+      $adresse = $this->getRequest()->getParam('adresse');
+      try {
+	$individu = $t->findByEMail($adresse);
+      }
+      catch (Strass_Db_Table_NotFound $e) {
+	if ($throw)
+	  throw new Strass_Controller_Action_Exception_NotFound("Individu ".$slug." inconnu.");
+	else
+	  return null;
+      }
     }
 
     $this->setBranche($individu);
