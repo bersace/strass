@@ -12,8 +12,11 @@ class Strass_Pages_Model_PhotosEnvoyer extends Strass_Pages_Model_Historique
   function fetch($annee = NULL)
   {
     if (!$this->activite)
-      return array('activites' => $this->unite->findActivites($annee),
-		   );
+      return array('activites' => $this->unite->findActivites($annee));
+    else
+      $this->controller->assert(null, $this->activite, 'envoyer-photo',
+				"Vous n'avez pas le droit d'envoyer de photo de ".
+				$this->activite->getIntituleComplet().".");
 
     $m = new Wtk_Form_Model('envoyer');
     $i = $m->addString('titre', 'Titre');
@@ -54,8 +57,9 @@ class Strass_Pages_Model_PhotosEnvoyer extends Strass_Pages_Model_Historique
 
 	$this->controller->_helper->Flash->info("Photo envoyée");
 	$this->controller->logger->info("Photo envoyée",
-			    $this->controller->_helper->Url('voir', null, null,
-							    array('photo' => $photo->slug)));
+			    $this->controller->_helper->Url('voir', 'photos', null,
+							    array('photo' => $p->slug),
+							    true));
 
 	$db->commit();
       }
