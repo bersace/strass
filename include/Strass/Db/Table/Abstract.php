@@ -107,4 +107,16 @@ abstract class Strass_Db_Table_Abstract extends Zend_Db_Table_Abstract
       return $all->current();
     }
   }
+
+  function fetchFirst($select) {
+    $select->limit(1);
+    $all = $this->fetchAll($select);
+
+    if ($all->count() == 0) {
+      throw new Strass_Db_Table_NotFound("No row for ".(string) $select);
+    }
+    else {
+      return $all->current();
+    }
+  }
 }

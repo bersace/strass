@@ -8,7 +8,15 @@ class PhotosController extends Strass_Controller_Action
   {
     $this->view->unite = $this->_helper->Unite();
     $this->branche->append("Photos", array('annee' => ''));
-    $this->view->model = new Strass_Pages_Model_Photos($this->view->unite, $this->_helper->Annee());
+    $annee = $this->_helper->Annee(false);
+    if (!$annee) {
+      try {
+	$annee = $this->view->unite->findLastAlbum()->getAnnee();
+      } catch (Exception $e) {
+	Orror::kill($e);
+      }
+    }
+    $this->view->model = new Strass_Pages_Model_Photos($this->view->unite, $annee);
     $this->_helper->Annee->setBranche($annee = $this->view->model->current);
     $this->metas(array('DC.Title' => 'Albums photos '.$annee,
 		       'DC.Subject' => 'albums,photos,'.$annee));

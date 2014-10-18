@@ -595,6 +595,23 @@ class Unite extends Strass_Db_Table_Row_Abstract implements Zend_Acl_Resource_In
     return $albums;
   }
 
+  function findLastAlbum()
+  {
+    $t = new Activites;
+    $db = $t->getAdapter();
+    $s = $this->select()
+      ->setIntegrityCheck(false)
+      ->distinct()
+      ->from('activite')
+      ->join('participation', 'participation.activite = activite.id', array())
+      ->joinLeft(array('fille' => 'unite'), $db->quoteInto('fille.parent = ?', $this->id), array())
+      ->joinLeft(array('petitefille' => 'unite'), 'petitefille.parent = fille.id', array())
+      ->join('photo', 'photo.activite = activite.id', array())
+      ->where('participation.unite IN (?, fille.id, petitefille.id)', $this->id)
+      ->order('fin DESC');
+    return $t->fetchFirst($s);
+  }
+
   function findPhotoAleatoire($annee = NULL)
   {
     // Une photos aléatoire d'une activité où l'unité à participé et
