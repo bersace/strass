@@ -20,6 +20,10 @@ class JournauxController extends Strass_Controller_Action
     			   array('action' => 'editer',
     				 'journal' => $j->slug),
     			   array(null, $j));
+    $this->actions->append("Supprimer",
+    			   array('action' => 'supprj',
+    				 'journal' => $j->slug),
+    			   array(null, $j));
     $t = new Articles;
     $brouillons = $t->countRows($j->selectArticles()->where('public IS NULL OR public != 1'));
     if ($brouillons) {
@@ -251,6 +255,42 @@ class JournauxController extends Strass_Controller_Action
     $this->actions->append("Supprimer",
 			   array('action' => 'supprimer'),
 			   array(null, $a));
+  }
+
+  function supprjAction()
+  {
+    $this->view->journal = $j = $this->_helper->Journal();
+    $this->view->unite = $u = $j->findParentUnites();
+    $this->metas(array('DC.Title' => "Supprimer"));
+    $this->branche->append();
+    $this->assert(null, $j, 'supprimer',
+		  "Vous n'avez pas le droit de supprimer ce journal");
+
+    $this->view->model = $m = new Wtk_Form_Model('supprimer');
+    $m->addBool('confirmer',
+		"Je confirme la suppression du journal ".$j." et de tout ses articles.",
+		false);
+    $m->addNewSubmission('continuer', "Continuer");
+
+    if ($m->validate()) {
+      if ($m->confirmer) {
+	$db = $j->getTable()->getAdapter();
+	$db->beginTransaction();
+	try {
+	  $j->delete();
+	  $this->_helper->Flash->warn("Journal supprimé");
+	  $this->logger->warn("Journal supprimé",
+			      $this->_helper->Url('index', 'unites', null,
+						  array('unite' => $u->slug), true));
+	  $db->commit();
+	}
+	catch(Exception $e) { $db->rollBack(); throw $e; }
+	$this->redirectSimple('index', 'unites', null, array('unite' => $u->slug));
+      }
+      else {
+	$this->redirectSimple('index', 'journaux', null, array('journal' => $j->slug), true);
+      }
+    }
   }
 
   function supprimerAction()
