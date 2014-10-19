@@ -514,6 +514,15 @@ class Appartient extends Strass_Db_Table_Row_Abstract implements Zend_Acl_Role_I
 {
   protected $_tableClass = 'Appartenances';
 
+
+  function __toString()
+  {
+    if ($this->titre)
+      return $this->titre;
+    else
+      return $this->findParentRoles()->__toString();
+  }
+
   public function getRoleId()
   {
     return $this->findParentUnites()->getRoleId($this->findParentRoles()->acl_role);

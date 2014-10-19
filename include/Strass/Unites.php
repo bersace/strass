@@ -963,6 +963,21 @@ class Unite extends Strass_Db_Table_Row_Abstract implements Zend_Acl_Resource_In
     return $t->fetchAll($s);
   }
 
+  function findFuturPredecesseurs($role, $titre)
+  {
+    $t = new Appartenances;
+    $db = $t->getAdapter();
+    $s = $t->select()
+      ->setIntegrityCheck(false)
+      ->distinct()
+      ->where('appartenance.role = ?', $role->id)
+      ->where('appartenance.fin IS NULL');
+
+    $s->where('appartenance.titre = ?', $titre);
+
+    return $t->fetchAll($s);
+  }
+
   function findLastDate($annee)
   {
     $t = new Activites;

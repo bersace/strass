@@ -53,6 +53,20 @@ class Strass_Views_PagesRenderer_UnitesInscrireAssistant extends Wtk_Pages_Rende
     $c->addCheck('cloture/clore')->useLabel(true);
     $c->addDate('cloture/fin', '%e-%m-%Y');
   }
+
+  function renderSuccession($g, $f)
+  {
+    extract($this->data_annee);
+    $f->addSection('vignette')
+      ->addChild($this->view->vignetteIndividu($predecesseur));
+    $f->addChild($this->view->cvScout($cv_predecesseur));
+    $f->addParagraph($predecesseur." est déjà ".$app_predecesseur.". ".
+		     "Succéder ".$individu." à ".$predecesseur->getFullname()." ?")
+      ->addFlags('info');
+    $c = $f->addForm_Compound('Fin');
+    $c->addCheck('succession/succeder')->useLabel(true);
+    $c->addDate('succession/date', '%e-%m-%Y');
+  }
 }
 
 class Strass_Views_PagesRenderer_UnitesInscrireAnnee extends Strass_Views_PagesRenderer_Historique
