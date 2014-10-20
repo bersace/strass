@@ -317,6 +317,7 @@ class JournauxController extends Strass_Controller_Action
 
     if ($m->validate()) {
       if ($m->confirmer) {
+	$action = $a->public ? 'index' : 'brouillons';
 	$db = $a->getTable()->getAdapter();
 	$db->beginTransaction();
 	try {
@@ -327,10 +328,10 @@ class JournauxController extends Strass_Controller_Action
 	  $db->commit();
 	}
 	catch(Exception $e) { $db->rollBack(); throw $e; }
-	$this->redirectSimple('index', 'journaux', null, array('journal' => $j->slug), true);
+	$this->redirectSimple($action, 'journaux', null, array('journal' => $j->slug), true);
       }
       else {
-	$this->redirectSimple('consulter', 'journaux');
+	$this->redirectSimple('consulter');
       }
     }
   }
