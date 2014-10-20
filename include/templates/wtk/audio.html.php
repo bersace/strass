@@ -1,5 +1,6 @@
 <audio <?php wtk_id_classes($id, $flags, $dojoType, $tooltip); ?>
-<?php if ($controls): ?> controls<?php endif; ?>>
+<?php if ($controls): ?> controls<?php endif; ?>
+<?php wtk_attr('preload', $preload ? 'auto' : 'none'); ?>>
 <?php foreach($sources as $src): ?>
   <source <?php wtk_attr('src', $src['url']); wtk_attr('type', $src['type']); ?>>
 <?php endforeach; ?>
