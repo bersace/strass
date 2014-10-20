@@ -194,21 +194,27 @@ class JournauxController extends Strass_Controller_Action
 	$a->save();
 
 	$oldImages = $a->getImages();
+	$newImages = array();
 	$table = $m->getInstance('images');
 	foreach($table as $row) {
 	  if ($row->origin && $row->origin != $row->nom) {
 	    $a->renameImage($row->origin, $row->nom);
+	    array_push($newImages, $row->nom);
 	  }
 	  else {
 	    $if = $row->getChild('image');
 	    if ($if->isUploaded()) {
-	      $nom = $row->nom;
-	      $a->storeImage($if->getTempFilename(), $nom ? $nom : $if->getBasename());
+	      $nom = $row->nom ? $row->now : $if->getBasename();
+	      $a->storeImage($if->getTempFilename(), $nom);
+	      array_push($newImages, $nom);
+	    }
+	    else {
+	      array_push($newImages, $row->nom);
 	    }
 	  }
 	}
 	$oldImages = array_unique($oldImages);
-	$newImages = $a->getImages();
+	$newImages = array_filter($newImages);
 
 	/* Nettoyage des images */
 	foreach ($oldImages as $image) {
