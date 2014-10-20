@@ -257,15 +257,15 @@ class Article extends Strass_Db_Table_Row_Abstract implements Zend_Acl_Resource_
   {
     $dossier = $this->getDossier();
     $fichiers = $this->getImages();
-    foreach($fichiers as $fichier) {
-      if (!file_exists($fichier))
-	continue;
 
-      if (!@unlink($fichier)) {
+    foreach($fichiers as $fichier) {
+      $path = $dossier.'/'.$fichier;
+      if (!@unlink($path)) {
 	throw new Exception("Impossible de supprimer le fichier ".
 			    $fichier);
       }
     }
+
     if (file_exists($dossier)) {
       if (!@rmdir($dossier)) {
 	throw new Exception("Impossible de supprimer le dossier ".
