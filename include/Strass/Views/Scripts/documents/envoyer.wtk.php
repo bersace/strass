@@ -3,7 +3,7 @@
 $i = $this->model->getInstance('unite');
 $f = $this->document->addForm($this->model);
 if (count($i) > 1)
-  $f->addSelect('unite');
+  $f->addSelect('unite', true);
 else
   $f->addHidden('unite');
 $f->addFile('fichier');
