@@ -23,7 +23,7 @@ class Strass_Views_PagesRenderer_PhotosEnvoyer extends Strass_Views_PagesRendere
   function renderAlbums($annee, $data, $container)
   {
     extract($data);
-    $container->addDialog("Choisissez dans quel albums envoyer une photo")->addFlags('info');
+    $container->addDialog("Choisissez un album")->addFlags('info');
     $l = $container->addList()->addFlags('albums', 'vignettes');
     if ($activites->count()) {
       foreach ($activites as $album) {
