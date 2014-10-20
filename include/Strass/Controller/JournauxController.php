@@ -240,7 +240,7 @@ class JournauxController extends Strass_Controller_Action
     $this->assert(null, $j, 'publier',
 		  "Vous n'avez pas le droit de publier des brouillons");
     $s = $j->selectArticles();
-    $s->where('public IS NULL');
+    $s->where('public = 0');
     $this->view->model = new Strass_Pages_Model_Rowset($s, 7, $this->_getParam('page'));
   }
 
