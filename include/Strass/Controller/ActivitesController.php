@@ -178,6 +178,11 @@ class ActivitesController extends Strass_Controller_Action
 
 	  /* On ne met à jour que les pièces jointes exclusives */
 	  if (!$row->document) {
+	    /* requérir un titre pour les documents exclusifs */
+	    if (!$row->titre && ($if->isUploaded() || $row->origin)) {
+	      throw new Wtk_Form_Model_Exception("Titre obligatoire",
+						 $row->getChild('titre'));
+	    }
 	    $d->slug = $d->getTable()->createSlug($row->titre);
 	    $d->titre = $row->titre;
 
@@ -211,6 +216,10 @@ class ActivitesController extends Strass_Controller_Action
 	$db->commit();
 
 	$this->redirectSimple('consulter', null, null, array('activite' => $a->slug));
+      }
+      catch(Wtk_Form_Model_Exception $e) {
+	$db->rollBack();
+	$m->errors[] = $e;
       }
       catch(Exception $e) {
 	$db->rollBack();

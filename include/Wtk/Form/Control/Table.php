@@ -71,7 +71,18 @@ class Wtk_Form_Control_Table extends Wtk_Form_Control implements Wtk_Container_I
 
 	function template()
 	{
-		return $this->table->template();
+		$tpl = $this->elementTemplate(__CLASS__);
+
+		if ($this->instance->errors) {
+		  $this->errors = new Wtk_Section;
+		  $this->errors->addFlags('error');
+		  foreach ($this->instance->errors as $error)
+		    $this->errors->addForm_Error($error);
+		  $tpl->addChild('errors', $this->errors->template());
+		}
+
+		$tpl->addChild('control', $this->table->template());
+		return $tpl;
 	}
 
 	function getStyleComponent()

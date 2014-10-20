@@ -16,9 +16,8 @@ $g->addEntry('intitule',32);
 $g->addEntry('description', 32, 8)->useLabel(false);
 
 $g = $f->addForm_Fieldset("Pièces-jointes");
-$g->addTable('documents', array('document'  => array('Select', true),
-				'fichier'  => array('File'),
-				'titre'    => array('Entry', 16),
-				'origin'   => array('Hidden')));
-
+$t = $g->addTable('documents', array('document'  => array('Select', true),
+				     'fichier'  => array('File'),
+				     'titre'    => array('Entry', 16),
+				     'origin'   => array('Hidden')));
 $f->addForm_ButtonBox()->addForm_Submit($this->model->getSubmission('enregistrer'));
