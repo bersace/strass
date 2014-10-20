@@ -23,12 +23,11 @@ $dojodbg = 'false';
 
 <base href="<?php echo $baseurl; ?>" />
 
-<link rel="shortcut icon" type="image/png" href="/<?php echo $default_style->getFavicon(); ?>" />
+<link rel="shortcut icon" type="image/png" href="<?php echo $baseurl.$default_style->getFavicon(); ?>" />
 <?php if ($sitemap): ?>
 <link rel="sitemap" type="application/xml" href="<?php echo $sitemap; ?>" />
 <?php endif; ?>
 
-</style>
 <?php foreach($alternatives as $alt): ?>
 <?php extract($alt); ?>
 <link rel="alternate"<?php
@@ -62,7 +61,7 @@ if (!isset($embeded[$medium])) {
 <?php $embeded[$medium].= is_readable($file) ? file_get_contents($file) : ''; ?>
 <?php else: ?>
 <link type="text/css" rel="<?php echo $default ? "" : "alternate "; ?>stylesheet" <?php
-  wtk_attr('title', $style->title); wtk_attr('media', $medium); wtk_attr('href', $file); ?> />
+  wtk_attr('title', $style->title); wtk_attr('media', $medium); wtk_attr('href', $baseurl.$file); ?> />
 <?php endif; ?>
 <?php endforeach; ?>
 <?php endforeach; ?>
