@@ -11,7 +11,7 @@ class ICS
 	protected	$_prodid	= "-//bersace//NONSGML ICS class//EN";
 	protected	$_version	= "2.0";
 	protected	$_events	= array();
-	protected	$_title;
+	public	$_title;
 	protected	$_tzid;
 
 	function __construct($title = '', $tz = 'Europe/Paris', $method = "PUBLISH")
@@ -78,6 +78,8 @@ class ICS
 		$this->_p("VERSION",	$this->_version);
 		$this->_p("METHOD",	$this->_method);
 		$this->_p("TZID",	$this->_tzid);
+		$this->_p("CALSCALE", "GREGORIAN");
+		$this->_p("X-WR-CALNAME", $this->_title);
 		foreach($this->_events as $event) {
 			extract($event);
 			echo "BEGIN:VEVENT\r\n";

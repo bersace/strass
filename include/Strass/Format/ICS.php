@@ -8,6 +8,7 @@ class Strass_Format_ICS extends Strass_Format
   protected	$_title		= 'iCalendar';
   protected	$_viewSuffix	= 'ics';
   protected	$_renderFooter	= false;
+  protected     $_download      = true;
 
   protected function _preRender($controller)
   {
@@ -53,6 +54,6 @@ class Strass_Format_ICS extends Strass_Format
 
   function getFilename($view)
   {
-    return $view->ics->getFilename();
+    return wtk_strtoid($view->ics->_title).'.'.$this->_suffix;
   }
 }
