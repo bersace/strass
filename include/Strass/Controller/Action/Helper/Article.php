@@ -26,7 +26,16 @@ class Strass_Controller_Action_Helper_Article extends Zend_Controller_Action_Hel
 
   function setBranche($article)
   {
-    $this->_actionController->_helper->Journal->setBranche($article->findParentJournaux());
+    $j = $article->findParentJournaux();
+    $this->_actionController->_helper->Journal->setBranche($j);
+
+    if (!$article->public)
+      $this->_actionController->branche->append('Brouillons',
+						array('controller'=> 'journaux',
+						      'action'	=> 'brouillons',
+						      'journal' => $j->slug),
+						array(),
+						true);
 
     $this->_actionController->branche->append($article->titre,
 					      array('controller'=> 'journaux',
