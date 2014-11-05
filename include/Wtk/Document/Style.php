@@ -35,11 +35,13 @@ class Wtk_Document_Style {
 
 		switch ($format) {
 		case 'Xhtml':
+		case 'Html5':
+		  $f = Wtk_Render::factory(null, $format);
 		  $media = array(null, 'all', 'screen', 'print', 'handheld');
 
 		  foreach($components as $comp) {
 		    foreach($media as $medium) {
-		      $css = $this->basedir.'/'.$this->id.'/xhtml'.'/'.$comp;
+		      $css = $this->basedir.'/'.$this->id.'/'.$f->template.'/'.$comp;
 		      if ($medium)
 			$css.= '.'.$medium;
 		      $css.= '.css';

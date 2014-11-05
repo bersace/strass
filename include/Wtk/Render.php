@@ -2,7 +2,7 @@
 
 abstract class Wtk_Render
 {
-	protected	$template;	// template suffix
+	public	$template;	// template suffix
 	protected	$mime;		// type mime
 	protected	$document;	// root Wtk_Element.
 

@@ -4,7 +4,7 @@ require_once "Wtk/Utils/Xhtml.php";
 
 class Wtk_Render_Html5 extends Wtk_Render
 {
-	protected	$template =	'html';
+	public	$template =	'html';
 	protected	$mime = 	'text/html';
 
 	function render()

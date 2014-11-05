@@ -37,7 +37,7 @@ wtk_attr('href', 'http://'.$_SERVER['HTTP_HOST'].$href);
 ?> />
 <?php endforeach; ?>
 
-<?php foreach ($default_style->getFiles(array('inline'), 'Xhtml') as $row): ?>
+<?php foreach ($default_style->getFiles(array('inline'), 'Html5') as $row): ?>
 <?php extract($row); ?>
 <style type="text/css">
 <?php readfile($file); ?>
@@ -49,7 +49,7 @@ wtk_attr('href', 'http://'.$_SERVER['HTTP_HOST'].$href);
 <?php foreach ($styles as $style): ?>
 <?php $default = $default_style->id == $style->id; ?>
 <?php $et = $default ? $style->title : $et; ?>
-<?php $files = $style->getFiles($style_components, 'Xhtml'); ?>
+<?php $files = $style->getFiles($style_components, 'Html5'); ?>
 <?php foreach ($files as $f): ?>
 <?php extract($f); ?>
 <?php if ($default && $embed_style): ?>

@@ -15,11 +15,20 @@ class Strass_View_Helper_VignetteDocument
     $label = $document->titre;
     $wrapper = new Wtk_Section;
     $wrapper->addFlags('wrapper');
-    if ($url = $document->getCheminVignette())
-      $wrapper->addImage($document->getCheminVignette(),
-			 $document->titre, $document->titre);
-    else
-      $wrapper->addParagraph("Pas d'aperçu")->addFlags('image', 'empty');
+    if (in_array($document->suffixe, array('ogg', 'mp3', 'm4a'))) {
+      $url =$document->getFichier();
+      $wrapper->addAudio(array('url' => $url,
+			       /* c'est sale */
+			       'type' =>'audio/'.$document->suffixe));
+    }
+    else {
+      if ($url = $document->getCheminVignette())
+	$wrapper->addImage($document->getCheminVignette(),
+			   $document->titre, $document->titre);
+      else
+	$wrapper->addParagraph("Pas d'aperçu")->addFlags('image', 'empty');
+    }
+
     if ($urlOptions)
       $url = $this->view->url($urlOptions, true, true);
     else
