@@ -858,4 +858,8 @@ class Nobody implements Zend_Acl_Resource_Interface, Zend_Acl_Role_Interface {
   function findParentIndividus() {
     return $this->individu;
   }
+
+  function setPassword() {
+    throw new Exception('Tentative de définir le mot de passe du visiteur anonyme');
+  }
 }
