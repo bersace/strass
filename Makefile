@@ -45,7 +45,7 @@ clean:
 setup:
 	aptitude install php5-cli php5-sqlite php-pear php5-gd php5-imagick phpunit \
 	python-pip python-dev sqlite3
-	pip install libsass
+	pip install --upgrade libsass
 
 serve: all
 	php -S localhost:8000 \
