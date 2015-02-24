@@ -4,7 +4,7 @@ final class Strass_Version {
   const PROJET = '2.0dev';
   const DATA = 15;
 
-  static $version_filename = 'private/STRASS_VERSION';
+  static $version_filename = 'data/STRASS_VERSION';
 
   static function dataCurrent() {
     if (file_exists(Strass::getRoot().self::$version_filename)) {

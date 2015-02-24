@@ -12,7 +12,7 @@ class Statique implements Zend_Acl_Resource_Interface
   function __construct($id)
   {
     $this->id = $id;
-    $this->path = Strass::getRoot().'private/statiques/'.$id.'.wiki';
+    $this->path = Strass::getRoot().'data/private/statiques/'.$id.'.wiki';
     Zend_Registry::get('acl')->add($this);
 
     $this->title = preg_match("`^\+\+ (.*)$`m", $this->read(), $res) ? $res[1] : wtk_ucfirst($this->id);

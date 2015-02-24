@@ -1,7 +1,7 @@
 <?php
 
 class Strass {
-  static $install_filename = 'private/INSTALLED';
+  static $install_filename = 'data/private/INSTALLED';
 
   static function getRoot()
   {

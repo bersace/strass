@@ -40,7 +40,7 @@ clean:
 	rm -vf $(CSS)
 	rm -vf $(SUFSQL) $(FSESQL)
 	rm -vf maintenance.html 500.html
-	rm -vf private/cache/*
+	rm -vf data/private/cache/*
 
 setup:
 	aptitude install php5-cli php5-sqlite php-pear php5-gd php5-imagick phpunit \
@@ -56,9 +56,8 @@ serve: all
 # Restaure les données uniquement. Pour tester la migration.
 restore:
 	git checkout -- data/
-	test -d private/ && git checkout -- private/ || true
-	git clean --force -d data/ private/
-	rm -f private/cache/*
+	git clean --force -d data/
+	$(MAKE) clean
 
 # Restaure un site en version 1
 ifdef ORIG
@@ -109,12 +108,12 @@ backup1:
 backup:
 	make setmaint
 	$(REMOTE) $@
-	git add data/ private/;
+	git add data/;
 	git diff --staged --exit-code --quiet || git commit -m BACKUP
 
 migrate: all
 	maint/scripts/migrate;
-	git add --all -- data/ private/ config/ resources/;
+	git add --all -- data/ config/ resources/;
 	git commit -m MIGRATION
 
 upgrade: 500.html
