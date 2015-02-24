@@ -4,6 +4,7 @@ SCSS=$(shell find static/styles/ $(STRASS_ROOT)styles -name "*.scss")
 CSS=$(patsubst %.scss,%.css,$(SCSS))
 SUFSQL=include/Strass/Installer/sql/dump-suf.sql
 FSESQL=include/Strass/Installer/sql/dump-fse.sql
+REMOTECONF=$(STRASS_ROOT)/strass-remote.conf
 
 all: $(CSS) $(SUFSQL) $(FSESQL)
 
@@ -90,9 +91,9 @@ test:
 	phpunit --bootstrap tests/bootstrap.php tests
 
 ifdef PROD
-REMOTE=maint/scripts/remote --production --verbose
+REMOTE=maint/scripts/remote --verbose --config $(REMOTECONF) --production
 else
-REMOTE=maint/scripts/remote --verbose
+REMOTE=maint/scripts/remote --verbose --config $(REMOTECONF)
 endif
 
 config:
@@ -105,13 +106,13 @@ unsetmaint:
 	$(REMOTE) $@
 
 backup1:
-	make setmaint
+	$(MAKE) setmaint
 	$(REMOTE) $@
 	git add data/ resources/ config/;
 	git commit -m BACKUP
 
 backup:
-	make setmaint
+	$(MAKE) setmaint
 	$(REMOTE) $@
 	git add $(STRASS_ROOT);
 	git diff --staged --exit-code --quiet || git commit -m BACKUP
@@ -122,19 +123,19 @@ migrate: all
 	git commit -m MIGRATION
 
 upgrade: 500.html
-	make setmaint
+	$(MAKE) setmaint
 	$(REMOTE) $@
-	make unsetmaint
+	$(MAKE) unsetmaint
 
 mirror: 500.html
-	make setmaint
+	$(MAKE) setmaint
 	$(REMOTE) $@
-	make unsetmaint
+	$(MAKE) unsetmaint
 
 partialmirror: 500.html
-	make setmaint
+	$(MAKE) setmaint
 	$(REMOTE) mirror --partial
-	make unsetmaint
+	$(MAKE) unsetmaint
 
 .PHONY: all doc clean setup serve restore restore1 test
 .PHONY: config setmaint unsetmaint backup1 migrate mirror partialmirror upgrade backup
