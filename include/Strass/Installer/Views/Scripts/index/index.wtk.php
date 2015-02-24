@@ -26,7 +26,7 @@ class Strass_Pages_Renderer_Install extends Wtk_Pages_Renderer_Form
     $d = $this->view->document->addDialog("Initialisation")
       ->setId('wait');
 
-    $d->addImage('data/install/loading.gif', 'loading', 'loading');
+    $d->addImage('static/install/loading.gif', 'loading', 'loading');
     $d->addParagraph("Veuillez patienter…");
 
 

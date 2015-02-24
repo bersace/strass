@@ -1,4 +1,4 @@
-SCSS=$(shell find data/styles/ -name "*.scss")
+SCSS=$(shell find static/styles/ -name "*.scss")
 CSS=$(patsubst %.scss,%.css,$(SCSS))
 SUFSQL=include/Strass/Installer/sql/dump-suf.sql
 FSESQL=include/Strass/Installer/sql/dump-fse.sql

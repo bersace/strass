@@ -775,8 +775,8 @@ class upgrade(object):
         ftp.connect(config, args.production)
         self.log.info("Préparation de la mise à jour")
         ftp.mirror('.htaccess', 'index.php', '500.html',
-                   'include/Strass/', 'include/Wtk/', 'data/styles/', 'include/templates/',
-                   'data/scripts/wtk/')
+                   'include/Strass/', 'include/Wtk/', 'include/templates/', 'static/',
+                   'data/styles/')
         self.log.info("Démarrage de la mise à jour")
         ftp.run()
 
@@ -801,8 +801,8 @@ class mirror(object):
         ftp.mirror('.htaccess', 'index.php', '500.html', 'private/')
         ftp.chmod(0700, 'private/', 'include/')
         if args.partial:
-            ftp.mirror('include/Strass/', 'include/Wtk/', 'include/templates/',
-                       'data/scripts/wtk/', 'data/styles/')
+            ftp.mirror('include/Strass/', 'include/Wtk/', 'include/templates/', 'static/',
+                       'data/styles/')
         else:
             ftp.mirror('include/', 'data/')
         # nettoyage v1

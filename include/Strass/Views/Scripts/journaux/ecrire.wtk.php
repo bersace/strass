@@ -31,7 +31,7 @@ $samples = array('//emphase//',
 		 '**emphase forte**',
 		 '__souligné__',
 		 '[http://url.tld/ lien]',
-		 '[[image /data/styles/strass/favicon.png  Image]]',
+		 '[[image /static/styles/strass/favicon.png  Image]]',
 		 );
 foreach($samples as $sample)
   $aide.= "|| {{``".$sample."``}} || ".$sample."||\n";

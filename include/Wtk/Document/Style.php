@@ -6,7 +6,7 @@ class Wtk_Document_Style {
 	protected $basedir;
 	protected $mail;
 
-	function __construct($id = 'default', $basedir = 'data/styles') {
+	function __construct($id = 'default', $basedir = 'static/styles') {
 		$this->id = $id;
 		$this->basedir = $basedir;
 		$this->metas = include $basedir.'/'.$id.'/metas.php';
@@ -57,7 +57,7 @@ class Wtk_Document_Style {
 		return $files;
 	}
 
-	static function listAvailables($basedir = 'data/styles')
+	static function listAvailables($basedir = 'static/styles')
 	{
 	  $styles = array();
 	  foreach(wtk_glob($basedir . '/*/metas.php') as $meta) {
