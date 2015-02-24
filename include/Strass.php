@@ -168,9 +168,14 @@ class Strass {
     $t = new Unites;
     if ($config->metas->title)
       return $config->metas->title;
-    elseif ($racine = $t->findRacine())
-      return $racine->getName();
-    else
-      return null;
+    else {
+      try {
+	$racine = $t->findRacine();
+	return $racine->getName();
+      }
+      catch (Exception $e) {
+	return null;
+      }
+    }
   }
 }
