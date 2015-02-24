@@ -2,21 +2,11 @@
 
 class Strass_Migrate
 {
-  function __construct($db)
-  {
-    $this->db = $db;
-  }
-
   static function run() {
     Strass_Cache::setup();
     $db = Strass_Db::setup();
     Zend_Registry::set('acl', new Strass_Installer_FakeAcl);
-    $migrator = new Strass_Migrate($db);
-    $migrator->migrate();
-  }
 
-  function migrate()
-  {
     $current = Strass_Version::dataCurrent();
     $strass = Strass_Version::DATA;
 
@@ -28,23 +18,30 @@ class Strass_Migrate
       error_log("Installation en avance sur Strass !!");
       return;
     }
+    else {
+      error_log("Installation en version $current.");
+    }
 
-    $target = $current + 1;
+    for ($i = $current+1; $i <= $strass; $i++) {
+      self::migrate_one($db, $i);
+    }
+    error_log("Migration terminée");
+  }
+
+  static function migrate_one($db, $target)
+  {
     error_log("Migration vers la version ".$target.".");
 
     $class = 'Strass_Migrate_To'.$target;
     if (class_exists($class)) {
       $handler = new $class;
-      $handler->run($this->db);
+      $handler->run($db);
     }
     else {
       error_log("Pas de migration vers la version $target.");
     }
 
     Strass_Version::save($target);
-
-    /* chainage vers la version suivante */
-    $this->migrate();
   }
 }
 
