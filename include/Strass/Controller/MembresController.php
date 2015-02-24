@@ -268,15 +268,16 @@ class MembresController extends Strass_Controller_Action implements Zend_Acl_Res
 	  $user->recover_token = null;
 	  $user->save();
 
-	  $this->logger("Recouvrement du compte",
-			$this->_helper->Url('fiche', 'individus', null,
-					    array('individu' => $individu->slug)));
+	  $this->logger->info("Recouvrement du compte",
+			      $this->_helper->Url('fiche', 'individus', null,
+						  array('individu' => $individu->slug)));
 	  $db->commit();
 	}
 	catch (Exception $e) {
 	  $db->rollBack();
 	  throw $e;
 	}
+	$this->redirectSimple('index', 'unites');
       }
     }
     else {
