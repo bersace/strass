@@ -310,7 +310,7 @@ class MembresController extends Strass_Controller_Action implements Zend_Acl_Res
 				    "Un courriel vous a été envoyé avec un lien vers la page ".
 				    "pour définir un nouveau mot de passe. Le lien expirera dans ".
 				    "une demi heure.");
-	$this->redirectSimple('index', 'index');
+	$this->redirectSimple('index', 'unites');
       }
     }
   }
