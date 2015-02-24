@@ -2,12 +2,16 @@
 
 final class Strass_Version {
   const PROJET = '2.0dev';
-  const DATA = 15;
+  const DATA = 16;
 
   static $version_filename = 'private/STRASS_VERSION';
 
   static function dataCurrent() {
-    if (file_exists(Strass::getRoot().self::$version_filename)) {
+    /* Jusqu'en version 15 */
+    if (file_exists(self::$version_filename)) {
+      return intval(trim(@file_get_contents(self::$version_filename)));
+    }
+    else if (file_exists(Strass::getRoot().self::$version_filename)) {
       return intval(trim(@file_get_contents(Strass::getRoot().self::$version_filename)));
     }
     else if (file_exists('config/knema/db.php')) {

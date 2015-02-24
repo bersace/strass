@@ -30,7 +30,7 @@ class Script(object):
         '-q', '--quiet',
         action='store_const', dest='loglevel', const=logging.CRITICAL)
     parser.add_argument(
-        '-c', '--config', default='maint/strass.conf', metavar='FILE')
+        '-c', '--config', default=os.environ.get('STRASS_ROOT', 'data/') + '/strass-remote.conf', metavar='FILE')
     parser.add_argument(
         '-p', '--production', help=u'Envoi sur le site en production',
         action='store_true', dest='production')
