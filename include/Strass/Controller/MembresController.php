@@ -302,7 +302,8 @@ class MembresController extends Strass_Controller_Action implements Zend_Acl_Res
 	$user->save();
 
 	$this->view->mail = $mail = new Strass_Mail_Recover($user);
-	$mail->addTo($individu->adelec, $individu->getFullname(false));
+	$fn = trim(wtk_ucfirst($individu->prenom)." ".$individu->capitalizedLastname());
+	$mail->addTo($individu->adelec, $fn);
 	$mail->send();
 
 	$this->_helper->flash->info("Courriel envoyé",
