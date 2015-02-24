@@ -90,9 +90,9 @@ test:
 	phpunit --bootstrap tests/bootstrap.php tests
 
 ifdef PROD
-REMOTE=maint/scripts/remote --production --verbose --config maint/strass.conf
+REMOTE=maint/scripts/remote --production --verbose
 else
-REMOTE=maint/scripts/remote --verbose --config maint/strass.conf
+REMOTE=maint/scripts/remote --verbose
 endif
 
 config:

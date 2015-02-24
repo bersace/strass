@@ -19,7 +19,7 @@ $db = Strass_Db::setup();
 
 $document = new Wtk_Document(new Wtk_Metas(array('DC.Title' => 'Erreur fatale')));
 $style = $config->get('system/style', 'strass');
-$document->setStyle(new Wtk_Document_Style($style));
+$document->setStyle(Wtk_Document_Style::factory($style));
 $document->addStyleComponents('layout', 'minilayout', 'common');
 $mouvement = $config->get('system/mouvement', null);
 $document->addFlags($mouvement, 'error');

@@ -26,7 +26,7 @@ class Strass_Mail extends Zend_Mail
     $this->_doc = $d = new Wtk_Document($metas);
     $d->level+= 2;
     $d->addStyleComponents('mail');
-    $d->setStyle(new Wtk_Document_Style($config->system->style));
+    $d->setStyle(Wtk_Document_Style::factory($config->system->style));
     $d->embedStyle();
     $d->addFlags('mail');
 
