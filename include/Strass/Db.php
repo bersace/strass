@@ -4,7 +4,7 @@ class Strass_Db extends Zend_Db {
   static function setup($dbname = null, $reset=false)
   {
     if ($dbname === null)
-      $dbname = Strass::getRoot().'data/private/strass.sqlite';
+      $dbname = Strass::getRoot().'private/strass.sqlite';
 
     if ($reset)
       @unlink($dbname);

@@ -1,14 +1,15 @@
 <?php
 
 class Strass {
-  static $install_filename = 'data/private/INSTALLED';
+  static $install_filename = 'private/INSTALLED';
 
   static function getRoot()
   {
-    if (isset($_ENV['STRASS_ROOT']))
-      return $_ENV['STRASS_ROOT'] . DIRECTORY_SEPARATOR;
+    $root = getenv('STRASS_ROOT');
+    if ($root)
+      return $root . DIRECTORY_SEPARATOR;
     else
-      return '';
+      return 'data/';
   }
 
   static function isInstalled()

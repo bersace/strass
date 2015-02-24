@@ -192,7 +192,7 @@ class Unite extends Strass_Db_Table_Row_Abstract implements Zend_Acl_Resource_In
   function getCheminImage($slug = null, $test = true)
   {
     $slug = $slug ? $slug : $this->slug;
-    $image = Strass::getRoot().'data/unites/'.$slug.'.png';
+    $image = Strass::getRoot().'unites/'.$slug.'.png';
     return !$test || is_readable($image) ? $image : null;
   }
 
@@ -209,7 +209,7 @@ class Unite extends Strass_Db_Table_Row_Abstract implements Zend_Acl_Resource_In
   function getWiki($slug = null, $test = true)
   {
     $slug = $slug ? $slug : $this->slug;
-    $wiki = Strass::getRoot().'data/private/unites/'.$slug.'.wiki';
+    $wiki = Strass::getRoot().'private/unites/'.$slug.'.wiki';
     return !$test || is_readable($wiki) ? $wiki : null;
   }
 

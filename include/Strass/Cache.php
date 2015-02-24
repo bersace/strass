@@ -5,7 +5,7 @@ class Strass_Cache
 
   static function setup()
   {
-    $cachedir = Strass::getRoot().'data/private/cache';
+    $cachedir = Strass::getRoot().'private/cache';
     if (!file_exists($cachedir))
       mkdir($cachedir, 0700, true);
     Zend_Registry::set('cache',

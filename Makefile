@@ -1,3 +1,5 @@
+export STRASS_ROOT ?= ./data/
+
 SCSS=$(shell find static/styles/ -name "*.scss")
 CSS=$(patsubst %.scss,%.css,$(SCSS))
 SUFSQL=include/Strass/Installer/sql/dump-suf.sql
@@ -40,11 +42,11 @@ clean:
 	rm -vf $(CSS)
 	rm -vf $(SUFSQL) $(FSESQL)
 	rm -vf maintenance.html 500.html
-	rm -vf data/private/cache/*
+	rm -vf $(STRASS_ROOT)private/cache/*
 
 distclean:
 	$(MAKE) clean
-	rm -rvf data/
+	rm -rvf $(STRASS_ROOT)
 
 setup:
 	aptitude install php5-cli php5-sqlite php-pear php5-gd php5-imagick phpunit \
@@ -59,9 +61,8 @@ serve: all
 
 # Restaure les données uniquement. Pour tester la migration.
 restore:
-	git checkout -- data/
-	git clean --force -d data/
-	$(MAKE) clean
+	git checkout -- $(STRASS_ROOT)
+	git clean --force -d $(STRASS_ROOT)
 
 # Restaure un site en version 1
 ifdef ORIG
@@ -112,12 +113,12 @@ backup1:
 backup:
 	make setmaint
 	$(REMOTE) $@
-	git add data/;
+	git add $(STRASS_ROOT);
 	git diff --staged --exit-code --quiet || git commit -m BACKUP
 
 migrate: all
 	maint/scripts/migrate;
-	git add --all -- data/ config/ resources/;
+	git add --ignore-errors --all -- $(STRASS_ROOT) data/ private/;
 	git commit -m MIGRATION
 
 upgrade: 500.html
