@@ -137,7 +137,10 @@ class CHMOD(FTPOperation):
 
 class FTPEntry(object):
     log = logging.getLogger('strass.ftp')
-    exclude = ['.gitignore', '*~', 'zend_cache*', '*.xcf', '*.scss', 'README', 'LICENSE', 'local']
+    exclude = [
+        '.gitignore', '*~', 'zend_cache*', '*.xcf', '*.scss', 'README',
+        'LICENSE', 'local', 'strass*.conf',
+    ]
 
     TYPE_UNKNOWN = FileType('Inconnu')
     TYPE_FILE = FileType('Fichier')
@@ -798,15 +801,15 @@ class mirror(object):
         ftp = FTPManager()
         ftp.connect(config, args.production)
         self.log.info("Préparation de la mise à jour")
-        ftp.mirror('.htaccess', 'index.php', '500.html', 'private/')
-        ftp.chmod(0700, 'private/', 'include/')
+        ftp.mirror('.htaccess', 'index.php', '500.html')
+        ftp.chmod(0700, 'data/private/', 'include/')
         if args.partial:
-            ftp.mirror('include/Strass/', 'include/Wtk/', 'include/templates/', 'static/',
-                       'data/styles/')
+            ftp.mirror('include/Strass/', 'include/Wtk/', 'include/templates/', 'static/styles/',
+                       'data/styles/', 'data/private/')
         else:
-            ftp.mirror('include/', 'data/')
-        # nettoyage v1
-        ftp.remove('resources/', 'config/', 'cache/')
+            ftp.mirror('include/', 'data/', 'static/')
+        # nettoyage
+        ftp.remove('resources/', 'config/', 'cache/', 'private/')
         self.log.info("Démarrage de la mise à jour")
         ftp.run()
 
