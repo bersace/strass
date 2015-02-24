@@ -6,10 +6,15 @@ class Strass {
   static function getRoot()
   {
     $root = getenv('STRASS_ROOT');
-    if ($root)
-      return $root . DIRECTORY_SEPARATOR;
-    else
-      return 'data/';
+    if (!$root)
+      $root = 'data';
+
+    return $root . DIRECTORY_SEPARATOR;
+  }
+
+  static function getPrefix()
+  {
+    return dirname(dirname(__FILE__)) . DIRECTORY_SEPARATOR;
   }
 
   static function isInstalled()
@@ -52,6 +57,10 @@ class Strass {
     $loader->registerNamespace('Dio_');
     $loader->registerNamespace('Wtk_');
     $loader->registerNamespace('Strass_');
+
+    Wtk_Document_Style::$path = array(Strass::getPrefix() . 'static/styles/',
+				      Strass::getRoot() . 'styles/'
+				      );
   }
 
   static function main()

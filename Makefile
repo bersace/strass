@@ -1,6 +1,6 @@
-export STRASS_ROOT ?= ./data/
+export STRASS_ROOT ?= data/
 
-SCSS=$(shell find static/styles/ -name "*.scss")
+SCSS=$(shell find static/styles/ $(STRASS_ROOT)styles -name "*.scss")
 CSS=$(patsubst %.scss,%.css,$(SCSS))
 SUFSQL=include/Strass/Installer/sql/dump-suf.sql
 FSESQL=include/Strass/Installer/sql/dump-fse.sql

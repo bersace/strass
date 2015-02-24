@@ -34,8 +34,7 @@ function wtk_glob($pattern, $flags = 0) {
 	  else
 	    $path.= $part . DIRECTORY_SEPARATOR;
 	}
-	$path = trim($path, DIRECTORY_SEPARATOR);
-	$append = implode('/', $split);
+	$append = implode(DIRECTORY_SEPARATOR, $split);
 
 	if ($match === null && !$append) {
 	  if (file_exists($path))

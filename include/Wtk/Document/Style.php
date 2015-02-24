@@ -1,15 +1,47 @@
 <?php
 
 class Wtk_Document_Style {
+  static public $path;
 	public $id;
 	public $metas;
 	protected $basedir;
-	protected $mail;
 
-	function __construct($id = 'default', $basedir = 'static/styles') {
+	static function factory($id)
+	{
+	  foreach (self::$path as $path) {
+	    if (file_exists($path . $id)) {
+	      return new self($id, $path);
+	    }
+	  }
+	  throw new Exception("Style ".$id." introuvable");
+	}
+
+	static function listAvailables()
+	{
+	  $styles = array();
+	  foreach(self::$path as $basedir) {
+	    if (!file_exists($basedir))
+	      continue;
+
+	    foreach(wtk_glob($basedir . '*/metas.php') as $meta) {
+	      $name = basename(dirname($meta));
+	      array_push($styles, new self($name, $basedir));
+	    }
+	  }
+	  return $styles;
+	}
+
+	function __construct($id = 'default', $basedir = 'static/styles/') {
 		$this->id = $id;
-		$this->basedir = $basedir;
-		$this->metas = include $basedir.'/'.$id.'/metas.php';
+		$this->basedir = $basedir . $id . DIRECTORY_SEPARATOR;
+		$this->metas = include $this->basedir . 'metas.php';
+
+		if ($this->basedir[0] == DIRECTORY_SEPARATOR) {
+		  $parent = dirname(dirname($basedir));
+		  $this->baseurl = substr($this->basedir, strlen($parent)+1);
+		}
+		else
+		  $this->baseurl = $this->basedir;
 	}
 
 	function __get($name)
@@ -24,7 +56,7 @@ class Wtk_Document_Style {
 
 	function getFavicon()
 	{
-		return $this->basedir.'/'.$this->id.'/favicon.png';
+		return $this->basedir.'/favicon.png';
 	}
 
 	/*
@@ -41,29 +73,20 @@ class Wtk_Document_Style {
 
 		  foreach($components as $comp) {
 		    foreach($media as $medium) {
-		      $css = $this->basedir.'/'.$this->id.'/'.$f->template.'/'.$comp;
+		      $css = $f->template.'/'.$comp;
 		      if ($medium)
 			$css.= '.'.$medium;
 		      $css.= '.css';
-		      if (!file_exists($css))
+		      if (!file_exists($this->basedir . $css))
 			continue;
 
-		      $files[] = array('file' => $css, 'medium' => $medium);
+		      $files[] = array('file' => $this->baseurl . $css,
+				       'medium' => $medium);
 		    }
 		  }
 		  break;
 		}
 
 		return $files;
-	}
-
-	static function listAvailables($basedir = 'static/styles')
-	{
-	  $styles = array();
-	  foreach(wtk_glob($basedir . '/*/metas.php') as $meta) {
-	    $name = basename(dirname($meta));
-	    array_push($styles, new self($name, $basedir));
-	  }
-	  return $styles;
 	}
 }
