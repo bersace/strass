@@ -1,6 +1,6 @@
-export STRASS_ROOT ?= data/
+export STRASS_ROOT ?= htdocs/
 
-SCSS=$(shell find static/styles/ $(STRASS_ROOT)styles -name "*.scss")
+SCSS=$(shell find static/styles/ $(STRASS_ROOT)data/styles -name "*.scss")
 CSS=$(patsubst %.scss,%.css,$(SCSS))
 SUFSQL=include/Strass/Installer/sql/dump-suf.sql
 FSESQL=include/Strass/Installer/sql/dump-fse.sql
@@ -56,7 +56,8 @@ setup:
 
 serve: all
 	php -S localhost:8000 \
-	-d xdebug.profiler_output_dir=$$(pwd) \
+	-d include_path=$(shell pwd)/include/ \
+	-d xdebug.profiler_output_dir=$(shell pwd) \
 	-d xdebug.profiler_enable_trigger=1 \
 	devel.php
 
@@ -88,7 +89,7 @@ $(TESTDB): include/Strass/Installer/sql/schema.sql
 test:
 	rm -rf $(TESTROOT)/*
 	make $(TESTDB)
-	phpunit --bootstrap tests/bootstrap.php tests
+	STRASS_ROOT=$(shell realpath $(TESTROOT)) phpunit --bootstrap tests/bootstrap.php $(shell realpath tests)
 
 ifdef PROD
 REMOTE=maint/scripts/remote --verbose --config $(REMOTECONF) --production

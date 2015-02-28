@@ -56,7 +56,7 @@ class Wtk_Document_Style {
 
 	function getFavicon()
 	{
-		return $this->basedir.'/favicon.png';
+		return $this->baseurl.'/favicon.png';
 	}
 
 	/*

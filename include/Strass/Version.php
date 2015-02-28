@@ -7,12 +7,8 @@ final class Strass_Version {
   static $version_filename = 'private/STRASS_VERSION';
 
   static function dataCurrent() {
-    /* Jusqu'en version 15 */
     if (file_exists(self::$version_filename)) {
       return intval(trim(@file_get_contents(self::$version_filename)));
-    }
-    else if (file_exists(Strass::getRoot().self::$version_filename)) {
-      return intval(trim(@file_get_contents(Strass::getRoot().self::$version_filename)));
     }
     else if (file_exists('config/knema/db.php')) {
       /* Installation non versionnée (morel et suf1520) */
@@ -25,6 +21,6 @@ final class Strass_Version {
   }
 
   static function save($version) {
-    file_put_contents(Strass::getRoot().self::$version_filename, (string) $version);
+    file_put_contents(self::$version_filename, (string) $version);
   }
 }

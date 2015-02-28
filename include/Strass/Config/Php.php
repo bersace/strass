@@ -19,7 +19,7 @@ class Strass_Config_Php extends Zend_Config
       $this->basedir = Zend_Registry::get('config_basedir');
     }
     catch (Zend_Exception $e) {
-      $this->basedir = Strass::getRoot().'private/config/';
+      $this->basedir = 'private/config/';
     }
 
     $this->filename = $this->basedir.$name.'.php';

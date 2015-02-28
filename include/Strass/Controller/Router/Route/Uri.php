@@ -43,7 +43,7 @@ class Strass_Controller_Router_Route_Uri extends Zend_Controller_Router_Route_Re
 
 	// Modèle du format de sortie
 	protected	$outputUri;
-    
+
 	// Pattern de sortie des paramètre
 	protected	$outputUriTemplates = array ();
 
@@ -66,14 +66,14 @@ class Strass_Controller_Router_Route_Uri extends Zend_Controller_Router_Route_Re
 	function __construct($vars, $inputUri, $outputUri = '')
 	{
 		$this->vars		= array();
-    
+
 		$have_jocker = strpos($inputUri, '*') !== FALSE;
 		if ($have_jocker) {
 			$vars['#'] = array('((?:/[[:alnum:]]+/[^/]+)*)', '');
 			$inputUri = str_replace ('*', '[%#%]', $inputUri);
 			$outputUri = str_replace ('*', '[%#%]', $outputUri);
 		}
-    
+
 		$i = 1;
 		foreach($vars as $var => $conf) {
 			$this->vars[] = $var;
@@ -92,7 +92,7 @@ class Strass_Controller_Router_Route_Uri extends Zend_Controller_Router_Route_Re
 
 	protected function buildInputUriPattern ()
 	{
-		// Détermination de l'ordre d'apparition des parametres       
+		// Détermination de l'ordre d'apparition des parametres
 		$this->inputUriDeps = $this->getUriDeps($this->inputUri);
 		$this->inputUriDeps = array_merge(array_fill_keys($this->vars, array()),
 						  $this->inputUriDeps);
@@ -192,7 +192,7 @@ class Strass_Controller_Router_Route_Uri extends Zend_Controller_Router_Route_Re
 
 			// Stockage dans le tableau
 			$this->outputUriTemplates[$match[2]] = $match[1];
-          
+
 			// Modification du template
 			$template = str_replace ($match[0], '', $template);
 
@@ -281,7 +281,7 @@ class Strass_Controller_Router_Route_Uri extends Zend_Controller_Router_Route_Re
 		if ($wcs) {
 			$data['#'] = '/'.implode('/', $wcs);
 		}
-    
+
 		$data = $data + $this->_defaults;
 
 
@@ -300,7 +300,7 @@ class Strass_Controller_Router_Route_Uri extends Zend_Controller_Router_Route_Re
 				$replacement = preg_replace('`%('.$key.')%`e', '$data["\\1"]', $value);
 				$this->setDefault($defaults, $key, FALSE);
 			}
-       
+
 			$uri = str_replace($value, $replacement, $uri);
 		}
 

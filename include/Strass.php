@@ -3,15 +3,6 @@
 class Strass {
   static $install_filename = 'private/INSTALLED';
 
-  static function getRoot()
-  {
-    $root = getenv('STRASS_ROOT');
-    if (!$root)
-      $root = 'data';
-
-    return $root . DIRECTORY_SEPARATOR;
-  }
-
   static function getPrefix()
   {
     return dirname(dirname(__FILE__)) . DIRECTORY_SEPARATOR;
@@ -19,12 +10,12 @@ class Strass {
 
   static function isInstalled()
   {
-    return file_exists(self::getRoot().self::$install_filename);
+    return file_exists(self::$install_filename);
   }
 
   static function setInstalled()
   {
-    return file_put_contents(self::getRoot().self::$install_filename, strftime('%Y-%m-%d %H-%M'));
+    return file_put_contents(self::$install_filename, strftime('%Y-%m-%d %H-%M'));
   }
 
   static function onMaintenance()
@@ -50,6 +41,11 @@ class Strass {
     date_default_timezone_set('Europe/Paris');
     setlocale(LC_TIME, 'fr', 'fr_FR.utf8', 'fr_FR', 'fr_FR@euro', 'fr-FR', 'fra');
 
+    $root = getenv('STRASS_ROOT') or 'htdocs/';
+    if (!file_exists($root))
+      mkdir($root, 0770, true);
+    chdir($root);
+
     require_once 'Wtk.php';
     require_once 'Zend/Loader/Autoloader.php';
 
@@ -59,7 +55,7 @@ class Strass {
     $loader->registerNamespace('Strass_');
 
     Wtk_Document_Style::$path = array(Strass::getPrefix() . 'static/styles/',
-				      Strass::getRoot() . 'styles/'
+				      'data/styles/'
 				      );
   }
 
@@ -133,7 +129,7 @@ class Strass {
     $fc->setParam('noViewRenderer', true);
 
     $fc->setModuleControllerDirectoryName('Controller');
-    $fc->addControllerDirectory('include/Strass/Controller', 'Strass');
+    $fc->addControllerDirectory(self::getPrefix().'include/Strass/Controller', 'Strass');
     Zend_Controller_Action_HelperBroker::addPrefix('Strass_Controller_Action_Helper');
     $fc->setDefaultModule('Strass');
 

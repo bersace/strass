@@ -41,7 +41,7 @@ class Journal extends Strass_Db_Table_Row_Abstract implements Zend_Acl_Resource_
 
   function getDossier()
   {
-    return Strass::getRoot().'journaux/' . $this->slug;
+    return 'data/journaux/' . $this->slug;
   }
 
   function selectArticles()

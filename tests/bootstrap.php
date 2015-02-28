@@ -1,7 +1,6 @@
 <?php
 
-$_ENV['STRASS_ROOT'] = 'tests/root/';
-$_ENV['STRASS_UNIT_TEST']  = '1';
+putenv('STRASS_UNIT_TEST=1');
 
 $paths = explode(':', get_include_path());
 array_shift($paths);
@@ -10,6 +9,8 @@ set_include_path(implode(':',$paths));
 
 require_once('Strass.php');
 require_once('Orror.php');
+
+chdir(realpath(getenv('STRASS_ROOT')));
 
 Strass::bootstrap();
 Orror::init(E_ALL | E_STRICT);

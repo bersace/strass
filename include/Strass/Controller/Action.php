@@ -188,7 +188,7 @@ abstract class Strass_Controller_Action extends Zend_Controller_Action implement
       $format = 'html';
     //throw new Strass_Controller_Action_Exception("Ce document n'est pas disponible dans ce format.");
 
-    $available_formats = require('include/Strass/formats.php');
+    $available_formats = require(Strass::getPrefix().'include/Strass/formats.php');
     foreach($available_formats as $name) {
       if (!$f = Strass_Format::factory($name))
 	continue;

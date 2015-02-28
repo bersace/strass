@@ -26,7 +26,7 @@ class Strass_Installer
       $fc->setParam('useDefaultControllerAlways', true);
       $fc->setParam('noViewRenderer', true);
       $fc->setModuleControllerDirectoryName('Installer');
-      $fc->addControllerDirectory('include/Strass/Installer/Controller', 'Strass');
+      $fc->addControllerDirectory(Strass::getPrefix().'include/Strass/Installer/Controller', 'Strass');
       $fc->setDefaultModule('Strass');
       $fc->registerPlugin(new Strass_Controller_Plugin_Error);
 
