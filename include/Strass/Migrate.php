@@ -2,11 +2,15 @@
 
 class Strass_Migrate
 {
-  static function run() {
+  static function main() {
     Strass_Cache::setup();
     $db = Strass_Db::setup();
     Zend_Registry::set('acl', new Strass_Installer_FakeAcl);
 
+    self::run($db);
+  }
+
+  static function run($db) {
     $current = Strass_Version::dataCurrent();
     $strass = Strass_Version::DATA;
 

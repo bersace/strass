@@ -12,4 +12,4 @@ set_include_path(implode(':',$paths));
 require_once 'Zend/Loader.php';
 @Zend_Loader::registerAutoload();
 
-Strass_Migrate::run();
+Strass_Migrate::main();

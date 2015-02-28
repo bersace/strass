@@ -92,9 +92,7 @@ class Strass_Installer
       $db->exec($snippet);
 
     Strass_Version::save(self::VERSION);
-
-    $migrator = new Strass_Migrate($db);
-    $migrator->migrate();
+    Strass_Migrate::run($db);
   }
 
   function initAdmin()
