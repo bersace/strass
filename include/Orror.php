@@ -337,8 +337,8 @@ class Orror {
       $handler = isset($_ENV['ORROR_HANDLER']) ? $_ENV['ORROR_HANDLER'] : array('Orror', 'output');
       call_user_func_array($handler, $params);
     }
-    else if ($params['level'] != E_NOTICE) {
-      error_log($params['msg']);
+    else if ($params['level'] != E_NOTICE && $params['level'] != E_STRICT) {
+      error_log($params['level'].' '.$params['msg']);
     }
   }
 }
