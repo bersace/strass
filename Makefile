@@ -33,21 +33,21 @@ maintenance.html: maint/scripts/maintenance $(CSS)
 $(SUFDUMP): $(SUFDB)
 	sqlite3 $< .dump > $@
 
-$(SUFSQL): include/Strass/Installer/sql/schema.sql include/Strass/Installer/sql/suf.sql
-	rm -vf $@.db
+$(SUFSQL).db: include/Strass/Installer/sql/schema.sql include/Strass/Installer/sql/suf.sql
 	for f in $^ ; do sqlite3 -batch $@.db ".read $$f"; done
-	sqlite3 $@.db .dump > $@
-	rm -vf $@.db
+$(SUFSQL): $(SUFSQL).db
+	sqlite3 $< .dump > $@
+.INTERMEDIATE: $(SUFSQL).db
 
-$(FSESQL): include/Strass/Installer/sql/schema.sql include/Strass/Installer/sql/fse.sql
-	rm -vf $@.db
+$(FSESQL).db: include/Strass/Installer/sql/schema.sql include/Strass/Installer/sql/fse.sql
 	for f in $^ ; do sqlite3 -batch $@.db ".read $$f"; done
-	sqlite3 $@.db .dump > $@
-	rm -vf $@.db
+$(FSESQL): $(FSESQL).db
+	sqlite3 $< .dump > $@
+.INTERMEDIATE: $(FSESQL).db
 
 clean:
 	rm -vf $(CSS)
-	rm -vf $(SUFSQL) $(FSESQL)
+	rm -vf $(SUFSQL) $(SUFSQL).db $(FSESQL) $(FSESQL).db
 	rm -vf maintenance.html 500.html
 	rm -vf $(STRASS_ROOT)private/cache/*
 
