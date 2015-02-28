@@ -43,7 +43,7 @@ class Strass {
 
     $root = getenv('STRASS_ROOT') or 'htdocs/';
     if (!file_exists($root))
-      mkdir($root, 0770, true);
+      mkdir($root.'data/', 0770, true);
     chdir($root);
 
     require_once 'Wtk.php';
