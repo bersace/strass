@@ -1,6 +1,11 @@
 export STRASS_ROOT ?= htdocs/
 
-SCSS=$(shell find static/styles/ $(STRASS_ROOT)data/styles -name "*.scss")
+STYLES_DIRS=static/styles
+ifeq (,$(wildcard $(STRASS_ROOT)/data/styles/))
+	STYLES_DIRS+=$(STRASS_ROOT)/data/styles/
+endif
+
+SCSS=$(shell find $(STYLE_DIRS) -name "*.scss")
 CSS=$(patsubst %.scss,%.css,$(SCSS))
 SUFSQL=include/Strass/Installer/sql/dump-suf.sql
 FSESQL=include/Strass/Installer/sql/dump-fse.sql
@@ -12,7 +17,8 @@ help:
 	less maint/DOC
 
 %.css: %.scss
-	sassc $< $@ || rm $@
+	rm -f $@
+	sassc $< $@
 
 maintenance.html: maint/scripts/maintenance $(CSS)
 	$< > $@
