@@ -72,19 +72,6 @@ restore:
 	git checkout -- $(STRASS_ROOT)
 	git clean --force -d $(STRASS_ROOT)
 
-# Restaure un site en version 1
-.PHONY: restore1
-ifdef ORIG
-# depuis un dossier autre
-restore1: restore
-	cd $(ORIG); git reset --hard;
-	cp --archive --link $(ORIG)/config/ $(ORIG)/data $(ORIG)/resources ./
-else
-# depuis HEAD
-restore1: restore
-	git checkout resources/ config/
-endif
-
 TESTROOT=tests/root/
 TESTDB=$(TESTROOT)/private/strass.sqlite
 $(TESTDB): include/Strass/Installer/sql/schema.sql
@@ -116,13 +103,6 @@ setmaint: maintenance.html
 .PHONY: unsetmaint
 unsetmaint:
 	$(REMOTE) $@
-
-.PHONY: backup1
-backup1:
-	$(MAKE) setmaint
-	$(REMOTE) $@
-	git add data/ resources/ config/;
-	git commit -m BACKUP
 
 .PHONY: backup
 backup:
