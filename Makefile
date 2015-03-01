@@ -87,13 +87,19 @@ test:
 
 REMOTE=maint/scripts/remote --verbose --config $(STRASS_ROOT)strass.conf
 
-.PHONY: config
-config:
+
+$(STRASS_ROOT).git:
 	test -d $(STRASS_ROOT) || mkdir -p $(STRASS_ROOT)
-	test -d $(STRASS_ROOT).git || $(GIT) init .
-	test -f $(STRASS_ROOT).gitignore || echo 'maintenance.html' > $(STRASS_ROOT).gitignore
+	$(GIT) init .
+	$(GIT) commit --quiet --allow-empty --message INIT
+
+$(STRASS_ROOT).gitignore: maint/sitegitignore $(STRASS_ROOT).gitignore
+	cp $< $@
 	$(GIT) add .gitignore
-	$(GIT) rev-parse --quiet --verify HEAD || $(GIT) commit --quiet --allow-empty --message INIT
+	$(COMMIT) SYSTÈME
+
+.PHONY: config
+config: $(STRASS_ROOT).gitignore
 	$(REMOTE) config
 	$(GIT) add strass.conf
 	$(COMMIT) CONFIG
