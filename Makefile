@@ -59,7 +59,7 @@ setup:
 
 .PHONY: serve
 serve: all
-	php -S localhost:8000 \
+	STRASS_MODE=devel php -S localhost:8000 \
 	-d include_path=$(shell pwd)/include/ \
 	-d xdebug.profiler_output_dir=$(shell pwd) \
 	-d xdebug.profiler_enable_trigger=1 \

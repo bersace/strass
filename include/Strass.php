@@ -32,7 +32,7 @@ class Strass {
 
   static function onDevelopment()
   {
-    return file_exists('devel.php');
+    return getenv('STRASS_MODE') == 'devel';
   }
 
   static function bootstrap()
