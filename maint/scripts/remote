@@ -726,24 +726,6 @@ class unsetmaint(object):
 
 
 @command
-class backup1(object):
-    """Télécharge un site strass v1"""
-    log = logging.getLogger('strass.backup')
-
-    def __init__(self, parser):
-        pass
-
-
-    def __call__(self, args, config):
-        ftp = FTPManager()
-        ftp.connect(config, args.production)
-        self.log.info("Préparation de la sauvegarde")
-        ftp.download('resources/styles', 'config/', 'data/')
-        self.log.info("Démarrage de la sauvegarde")
-        ftp.run()
-
-
-@command
 class backup(object):
     """Télécharge un site strass"""
     log = logging.getLogger('strass.backup')
