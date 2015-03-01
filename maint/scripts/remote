@@ -31,6 +31,9 @@ class Script(object):
         action='store_const', dest='loglevel', const=logging.CRITICAL)
     parser.add_argument(
         '-c', '--config', default='strass.conf', metavar='FILE')
+    parser.add_argument(
+        '-r', '--root', metavar='ROOT',
+        default=os.environ.get('STRASS_ROOT'))
 
     subparsers = parser.add_subparsers(metavar='ACTION', help=u'Opération avec le site distant')
 
@@ -45,6 +48,7 @@ class Script(object):
                 with open(args.config) as f:
                     config.readfp(f, args.config)
 
+            args.saas = config.get('remote', 'saas')
             return args.action(args, config)
         except Exception, e:
             log.exception(e)
@@ -71,8 +75,9 @@ class FileType(object):
 
 
 class FTPOperation(object):
-    def __init__(self, path):
-        self.path = path
+    def __init__(self, entry):
+        self.path = entry.path
+        self.localpath = entry.localpath
 
 
     def __repr__(self):
@@ -103,7 +108,7 @@ class MKD(FTPOperation):
 
 class STOR(FTPOperation):
     def __call__(self, client):
-        client.storbinary('STOR ' + self.path, open(self.path))
+        client.storbinary('STOR ' + self.path, open(self.localpath))
 
 
 class RETR(FTPOperation):
@@ -123,8 +128,8 @@ class DELE(FTPOperation):
 
 
 class CHMOD(FTPOperation):
-    def __init__(self, mode, path):
-        super(CHMOD, self).__init__(path)
+    def __init__(self, mode, entry):
+        super(CHMOD, self).__init__(entry)
         self.mode = mode
 
 
@@ -138,14 +143,15 @@ class FTPEntry(object):
         '.gitignore', '*~', 'zend_cache*', '*.xcf', '*.scss', 'README',
         'LICENSE', 'local', 'strass*.conf',
     ]
+    local_files = ['data', 'private', '*.html', 'google*']
 
     TYPE_UNKNOWN = FileType('Inconnu')
     TYPE_FILE = FileType('Fichier')
     TYPE_DIR = FileType('Dossier')
 
 
-    def __init__(self, client, parent, fullpath, type_=None):
-        self.client = client
+    def __init__(self, manager, parent, fullpath, type_=None):
+        self.manager = manager
         self.path = os.path.normpath(fullpath)
         self.name = os.path.basename(self.path)
         self.parent = parent
@@ -171,7 +177,9 @@ class FTPEntry(object):
             # listage local
             if os.path.exists(self.path):
                 for name in os.listdir(self.path):
-                    entry = self.__class__(self.client, fullpath=os.path.join(self.path, name), parent=self)
+                    entry = self.__class__(
+                        self.manager, fullpath=os.path.join(self.path, name),
+                        parent=self)
                     # On met par défaut à False, car on va tester juste après
                     entry._remoteexists = False
                     self._children[entry.name] = entry
@@ -180,7 +188,7 @@ class FTPEntry(object):
             if self._remoteexists in (None, True):
                 lines = []
                 try:
-                    self.client.retrlines('LIST -a %s' % self.path, lines.append)
+                    self.manager.client.retrlines('LIST -a %s' % self.path, lines.append)
                 except FTPError, e:
                     self._remoteexists = False
                 else:
@@ -188,7 +196,7 @@ class FTPEntry(object):
 
                 for line in lines:
                     try:
-                        entry = self.__class__.parse(self.client, self, line)
+                        entry = self.__class__.parse(self.manager, self, line)
                     except ValueError:
                         continue
 
@@ -213,7 +221,8 @@ class FTPEntry(object):
             try:
                 child = self._children[name]
             except KeyError:
-                child = self.__class__(self.client, parent=self, fullpath=os.path.join(self.path, name))
+                child = self.__class__(
+                    self.client, parent=self, fullpath=os.path.join(self.path, name))
                 if len(members):
                     child._type = self.TYPE_DIR
                 self._children[name] = child
@@ -226,6 +235,15 @@ class FTPEntry(object):
             raise ValueError("Impossible de lister le fichier %r" % os.path.join(self.path, path))
         else:
             raise KeyError("Fichier %r inexistant" % os.path.join(self.path, path))
+
+
+    @property
+    def localpath(self):
+        for pattern in self.local_files:
+            if fnmatch.fnmatch(self.path, pattern):
+                return os.path.join(self.manager.local_root, self.path)
+        else:
+            return self.path
 
 
     @classmethod
@@ -262,8 +280,8 @@ class FTPEntry(object):
     @property
     def type_(self):
         if not self._type:
-            if os.path.exists(self.path):
-                if os.path.isdir(self.path):
+            if os.path.exists(self.localpath):
+                if os.path.isdir(self.localpath):
                     self._type = self.TYPE_DIR
                 else:
                     self._type = self.TYPE_FILE
@@ -309,8 +327,8 @@ class FTPEntry(object):
     def outdated(self, reverse=False):
         """Teste si la version en ligne est obsolète. L'inverse si reverse est à True"""
 
-        if not self._localsize and os.path.exists(self.path):
-            self._localsize = os.stat(self.path).st_size
+        if not self._localsize and os.path.exists(self.localpath):
+            self._localsize = os.stat(self.localpath).st_size
 
         # Pour les fichiers de plus de 32k, on test la taille plutôt
         # que la date.
@@ -325,22 +343,23 @@ class FTPEntry(object):
                 return False
 
         if not self._localmtime:
-            if not os.path.exists(self.path):
+            if not os.path.exists(self.localpath):
                 return reverse
 
             try:
-                subprocess.check_output([
-                    'git', 'ls-files', '--error-unmatch', self.path],
-                                        stderr=subprocess.PIPE)
-                hasdiff = subprocess.call([
-                    'git', 'diff', '--exit-code', '--quiet', 'HEAD', self.path],
-                                stderr=subprocess.PIPE)
+                subprocess.check_output(
+                    ['git', 'ls-files', '--error-unmatch', self.localpath],
+                    stderr=subprocess.PIPE)
+                hasdiff = subprocess.call(
+                    ['git', 'diff', '--exit-code', '--quiet', 'HEAD', self.localpath],
+                    stderr=subprocess.PIPE)
                 assert not hasdiff
             except Exception, e:
-                timestamp = os.stat(self.path).st_mtime
+                timestamp = os.stat(self.localpath).st_mtime
             else:
-                timestamp = int(subprocess.check_output([
-                    'git', 'log', '--max-count=1', '--format=format:%at', self.path]))
+                timestamp = int(subprocess.check_output(
+                    ['git', 'log', '--max-count=1', '--format=format:%at',
+                     self.localpath]))
 
             self._localmtime = datetime.fromtimestamp(timestamp)
 
@@ -368,13 +387,13 @@ class FTPEntry(object):
                 for op in child.remove():
                     yield op
 
-            yield RMD(self.path)
+            yield RMD(self)
         else:
-            yield DELE(self.path)
+            yield DELE(self)
 
 
     def localremove(self):
-        if not os.path.exists(self.path):
+        if not os.path.exists(self.localpath):
             return
 
         if self.isdir():
@@ -382,9 +401,9 @@ class FTPEntry(object):
                 for op in child.localremove():
                     yield op
 
-            os.rmdir(self.path)
+            os.rmdir(self.localpath)
         else:
-            os.remove(self.path)
+            os.remove(self.localpath)
 
 
     def mkdir(self):
@@ -393,14 +412,14 @@ class FTPEntry(object):
                 yield op
 
         if not self.remoteexists:
-            yield MKD(self.path)
-            yield CHMOD(0755, self.path)
+            yield MKD(self)
+            yield CHMOD(0755, self)
 
 
     def download(self, clean=False):
         if self.isdir():
             try:
-                os.makedirs(self.path, mode=0755)
+                os.makedirs(os.path.join(self.localpath), mode=0750)
             except OSError, e:
                 pass
 
@@ -415,7 +434,7 @@ class FTPEntry(object):
                         yield op
         else:
             if self.outdated(reverse=True):
-                yield RETR(self.path)
+                yield RETR(self)
 
 
     def upload(self, force=False, clean=False):
@@ -430,19 +449,19 @@ class FTPEntry(object):
                 for op in child.upload(force=force, clean=clean):
                     yield op
         else:
-            if clean and not os.path.exists(self.path):
+            if clean and not os.path.exists(self.localpath):
                 for op in self.remove():
                     yield op
             elif force or not self.remoteexists or self.outdated():
                 if self.parent:
                     for op in self.parent.mkdir():
                         yield op
-                yield STOR(self.path)
-                yield CHMOD(0644, self.path)
+                yield STOR(self)
+                yield CHMOD(0644, self)
 
 
     def chmod(self, mode):
-        yield CHMOD(mode, self.path)
+        yield CHMOD(mode, self)
 
 
 class FTPLogger(object):
@@ -508,9 +527,9 @@ class FTPQueue(OrderedDict):
 class FTPManager(object):
     log = logging.getLogger('strass.ftp')
 
-
-    def __init__(self):
+    def __init__(self, local_root='.'):
         self.operations = FTPQueue()
+        self.local_root = local_root
 
 
     def connect(self, config):
@@ -527,7 +546,7 @@ class FTPManager(object):
             self.log.debug(line)
 
         self.client = client
-        self.tree = FTPEntry(client=self.client, parent=None, fullpath='.')
+        self.tree = FTPEntry(manager=self, parent=None, fullpath='.')
 
 
     def __del__(self):
@@ -700,9 +719,11 @@ class setmaint(object):
 
 
     def __call__(self, args, config):
-        ftp = FTPManager()
+        ftp = FTPManager(local_root=args.root)
         ftp.connect(config)
-        ftp.upload('maintenance.html', 'include/Strass.php', 'index.php')
+        ftp.upload('maintenance.html')
+        if not config.get('remote', 'saas'):
+            ftp.upload('include/Strass.php', 'index.php')
         ftp.run()
 
 
