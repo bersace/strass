@@ -61,10 +61,10 @@ class Strass {
 
   static function main()
   {
+    self::bootstrap();
+
     if (self::onMaintenance())
       return self::showMaintenance();
-
-    self::bootstrap();
 
     if (!self::isInstalled())
       return Strass_Installer::main();

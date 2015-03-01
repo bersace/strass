@@ -79,8 +79,9 @@ class Wtk_Document_Style {
 		      $css.= '.css';
 		      if (!file_exists($this->basedir . $css))
 			continue;
-		      $base = $comp == 'inline' ? $this->basedir : $this->baseurl;
-		      $files[] = array('file' => $base . $css,
+
+		      $files[] = array('file' => $this->basedir . $css,
+				       'url' => $this->baseurl . $css,
 				       'medium' => $medium);
 		    }
 		  }
