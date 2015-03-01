@@ -9,7 +9,6 @@ SCSS=$(shell find $(STYLE_DIRS) -name "*.scss")
 CSS=$(patsubst %.scss,%.css,$(SCSS))
 SUFSQL=include/Strass/Installer/sql/dump-suf.sql
 FSESQL=include/Strass/Installer/sql/dump-fse.sql
-REMOTECONF=$(STRASS_ROOT)/strass-remote.conf
 
 .PHONY: all
 all: $(CSS) $(SUFSQL) $(FSESQL)
@@ -86,11 +85,7 @@ test:
 	make $(TESTDB)
 	STRASS_ROOT=$(shell realpath $(TESTROOT)) phpunit --bootstrap tests/bootstrap.php $(shell realpath tests)
 
-ifdef PROD
-REMOTE=maint/scripts/remote --verbose --config $(REMOTECONF) --production
-else
-REMOTE=maint/scripts/remote --verbose --config $(REMOTECONF)
-endif
+REMOTE=maint/scripts/remote --verbose
 
 .PHONY: config
 config:

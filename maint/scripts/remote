@@ -30,10 +30,7 @@ class Script(object):
         '-q', '--quiet',
         action='store_const', dest='loglevel', const=logging.CRITICAL)
     parser.add_argument(
-        '-c', '--config', default=os.environ.get('STRASS_ROOT', 'data/') + '/strass-remote.conf', metavar='FILE')
-    parser.add_argument(
-        '-p', '--production', help=u'Envoi sur le site en production',
-        action='store_true', dest='production')
+        '-c', '--config', default='strass.conf', metavar='FILE')
 
     subparsers = parser.add_subparsers(metavar='ACTION', help=u'Opération avec le site distant')
 
@@ -516,8 +513,8 @@ class FTPManager(object):
         self.operations = FTPQueue()
 
 
-    def connect(self, config, production):
-        section = 'production' if production else 'test'
+    def connect(self, config):
+        section = 'remote'
         self.config = config
         client = FTPLogger(FTP())
         hostname = self.config.get(section, 'hostname')
@@ -525,8 +522,9 @@ class FTPManager(object):
         client.login(self.config.get(section, 'username'),
                        self.config.get(section, 'password'))
         client.cwd(self.config.get(section, 'root'))
-        self.log.debug(u"Connecté au server de %s : %s", section, hostname)
-        self.log.debug(client.getwelcome())
+        self.log.debug(u"Connecté au serveur: %s", hostname)
+        for line in client.getwelcome().splitlines():
+            self.log.debug(line)
 
         self.client = client
         self.tree = FTPEntry(client=self.client, parent=None, fullpath='.')
@@ -538,6 +536,10 @@ class FTPManager(object):
 
         self.client.quit()
         self.client.close()
+
+
+    def exists(self, path):
+        return self.tree[path].remoteexists
 
 
     def upload(self, *pathes):
@@ -638,9 +640,6 @@ class config(object):
 
     def prompt_config(self, config, section):
         while 1:
-            print
-            print "  Serveur de %s :" % (section,)
-            print
             try:
                 config.add_section(section)
             except Exception, e:
@@ -651,11 +650,19 @@ class config(object):
             self.prompt_config_string(config, section, 'root', "Dossier")
 
             try:
-                FTPManager().connect(config, production=section == 'production')
+                ftp = FTPManager()
+                ftp.connect(config)
+                is_saas = not ftp.exists('index.php') and ftp.exists('private/INSTALLED')
+                config.set(section, 'saas', is_saas)
                 break
             except Exception, e:
                 self.log.error("Configuration incorrecte ?")
                 self.log.error("%s", e)
+
+        if is_saas:
+            self.log.debug("Hébergement SaaS détecté")
+        else:
+            self.log.debug("Hébergement dédié détecté")
 
 
     def __call__(self, args, config):
@@ -665,26 +672,17 @@ Pour vous assister dans la maintenance de votre site, Strass a besoin
 de connaître votre accès FTP.
 
 """
+        section = 'remote'
         try:
-            self.prompt_config(config, 'test')
-        except EOFError:
-                return 1
-
-        # Par défaut, on recopie les valeurs de test dans la prod
-        try:
-            config.add_section('production')
+            config.add_section(section)
+            config.set(section, root, 'htdocs/')
         except Exception, e:
             pass
 
-        for k in 'hostname', 'username', 'password', 'root':
-            if config.has_option('production', k):
-                continue
-            config.set('production', k, config.get('test', k))
-
         try:
-            self.prompt_config(config, 'production')
+            self.prompt_config(config, section)
         except EOFError:
-                return 1
+            return 1
 
         config.write(open(args.config, 'w'))
         os.chmod(args.config, 0600)
@@ -703,7 +701,7 @@ class setmaint(object):
 
     def __call__(self, args, config):
         ftp = FTPManager()
-        ftp.connect(config, args.production)
+        ftp.connect(config)
         ftp.upload('maintenance.html', 'include/Strass.php', 'index.php')
         ftp.run()
 
@@ -720,7 +718,7 @@ class unsetmaint(object):
 
     def __call__(self, args, config):
         ftp = FTPManager()
-        ftp.connect(config, args.production)
+        ftp.connect(config)
         ftp.remove('maintenance.html')
         ftp.run()
 
@@ -736,11 +734,9 @@ class backup(object):
 
     def __call__(self, args, config):
         ftp = FTPManager()
-        ftp.connect(config, args.production)
+        ftp.connect(config)
         self.log.info("Préparation de la sauvegarde")
-        ftp.backup('private/',
-                   # tout data sauf scripts, install et styles
-                   'data/avatars/', 'data/documents/', 'data/journaux/', 'data/photos/', 'data/unites/')
+        ftp.backup('private/', 'data/')
         self.log.info("Démarrage de la sauvegarde")
         ftp.run()
 
@@ -757,7 +753,7 @@ class upgrade(object):
 
     def __call__(self, args, config):
         ftp = FTPManager()
-        ftp.connect(config, args.production)
+        ftp.connect(config)
         self.log.info("Préparation de la mise à jour")
         ftp.mirror('.htaccess', 'index.php', '500.html',
                    'include/Strass/', 'include/Wtk/', 'include/templates/', 'static/',
@@ -781,7 +777,7 @@ class mirror(object):
 
     def __call__(self, args, config):
         ftp = FTPManager()
-        ftp.connect(config, args.production)
+        ftp.connect(config)
         self.log.info("Préparation de la mise à jour")
         ftp.mirror('.htaccess', 'index.php', '500.html')
         ftp.chmod(0700, 'data/private/', 'include/')
