@@ -47,9 +47,6 @@ class Script(object):
             if os.path.exists(args.config):
                 with open(args.config) as f:
                     config.readfp(f, args.config)
-
-            args.saas = config.get('remote', 'saas')
-            return args.action(args, config)
         except Exception, e:
             log.exception(e)
             log.debug("%r", e)
@@ -57,6 +54,12 @@ class Script(object):
             if args.debug:
                 import pdb; pdb.post_mortem()
             return 1
+        try:
+            args.saas = config.get('remote', 'saas')
+        except Exception, e:
+            args.saas = None
+
+        return args.action(args, config)
 
 
 def command(cls):
@@ -113,7 +116,7 @@ class STOR(FTPOperation):
 
 class RETR(FTPOperation):
     def __call__(self, client):
-        f = open(self.path, 'wb')
+        f = open(self.localpath, 'wb')
         client.retrbinary('RETR %s' % self.path, f.write)
 
 
@@ -140,10 +143,10 @@ class CHMOD(FTPOperation):
 class FTPEntry(object):
     log = logging.getLogger('strass.ftp')
     exclude = [
-        '.gitignore', '*~', 'zend_cache*', '*.xcf', '*.scss', 'README',
+        '.*', '*~', 'zend_cache*', '*.xcf', '*.scss', 'README',
         'LICENSE', 'local', 'strass*.conf',
     ]
-    local_files = ['data', 'private', '*.html', 'google*']
+    local_files = ['data*', 'private*', '*.html', 'google*']
 
     TYPE_UNKNOWN = FileType('Inconnu')
     TYPE_FILE = FileType('Fichier')
@@ -162,6 +165,8 @@ class FTPEntry(object):
         self._remotemtime = None
         self._remotesize = None
         self._remoteexists = None
+        self._localpath = None
+        self.git = ['git', '-C', self.manager.local_root]
 
 
     def __repr__(self):
@@ -222,7 +227,7 @@ class FTPEntry(object):
                 child = self._children[name]
             except KeyError:
                 child = self.__class__(
-                    self.client, parent=self, fullpath=os.path.join(self.path, name))
+                    self.manager, parent=self, fullpath=os.path.join(self.path, name))
                 if len(members):
                     child._type = self.TYPE_DIR
                 self._children[name] = child
@@ -239,11 +244,14 @@ class FTPEntry(object):
 
     @property
     def localpath(self):
-        for pattern in self.local_files:
-            if fnmatch.fnmatch(self.path, pattern):
-                return os.path.join(self.manager.local_root, self.path)
-        else:
-            return self.path
+        if not self._localpath:
+            for pattern in self.local_files:
+                if fnmatch.fnmatch(self.path, pattern):
+                    self._localpath = os.path.join(self.manager.local_root, self.path)
+                    break
+            else:
+                self._localpath = self.path
+        return self._localpath
 
 
     @classmethod
@@ -288,7 +296,7 @@ class FTPEntry(object):
             else:
                 lines = []
                 try:
-                    self.client.retrlines('LIST -a %s' % self.path, lines.append)
+                    self.manager.client.retrlines('LIST -a %s' % self.path, lines.append)
                 except FTPError, e:
                     lines = []
 
@@ -310,7 +318,7 @@ class FTPEntry(object):
         if self._remoteexists is None:
             if self.type_ is self.TYPE_FILE:
                 lines = []
-                self.client.retrlines('LIST -a %s' % self.path, lines.append)
+                self.manager.client.retrlines('LIST -a %s' % self.path, lines.append)
                 self._remoteexists = len(lines) > 0
             elif self.type_ is self.TYPE_DIR:
                 # On pourrait faire un CWD, mais ça ferait une
@@ -348,10 +356,10 @@ class FTPEntry(object):
 
             try:
                 subprocess.check_output(
-                    ['git', 'ls-files', '--error-unmatch', self.localpath],
+                    self.git + ['ls-files', '--error-unmatch', self.localpath],
                     stderr=subprocess.PIPE)
                 hasdiff = subprocess.call(
-                    ['git', 'diff', '--exit-code', '--quiet', 'HEAD', self.localpath],
+                    self.git + ['diff', '--exit-code', '--quiet', 'HEAD', self.localpath],
                     stderr=subprocess.PIPE)
                 assert not hasdiff
             except Exception, e:
@@ -367,7 +375,7 @@ class FTPEntry(object):
             if not self.remoteexists:
                 return not reverse
 
-            ret = self.client.sendcmd('MDTM %s' % self.path)
+            ret = self.manager.client.sendcmd('MDTM %s' % self.path)
             code, data = ret.split(None, 1)
             assert int(code) == 213, ret
             self._remotemtime = datetime.strptime(data, '%Y%m%d%H%M%S')
@@ -419,7 +427,7 @@ class FTPEntry(object):
     def download(self, clean=False):
         if self.isdir():
             try:
-                os.makedirs(os.path.join(self.localpath), mode=0750)
+                os.makedirs(self.localpath, mode=0750)
             except OSError, e:
                 pass
 
@@ -618,9 +626,25 @@ class config(object):
     """Assistant de configuration des outils de mise en prod"""
     log = logging.getLogger('strass.config')
 
+    class Required(Exception):
+        pass
 
     def __init__(self, parser):
         pass
+
+    def _prompt(self, config, section, name, label, default, prompt, prompter):
+        while True:
+            value = prompter(prompt)
+            if value:
+                break
+            elif default:
+                value = default
+                break
+            else:
+                self.log.warn("Information requise !")
+
+        config.set(section, name, value)
+        return value
 
 
     def prompt_config_string(self, config, section, name, label):
@@ -630,14 +654,7 @@ class config(object):
         except Exception, e:
             default = None
             prompt = "%s : " % (label,)
-        value = raw_input(prompt)
-        if not value:
-            if not default:
-                raise Exception("Valeur requise")
-            value = default
-
-        config.set(section, name, value)
-        return value
+        return self._prompt(config, section, name, label, default, prompt, raw_input)
 
 
     def prompt_config_password(self, config, section, name, label):
@@ -647,14 +664,7 @@ class config(object):
         except Exception, e:
             default = None
             prompt = "%s : " % (label,)
-        value = getpass(prompt)
-        if not value:
-            if not default:
-                raise Exception("Valeur requise")
-            value = default
-
-        config.set(section, name, value)
-        return value
+        return self._prompt(config, section, name, label, default, prompt, getpass)
 
 
     def prompt_config(self, config, section):
@@ -694,7 +704,7 @@ de connaître votre accès FTP.
         section = 'remote'
         try:
             config.add_section(section)
-            config.set(section, root, 'htdocs/')
+            config.set(section, 'root', 'htdocs/')
         except Exception, e:
             pass
 
@@ -738,7 +748,7 @@ class unsetmaint(object):
 
 
     def __call__(self, args, config):
-        ftp = FTPManager()
+        ftp = FTPManager(local_root=args.root)
         ftp.connect(config)
         ftp.remove('maintenance.html')
         ftp.run()
@@ -754,7 +764,7 @@ class backup(object):
 
 
     def __call__(self, args, config):
-        ftp = FTPManager()
+        ftp = FTPManager(local_root=args.root)
         ftp.connect(config)
         self.log.info("Préparation de la sauvegarde")
         ftp.backup('private/', 'data/')
@@ -773,7 +783,7 @@ class upgrade(object):
 
 
     def __call__(self, args, config):
-        ftp = FTPManager()
+        ftp = FTPManager(local_root=args.root)
         ftp.connect(config)
         self.log.info("Préparation de la mise à jour")
         ftp.mirror('.htaccess', 'index.php', '500.html',
@@ -797,7 +807,7 @@ class mirror(object):
 
 
     def __call__(self, args, config):
-        ftp = FTPManager()
+        ftp = FTPManager(local_root=args.root)
         ftp.connect(config)
         self.log.info("Préparation de la mise à jour")
         ftp.mirror('.htaccess', 'index.php', '500.html')

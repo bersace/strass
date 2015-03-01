@@ -10,6 +10,7 @@ CSS=$(patsubst %.scss,%.css,$(SCSS))
 SUFSQL=include/Strass/Installer/sql/dump-suf.sql
 FSESQL=include/Strass/Installer/sql/dump-fse.sql
 GIT=git -C $(STRASS_ROOT)
+COMMIT=$(GIT) diff --staged --exit-code --quiet || $(GIT) commit --quiet --message
 
 .PHONY: all
 all: $(CSS) $(SUFSQL) $(FSESQL)
@@ -90,9 +91,10 @@ REMOTE=maint/scripts/remote --verbose --config $(STRASS_ROOT)strass.conf
 config:
 	test -d $(STRASS_ROOT) || mkdir -p $(STRASS_ROOT)
 	test -d $(STRASS_ROOT).git || $(GIT) init .
+	$(GIT) rev-parse --quiet --verify HEAD || $(GIT) commit --quiet --allow-empty --message INIT
 	$(REMOTE) config
 	$(GIT) add strass.conf
-	$(GIT) commit -m "CONFIG"
+	$(COMMIT) CONFIG
 
 .PHONY: setmaint
 setmaint: $(STRASS_ROOT)maintenance.html
@@ -106,14 +108,14 @@ unsetmaint:
 backup:
 	$(MAKE) setmaint
 	$(REMOTE) $@
-	git add $(STRASS_ROOT);
-	git diff --staged --exit-code --quiet || git commit -m BACKUP
+	$(GIT) add .
+	$(COMMIT) BACKUP
 
 .PHONY: migrate
 migrate: all
 	maint/scripts/migrate;
-	git add --ignore-errors --all -- $(STRASS_ROOT) data/ private/;
-	git commit -m MIGRATION
+	$(GIT) add --ignore-errors --all -- $(STRASS_ROOT) data/ private/;
+	$(COMMIT) MIGRATION
 
 .PHONY: upgrade
 upgrade: $(STRASS_ROOT)500.html
