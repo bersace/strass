@@ -30,24 +30,17 @@ maintenance.html: maint/scripts/maintenance $(CSS)
 
 .INTERMEDIATE: 500.html
 
-$(SUFDUMP): $(SUFDB)
-	sqlite3 $< .dump > $@
+include/Strass/Installer/sql/dump-%.sql: include/Strass/Installer/sql/schema.sql include/Strass/Installer/sql/%.sql
+	$(MAKE) installer-$*.db
+	sqlite3 installer-$*.db .dump > $@
+	rm -f installer-$*.db
 
-$(SUFSQL).db: include/Strass/Installer/sql/schema.sql include/Strass/Installer/sql/suf.sql
-	for f in $^ ; do sqlite3 -batch $@.db ".read $$f"; done
-$(SUFSQL): $(SUFSQL).db
-	sqlite3 $< .dump > $@
-.INTERMEDIATE: $(SUFSQL).db
-
-$(FSESQL).db: include/Strass/Installer/sql/schema.sql include/Strass/Installer/sql/fse.sql
-	for f in $^ ; do sqlite3 -batch $@.db ".read $$f"; done
-$(FSESQL): $(FSESQL).db
-	sqlite3 $< .dump > $@
-.INTERMEDIATE: $(FSESQL).db
+installer-%.db: include/Strass/Installer/sql/schema.sql include/Strass/Installer/sql/%.sql
+	for f in $^ ; do sqlite3 -batch $@ ".read $$f"; done
 
 clean:
 	rm -vf $(CSS)
-	rm -vf $(SUFSQL) $(SUFSQL).db $(FSESQL) $(FSESQL).db
+	rm -vf $(SUFSQL) $(FSESQL)
 	rm -vf maintenance.html 500.html
 	rm -vf $(STRASS_ROOT)private/cache/*
 
