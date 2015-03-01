@@ -172,7 +172,7 @@ class Strass {
   {
     $config = Zend_Registry::get('config');
     $t = new Unites;
-    if ($config->metas->title)
+    if (@$config->metas->title)
       return $config->metas->title;
     else {
       try {
