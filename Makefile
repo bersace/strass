@@ -9,6 +9,7 @@ SCSS=$(shell find $(STYLE_DIRS) -name "*.scss")
 CSS=$(patsubst %.scss,%.css,$(SCSS))
 SUFSQL=include/Strass/Installer/sql/dump-suf.sql
 FSESQL=include/Strass/Installer/sql/dump-fse.sql
+GIT=git -C $(STRASS_ROOT)
 
 .PHONY: all
 all: $(CSS) $(SUFSQL) $(FSESQL)
@@ -83,11 +84,15 @@ test:
 	make $(TESTDB)
 	STRASS_ROOT=$(shell realpath $(TESTROOT)) phpunit --bootstrap tests/bootstrap.php $(shell realpath tests)
 
-REMOTE=maint/scripts/remote --verbose
+REMOTE=maint/scripts/remote --verbose --config $(STRASS_ROOT)strass.conf
 
 .PHONY: config
 config:
+	test -d $(STRASS_ROOT) || mkdir -p $(STRASS_ROOT)
+	test -d $(STRASS_ROOT).git || $(GIT) init .
 	$(REMOTE) config
+	$(GIT) add strass.conf
+	$(GIT) commit -m "CONFIG"
 
 .PHONY: setmaint
 setmaint: $(STRASS_ROOT)maintenance.html
