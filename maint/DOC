@@ -2,64 +2,58 @@ Voici les commandes de base d'administration d'un strass :
 
 setup :
 
-	Installe les paquets debian et les dépendances pour faire
-	tourner le site en mode développement et maintenir le site en
-	production.
+	Installe les paquets debian et les dépendances pour faire tourner le
+	site en mode développement et maintenir le site en ligne.
 
 
 config :
 
-	Lance un assistant de configuration de l'outils de mise en
-	production.
+	Lance un assistant de configuration de l'outils de mise en ligne.
 
 
 serve :
 
-	Lance un serveur PHP de test pour initialiser le site
-	localement, faire des tests, etc.
+	Lance un serveur PHP de test pour initialiser le site localement, faire
+	des tests, etc.
 
 
 restore :
 
-	Réinitialise les données et la configuration, mais pas le
-	code, à la dernière versions sauvegardées dans git. C'est
-	utile lorsque vous modifier votre site localement avec des
-	données bidons et que vous voulez vous en débarrasser.
+	Réinitialise les données et la configuration, mais pas le code, à la
+	dernière versions sauvegardées dans git. C'est utile lorsque vous
+	modifier votre site localement avec des données bidons et que vous
+	voulez vous en débarrasser.
 
 
 backup :
 
-	Télécharge le site en production et le sauvegarde dans le
-	git. Les données et la configuration sont sauvegardés. Le code
-	n'est pas touché.
+	Télécharge le site en ligne et le sauvegarde dans le git. Les
+	données et la configuration sont sauvegardés. Le code n'est pas touché.
 
 
 migrate :
 
-	Migre les données vers la dernière version, et sauvegarde le
-	résultat dans git. Les modifications sont locale
-	uniquement. Tester le résultat avec la commande serve. Une
-	fois la migration valider, utiliser la commande upgrade pour
-	mettre à jour le site en production.
+	Migre les données vers la dernière version, et sauvegarde le résultat
+	dans git. Les modifications sont locales uniquement. Tester le résultat
+	avec la commande serve. Une fois la migration validée, utiliser la
+	commande upload pour mettre à jour le site en ligne.
 
 
-mirror :
+upload :
 
-	Met à jour le site distant à partir de la copie
-	locale. Attention, les données distantes qui n'ont pas été
-	sauvegardées sont perdues !
+	Met à jour le site en ligne à partir de la copie locale. Attention, les
+	données distantes qui n'ont pas été sauvegardées sont perdues !
 
 
 upgrade :
 
-	Met à jour le code d'un site distant à partir de la copie
+	Met à jour le code et les styles du site en ligne à partir de la copie
 	locale.
 
 
 setmaint, unsetmaint :
 
 	Met le site distant en mode maintenance / production. Le mode
-	maintenance empêche tout les accès au site et donc toute
-	modification des données. Les commandes backup et upgrade
-	mette automatiquement le site distant en mode maintenance
-	pendante l'opération.
+	maintenance empêche tout les accès au site et donc toute modification
+	des données. Les commandes backup et upgrade mette automatiquement le
+	site distant en mode maintenance pendante l'opération.

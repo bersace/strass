@@ -91,6 +91,8 @@ REMOTE=maint/scripts/remote --verbose --config $(STRASS_ROOT)strass.conf
 config:
 	test -d $(STRASS_ROOT) || mkdir -p $(STRASS_ROOT)
 	test -d $(STRASS_ROOT).git || $(GIT) init .
+	test -f $(STRASS_ROOT).gitignore || echo 'maintenance.html' > $(STRASS_ROOT).gitignore
+	$(GIT) add .gitignore
 	$(GIT) rev-parse --quiet --verify HEAD || $(GIT) commit --quiet --allow-empty --message INIT
 	$(REMOTE) config
 	$(GIT) add strass.conf
@@ -117,20 +119,18 @@ migrate: all
 	$(GIT) add --ignore-errors --all -- $(STRASS_ROOT) data/ private/;
 	$(COMMIT) MIGRATION
 
-.PHONY: upgrade
+.PHONY: upload
+upload: $(STRASS_ROOT)500.html
+	$(GIT) add .
+	$(COMMIT) UPLOAD
+	$(MAKE) setmaint
+	$(REMOTE) $@
+	$(MAKE) unsetmaint
+
+.PHONY: upload
 upgrade: $(STRASS_ROOT)500.html
+	$(GIT) add .
+	$(COMMIT) UPGRADE
 	$(MAKE) setmaint
-	$(REMOTE) $@
-	$(MAKE) unsetmaint
-
-.PHONY: mirror
-mirror: $(STRASS_ROOT)500.html
-	$(MAKE) setmaint
-	$(REMOTE) $@
-	$(MAKE) unsetmaint
-
-.PHONY: partialmirror
-partialmirror: $(STRASS_ROOT)500.html
-	$(MAKE) setmaint
-	$(REMOTE) mirror --partial
+	$(REMOTE) upload --partial
 	$(MAKE) unsetmaint

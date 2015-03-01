@@ -773,29 +773,8 @@ class backup(object):
 
 
 @command
-class upgrade(object):
-    """Met à jour le code d'un site strass v2 depuis le dossier courant."""
-    log = logging.getLogger('strass.upgrade')
-
-
-    def __init__(self, parser):
-        pass
-
-
-    def __call__(self, args, config):
-        ftp = FTPManager(local_root=args.root)
-        ftp.connect(config)
-        self.log.info("Préparation de la mise à jour")
-        ftp.mirror('.htaccess', 'index.php', '500.html',
-                   'include/Strass/', 'include/Wtk/', 'include/templates/', 'static/',
-                   'data/styles/')
-        self.log.info("Démarrage de la mise à jour")
-        ftp.run()
-
-
-@command
-class mirror(object):
-    """Envoie une mise-à-jour complète du site."""
+class upload(object):
+    """Téléverse vers le site distant"""
     log = logging.getLogger('strass.mirror')
 
 
@@ -803,22 +782,27 @@ class mirror(object):
         parser.add_argument(
             '-p', '--partial',
             action='store_true', dest='partial',
-            help="Ne pas Envoyer les photos, les dépendances, etc.")
+            help="N'envoyer que le style et le code de strass, ne pas écraser les données.")
 
 
     def __call__(self, args, config):
         ftp = FTPManager(local_root=args.root)
         ftp.connect(config)
         self.log.info("Préparation de la mise à jour")
-        ftp.mirror('.htaccess', 'index.php', '500.html')
-        ftp.chmod(0700, 'data/private/', 'include/')
+        ftp.mirror('.htaccess.php', '500.html')
+        ftp.chmod(0700, 'private/')
+        if not args.saas:
+            ftp.chmod(0700, 'include/')
+
         if args.partial:
-            ftp.mirror('include/Strass/', 'include/Wtk/', 'include/templates/', 'static/styles/',
-                       'data/styles/', 'data/private/')
+            ftp.mirror('data/styles/')
+            if not args.saas:
+                ftp.mirror('index.php', 'include/Strass/', 'include/Wtk/',
+                           'include/templates/', 'static/styles/')
         else:
-            ftp.mirror('include/', 'data/', 'static/')
+            ftp.mirror('data/', 'private/')
         # nettoyage
-        ftp.remove('resources/', 'config/', 'cache/', 'private/')
+        ftp.remove('resources/', 'config/', 'cache/')
         self.log.info("Démarrage de la mise à jour")
         ftp.run()
 
