@@ -11,8 +11,10 @@ SUFSQL=include/Strass/Installer/sql/dump-suf.sql
 FSESQL=include/Strass/Installer/sql/dump-fse.sql
 REMOTECONF=$(STRASS_ROOT)/strass-remote.conf
 
+.PHONY: all
 all: $(CSS) $(SUFSQL) $(FSESQL)
 
+.PHONY: help
 help:
 	less maint/DOC
 
@@ -38,21 +40,25 @@ include/Strass/Installer/sql/dump-%.sql: include/Strass/Installer/sql/schema.sql
 installer-%.db: include/Strass/Installer/sql/schema.sql include/Strass/Installer/sql/%.sql
 	for f in $^ ; do sqlite3 -batch $@ ".read $$f"; done
 
+.PHONY: clean
 clean:
 	rm -vf $(CSS)
 	rm -vf $(SUFSQL) $(FSESQL)
 	rm -vf maintenance.html 500.html
 	rm -vf $(STRASS_ROOT)private/cache/*
 
+.PHONY: distclean
 distclean:
 	$(MAKE) clean
 	rm -rvf $(STRASS_ROOT)
 
+.PHONY: setup
 setup:
 	aptitude install php5-cli php5-sqlite php-pear php5-gd php5-imagick phpunit \
 	python-pip python-dev sqlite3
 	pip install --upgrade libsass
 
+.PHONY: serve
 serve: all
 	php -S localhost:8000 \
 	-d include_path=$(shell pwd)/include/ \
@@ -61,11 +67,13 @@ serve: all
 	devel.php
 
 # Restaure les données uniquement. Pour tester la migration.
+.PHONY: restore
 restore:
 	git checkout -- $(STRASS_ROOT)
 	git clean --force -d $(STRASS_ROOT)
 
 # Restaure un site en version 1
+.PHONY: restore1
 ifdef ORIG
 # depuis un dossier autre
 restore1: restore
@@ -85,6 +93,7 @@ $(TESTDB): include/Strass/Installer/sql/schema.sql
 	sqlite3 -batch $@ ".read $<"
 .INTERMEDIATE: $(TESTDB)
 
+.PHONY: test
 test:
 	rm -rf $(TESTROOT)/*
 	make $(TESTDB)
@@ -96,46 +105,52 @@ else
 REMOTE=maint/scripts/remote --verbose --config $(REMOTECONF)
 endif
 
+.PHONY: config
 config:
 	$(REMOTE) config
 
+.PHONY: setmaint
 setmaint: maintenance.html
 	$(REMOTE) $@
 
+.PHONY: unsetmaint
 unsetmaint:
 	$(REMOTE) $@
 
+.PHONY: backup1
 backup1:
 	$(MAKE) setmaint
 	$(REMOTE) $@
 	git add data/ resources/ config/;
 	git commit -m BACKUP
 
+.PHONY: backup
 backup:
 	$(MAKE) setmaint
 	$(REMOTE) $@
 	git add $(STRASS_ROOT);
 	git diff --staged --exit-code --quiet || git commit -m BACKUP
 
+.PHONY: migrate
 migrate: all
 	maint/scripts/migrate;
 	git add --ignore-errors --all -- $(STRASS_ROOT) data/ private/;
 	git commit -m MIGRATION
 
+.PHONY: upgrade
 upgrade: 500.html
 	$(MAKE) setmaint
 	$(REMOTE) $@
 	$(MAKE) unsetmaint
 
+.PHONY: mirror
 mirror: 500.html
 	$(MAKE) setmaint
 	$(REMOTE) $@
 	$(MAKE) unsetmaint
 
+.PHONY: partialmirror
 partialmirror: 500.html
 	$(MAKE) setmaint
 	$(REMOTE) mirror --partial
 	$(MAKE) unsetmaint
-
-.PHONY: all doc clean setup serve restore restore1 test
-.PHONY: config setmaint unsetmaint backup1 migrate mirror partialmirror upgrade backup
