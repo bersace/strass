@@ -85,7 +85,7 @@ test:
 	make $(TESTDB)
 	STRASS_ROOT=$(shell realpath $(TESTROOT)) phpunit --bootstrap tests/bootstrap.php $(shell realpath tests)
 
-REMOTE=maint/scripts/remote --verbose --config $(STRASS_ROOT)strass.conf
+REMOTE=maint/scripts/remote --config $(STRASS_ROOT)strass.conf
 
 
 $(STRASS_ROOT).git:
@@ -115,7 +115,7 @@ unsetmaint:
 .PHONY: backup
 backup:
 	$(MAKE) setmaint
-	$(REMOTE) $@
+	$(REMOTE) --verbose $@
 	$(GIT) add .
 	$(COMMIT) BACKUP
 
@@ -130,7 +130,7 @@ upload: $(STRASS_ROOT)500.html
 	$(GIT) add .
 	$(COMMIT) UPLOAD
 	$(MAKE) setmaint
-	$(REMOTE) $@
+	$(REMOTE) --verbose $@
 	$(MAKE) unsetmaint
 
 .PHONY: upload
@@ -138,5 +138,5 @@ upgrade: $(STRASS_ROOT)500.html
 	$(GIT) add .
 	$(COMMIT) UPGRADE
 	$(MAKE) setmaint
-	$(REMOTE) upload --partial
+	$(REMOTE) --verbose upload --partial
 	$(MAKE) unsetmaint

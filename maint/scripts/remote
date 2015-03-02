@@ -1,11 +1,11 @@
-#!/usr/bin/python
+#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
 import sys
 import os.path
-import logging
+import logging.config
 import argparse
-from ftplib import FTP, Error as FTPError
+from ftplib import FTP, Error as FTPError, error_perm
 from ConfigParser import RawConfigParser
 from datetime import datetime
 import fnmatch
@@ -14,7 +14,37 @@ import subprocess
 from collections import OrderedDict
 
 
+class ColorFormatter(logging.Formatter):
+    BLACK, RED, GREEN, YELLOW, BLUE, MAGENTA, CYAN, WHITE = range(8)
+
+    # The background is set with 40 plus the number of the color, and the
+    # foreground with 30
+
+    RESET_SEQ = "\033[0m"
+    COLOR_SEQ = "\033[1;%dm"
+    BOLD_SEQ = "\033[1m"
+
+    COLORS = {
+        'DEBUG': BLACK,
+        'INFO': GREEN,
+        'WARNING': YELLOW,
+        'ERROR': RED,
+        'CRITICAL': RED,
+    }
+
+    def format(self, record):
+        payload = logging.Formatter.format(self, record)
+
+        levelname = record.levelname
+        if levelname in self.COLORS:
+            set_seq = self.COLOR_SEQ % (30 + self.COLORS[levelname])
+            payload = set_seq + payload + self.RESET_SEQ
+
+        return payload
+
+
 log = logging.getLogger('strass')
+
 
 class Script(object):
     parser = argparse.ArgumentParser(
@@ -33,14 +63,20 @@ class Script(object):
         '-c', '--config', default='strass.conf', metavar='FILE')
     parser.add_argument(
         '-r', '--root', metavar='ROOT',
-        default=os.environ.get('STRASS_ROOT'))
+        default=os.environ.get('STRASS_ROOT', 'htdocs'))
 
     subparsers = parser.add_subparsers(metavar='ACTION', help=u'Opération avec le site distant')
 
     def __call__(self):
         args = self.parser.parse_args()
-        format = "%(asctime)s %(levelname)-8s %(name)s: %(message)s" if args.loglevel is logging.DEBUG else "%(levelname)-8s: %(message)s"
-        logging.basicConfig(level=args.loglevel, format=format)
+
+        format_ = "%(asctime)s %(name)s: %(message)s" if args.loglevel is logging.DEBUG else "%(message)s"
+        formatter = ColorFormatter(format_, '%H:%M:%S')
+        handler = logging.StreamHandler(sys.stderr)
+        handler.setFormatter(formatter)
+        logger = logging.getLogger()
+        logger.addHandler(handler)
+        logger.setLevel(args.loglevel)
 
         try:
             config = RawConfigParser()
@@ -59,7 +95,10 @@ class Script(object):
         except Exception, e:
             args.saas = None
 
-        return args.action(args, config)
+        try:
+            return args.action(args, config)
+        except (FTPError, error_perm), e:
+            log.error("%s", e)
 
 
 def command(cls):
@@ -545,9 +584,12 @@ class FTPManager(object):
         self.config = config
         client = FTPLogger(FTP())
         hostname = self.config.get(section, 'hostname')
+        self.log.debug(u"Connexion au serveur...")
         client.connect(hostname)
+        self.log.debug(u"Authentification...")
         client.login(self.config.get(section, 'username'),
                        self.config.get(section, 'password'))
+        self.log.debug(u"Accès au dossier...")
         client.cwd(self.config.get(section, 'root'))
         self.log.debug(u"Connecté au serveur: %s", hostname)
         for line in client.getwelcome().splitlines():
@@ -618,7 +660,7 @@ class FTPManager(object):
                 op(self.client)
             except Exception, e:
                 self.log.warn(u"Échec de l'opération %s: %s", op, e)
-        self.log.info('Transfert terminé')
+        self.log.debug(u'Transfert terminé')
 
 
 @command
@@ -641,7 +683,7 @@ class config(object):
                 value = default
                 break
             else:
-                self.log.warn("Information requise !")
+                self.log.warn(u"Information requise !")
 
         config.set(section, name, value)
         return value
@@ -650,6 +692,7 @@ class config(object):
     def prompt_config_string(self, config, section, name, label):
         try:
             default = config.get(section, name)
+            assert default
             prompt = "%s [%s] : " % (label, default)
         except Exception, e:
             default = None
@@ -660,6 +703,7 @@ class config(object):
     def prompt_config_password(self, config, section, name, label):
         try:
             default = config.get(section, name)
+            assert default
             prompt = "%s [%s] : " % (label, 6 * '*')
         except Exception, e:
             default = None
@@ -735,6 +779,7 @@ class setmaint(object):
         if not config.get('remote', 'saas'):
             ftp.upload('include/Strass.php', 'index.php')
         ftp.run()
+        self.log.info("Site distant en mode maintenance")
 
 
 @command
@@ -752,6 +797,7 @@ class unsetmaint(object):
         ftp.connect(config)
         ftp.remove('maintenance.html')
         ftp.run()
+        self.log.info("Site distant réactivé")
 
 
 @command
@@ -768,8 +814,9 @@ class backup(object):
         ftp.connect(config)
         self.log.info("Préparation de la sauvegarde")
         ftp.backup('private/', 'data/')
-        self.log.info("Démarrage de la sauvegarde")
+        self.log.info(u"Démarrage de la sauvegarde")
         ftp.run()
+        self.log.info(u"Site sauvegardé.")
 
 
 @command
@@ -788,7 +835,7 @@ class upload(object):
     def __call__(self, args, config):
         ftp = FTPManager(local_root=args.root)
         ftp.connect(config)
-        self.log.info("Préparation de la mise à jour")
+        self.log.info(u"Préparation de la mise à jour")
         ftp.mirror('.htaccess.php', '500.html')
         ftp.chmod(0700, 'private/')
         if not args.saas:
@@ -803,9 +850,11 @@ class upload(object):
             ftp.mirror('data/', 'private/')
         # nettoyage
         ftp.remove('resources/', 'config/', 'cache/')
-        self.log.info("Démarrage de la mise à jour")
+        self.log.info(u"Démarrage de la mise à jour")
         ftp.run()
+        self.log.info(u"Site distant mise à jour !")
 
 
-main = Script()
-sys.exit(main())
+if __name__ == '__main__':
+    main = Script()
+    sys.exit(main())
