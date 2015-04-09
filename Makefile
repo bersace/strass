@@ -1,4 +1,5 @@
-export STRASS_ROOT ?= htdocs/
+STRASS_ROOT ?= htdocs/
+export STRASS_ROOT:=$(shell readlink -f $(STRASS_ROOT))/
 
 STYLES_DIRS=static/styles
 ifeq (,$(wildcard $(STRASS_ROOT)data/styles/))
