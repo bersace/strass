@@ -18,7 +18,7 @@ all: $(CSS) $(SUFSQL) $(FSESQL)
 
 .PHONY: help
 help:
-	less maint/DOC
+	pager maint/DOC
 
 %.css: %.scss
 	rm -f $@
