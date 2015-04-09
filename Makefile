@@ -93,7 +93,7 @@ $(STRASS_ROOT).git:
 	$(GIT) init .
 	$(GIT) commit --quiet --allow-empty --message INIT
 
-$(STRASS_ROOT).gitignore: maint/sitegitignore $(STRASS_ROOT).gitignore
+$(STRASS_ROOT).gitignore: maint/sitegitignore $(STRASS_ROOT).git
 	cp $< $@
 	$(GIT) add .gitignore
 	$(COMMIT) SYSTÈME
