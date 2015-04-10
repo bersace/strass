@@ -225,9 +225,8 @@ class Individu extends Strass_Db_Table_Row_Abstract implements Zend_Acl_Resource
 	/* Branche jaune, préférer Akéla, Guillemette pour les inconnus */
 	return $app->getTitre();
       else {
-	/* Prénom et initiales des mineurs pour les visiteurs*/
-	$mineur = $role->findParentTypesUnite()->age_min < 17;
-	return trim(wtk_ucfirst($this->prenom)." ".$this->capitalizedLastname($compact || $mineur));
+	/* Prénom et initiales pour les visiteurs*/
+	return trim(wtk_ucfirst($this->prenom)." ".$this->capitalizedLastname(true));
       }
     }
     else
