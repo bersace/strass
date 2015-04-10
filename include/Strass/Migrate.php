@@ -43,6 +43,7 @@ class Strass_Migrate
     }
     else {
       error_log("Pas de migration vers la version $target.");
+      die();
     }
 
     Strass_Version::save($target);
