@@ -179,6 +179,7 @@ class ActivitesController extends Strass_Controller_Action
 	  /* On ne met à jour que les pièces jointes exclusives */
 	  if (!$row->document) {
 	    /* requérir un titre pour les documents exclusifs */
+	    $if = $row->getChild('fichier');
 	    if (!$row->titre && ($if->isUploaded() || $row->origin)) {
 	      throw new Wtk_Form_Model_Exception("Titre obligatoire",
 						 $row->getChild('titre'));
@@ -186,7 +187,6 @@ class ActivitesController extends Strass_Controller_Action
 	    $d->slug = $d->getTable()->createSlug($row->titre);
 	    $d->titre = $row->titre;
 
-	    $if = $row->getChild('fichier');
 	    if ($if->isUploaded()) {
 	      $d->suffixe = end(explode('.', $row->fichier['name']));
 	      $d->storeFile($if->getTempFilename());
