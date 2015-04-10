@@ -91,7 +91,7 @@ class Script(object):
                 import pdb; pdb.post_mortem()
             return 1
         try:
-            args.saas = config.get('remote', 'saas')
+            args.saas = config.getboolean('remote', 'saas')
         except Exception, e:
             args.saas = None
 
