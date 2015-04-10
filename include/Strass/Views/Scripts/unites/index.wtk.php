@@ -47,7 +47,7 @@ class Strass_Views_Unite_Index_BlocGenerator
 			 $this->view->lien(array('controller' => 'photos',
 						 'action' => null,
 						 'unite' => $unite->slug),
-					   'Les photos', true));
+					   'Les photos des activités', true));
     $ss->addFlags('bloc');
     if ($photos->count()) {
       $l = $ss->addList();
