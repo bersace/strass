@@ -219,8 +219,8 @@ class FTPEntry(object):
         if not self._children:
             self._children = OrderedDict()
             # listage local
-            if os.path.exists(self.path):
-                for name in os.listdir(self.path):
+            if os.path.exists(self.localpath):
+                for name in os.listdir(self.localpath):
                     entry = self.__class__(
                         self.manager, fullpath=os.path.join(self.path, name),
                         parent=self)
