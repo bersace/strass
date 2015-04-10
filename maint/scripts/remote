@@ -400,13 +400,15 @@ class FTPEntry(object):
                 hasdiff = subprocess.call(
                     self.git + ['diff', '--exit-code', '--quiet', 'HEAD', self.localpath],
                     stderr=subprocess.PIPE)
-                assert not hasdiff
+                assert not hasdiff, "Local modification"
+                commit_date = subprocess.check_output(
+                    ['git', 'log', '--max-count=1', '--format=format:%at',
+                     self.localpath])
+                # Valable pours les fichiers générés : 500.html, maintenance.html, etc.
+                assert commit_date, "Not versionned: " + self.localpath
+                timestamp = int(commit_date)
             except Exception, e:
                 timestamp = os.stat(self.localpath).st_mtime
-            else:
-                timestamp = int(subprocess.check_output(
-                    ['git', 'log', '--max-count=1', '--format=format:%at',
-                     self.localpath]))
 
             self._localmtime = datetime.fromtimestamp(timestamp)
 
