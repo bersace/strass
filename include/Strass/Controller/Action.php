@@ -93,11 +93,31 @@ abstract class Strass_Controller_Action extends Zend_Controller_Action implement
 				 'exit' => true));
   }
 
+  function isAllowed($role, $resource, $action) {
+    $acl = Zend_Registry::get('acl');
+    if (is_array($resource) || $resource instanceof Iterator) {
+      $allowed = false;
+      foreach($resource as $res)
+	$allowed = $acl->isAllowed($role, $res, $action) || $allowed;
+    }
+    else
+      $allowed = $acl->isAllowed($role, $resource, $action);
+
+    return $allowed;
+  }
+
+
   /* Si le message est défini, une page d'erreur est définie. Sinon
      retourne un booléen */
   function assert($role = null, $resource = null, $action = null, $message = null)
   {
     $role = $role ? $role : Zend_Registry::get('user');
+
+    $action = $action ? $action : $this->_getParam('action');
+    // Premier controle avant auth
+    if ($this->isAllowed($role, $resource, $action)) {
+      return true;
+    }
 
     if (!$role->isMember() && $message) {
       /* Déclencher l'authentification HTTP Digest */
@@ -109,15 +129,8 @@ abstract class Strass_Controller_Action extends Zend_Controller_Action implement
 	throw new Strass_Controller_Action_Exception_Authentification($message);
       $role = Zend_Registry::get('user');
     }
-    $acl = Zend_Registry::get('acl');
-    $action = $action ? $action : $this->_getParam('action');
-    if (is_array($resource) || $resource instanceof Iterator) {
-      $allowed = false;
-      foreach($resource as $res)
-	$allowed = $acl->isAllowed($role, $res, $action) || $allowed;
-    }
-    else
-      $allowed = $acl->isAllowed($role, $resource, $action);
+
+    $allowed = $this->isAllowed($role, $resource, $action);
 
     if (!$allowed && $message)
       throw new Strass_Controller_Action_Exception_Forbidden($message);
