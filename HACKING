@@ -2,9 +2,8 @@ Pour tester Strass :-)
 
 Sur système debian :
 
-     git clone git://gitorious.org/strass/main.git
+     git clone https://gitlab.com/strass/strass-php.git
      sudo make setup
-     make all
      make serve
 
-Ensuite, suivre l'assistant.
+Ensuite, suivre l'assistant à l'adresse HTTP indiquée.

@@ -16,4 +16,4 @@ $l->addItem($this->page->metas->get('DC.Title'))->addFlags('title');
 $l->addItem($this->page->metas->get('DC.Creator'))->addFlags('author');
 $l->addItem(strftime('%x', strtotime($this->page->metas->get('DC.Date.available'))))->addFlags('date');
 $l->addItem()->addFlags('strass')
-->addLink('http://gitorious.org/strass', 'Propulsé par Strass');
+->addLink('https://gitlab.com/strass', 'Propulsé par Strass');
