@@ -1,15 +1,11 @@
 #!/usr/bin/php
 <?php //  -*- mode: php -*-
 
-umask(0022);
-date_default_timezone_set('Europe/Paris'); // config/knema/site ?
-
 $paths = explode(':', get_include_path());
 array_shift($paths);
 array_unshift($paths,'.', dirname(dirname(dirname(__FILE__))).'/include');
 set_include_path(implode(':',$paths));
 
-require_once 'Zend/Loader.php';
-@Zend_Loader::registerAutoload();
-
+require_once 'Strass.php';
+Strass::bootstrap();
 Strass_Migrate::main();
