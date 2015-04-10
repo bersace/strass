@@ -41,10 +41,12 @@ class Strass {
     date_default_timezone_set('Europe/Paris');
     setlocale(LC_TIME, 'fr', 'fr_FR.utf8', 'fr_FR', 'fr_FR@euro', 'fr-FR', 'fra');
 
-    $root = getenv('STRASS_ROOT') or 'htdocs/';
-    if (!file_exists($root))
-      mkdir($root.'data/', 0770, true);
-    chdir($root);
+    $root = getenv('STRASS_ROOT') or null;
+    if ($root) {
+      if (!file_exists($root))
+	mkdir($root.'data/', 0770, true);
+      chdir($root);
+    }
 
     require_once 'Wtk.php';
     require_once 'Zend/Loader/Autoloader.php';
