@@ -128,16 +128,14 @@ migrate: all
 
 .PHONY: upload
 upload: $(STRASS_ROOT)500.html
-	$(GIT) add .
-	$(COMMIT) UPLOAD
+	$(COMMIT) --allow-empty UPLOAD
 	$(MAKE) setmaint
 	$(REMOTE) --verbose $@
 	$(MAKE) unsetmaint
 
 .PHONY: upload
 upgrade: $(STRASS_ROOT)500.html
-	$(GIT) add .
-	$(COMMIT) UPGRADE
+	$(COMMIT) --allow-empty UPGRADE
 	$(MAKE) setmaint
 	$(REMOTE) --verbose upload --partial
 	$(MAKE) unsetmaint
