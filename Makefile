@@ -116,6 +116,8 @@ unsetmaint:
 .PHONY: backup
 backup:
 	$(MAKE) setmaint
+	$(GIT) reset --hard
+	$(GIT) clean -df
 	$(REMOTE) --verbose $@
 	$(GIT) add .
 	$(COMMIT) BACKUP
