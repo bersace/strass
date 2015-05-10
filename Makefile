@@ -54,8 +54,8 @@ distclean:
 
 .PHONY: setup
 setup:
-	aptitude install php5-cli php5-sqlite php-pear php5-gd php5-imagick phpunit \
-	python-pip python-dev sqlite3
+	apt-get install -y php5-cli php5-sqlite php-pear php5-gd php5-imagick \
+	phpunit python-pip python-dev sqlite3
 	pip install --upgrade libsass
 
 .PHONY: serve
