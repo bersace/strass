@@ -163,9 +163,13 @@ class IndividusController extends Strass_Controller_Action
       }
     }
 
-    $this->actions->append("Administrer",
-                           array('controller'        => 'inscription',
-                                 'action'        => 'administrer'),
+    $this->actions->append("Inscription",
+                           array('controller'        => 'individus',
+                                 'action'        => 'inscrire'),
+                           array(null, $individu, 'inscrire'));
+    $this->actions->append("Paramètres utilisateur",
+                           array('controller'        => 'membres',
+                                 'action'        => 'parametres'),
                            array(null, $individu, 'admin'));
   }
 
