@@ -231,7 +231,12 @@ class IndividusController extends Strass_Controller_Action
 
     $page = $pm->partialValidate();
 
-    if ($pm->pageCmp($page, 'role') >= 0) {
+    if ($pm->pageCmp($page, 'role') == 0 && !$m->get('actuel/inscrire')) {
+        $page = $pm->gotoEnd();
+    }
+
+    /* si on veut inscrire, et qu'on connait l'unité */
+    if ($pm->pageCmp($page, 'role') >= 0 && $m->get('actuel/inscrire')) {
       $g = $m->getInstance('role');
 
       /* Sélections des rôles ou on peut l'inscrire */

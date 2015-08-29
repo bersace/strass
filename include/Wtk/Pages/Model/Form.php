@@ -161,6 +161,7 @@ class Wtk_Pages_Model_Form extends Wtk_Pages_Model
   {
     $this->current = '$$completed$$';
     $this->data->getInstance('$$current$$')->set($this->current);
+    return $this->current;
   }
 
   /* Compare si une page est postérieure à une autre */
