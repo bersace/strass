@@ -834,6 +834,8 @@ class Unite extends Strass_Db_Table_Row_Abstract implements Zend_Acl_Resource_In
       foreach($is as $individu) {
 	/* pour le dernier chef en cours, inclure l'année courante *incluse* */
 	$fin = $individu->fin ? $individu->fin : $cette_annee + 1;
+    /* Si le futur chef est déjà inscrit, afficher l'année suivante */
+	$fin = max($fin, $individu->debut + 1);
 	for($annee = $individu->debut; $annee < $fin; $annee++) {
 	  /* on a pas de chef */
 	  if (!array_key_exists($annee, $annees))
