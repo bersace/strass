@@ -12,6 +12,7 @@ try {
   $g->addEntry('prenom', 24);
   $g->addEntry('nom', 24);
   $g->addDate('naissance', '%e/%m/%Y');
+  $g->addSelect('sexe');
 } catch(Exception $e){}
 
 $g->addFile('image');

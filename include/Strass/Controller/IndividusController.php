@@ -74,6 +74,7 @@ class IndividusController extends Strass_Controller_Action
       $m->addConstraintRequired($m->addString('prenom', 'Prénom', $individu->prenom));
       $m->addConstraintRequired($m->addString('nom', 'Nom', $individu->nom));
       $m->addDate('naissance', 'Date de naissance', $individu->naissance);
+      $m->addEnum('sexe', 'Sexe', $individu->sexe, array('h' => 'Masculin', 'f' => 'Féminin'));
     }
 
     $m->addFile('image', 'Photo');
@@ -103,7 +104,7 @@ class IndividusController extends Strass_Controller_Action
       $db->beginTransaction();
       try {
         // contacts
-          $champs = array('nom', 'prenom', 'naissance', 'portable',
+          $champs = array('nom', 'prenom', 'naissance', 'portable', 'sexe',
                         'fixe', 'adresse', 'notes', 'etape');
         try {
           $m->getInstance('adelec');
