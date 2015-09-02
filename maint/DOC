@@ -17,6 +17,11 @@ serve :
 	des tests, etc.
 
 
+dbshell :
+
+	Lance sqlite3 sur la base du site.
+
+
 restore :
 
 	Réinitialise les données et la configuration, mais pas le code, à la

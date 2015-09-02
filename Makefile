@@ -72,6 +72,10 @@ restore:
 	git checkout -- $(STRASS_ROOT)
 	git clean --force -d $(STRASS_ROOT)
 
+.PHONY: dbshell
+dbshell:
+	sqlite3 $(STRASS_ROOT)/private/strass.sqlite
+
 TESTROOT=tests/root/
 TESTDB=$(TESTROOT)/private/strass.sqlite
 $(TESTDB): include/Strass/Installer/sql/schema.sql
