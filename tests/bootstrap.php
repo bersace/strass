@@ -1,5 +1,6 @@
 <?php
 
+$_ENV['STRASS_UNIT_TEST'] = 1;
 putenv('STRASS_UNIT_TEST=1');
 
 $paths = explode(':', get_include_path());
