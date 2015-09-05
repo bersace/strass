@@ -2,6 +2,10 @@
  Le local scout virtuel
 ========================
 
+.. image:: https://circleci.com/gh/bersace/strass.svg?style=shield
+   :target: https://circleci.com/gh/bersace/strass
+   :alt: Intégration continue
+
 Strass est un projet de moteur de site scout initié en 2007. Il s'adresse aux
 unités scout des associations SUF et FSE, suivant la pédagogie unitaire.
 

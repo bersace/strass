@@ -1,5 +1,7 @@
 STRASS_ROOT ?= htdocs/
 export STRASS_ROOT:=$(shell readlink -f $(STRASS_ROOT))/
+export DEBIAN_FRONTEND=noninteractive
+CIRCLE_TEST_REPORTS ?= .
 
 STYLES_DIRS=static/styles
 ifeq (,$(wildcard $(STRASS_ROOT)data/styles/))
@@ -88,7 +90,10 @@ $(TESTDB): include/Strass/Installer/sql/schema.sql
 test:
 	rm -rf $(TESTROOT)/*
 	make $(TESTDB)
-	STRASS_ROOT=$(shell realpath $(TESTROOT)) phpunit --bootstrap tests/bootstrap.php $(shell realpath tests)
+	STRASS_ROOT=$(shell readlink -f $(TESTROOT)) \
+	phpunit --bootstrap $(shell readlink -e tests/bootstrap.php) \
+		--log-junit $(CIRCLE_TEST_REPORTS)/junit.xml \
+		$(shell readlink -e tests)
 
 REMOTE=maint/scripts/remote --config $(STRASS_ROOT)strass.conf
 
