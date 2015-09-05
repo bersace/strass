@@ -1,5 +1,6 @@
 STRASS_ROOT ?= htdocs/
 export STRASS_ROOT:=$(shell readlink -f $(STRASS_ROOT))/
+export DEBIAN_FRONTEND=noninteractive
 
 STYLES_DIRS=static/styles
 ifeq (,$(wildcard $(STRASS_ROOT)data/styles/))
