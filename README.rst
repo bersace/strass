@@ -19,6 +19,12 @@ Fonctionnalités
 - Album photos par activité ;
 - Blog d'unité ;
 - Citations, livre d'or, page de liens, archives, etc. ;
+- Assistant d'installation.
+
+.. image:: docs/strass-install.png
+   :alt: Installateur
+   :width: 90%
+   :align: center
 
 Tester
 ======
