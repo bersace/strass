@@ -89,7 +89,9 @@ $(TESTDB): include/Strass/Installer/sql/schema.sql
 test:
 	rm -rf $(TESTROOT)/*
 	make $(TESTDB)
-	STRASS_ROOT=$(shell realpath $(TESTROOT)) phpunit --bootstrap tests/bootstrap.php $(shell realpath tests)
+	STRASS_ROOT=$(shell readlink -f $(TESTROOT)) \
+	phpunit --bootstrap $(shell readlink -e tests/bootstrap.php) \
+	$(shell readlink -e tests)
 
 REMOTE=maint/scripts/remote --config $(STRASS_ROOT)strass.conf
 
