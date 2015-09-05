@@ -1150,7 +1150,7 @@ class TypeUnite extends Strass_Db_Table_Row_Abstract
 
   function __toString()
   {
-    return $this->nom;
+      return (string) $this->nom;
   }
 
   function isTerminale()
