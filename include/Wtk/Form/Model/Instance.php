@@ -49,6 +49,11 @@ abstract class Wtk_Form_Model_Instance
     return $this->value;
   }
 
+  function isEmpty()
+  {
+	return !$this->get();
+  }
+
   function __toString()
   {
     return (string) $this->value;

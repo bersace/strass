@@ -6,6 +6,6 @@ class Wtk_Form_Model_Constraint_Required extends Wtk_Form_Model_Constraint
 
 	function _validate ()
 	{
-		return (bool) ($this->instance->get ());
+		return ! $this->instance->isEmpty();
 	}
 }

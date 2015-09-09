@@ -30,6 +30,11 @@ class Wtk_Form_Model_Instance_File extends Wtk_Form_Model_Instance
 		return $this->value['name'];
 	}
 
+	function isEmpty()
+	{
+		return !$this->value['tmp_name'];
+	}
+
 	function retrieve($value)
 	{
 	  if ($this->readonly)

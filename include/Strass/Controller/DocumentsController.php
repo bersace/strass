@@ -58,12 +58,10 @@ class DocumentsController extends Strass_Controller_Action
     $m->addDate('date', "Date", $d ? $d->date : strftime('%F %T'));
     $m->addString('description', "Description", $d ? $d->description : null);
     $i = $m->addInstance('File', 'fichier', "Fichier");
+    if (!$d)
+      $m->addConstraintRequired($i);
 
     if ($m->validate()) {
-      $i = $m->getInstance('fichier');
-      if (!$d && !$i->isUploaded())
-	throw new Exception("Fichier manquant");
-
       $t = new Documents;
       $db = $t->getAdapter();
       $db->beginTransaction();
