@@ -66,6 +66,9 @@ class MembresController extends Strass_Controller_Action implements Zend_Acl_Res
     $g = $m->addGroup('compte');
     $i = $g->addString('adelec', "Adresse électronique");
     $m->addConstraintEMail($i);
+    $t = new Inscriptions;
+    $m->addConstraintForbid($i, $t->findAllEMails(),
+        "Cette adresse électronique est déjà utilisée");
 
     $i0 = $g->addString('motdepasse', "Mot de passe");
     $m->addConstraintLength($i0, 6);
@@ -83,7 +86,6 @@ class MembresController extends Strass_Controller_Action implements Zend_Acl_Res
 					      $m->get('compte/motdepasse'));
       $data['presentation'] = $m->presentation;
 
-      $t = new Inscriptions;
       $db = $t->getAdapter();
       $db->beginTransaction();
       try {

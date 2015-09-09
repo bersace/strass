@@ -621,6 +621,16 @@ class Inscriptions extends Strass_Db_Table_Abstract implements Zend_Acl_Resource
       ->where('adelec = ?', $email);
     return $this->fetchOne($s);
   }
+
+  function findAllEMails()
+  {
+    $s = $this
+      ->getAdapter()
+      ->select()
+      ->from($this->_name, array('adelec'))
+      ->limit(256); // Éviter une attaque par bourrage.
+    return $s->query()->fetchAll(Zend_Db::FETCH_COLUMN);
+  }
 }
 
 class Inscription extends Strass_Db_Table_Row_Abstract
