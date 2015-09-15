@@ -461,6 +461,37 @@ class MembresController extends Strass_Controller_Action implements Zend_Acl_Res
       $this->redirectSimple('fiche', 'individus', null, array('individu' => $individu->slug), true);
     }
 
+    /* Notifications */
+    $this->view->notifications = $m = new Wtk_Form_Model('notifications');
+    $m->addBool(
+        'send_mail',
+        "Recevoir des notifications par mail",
+        $user->send_mail);
+    $m->addNewSubmission('valider', 'Valider');
+
+    if ($m->validate()) {
+        $db->beginTransaction();
+        try {
+            $user->send_mail = (bool) $m->get('send_mail');
+            $user->save();
+            $db->commit();
+
+            if ($user->send_mail)
+                $msg = "Notifications activées";
+            else
+                $msg = "Notifications désactivées";
+            $this->logger->info(
+                $msg, $this->_helper->Url('fiche', 'individus', null,
+                array('individu' => $individu->slug)));
+        }
+        catch(Exception $e) {
+            $db->rollBack();
+            throw $e;
+        }
+
+        $this->redirectSimple('fiche', 'individus', null, array('individu' => $individu->slug), true);
+    }
+
     /* Promotion à l'administration */
     if ($this->assert($moi, $user, 'admin') && !$autoedit) {
       $this->view->admin = $m = new Wtk_Form_Model('admin');

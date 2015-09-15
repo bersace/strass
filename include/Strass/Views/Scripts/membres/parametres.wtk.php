@@ -31,6 +31,11 @@ $f->addPassword('mdp/nouveau', 12);
 $f->addPassword('mdp/confirmation', 12);
 $f->addForm_ButtonBox()->addForm_Submit($this->change->getSubmission('valider'));
 
+$s = $p->addSection('notifications', "Notifications");
+$f = $s->addForm($this->notifications);
+$f->addCheck('send_mail');
+$f->addForm_ButtonBox()->addForm_Submit($this->notifications->getSubmission('valider'));
+
 if ($this->admin) {
   $s = $p->addSection('admin', "Établir les privilèges");
   $f = $s->addForm($this->admin);

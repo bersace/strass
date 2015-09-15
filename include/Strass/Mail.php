@@ -108,21 +108,27 @@ class Strass_Mail extends Zend_Mail
   {
     $t = new Individus;
     $admins = $t->findAdmins();
-    foreach($admins as $admin)
-      $this->addBcc($admin->adelec, $admin->getFullName(true));
+    foreach($admins as $admin) {
+        if ($admin->adelec && $admin->findUser()->send_mail)
+            $this->addBcc($admin->adelec, $admin->getFullName(true));
+    }
   }
 
   function notifyChefs()
   {
     $t = new Individus;
     $chefs = $t->findChefsRacines();
-    foreach($chefs as $chef)
-      $this->addBcc($chef->adelec, $chef->getFullName(false));
+    foreach($chefs as $chef) {
+        if ($chef->adelec && $chef->findUser()->send_mail)
+            $this->addBcc($chef->adelec, $chef->getFullName(false));
+    }
   }
 
   function notifyChefsDe($unite)
   {
-    foreach($unite->findMaitrise() as $chef)
-      $this->addBcc($chef->adelec, $chef->getFullName(false));
+      foreach($unite->findMaitrise() as $chef) {
+          if ($chef->adelec && $chef->findUser()->send_mail)
+              $this->addBcc($chef->adelec, $chef->getFullName(false));
+      }
   }
 }

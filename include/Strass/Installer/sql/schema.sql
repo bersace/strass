@@ -64,7 +64,8 @@ CREATE TABLE `user` (
 	admin			BOOLEAN		DEFAULT 0,
 	recover_token		CHAR(36),
 	recover_deadline	DATETIME,
-	last_login		DATETIME
+	last_login		DATETIME,
+	send_mail		BOOLEAN DEFAULT TRUE
 );
 
 -- Les unités
