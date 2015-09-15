@@ -56,7 +56,7 @@ class Strass_Mail extends Zend_Mail
   {
     $this->render();
 
-    $local = strpos($_SERVER['HTTP_HOST'], '.local') !== false;
+    $local = getenv('STRASS_MODE') == 'devel';
 
     if ($local) {
       $this->_recipients = array();
@@ -90,12 +90,12 @@ class Strass_Mail extends Zend_Mail
       $this->setFrom($config->system->admin, $config->system->short_title);
 
 
-    $smtp = $local ? 'smtp.free.fr' : $config->system->mail->smtp;
+    $smtp = $local ? null : $config->system->mail->smtp;
 
     if ($smtp)
-      parent::send(new Zend_Mail_Transport_Smtp($smtp));
+      return parent::send(new Zend_Mail_Transport_Smtp($smtp));
     else
-      parent::send(new Zend_Mail_Transport_Sendmail());
+      return parent::send(new Zend_Mail_Transport_Sendmail());
   }
 
   function replyTo($adelec, $nom = '')
