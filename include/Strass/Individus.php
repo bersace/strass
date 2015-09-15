@@ -46,6 +46,7 @@ class Individus extends Strass_Db_Table_Abstract
       ->join('unite', 'unite.id = appartenance.unite', array())
       ->join('unite_role', 'unite_role.id = appartenance.role', array())
       ->where("unite_role.acl_role = 'chef'")
+      ->where('appartenance.fin IS NULL')
       ->where('unite.parent IS NULL');
     return $this->fetchAll($s);
   }
