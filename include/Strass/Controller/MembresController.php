@@ -97,7 +97,13 @@ class MembresController extends Strass_Controller_Action implements Zend_Acl_Res
 	$this->_helper->Flash->info("Inscription en modération");
 
 	$mail = new Strass_Mail_Inscription($i);
-	$mail->send();
+    try {
+        $mail->send();
+    }
+    catch (Zend_Mail_Transport_Exception $e) {
+        $this->logger->error(
+            "Échec de l'envoi de mail aux admins", null, $e);
+    }
 
 	$db->commit();
       }
