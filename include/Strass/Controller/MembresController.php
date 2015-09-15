@@ -502,7 +502,7 @@ class MembresController extends Strass_Controller_Action implements Zend_Acl_Res
     if ($this->assert($moi, $user, 'admin') && !$autoedit) {
       $this->view->admin = $m = new Wtk_Form_Model('admin');
       $m->addBool('admin',
-		  "Accorder tout les privilèges sur le site à ".$user->findParentIndividus()->getFullName(),
+		  "Accorder tous les privilèges sur le site à ".$user->findParentIndividus()->getFullName(),
 		  $user->admin);
       $m->addNewSubmission('valider', 'Valider');
 
