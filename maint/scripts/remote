@@ -402,7 +402,7 @@ class FTPEntry(object):
                     stderr=subprocess.PIPE)
                 assert not hasdiff, "Local modification"
                 commit_date = subprocess.check_output(
-                    ['git', 'log', '--max-count=1', '--format=format:%at',
+                    self.git + ['log', '--max-count=1', '--format=format:%at',
                      self.localpath])
                 # Valable pours les fichiers générés : 500.html, maintenance.html, etc.
                 assert commit_date, "Not versionned: " + self.localpath
