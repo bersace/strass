@@ -434,7 +434,7 @@ class FTPEntry(object):
             except Exception, e:
                 timestamp = os.stat(self.localpath).st_mtime
 
-            self._localmtime = datetime.fromtimestamp(timestamp)
+            self._localmtime = datetime.fromtimestamp(int(timestamp))
 
         if not self._remotemtime:
             if not self.remoteexists:
