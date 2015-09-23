@@ -99,6 +99,10 @@ class Script(object):
             return args.action(args, config)
         except (FTPError, error_perm), e:
             log.error("%s", e)
+        except Exception, e:
+            if args.debug:
+                import pdb; pdb.post_mortem()
+            return 1
 
 
 def command(cls):
