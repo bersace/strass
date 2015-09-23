@@ -127,7 +127,7 @@ class FTPOperation(object):
 
 
     def __repr__(self):
-        return '%s %s' % (self.__class__.__name__, self.path)
+        return '%s %r' % (self.__class__.__name__, self.path)
 
 
     def __cmp__(self, other):
@@ -213,7 +213,7 @@ class FTPEntry(object):
 
 
     def __repr__(self):
-        return "%s %s" % (self.type_, self.path,)
+        return "%s %r" % (self.type_, self.path,)
 
 
     def __iter__(self):
