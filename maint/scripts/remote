@@ -686,12 +686,15 @@ class FTPManager(object):
 
     def run(self):
         total = len(self.operations)
-        for done, op in enumerate(self.operations):
-            try:
-                op(self.client)
-            except Exception, e:
-                self.log.warn(u"Échec de l'opération %s: %s", op, e)
-        self.log.debug(u'Transfert terminé')
+        if total:
+            for done, op in enumerate(self.operations):
+                try:
+                    op(self.client)
+                except Exception, e:
+                    self.log.warn(u"Échec de l'opération %s: %s", op, e)
+            self.log.debug(u'Transfert terminé')
+        else:
+            self.log.debug("Rien à faire.")
 
 
 @command
