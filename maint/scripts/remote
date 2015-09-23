@@ -14,6 +14,14 @@ import subprocess
 from collections import OrderedDict
 
 
+# http://stackoverflow.com/a/16955098
+TRACE = logging.DEBUG - 10
+logging.addLevelName(TRACE, 'TRACE')
+def trace(self, message, *args, **kwargs):
+    return self.log(TRACE, message, *args, **kwargs)
+logging.Logger.trace = trace
+
+
 class ColorFormatter(logging.Formatter):
     BLACK, RED, GREEN, YELLOW, BLUE, MAGENTA, CYAN, WHITE = range(8)
 
@@ -25,6 +33,7 @@ class ColorFormatter(logging.Formatter):
     BOLD_SEQ = "\033[1m"
 
     COLORS = {
+        'TRACE': BLACK,
         'DEBUG': BLACK,
         'INFO': GREEN,
         'WARNING': YELLOW,
@@ -60,6 +69,9 @@ class Script(object):
         '-q', '--quiet',
         action='store_const', dest='loglevel', const=logging.CRITICAL)
     parser.add_argument(
+        '-t', '--trace',
+        action='store_const', dest='loglevel', const=TRACE)
+    parser.add_argument(
         '-c', '--config', default='strass.conf', metavar='FILE')
     parser.add_argument(
         '-r', '--root', metavar='ROOT',
@@ -70,7 +82,7 @@ class Script(object):
     def __call__(self):
         args = self.parser.parse_args()
 
-        format_ = "%(asctime)s %(name)s: %(message)s" if args.loglevel is logging.DEBUG else "%(message)s"
+        format_ = "%(asctime)s %(name)s: %(message)s" if args.loglevel < logging.INFO else "%(message)s"
         formatter = ColorFormatter(format_, '%H:%M:%S')
         handler = logging.StreamHandler(sys.stderr)
         handler.setFormatter(formatter)
@@ -291,6 +303,9 @@ class FTPEntry(object):
             for pattern in self.local_files:
                 if fnmatch.fnmatch(self.path, pattern):
                     self._localpath = os.path.join(self.manager.local_root, self.path)
+                    self.log.trace(
+                        u"Le fichier local de %s est %s",
+                        repr(self.path), repr(self._localpath))
                     break
             else:
                 self._localpath = self.path
@@ -391,23 +406,28 @@ class FTPEntry(object):
                     or self.name.endswith('gif') or self.name.endswith('webp')
             threshold = 0 if image else 32
             if image and self._localsize == self._remotesize:
+                self.log.trace("%s a la même taille. On ignore.", self)
                 return False
 
         if not self._localmtime:
             if not os.path.exists(self.localpath):
+                self.log.trace("%s n'existe pas en local.")
                 return reverse
 
             try:
                 subprocess.check_output(
                     self.git + ['ls-files', '--error-unmatch', self.localpath],
                     stderr=subprocess.PIPE)
+                self.log.trace(u"Vérifier si %r est versionné", self)
                 hasdiff = subprocess.call(
                     self.git + ['diff', '--exit-code', '--quiet', 'HEAD', self.localpath],
                     stderr=subprocess.PIPE)
+                self.log.trace(u"Vérifier si %r est modifié localement", self)
                 assert not hasdiff, "Local modification"
                 commit_date = subprocess.check_output(
                     self.git + ['log', '--max-count=1', '--format=format:%at',
                      self.localpath])
+                self.log.trace(u"Demander à git la date de %r", self)
                 # Valable pours les fichiers générés : 500.html, maintenance.html, etc.
                 assert commit_date, "Not versionned: " + self.localpath
                 timestamp = int(commit_date)
@@ -418,12 +438,17 @@ class FTPEntry(object):
 
         if not self._remotemtime:
             if not self.remoteexists:
+                self.log.trace("%s n'existe pas à distance.")
                 return not reverse
 
             ret = self.manager.client.sendcmd('MDTM %s' % self.path)
             code, data = ret.split(None, 1)
             assert int(code) == 213, ret
             self._remotemtime = datetime.strptime(data, '%Y%m%d%H%M%S')
+
+        self.log.trace(
+            u"Dates de %s : \n\tDistant : %s\n\tLocal :   %s", self,
+            self._remotemtime, self._localmtime)
 
         if reverse:
             return self._remotemtime > self._localmtime
