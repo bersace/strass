@@ -90,11 +90,15 @@ class Script(object):
         logger.addHandler(handler)
         logger.setLevel(args.loglevel)
 
+        logger.trace(u"Journalisation configurée")
+
         try:
             config = RawConfigParser()
             if os.path.exists(args.config):
                 with open(args.config) as f:
                     config.readfp(f, args.config)
+                    logger.trace(u"Configurations lues: %s", args.config)
+
         except Exception, e:
             log.exception(e)
             log.debug("%r", e)
