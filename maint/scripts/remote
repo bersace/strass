@@ -15,7 +15,7 @@ from collections import OrderedDict
 
 
 # http://stackoverflow.com/a/16955098
-TRACE = logging.DEBUG - 10
+TRACE = 5
 logging.addLevelName(TRACE, 'TRACE')
 def trace(self, message, *args, **kwargs):
     return self.log(TRACE, message, *args, **kwargs)
