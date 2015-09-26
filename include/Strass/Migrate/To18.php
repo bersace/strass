@@ -5,7 +5,7 @@ class Strass_Migrate_To18 extends Strass_MigrateHandler {
         $db->exec(<<<'EOS'
 --
 
-CREATE VIRTUAL TABLE individu_fts USING fts4 ();
+CREATE VIRTUAL TABLE individu_fts USING fts4 (tokenize=unicode61);
 
 INSERT INTO individu_fts (docid, content)
 SELECT DISTINCT
