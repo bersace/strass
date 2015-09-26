@@ -268,19 +268,6 @@ class Individu extends Strass_Db_Table_Row_Abstract implements Zend_Acl_Resource
     return $this->findAppartenances($s)->count() == 0;
   }
 
-  function estActifDans($unite)
-  {
-    $t = new Appartenances;
-    $db = $t->getAdapter();
-    $s = $t->select()
-      ->setIntegrityCheck(false)
-      ->from('appartenance')
-      ->join('individu', $db->quoteInto('individu.id = ?', $this->id), array())
-      ->join('unite', $db->quoteInto('unite.id = ?', $unite->id), array())
-      ->where('appartenance.fin IS NULL');
-    return (bool) $t->countRows($s);
-  }
-
   function storeImage($path)
   {
     Strass_Vignette::decouper($path, $this->getCheminImage(null, false));
