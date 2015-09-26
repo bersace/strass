@@ -134,15 +134,23 @@ ul.annuaire {
 	.cartevisite {
 	    @include smallcontent;
 	    margin-bottom: 1em;
+	    width: 90%;
 
 	    & > .h {
-		padding-left: $taille_mini_vignette;
+		padding-left: $taille_mini_vignette + 10;
+		font-size: 120%;
+		text-align: left;
 	    }
 
 	    ul.infos
 	    {
 		left: $taille_mini_vignette;
 		max-width: 80%;
+		top: 6ex;
+
+		li {
+		    margin: .25ex;
+		}
 	    }
 	}
     }
