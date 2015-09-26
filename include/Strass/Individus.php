@@ -21,12 +21,14 @@ class Individus extends Strass_Db_Table_Abstract
   {
       $s = $this->select()
                 ->setIntegrityCheck(false)
-                ->from(array('fts' => 'individu_fts'), array())
-                ->join($this->_name, $this->_name . '.id = fts.docid')
+                ->from($this->_name)
                 ->order('lower(individu.nom)')
                 ->order('lower(individu.prenom)');
-      if ($recherche)
-          $s->where('individu_fts MATCH ?', $recherche);
+
+      if ($recherche) {
+          $s->join(array('fts' => 'individu_fts'), $this->_name . '.id = fts.docid', array())
+            ->where('individu_fts MATCH ?', $recherche);
+      }
       return $s;
   }
 
