@@ -9,6 +9,11 @@ class Strass_Addon_Menu extends Strass_Addon_Liens
             'metas' => 'Accueil',
             'url'   => array()),
         array(
+            'metas' => 'Annuaire',
+            'url'   => array('controller' => 'individus'),
+            'acl'   => array(null, 'membres', 'voir'),
+        ),
+        array(
             'metas' => "Livre d'or",
             'url'   => array('controller' => 'livredor')),
         array(

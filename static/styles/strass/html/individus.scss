@@ -119,3 +119,31 @@
 	thead { display: none; }
     }
 }
+
+ul.annuaire {
+    display: block;
+    margin: 0;
+    padding: 0;
+
+    li {
+	display: inline-block;
+	width: 49%;
+	margin: 0;
+	padding: 0;
+
+	.cartevisite {
+	    @include smallcontent;
+	    margin-bottom: 1em;
+
+	    & > .h {
+		padding-left: $taille_mini_vignette + 10;
+	    }
+
+	    ul.infos
+	    {
+		left: $taille_mini_vignette;
+		max-width: 80%;
+	    }
+	}
+    }
+}

@@ -9,7 +9,13 @@ class IndividusController extends Strass_Controller_Action
 
     function indexAction()
     {
-        $this->redirectSimple('index', 'unites');
+        $this->metas(array('DC.Title' => "Annuaire"));
+
+        $this->assert(null, 'membres', 'voir', "Accès réservé aux membres");
+
+        $t = new Individus;
+        $s = $t->selectAll();
+        $this->view->individus = new Strass_Pages_Model_Rowset($s, 20, $this->_getParam('page'));
     }
 
     function ficheAction()

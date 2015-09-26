@@ -36,6 +36,7 @@ class Strass_Controller_Plugin_Auth extends Zend_Controller_Plugin_Abstract
 
             $acl->allow('admins');
             $acl->allow('sachem', null, 'totem');
+            $acl->allow('membres', 'membres', 'voir');
 
             $cache->save($acl, 'strass_acl');
         }
