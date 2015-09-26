@@ -49,6 +49,19 @@ a.vignette
 	}
     }
 
+    &.mini {
+	width: $taille_mini_vignette;
+	.section.wrapper {
+	    height: $taille_mini_vignette;
+	    line-height: $taille_mini_vignette;
+	}
+
+	.image.empty.paragraph {
+	    line-height: .9 * $taille_mini_vignette;
+	    font-size: 70%;
+	}
+    }
+
     .image
     {
 	max-width: 90%;

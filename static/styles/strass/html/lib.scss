@@ -19,6 +19,7 @@ $taille_vignette: 248px;
 $taille_logo: 80pt;
 $taille_menu: 18em;
 $taille_piedpage: 25em;
+$taille_mini_vignette: $taille_vignette / 2;
 
 
 @mixin headfont {
