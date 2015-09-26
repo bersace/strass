@@ -54,7 +54,7 @@ class AdminController extends Strass_Controller_Action
         $t = new Individus;
         $count = $t->countRows();
         $m->append(
-            "Fiches d'individu", $this->_helper->Url('individus'),
+            "Fiches d'individu", $this->_helper->Url('index', 'individus'),
             $count, 'notice');
 
         $t = new Users;
@@ -234,16 +234,5 @@ class AdminController extends Strass_Controller_Action
         $t = new Users;
         $s = $t->selectAll();
         $this->view->membres = new Strass_Pages_Model_Rowset($s, 30, $this->_getParam('page'));
-    }
-
-    function individusAction()
-    {
-        $this->metas(array('DC.Title' => 'Les fiches',
-        'DC.Title.alternative' => 'Individus'));
-        $this->branche->append();
-
-        $t = new Individus;
-        $s = $t->selectAll();
-        $this->view->individus = new Strass_Pages_Model_Rowset($s, 30, $this->_getParam('page'));
     }
 }
