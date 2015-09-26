@@ -45,8 +45,10 @@ abstract class Strass_Controller_Action extends Zend_Controller_Action implement
 
       $this->connexes = $page->addon(new Strass_Addon_Liens('connexes', 'Pages connexes'));
       $page->addon(new Strass_Addon_Formats);
-      $lien = new Wtk_Link($this->_helper->Url('index', 'admin', null, null, true), 'Administrer');
-      $this->actions = $page->addon(new Strass_Addon_Liens('admin', $lien));
+      $label = 'Administrer';
+      if ($this->assert(null, 'site', 'admin'))
+          $label = new Wtk_Link($this->_helper->Url('index', 'admin', null, null, true), $label);
+      $this->actions = $page->addon(new Strass_Addon_Liens('admin', $label));
       $page->addon(new Strass_Addon_Console($this->_helper->Auth));
 
       $page->addon(new Strass_Addon_Citation);
