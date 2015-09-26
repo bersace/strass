@@ -147,3 +147,15 @@ ul.annuaire {
 	}
     }
 }
+
+form.recherche {
+    text-align: center;
+
+    div.control, p.buttonbox {
+	display: inline-block;
+	width: auto;
+	padding: 0;
+	margin: 1ex;
+	vertical-align: middle;
+    }
+}

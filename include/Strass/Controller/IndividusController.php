@@ -13,8 +13,20 @@ class IndividusController extends Strass_Controller_Action
 
         $this->assert(null, 'membres', 'voir', "Accès réservé aux membres");
 
+        $this->view->recherche = $m = new Wtk_Form_Model('recherche');
+        $m->addString('recherche', 'Recherche');
+        $m->addNewSubmission(
+            'chercher', 'Chercher',
+            null, Wtk_Form_Model_Submission::METHOD_GET);
+
         $t = new Individus;
-        $s = $t->selectAll();
+        if ($m->validate()) {
+            $s = $t->selectSearch($m->recherche);
+        }
+        else {
+            $s = $t->selectAll();
+        }
+
         $this->view->individus = new Strass_Pages_Model_Rowset($s, 20, $this->_getParam('page'));
     }
 

@@ -37,5 +37,9 @@ class Strass_Pages_Renderer_Individus extends Wtk_Pages_Renderer
     }
 }
 
-$this->document->addPages(null, $this->individus,
-new Strass_Pages_Renderer_Individus($this));
+$f = $this->document->addForm($this->recherche)->addFlags('recherche');
+$f->addEntry('recherche', 24)->useLabel(false);
+$b = $f->addForm_ButtonBox();
+$b->addForm_Submit($this->recherche->getSubmission('chercher'));
+
+$this->document->addPages(null, $this->individus, new Strass_Pages_Renderer_Individus($this));

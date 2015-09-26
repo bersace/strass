@@ -17,6 +17,19 @@ class Individus extends Strass_Db_Table_Abstract
 						    'onDelete'		=> self::SET_NULL),
 				   );
 
+  function selectSearch($recherche)
+  {
+      $s = $this->select()
+                ->setIntegrityCheck(false)
+                ->from(array('fts' => 'individu_fts'), array())
+                ->join($this->_name, $this->_name . '.id = fts.docid')
+                ->order('lower(individu.nom)')
+                ->order('lower(individu.prenom)');
+      if ($recherche)
+          $s->where('individu_fts MATCH ?', $recherche);
+      return $s;
+  }
+
   function selectAll()
   {
     return $this->select()
