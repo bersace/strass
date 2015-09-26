@@ -18,7 +18,7 @@ class Strass_Views_PagesRenderer_Articles extends Wtk_Pages_Renderer
   {
     $s = $root->addSection($article->slug, $this->view->lienArticle($article));
     $s->addFlags('article');
-    $s->addChild($this->view->vignetteIndividu($article->findAuteur()));
+    $s->addChild($this->view->vignetteIndividu($article->findAuteur())->addFlags('mini'));
 
     $contenu = $s->addSection()->addFlags('contenu');
 
