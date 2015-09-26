@@ -177,42 +177,50 @@ form.recherche {
     }
 }
 
-.annuaire #filtres {
-    margin: 1em auto;
+#document.annuaire {
+    background-image: url("illustrations/ancien-moderne.png");
+    background-position: 5% bottom;
+    background-size: 15em auto;
+    background-repeat: no-repeat;
+    padding-bottom: 20em;
 
-    ul {
-	display: block;
-	font-size: 0;
-	text-align: center;
+    #filtres {
+        margin: 1em auto;
 
-	li:first-child {
-	    border-radius: 1em 0 0 1em;
-	    padding-left: 1em;
-	}
+        ul {
+            display: block;
+            font-size: 0;
+            text-align: center;
 
-	li {
-	    font-size: 12pt;
-	    display: inline-block;
-	    padding: 1ex;
-	    margin: 1px;
-	    background: $alt_background;
+            li:first-child {
+                border-radius: 1em 0 0 1em;
+                padding-left: 1em;
+            }
 
-	    a {
-		font-size: inherit;
-	    }
-	}
+            li {
+                font-size: 12pt;
+                display: inline-block;
+                padding: 1ex;
+                margin: 1px;
+                background: $alt_background;
 
-	li.current {
-	    background: darken($alt_background, 10%);
-	    a {
-		font-weight: bold;
-		color: darken($highlight_color, 15%);
-	    }
-	}
+                a {
+                    font-size: inherit;
+                }
+            }
 
-	li:last-child {
-	    border-radius: 0 1em 1em 0;
-	    padding-right: 1em;
-	}
+            li.current {
+                background: darken($alt_background, 10%);
+                a {
+                    font-weight: bold;
+                    color: darken($highlight_color, 15%);
+                }
+            }
+
+            li:last-child {
+                border-radius: 0 1em 1em 0;
+                padding-right: 1em;
+            }
+        }
     }
 }
