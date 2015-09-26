@@ -60,7 +60,7 @@ class AdminController extends Strass_Controller_Action
         $t = new Users;
         $count = $t->countRows();
         $m->append(
-            "Membres", $this->_helper->Url('membres'),
+            "Membres", $this->_helper->Url('index', 'individus', null, array('filtre' => 'membres')),
             $count, 'notice');
 
         $t = new Livredor;
@@ -223,16 +223,5 @@ class AdminController extends Strass_Controller_Action
             );
             $pathes[$unite->slug] = $path;
         }
-    }
-
-    function membresAction()
-    {
-        $this->metas(array('DC.Title' => 'Les membres',
-        'DC.Title.alternative' => 'Membres'));
-        $this->branche->append();
-
-        $t = new Users;
-        $s = $t->selectAll();
-        $this->view->membres = new Strass_Pages_Model_Rowset($s, 30, $this->_getParam('page'));
     }
 }
