@@ -5,22 +5,30 @@ class Strass_Migrate_To18 extends Strass_MigrateHandler {
         $db->exec(<<<'EOS'
 --
 
-CREATE VIRTUAL TABLE individu_fts USING fts4 (tokenize=unicode61);
+-- Vue pour réutiliser la concaténation des champs dans les différents
+-- triggers.
 
-INSERT INTO individu_fts (docid, content)
+CREATE VIEW individu_content AS
 SELECT DISTINCT
-	individu.id,
-       	individu.titre || ' ' || prenom || ' ' || individu.nom
-	|| ' ' || individu.adelec
-	|| ' ' ||group_concat(u.nom, ' ')
-	|| ' ' ||group_concat(u.extra, ' ')
-	|| ' ' ||group_concat(t.nom, ' ')
+        individu.id AS id,
+        coalesce(individu.titre, '') || ' ' || prenom || ' ' || individu.nom
+        || ' ' || individu.adelec
+        || ' ' || group_concat(coalesce(u.nom, ''), ' ')
+        || ' ' || group_concat(coalesce(u.extra, ''), ' ')
+        || ' ' || group_concat(coalesce(t.nom, ''), ' ') AS content
 FROM individu
 LEFT OUTER JOIN appartenance AS a ON a.individu = individu.id
 LEFT OUTER JOIN unite AS u ON u.id = a.unite
 LEFT OUTER JOIN unite_type AS t ON t.id = u.`type`
 GROUP BY individu.id
 ORDER BY individu.id;
+
+CREATE VIRTUAL TABLE individu_fts USING fts4 (tokenize=unicode61);
+
+INSERT INTO individu_fts (docid, content)
+SELECT * FROM individu_content;
+
+-- Triggers pour maintenir l'index à jour de la table individu
 
 CREATE TRIGGER individu_before_update_fts BEFORE UPDATE ON individu BEGIN
   DELETE FROM individu_fts WHERE docid=old.id;
@@ -32,31 +40,17 @@ END;
 
 CREATE TRIGGER individu_after_update_fts AFTER UPDATE ON individu BEGIN
   INSERT INTO individu_fts (docid, content)
-  SELECT DISTINCT
-	  new.id,
-	  new.titre || ' ' || new.prenom || ' ' || new.nom || ' ' || new.adelec
-	  || ' ' ||group_concat(u.nom, ' ')
-	  || ' ' ||group_concat(u.extra, ' ')
-	  || ' ' ||group_concat(t.nom, ' ')
-  FROM individu
-  LEFT OUTER JOIN appartenance AS a ON a.individu = new.id
-  LEFT OUTER JOIN unite AS u ON u.id = a.unite
-  LEFT OUTER JOIN unite_type AS t ON t.id = u.`type`;
+  SELECT * FROM individu_content AS individu
+  WHERE individu.id = NEW.id;
 END;
 
 CREATE TRIGGER individu_after_insert_fts AFTER INSERT ON individu BEGIN
   INSERT INTO individu_fts (docid, content)
-  SELECT DISTINCT
-	  new.id,
-	  new.titre || ' ' || new.prenom || ' ' || new.nom || ' ' || new.adelec
-	  || ' ' ||group_concat(u.nom, ' ')
-	  || ' ' ||group_concat(u.extra, ' ')
-	  || ' ' ||group_concat(t.nom, ' ')
-  FROM individu
-  LEFT OUTER JOIN appartenance AS a ON a.individu = new.id
-  LEFT OUTER JOIN unite AS u ON u.id = a.unite
-  LEFT OUTER JOIN unite_type AS t ON t.id = u.`type`;
+  SELECT * FROM individu_content AS individu
+  WHERE individu.id = NEW.id;
 END;
+
+-- Triggers pour maintenir l'index à jour de la table appartenance
 
 CREATE TRIGGER appartenance_before_delete_fts BEFORE DELETE ON appartenance BEGIN
   DELETE FROM individu_fts WHERE docid=old.individu;
@@ -67,18 +61,11 @@ END;
 CREATE TRIGGER appartenance_after_insert_fts AFTER INSERT ON appartenance BEGIN
   DELETE FROM individu_fts WHERE docid=new.individu;
   INSERT INTO individu_fts (docid, content)
-  SELECT DISTINCT
-	  individu.id,
-	  individu.titre || ' ' || prenom || ' ' || individu.nom
-	  || ' ' || individu.adelec
-	  || ' ' ||group_concat(u.nom, ' ')
-	  || ' ' ||group_concat(u.extra, ' ')
-	  || ' ' ||group_concat(t.nom, ' ')
-  FROM individu
-  LEFT OUTER JOIN unite AS u ON u.id = new.unite
-  LEFT OUTER JOIN unite_type AS t ON t.id = u.`type`
-  WHERE individu.id = new.individu;
+  SELECT * FROM individu_content AS individu
+  WHERE individu.id = NEW.individu;
 END;
+
+-- Triggers pour maintenir l'index à jour de la table appartenance
 
 -- Pas besoin de trigger sur la création ni la suppression d'unité, car les
 -- appartenances le font déjà.
@@ -92,21 +79,9 @@ END;
 
 CREATE TRIGGER unite_after_update_fts AFTER UPDATE ON unite BEGIN
   INSERT INTO individu_fts (docid, content)
-  SELECT DISTINCT
-	  individu.id,
-	  individu.titre || ' ' || individu.prenom || ' ' || individu.nom
-	  || ' ' || individu.adelec
-	  || ' ' ||group_concat(u.nom, ' ')
-	  || ' ' ||group_concat(u.extra, ' ')
-	  || ' ' ||group_concat(t.nom, ' ')
-  FROM individu
+  SELECT * FROM individu_content AS individu
   -- Mettre à jour uniquement les individus de cette unité
-  JOIN appartenance AS ca ON ca.individu = individu.id AND ca.unite = new.id
-  -- Joindre les autres unités pour l'indexation
-  LEFT OUTER JOIN appartenance AS a ON a.individu = individu.id
-  LEFT OUTER JOIN unite AS u ON u.id = a.unite
-  LEFT OUTER JOIN unite_type AS t ON t.id = u.`type`
-  GROUP BY individu.id;
+  JOIN appartenance AS ca ON ca.individu = individu.id AND ca.unite = NEW.id;
 
 END;
 
