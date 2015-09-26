@@ -37,9 +37,27 @@ class Strass_Pages_Renderer_Individus extends Wtk_Pages_Renderer
     }
 }
 
+$this->document->addFlags('annuaire');
+
 $f = $this->document->addForm($this->recherche)->addFlags('recherche');
 $f->addEntry('recherche', 24)->useLabel(false);
 $b = $f->addForm_ButtonBox();
 $b->addForm_Submit($this->recherche->getSubmission('chercher'));
+
+$s = $this->document->addSection('filtres');
+$l = $s->addList();
+
+$filtres = array(
+    'tous' => 'Tous',
+    'anciens' => 'Anciens',
+    'membres' => 'Membres',
+);
+
+foreach($filtres as $filtre => $etiquette) {
+    $i = $l->addItem();
+    if ($this->filtre == $filtre)
+        $i->addFlags('current');
+    $i->addLink($this->url(array('filtre' => $filtre)), $etiquette);
+}
 
 $this->document->addPages(null, $this->individus, new Strass_Pages_Renderer_Individus($this));

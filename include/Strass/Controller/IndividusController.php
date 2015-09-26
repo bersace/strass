@@ -27,6 +27,25 @@ class IndividusController extends Strass_Controller_Action
             $s = $t->selectAll();
         }
 
+        $filtre = $this->_getParam('filtre');
+        switch($filtre) {
+        case 'membres':
+            $s->join('user', 'user.individu = individu.id', array());
+            break;
+        case 'anciens':
+            $s->joinLeft(
+                'appartenance',
+                'appartenance.individu = individu.id AND appartenance.fin IS NULL',
+                array())
+              ->where('appartenance.id IS NULL') ;
+            break;
+        default:
+        case 'tous':
+            $filtre = 'tous';
+            break;
+        }
+
+        $this->view->filtre = $filtre;
         $this->view->individus = new Strass_Pages_Model_Rowset($s, 20, $this->_getParam('page'));
     }
 
