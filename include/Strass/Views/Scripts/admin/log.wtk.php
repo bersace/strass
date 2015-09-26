@@ -53,6 +53,7 @@ class Strass_Pages_Renderer_Log extends Wtk_Pages_Renderer
     }
 }
 
-$this->document->addPages(
+$p = $this->document->addPages(
     null, $this->events,
     new Strass_Pages_Renderer_Log($this));
+$p->renderer->ellipsize = true;

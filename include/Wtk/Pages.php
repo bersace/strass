@@ -3,7 +3,7 @@
 class Wtk_Pages extends Wtk_Container
 {
 	protected	$model;
-	protected	$renderer;
+	public	$renderer;
 
 	function __construct($id,
 			     Wtk_Pages_Model $model,

@@ -8,17 +8,19 @@ abstract class Wtk_Pages_Renderer
     protected   $intermediate;
     protected   $href;
     protected   $model;
+    public      $ellipsize;
 
 
     // Si $labels est null, les liens précédent/suivant ne seront
     // pas affichés.
     function __construct(
-        $href, $intermediate = true, $labels = array())
+        $href, $intermediate = true, $labels = array(), $ellipsize=false)
     {
         if (is_null($labels) || count($labels))
             $this->labels = $labels;
         $this->href     = $href;
         $this->intermediate = $intermediate;
+        $this->ellipsize = $ellipsize;
     }
 
     function renderContainer()
@@ -50,7 +52,39 @@ abstract class Wtk_Pages_Renderer
         }
 
         if ($this->intermediate && $model->pagesCount()>1) {
-            foreach($model->getPagesIds() as $id) {
+            $ids = $model->getPagesIds();
+            $current_k = array_search($model->getCurrentPageId(), $ids);
+            $last_k = count($ids) - 1;
+            $ellipsing = false;
+            foreach($ids as $k => $id) {
+
+                /* On éllipse si… */
+                if (
+                    /* c'est demandé */
+                    $this->ellipsize
+                    /* on a beaucoup de pages */
+                    && $last_k > 16
+                    /* la page n'est pas aux bordures (1 2 … 23 24) */
+                    && 1 < $k && $k < ($last_k - 1)
+                    && (
+                        /* La page n'est pas seule à éluder entre le début et la
+                         * courante (évite 1 2 … 4 5 6 … 23 24). */
+                        (4 < $current_k&& $k < ($current_k - 1))
+                        /* La page n'est pas seule à éluder entre la page
+                         * courante et les dernières (évite 1 2 … 20 21 22 … 23
+                         * 24). */
+                        || ($current_k < ($last_k - 4) && ($current_k + 1) < $k))) {
+
+                    if (!$ellipsing) {
+                        $l->addItem('…')->addFlags('ellipsis');
+                        $ellipsing = true;
+                    }
+                    continue;
+                }
+                else {
+                    $ellipsing = false;
+                }
+
                 $i = $l->addItem($this->renderLink($id));
                 if ($i) {
                     $i->addFlags('pages');
