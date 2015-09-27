@@ -18,6 +18,9 @@ export STRASS_TEST_SERVER=http://localhost:${SERVE_PORT}
 # On isole chaque *scénario* : sa base, sa conf, ses photos, etc.
 export STRASS_ROOT=tests/func/${TESTCASE}/htdocs/
 
+# Dossier où vont être stocké les capture d'écrans, en cas d'erreur
+export STRASS_TEST_REPORTS=${STRASS_TEST_REPORTS-.}
+
 # Plutôt que d'installer en mode développement, on injecte directement les libs
 # de test dans le PATH python.
 export PYTHONPATH=${PYTHONPATH:-.}:tests/func/site-packages/
