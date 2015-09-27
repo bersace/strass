@@ -49,6 +49,7 @@ $l = $s->addList();
 
 $filtres = array(
     'tous' => 'Tous',
+    'actifs' => 'Actifs',
     'anciens' => 'Anciens',
     'membres' => 'Membres',
 );

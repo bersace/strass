@@ -29,6 +29,12 @@ class IndividusController extends Strass_Controller_Action
 
         $filtre = $this->_getParam('filtre');
         switch($filtre) {
+        case 'actifs':
+            $s->join(
+                'appartenance',
+                'appartenance.individu = individu.id AND appartenance.fin IS NULL',
+                array());
+            break;
         case 'membres':
             $s->join('user', 'user.individu = individu.id', array());
             break;
