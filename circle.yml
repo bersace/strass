@@ -5,10 +5,13 @@ machine:
     version: 5.6.5
   environment:
     LANG: fr_FR.UTF-8
+  python:
+    version: 3.4.3
 
 dependencies:
   post:
     - yes '' | pecl install PDO_SQLite imagick
+    - pip install selenium
 
 test:
   pre:
