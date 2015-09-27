@@ -51,7 +51,7 @@ $filtres = array();
 $filtres['tous'] = 'Tous';
 $filtres['actifs'] = 'Actifs';
 $filtres['anciens'] = 'Anciens';
-if ($this->assert(null, null, 'totem'))
+if ($this->assert(null, null, 'totem') && Zend_Registry::get('individu')->totem)
     $filtres['sachem'] = 'Sachem';
 $filtres['membres'] = 'Membres';
 if ($this->assert(null, 'site', 'admin'))
