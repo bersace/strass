@@ -47,12 +47,13 @@ $b->addForm_Submit($this->recherche->getSubmission('chercher'));
 $s = $this->document->addSection('filtres');
 $l = $s->addList();
 
-$filtres = array(
-    'tous' => 'Tous',
-    'actifs' => 'Actifs',
-    'anciens' => 'Anciens',
-    'membres' => 'Membres',
-);
+$filtres = array();
+$filtres['tous'] = 'Tous';
+$filtres['actifs'] = 'Actifs';
+$filtres['anciens'] = 'Anciens';
+$filtres['membres'] = 'Membres';
+if ($this->assert(null, 'site', 'admin'))
+    $filtres['admins'] = 'Administrateurs';
 
 foreach($filtres as $filtre => $etiquette) {
     $i = $l->addItem();

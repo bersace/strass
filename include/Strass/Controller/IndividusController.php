@@ -35,15 +35,19 @@ class IndividusController extends Strass_Controller_Action
                 'appartenance.individu = individu.id AND appartenance.fin IS NULL',
                 array());
             break;
-        case 'membres':
-            $s->join('user', 'user.individu = individu.id', array());
-            break;
         case 'anciens':
             $s->joinLeft(
                 'appartenance',
                 'appartenance.individu = individu.id AND appartenance.fin IS NULL',
                 array())
               ->where('appartenance.id IS NULL') ;
+            break;
+        case 'membres':
+            $s->join('user', 'user.individu = individu.id', array());
+            break;
+        case 'admins':
+            $s->join('user', 'user.individu = individu.id', array())
+              ->where('user.admin');
             break;
         default:
         case 'tous':
