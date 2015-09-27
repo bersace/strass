@@ -62,11 +62,7 @@ setup:
 
 .PHONY: serve
 serve: all
-	STRASS_MODE=devel php -S localhost:8000 \
-	-d include_path=$(shell pwd)/include/ \
-	-d xdebug.profiler_output_dir=$(shell pwd) \
-	-d xdebug.profiler_enable_trigger=1 \
-	devel.php
+	maint/scripts/serve.sh
 
 # Restaure les données uniquement. Pour tester la migration.
 .PHONY: restore
