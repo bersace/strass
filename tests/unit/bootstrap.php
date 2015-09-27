@@ -5,7 +5,7 @@ putenv('STRASS_UNIT_TEST=1');
 
 $paths = explode(':', get_include_path());
 array_shift($paths);
-array_unshift($paths, '.', dirname(__FILE__) . '/../include');
+array_unshift($paths, '.', dirname(dirname(__FILE__)) . '/../include');
 set_include_path(implode(':',$paths));
 
 require_once('Strass.php');

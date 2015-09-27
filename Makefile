@@ -78,7 +78,7 @@ restore:
 dbshell:
 	sqlite3 $(STRASS_ROOT)/private/strass.sqlite
 
-TESTROOT=tests/root/
+TESTROOT=tests/unit/root/
 TESTDB=$(TESTROOT)/private/strass.sqlite
 $(TESTDB): include/Strass/Installer/sql/schema.sql
 	rm -vf $@
@@ -91,9 +91,9 @@ test:
 	rm -rf $(TESTROOT)/*
 	make $(TESTDB)
 	STRASS_ROOT=$(shell readlink -f $(TESTROOT)) \
-	phpunit --bootstrap $(shell readlink -e tests/bootstrap.php) \
+	phpunit --bootstrap $(shell readlink -e tests/unit/bootstrap.php) \
 		--log-junit $(CIRCLE_TEST_REPORTS)/junit.xml \
-		$(shell readlink -e tests)
+		$(shell readlink -e tests/unit)
 
 REMOTE=maint/scripts/remote --config $(STRASS_ROOT)strass.conf
 

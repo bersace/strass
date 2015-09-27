@@ -4,5 +4,5 @@ cache/
 include/Strass/Installer/sql/dump*.sql
 maintenance.html
 500.html
-tests/root/
+tests/unit/root/
 htdocs*
