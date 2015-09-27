@@ -72,7 +72,7 @@ class LivredorController extends Strass_Controller_Action
 
     $page = $this->_getParam('page');
     $t = new Livredor;
-    $s = $t->select()->where('public = 0')->order('date DESC');
+    $s = $t->selectAmoderer();
     $this->view->messages = new Strass_Pages_Model_Rowset($s, 10, $page);
   }
 

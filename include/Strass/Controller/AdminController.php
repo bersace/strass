@@ -64,7 +64,7 @@ class AdminController extends Strass_Controller_Action
             $count, 'notice');
 
         $t = new Livredor;
-        $count = $t->countRows($t->select()->where('public = 0'));
+        $count = $t->countRows($t->selectAmoderer());
         $action = $count ? 'moderer' : 'index';
         $m->append(
             "Nouveaux messages du livre d'or", $this->_helper->Url($action, 'livredor'),
