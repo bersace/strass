@@ -57,16 +57,12 @@ distclean:
 .PHONY: setup
 setup:
 	apt-get install -y php5-cli php5-sqlite php-pear php5-gd php5-imagick \
-	phpunit python-pip python-dev sqlite3
-	pip install --upgrade libsass
+	phpunit python-pip python-dev sqlite3 phantomjs
+	pip install --upgrade libsass selenium
 
 .PHONY: serve
 serve: all
-	STRASS_MODE=devel php -S localhost:8000 \
-	-d include_path=$(shell pwd)/include/ \
-	-d xdebug.profiler_output_dir=$(shell pwd) \
-	-d xdebug.profiler_enable_trigger=1 \
-	devel.php
+	maint/scripts/serve.sh
 
 # Restaure les données uniquement. Pour tester la migration.
 .PHONY: restore
@@ -87,13 +83,18 @@ $(TESTDB): include/Strass/Installer/sql/schema.sql
 .INTERMEDIATE: $(TESTDB)
 
 .PHONY: test
-test:
+test: test-unit test-func
+
+test-unit:
 	rm -rf $(TESTROOT)/*
 	make $(TESTDB)
 	STRASS_ROOT=$(shell readlink -f $(TESTROOT)) \
 	phpunit --bootstrap $(shell readlink -e tests/unit/bootstrap.php) \
 		--log-junit $(CIRCLE_TEST_REPORTS)/junit.xml \
 		$(shell readlink -e tests/unit)
+
+test-func:
+	tests/func/run.sh
 
 REMOTE=maint/scripts/remote --config $(STRASS_ROOT)strass.conf
 

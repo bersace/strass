@@ -6,3 +6,4 @@ maintenance.html
 500.html
 tests/unit/root/
 htdocs*
+__pycache__
