@@ -1,55 +1,33 @@
 # -*- coding: utf-8 -*-
 
-import os
-import unittest
-from selenium import webdriver
+import datetime
+from strass.client import ClientTestCase
 
-class TestInstaller(unittest.TestCase):
-    def setUp(self):
-        self.driver = webdriver.PhantomJS()
-        self.driver.set_window_size(1120, 550)
 
-    def tearDown(self):
-        self.driver.quit()
-
+class TestInstaller(ClientTestCase):
     def test_00_install(self):
-        self.driver.get(os.environ['STRASS_TEST_SERVER'])
-        self.driver.find_element_by_css_selector('input#installation-site-mouvement-fse').click()
-        self.driver.find_element_by_css_selector('button[type=submit]').click()
+        (
+            self.client
+            .get()
 
-        (self.driver
-         .find_element_by_css_selector('input#installation-admin-prenom')
-         .send_keys(u'Prénom admin'))
+            # Étape association
+            .click('input#installation-site-mouvement-fse')
+            .click('button[type=submit]')
 
-        (self.driver
-         .find_element_by_css_selector('input#installation-admin-nom')
-         .send_keys(u'Nom admin'))
+            # Étape administrateur
+            .fill('input#installation-admin-prenom', 'Prénom admin')
+            .fill('input#installation-admin-nom', 'Nom admin')
+            .click('input#installation-admin-sexe-h')
+            .fill(
+                '#control-installation-admin-naissance',
+                datetime.date(1990, 10, 21))
+            .fill('input#installation-admin-adelec', 'admin@groupe-suf')
+            .fill('input#installation-admin-motdepasse', 'secret')
+            .fill('input#installation-admin-confirmation', 'secret')
+            .click('button[type=submit].primary')
+        )
 
-        self.driver.find_element_by_css_selector('input#installation-admin-sexe-h').click()
-
-        (self.driver
-         .find_element_by_css_selector('#control-installation-admin-naissance input.day')
-         .send_keys(u'21'))
-        (self.driver
-         .find_element_by_css_selector('#control-installation-admin-naissance input.month')
-         .send_keys(u'10'))
-        (self.driver
-         .find_element_by_css_selector('#control-installation-admin-naissance input.year')
-         .send_keys(u'1990'))
-
-        (self.driver
-         .find_element_by_css_selector('input#installation-admin-adelec')
-         .send_keys(u'admin@groupe-suf'))
-
-        (self.driver
-         .find_element_by_css_selector('input#installation-admin-motdepasse')
-         .send_keys(u'secret'))
-
-        (self.driver
-         .find_element_by_css_selector('input#installation-admin-confirmation')
-         .send_keys(u'secret'))
-
-        self.driver.find_element_by_css_selector('button[type=submit].primary').click()
-
+        # L'installation est terminée.
+        #
         # Page d'erreur qu'il n'y a pas d'unité :-)
-        self.assertIn("Pas d'unit", self.driver.page_source)
+        self.assertIn("Pas d'unit", self.client.page_source)
