@@ -1,29 +1,17 @@
 #!/bin/bash
+#
+# Boucle sur les dossier test_* pour les lancer indépendament. Exécute tout les
+# tests et aggrège le code d'erreur.
+#
 
-set -eu
-set -o pipefail
+set -uo pipefail
 
-SERVER_LOG=server.log
-export SERVE_PORT=9000
-export STRASS_TEST_SERVER=http://localhost:${SERVE_PORT}
+exit_code=0
 
-teardown() {
-    exit_code=$1
+for fullpath in $(ls -d tests/func/test_*) ; do
+    entry=$(basename $fullpath)
+    TESTCASE=$entry tests/func/test-runner.sh &>/dev/stdout| sed "s,^,${entry}: ," >&2
+    exit_code=$(($exit_code | $?))
+done
 
-    kill -TERM ${PHP_PID}
-    wait ${PHP_PID} || true
-
-    if [ "$exit_code" != '0' ] ; then
-        sed 's,^,PHP: ,g' ${SERVER_LOG} >&2
-        sed 's,^,SELENIUM: ,g' ghostdriver.log >&2
-    fi
-    rm -f ${SERVER_LOG} ghostdriver.log
-}
-
-maint/scripts/serve.sh &>${SERVER_LOG} &
-PHP_PID=$!
-echo "PHP PID is ${PHP_PID}" >&2
-
-trap 'teardown $?' EXIT QUIT INT TERM ABRT ALRM HUP CHLD
-
-python3 -m unittest discover tests/func/
+exit $exit_code;

@@ -10,8 +10,10 @@ machine:
 
 dependencies:
   post:
+    # Met-à-jour sqlite3 en 3.8
+    - sudo apt-get install -t trusty-updates sqlite3
     - yes '' | pecl install PDO_SQLite imagick
-    - pip install selenium
+    - pip install selenium libsass
 
 test:
   pre:

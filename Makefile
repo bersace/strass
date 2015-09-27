@@ -93,7 +93,7 @@ test-unit:
 		--log-junit $(CIRCLE_TEST_REPORTS)/junit.xml \
 		$(shell readlink -e tests/unit)
 
-test-func:
+test-func: all
 	tests/func/run.sh
 
 REMOTE=maint/scripts/remote --config $(STRASS_ROOT)strass.conf
