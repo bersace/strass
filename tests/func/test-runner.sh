@@ -11,6 +11,7 @@ SERVER_LOG=server.log
 export SERVE_PORT=9000
 export STRASS_TEST_SERVER=http://localhost:${SERVE_PORT}
 export STRASS_ROOT=tests/func/${TESTCASE}/htdocs/
+export PYTHONPATH=${PYTHONPATH:-.}:tests/func/site-packages/
 
 teardown() {
     exit_code=$1
