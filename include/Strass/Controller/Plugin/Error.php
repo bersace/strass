@@ -4,7 +4,7 @@ require_once 'Orror.php';
 
 class Strass_Controller_Plugin_Error extends Zend_Controller_Plugin_Abstract
 {
-  public function routeStartup()
+  public function routeStartup(Zend_Controller_Request_Abstract $request)
   {
     if (Strass::onDevelopment()) {
       $level = E_ALL &~ (E_STRICT|E_DEPRECATED);
