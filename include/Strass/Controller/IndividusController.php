@@ -42,6 +42,9 @@ class IndividusController extends Strass_Controller_Action
                 array())
               ->where('appartenance.id IS NULL') ;
             break;
+        case 'sachem':
+            $s->where("coalesce(individu.totem, '') IS NOT ''") ;
+            break;
         case 'membres':
             $s->join('user', 'user.individu = individu.id', array());
             break;

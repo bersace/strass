@@ -51,6 +51,8 @@ $filtres = array();
 $filtres['tous'] = 'Tous';
 $filtres['actifs'] = 'Actifs';
 $filtres['anciens'] = 'Anciens';
+if ($this->assert(null, null, 'totem'))
+    $filtres['sachem'] = 'Sachem';
 $filtres['membres'] = 'Membres';
 if ($this->assert(null, 'site', 'admin'))
     $filtres['admins'] = 'Administrateurs';
