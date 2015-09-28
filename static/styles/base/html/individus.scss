@@ -1,0 +1,226 @@
+/*-*- css -*-*/
+
+@import "lib";
+
+#cartevisite
+{
+    @include smallcontent;
+
+    li.adresse {
+	white-space: pre-wrap;
+    }
+}
+
+#details, #cv {
+    padding: 0 1ex;
+    display: inline-block;
+    vertical-align: top;
+}
+
+#details {
+    width: 30%;
+
+    ul {
+	/* Adapté à la ligne Dernière connexion */
+	min-width: 15em;
+	padding-left: 2em;
+    }
+
+    #notes {
+	margin: 1ex;
+	font-style: italic;
+    }
+}
+
+#cv {
+    width: 69%;
+
+    table {
+	width: 100%;
+
+	thead { display: none; }
+	td.unite {
+	    white-space: nowrap;
+	    width: 80%;
+	}
+    }
+}
+
+/* si pas de détails */
+#cartevisite + #cv {
+    display: block;
+    margin: 0 auto;
+}
+
+.individus.editer form,
+.individus.inscrire form,
+.individus.reinscrire form,
+.individus.desinscrire form,
+.individus.supprimer form
+{
+    @include minipage;
+}
+
+#document.individus.inscrire .effectifs
+{
+    width: 80%;
+    max-width: 40em;
+
+    td {
+	white-space: nowrap;
+    }
+}
+
+.individus.admin form {
+    table {
+	width: auto;
+	margin: 0 auto;
+
+	td {
+	    white-space: nowrap;
+
+	    .control.date input {
+		font-size: 80%;
+	    }
+	}
+    }
+}
+
+.individus.reinscrire {
+    .vignettes {
+	white-space: nowrap;
+	text-align: center;
+
+	li {
+	    vertical-align: middle;
+
+	    &.liaison {
+		font-size: 200%;
+		font-style: italic;
+		font-family: serif;
+		margin: 1em;
+	    }
+	}
+    }
+}
+
+.individus.desinscrire #inscription {
+    width: 100%;
+    text-align: center;
+
+    .vignette {
+	display: inline-block;
+    }
+
+    table {
+	@include minipage;
+	margin: 0 auto;
+
+	thead { display: none; }
+    }
+}
+
+ul.annuaire {
+    display: block;
+    margin: 0;
+    padding: 0;
+
+    li {
+	display: inline-block;
+	width: 49%;
+	margin: 0;
+	padding: 0;
+
+	.cartevisite {
+	    @include smallcontent;
+	    margin-bottom: 1em;
+	    width: 90%;
+
+	    & > .h {
+		padding-left: $taille_mini_vignette + 10;
+		font-size: 120%;
+		text-align: left;
+	    }
+
+	    ul.infos
+	    {
+		left: $taille_mini_vignette;
+		max-width: 80%;
+		top: 6ex;
+
+		li {
+		    margin: .25ex;
+		}
+	    }
+	}
+    }
+}
+
+form.recherche {
+    text-align: center;
+    margin: 1em;
+
+    div.control, p.buttonbox {
+	display: inline-block;
+	width: auto;
+	padding: 0;
+	margin: 1ex;
+	vertical-align: middle;
+    }
+
+    div.entry {
+	width: 33%;
+
+	input {
+	    width: 100%;
+	}
+    }
+}
+
+#document.annuaire {
+    background-image: url("illustrations/ancien-moderne.png");
+    background-position: 5% bottom;
+    background-size: 15em auto;
+    background-repeat: no-repeat;
+    padding-bottom: 20em;
+
+    #filtres {
+        margin: 1em auto;
+
+        ul {
+            display: block;
+            font-size: 0;
+            text-align: center;
+
+            li:first-child {
+                border-radius: 1em 0 0 1em;
+                padding-left: 1em;
+            }
+
+            li {
+                font-size: 12pt;
+                display: inline-block;
+                padding: 1ex;
+                margin: 1px;
+                background: $alt_background;
+
+                a {
+                    font-size: inherit;
+                }
+            }
+
+            li.current {
+                background: darken($alt_background, 10%);
+                a {
+                    font-weight: bold;
+                    color: darken($highlight_color, 15%);
+                }
+            }
+
+            li:last-child {
+                border-radius: 0 1em 1em 0;
+                padding-right: 1em;
+            }
+        }
+    }
+}

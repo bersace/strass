@@ -1,0 +1,53 @@
+// -*- css -*-
+
+@import "lib";
+
+#document form {
+    @include minipage;
+}
+
+#document.calendrier #calendrier {
+    width: 80%;
+    max-width: 45em;
+    margin: 1em auto;
+
+    background-image: url("illustrations/panorama-raid.png");
+    background-position: center bottom;
+    background-size: 100% auto;
+    background-repeat: no-repeat;
+    padding-bottom: 25em;
+}
+
+#calendrier table {
+    font-size: 130%;
+    width: 100%;
+
+    td.date {
+	white-space: nowrap;
+    }
+}
+
+#evenement {
+    @include smallcontent;
+
+    ul.infos {
+	top: 6em;
+	font-size: 110%;
+    }
+
+    #description {
+	font-size: 130%;
+	margin: 0 1em;
+    }
+}
+
+@media print {
+    #calendrier table {
+	font-size: 130%;
+	margin: 15% auto 10%;
+
+	td {
+	    padding: .75ex;
+	}
+    }
+}

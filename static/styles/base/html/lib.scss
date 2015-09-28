@@ -1,0 +1,98 @@
+/*-*- css -*-*/
+
+$highlight_color: #615230;
+$page_background: #D6CBB4;
+$content_background: #FAFBF8;
+$alt_color: #888;
+$alt_background: #EEE;
+$disabled: #888;
+$error: #550000;
+$error_bg: #D6968B;
+$info: #3F4C20;
+$info_bg: #A0BF6B;
+$warn: $error;
+$warn_bg: #EDDF9A;
+$critical: $error;
+$critical_bg: $error_bg;
+/* pour les formulaire */
+$taille_etiquette: 12em;
+/* À peu près 1/3 du contenu sur un écran 1024 */
+$taille_vignette: 248px;
+$taille_logo: 80pt;
+$taille_menu: 18em;
+$taille_piedpage: 25em;
+$taille_mini_vignette: $taille_vignette / 2;
+
+
+@mixin minipage {
+    /* style commun pour les pages avec peu de contenu, on utilise réduit
+       la largeur et on contre */
+
+    width: 60%;
+    max-width: 50em;
+    margin: 1em auto;
+}
+
+/* Il s'agit d'un contenu comme une carte de visite, un évènement, un
+   document, etc. qui contient un titre, une vignette, un listing
+   d'information détaillés et peut-être plus */
+@mixin smallcontent {
+    position: relative;
+    display: block;
+    width: 80%;
+    max-width: 55em;
+    margin: 1em auto 4em;
+    padding: 1ex;
+    font-size: 130%;
+    background: $alt_background;
+
+    & > .h {
+	font-size: 140%;
+	text-align: right;
+	margin-right: 1em;
+	padding-left: $taille_vignette + 10;
+    }
+
+    a.vignette {
+	display: inline-block;
+	vertical-align: top;
+	margin-top: -3em;
+    }
+
+    ul.infos
+    {
+	position: absolute;
+	top: 4em;
+	left: $taille_vignette;
+	right: 1em;
+	padding: 1ex 0 1ex 2em;
+	max-width: 60%;
+
+	li {
+	    list-style: none;
+	    margin: .5ex;
+	}
+    }
+}
+
+@mixin message {
+    position: relative;
+    padding: 1ex;
+    margin: 2pt auto;
+
+    p {
+	margin: 1ex;
+	line-height: 1.1em;
+    }
+
+    .auteur {
+	float: left;
+	margin: 1ex 1em 0 1ex;
+	font-weight: bold;
+    }
+}
+
+@mixin adminlink {
+    display: inline-block;
+    padding: .5ex 1em;
+}

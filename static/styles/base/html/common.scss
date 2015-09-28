@@ -1,0 +1,1576 @@
+/*-*- css -*-*/
+
+@import "lib";
+
+* {
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+}
+
+body {
+    font-size: 9pt;
+    padding: 0;
+    margin: 0;
+}
+
+#header {
+    width: 100%;
+    height: $taille_logo;
+    position: relative;
+    overflow: hidden;
+    margin: 2em auto 1em;
+
+    & > .h {
+	display: block;
+	font-size: $taille_logo / 3;
+	line-height: $taille_logo;
+	margin: 0;
+    }
+
+    #branche {
+	position: absolute;
+	bottom: 0;
+    }
+}
+
+#contentwrapper {
+    margin: 0 auto;
+
+    div.dialog {
+	position: relative;
+	width: 50%;
+	max-width: 40em;
+	padding: 1em;
+	margin: 3em auto;
+    }
+}
+
+#document {
+    overflow: auto;
+    border-width: 1pt;
+
+    #flash {
+	margin: 1em auto 2em;
+    }
+}
+
+body {
+    font-family: "Liberation Sans", "Deja Vu Sans", sans-serif;
+    color: black;
+}
+
+.h {
+    margin-top: 1em;
+    margin-bottom: 1ex;
+}
+
+h1 {
+    font-size: 1.40em;
+}
+
+h2 {
+    font-size: 1.30em;
+}
+
+h3 {
+    font-size: 1.25em;
+}
+
+h4 {
+    font-size: 1.20em;
+}
+
+h5 {
+    font-size: 1.15em;
+}
+
+h6 {
+    font-size: 1.10em;
+}
+
+p {
+    text-align: justify;
+    margin: 0 0 1ex;
+}
+
+ul {
+    list-style-type: disc;
+}
+
+a {
+    text-decoration: none;
+
+    &:hover
+    {
+	text-decoration: underline;
+    }
+}
+
+.development #body {
+    background: url("ui/travaux.png") 4% top no-repeat;
+    background-size: auto .7 * $taille_logo;
+}
+
+#header {
+    background-repeat: no-repeat;
+    background-position: 96% center;
+    background-size: $taille_logo auto;
+
+    &.suf {
+    	background-image: url("mouvements/suf.png");
+    }
+
+    &.fse {
+    	background-image: url("mouvements/fse.png");
+    }
+
+    &.europa {
+    	background-image: url("mouvements/europa.png");
+    }
+}
+
+#document {
+    position: relative;
+
+    #flash {
+	font-size: 105%;
+	background-position: 1em .75em;
+
+	.message {
+	    height: 3em;
+	    line-height: 3em;
+	    margin: 0;
+	    font-weight: bold;
+	    text-align: center;
+	}
+
+	.detail {
+	    margin: 0;
+	}
+    }
+
+    &.error {
+	background-position: center 90%;
+	background-repeat: no-repeat;
+	background-size: auto 20em;
+    }
+
+    &.maintenance {
+	background-position: center 90%;
+	background-repeat: no-repeat;
+	background-size: auto 20em;
+    }
+
+    div.dialog {
+	&.info, &.warn, &.error {
+	    & > *:first-child {
+		padding-left: 48px;
+	    }
+	}
+
+	&.info {
+	    color: $info;
+	    background-image: url("ui/information.png");
+	    background-position: 1ex .72ex;
+	    background-repeat: no-repeat;
+	}
+
+	&.warn, &.error {
+	    color: $warn;
+	    background-image: url("ui/attention.png");
+	    background-position: 1em 1em;
+	    background-repeat: no-repeat;
+
+	    #aide {
+		font-size: 120%;
+		width: 90%;
+		margin: 0 auto;
+	    }
+
+	    #details {
+		display: none;
+	    }
+	}
+    }
+}
+
+.empty
+{
+    text-align: center;
+    height: 16em;
+    line-height: 16em;
+    color: #AAA;
+
+    &.image {
+	border: 1pt dashed black;
+	padding: 1ex;
+	margin: 1ex;
+    }
+}
+
+table {
+    border-collapse: separate;
+    border-spacing: 0 1pt;
+}
+
+thead th {
+    border-bottom: 2px solid $highlight_color;
+    text-align: center;
+}
+
+td {
+    padding: .5ex .75ex;
+}
+
+td span.treecellpad {
+    display: inline-block;
+    width: 1em;
+}
+
+td span.treecellnode {
+    display: inline-block;
+    width: 1em;
+    font-size: 80%;
+    vertical-align: middle;
+}
+
+tr.odd {
+    background: $alt_background;
+}
+
+input[type=text],
+input[type=password],
+textarea
+{
+    border: 1pt solid $highlight_color;
+    padding: 1pt;
+    background: lighten($alt_background, 2%);
+}
+
+input[type=text]:focus,
+input[type=passwrd]:focus,
+textarea:focus
+{
+    color: black;
+    background: white;;
+}
+
+select {
+    max-width: 20em;
+}
+
+table select {
+    max-width: 12em;
+}
+
+fieldset {
+    margin-top: 1em;
+    border: 1pt solid $highlight_color;
+    border-radius: 1ex;
+    position: relative;
+    padding-top: 2.5em;
+
+    legend {
+	position: absolute;
+	top: 0;
+	right: 0;
+	margin: 0;
+	padding: .5ex 1em .5ex 3em;
+
+	font-size: 120%;
+	color: $content_background;
+	background-color: $highlight_color;
+	border-radius: 0 0 0 2em;
+	background: $highlight_color;
+	color: $content_background;
+    }
+}
+
+/* Aide en ligne dans le formulaire */
+form {
+    p.info, p.warn {
+	box-shadow: 2pt 4pt 1ex rgba(4, 4, 4, 0.5);
+	border-radius: 1ex;
+	background-repeat: no-repeat;
+	padding: 1ex 1em 1ex 48px;
+	margin: 1ex 1ex .5ex;
+	font-size: 120%;
+	min-height: 40px;
+    }
+
+    p.info {
+	color: $info;
+	background-position: 1ex .72ex;
+	background-color: $info_bg;
+	background-image: url("ui/information.png");
+    }
+
+    p.warn {
+	color: $warn;
+	background-position: 1ex .72ex;
+	background-color: $warn_bg;
+	background-image: url("ui/attention.png");
+
+	strong {
+	    line-height: 30px;
+	}
+    }
+}
+
+div.control {
+    text-align: left;
+    clear: both;
+    padding: .5ex 1em;
+    margin: .5ex;
+    width: 100%;
+
+    & > label, & > .input, & > div.control {
+	display: inline-block;
+	vertical-align: top;
+	margin: 0;
+	width: auto;
+    }
+
+    & > label {
+	width: $taille_etiquette;
+	padding: .5ex 0;
+	margin-bottom: 1ex;
+	white-space: nowrap;
+
+	&:after
+	{
+	    content: " :";
+	}
+    }
+
+
+    &.nocaption .input,
+    &.nocaption textarea
+    {
+	width: 100%;
+	margin: 0 auto;
+    }
+
+    &.compound div.control {
+	display: inline-block;
+	width: auto;
+	padding-left: 0;
+	padding-right: 0;
+	margin-left: 0;
+	margin-right: 0;
+	vertical-align: baseline;
+
+	label {
+	    width: auto;
+	}
+    }
+
+    input.spin {
+	text-align: right;
+    }
+
+    &.date input
+    {
+	margin: 1pt;
+	font-family: monospace;
+	text-align: center;
+    }
+
+    &.check {
+	position: relative;
+
+	.input {
+	    position: absolute;
+	    /* marges intérieure de div.control et de l'étiquette */
+	    top: 1ex;
+	    left: 0;
+	}
+
+	& > label {
+	    text-align: left;
+	    margin-left: 1.5em;
+
+	    &:after {
+		content: "";
+	    }
+	}
+    }
+
+    .input.file {
+	div.wrapper {
+	    overflow: hidden;
+	    position: relative;
+
+	    .max {
+		font-style: italic;
+		font-size: 80%;
+		color: $alt_color;
+	    }
+
+	    input[type=file] {
+		position: absolute;
+		top: 0;
+		left: 0;
+		opacity: 0;
+	    }
+	}
+    }
+
+    .input.select {
+	margin-left: -1 * $taille_etiquette;
+	padding-left: $taille_etiquette;
+	max-width: 90%;
+
+	label {
+	    display: inline-block;
+	}
+
+	&.nocaption {
+	    text-align: center;
+	    padding: 0;
+	    margin: 0 auto;
+	}
+    }
+
+    &.invalid {
+	background-color: $error_bg;
+    	border-radius: .75ex;
+
+	label {
+	    color: $error;
+	}
+
+	input[type=text],
+	input[type=password],
+	textarea
+	{
+	    border-color: $error;
+	}
+
+	div.error {
+	    margin: 1ex 1em;
+	    color: $error;
+	    font-weight: bold;
+	    font-size: 110%;
+	}
+    }
+}
+
+table.control {
+    margin: 1ex auto;
+
+    td {
+	padding: .25ex;
+    }
+
+    div.control.check > .input {
+	position: static;
+    }
+
+    .input.file .max {
+	display: none;
+    }
+}
+
+tr td .check input,
+tr td .check label
+{
+    top: auto !important;
+    float: none;
+    position: static;
+    margin: 0;
+    padding: 0;
+    width: auto;
+    text-align: inherit;
+}
+
+div.required > label:before {
+    font-family: mono;
+    content: "*";
+    color: red;
+    margin-left: -1ex;
+}
+
+.buttonbox {
+    clear: both;
+    text-align: center;
+    padding: 2em 0 .5ex;
+    margin: 0;
+
+    display: flex;
+    flex-direction: row-reverse;
+    flex-wrap: nowrap;
+    justify-content: space-between;
+    align-items: center;
+
+    .critical {
+	color: $critical;
+	font-weight: bold;
+    }
+}
+
+/* FORMULAIRE LATÉRAUX */
+#aside div.control {
+    label {
+	width: 7em;
+	overflow: hidden;
+    }
+
+    .input {
+	margin: 0;
+    }
+
+    input {
+	max-width: 6em;
+    }
+}
+
+/* Vignette seule, pour suppression */
+#vignette {
+    text-align: center;
+    margin: 1em auto;
+
+    .vignette {
+	display: inline-block;
+    }
+}
+
+.vignettes
+{
+    padding: 0;
+
+    & > li
+    {
+	display: inline-block;
+	list-style: none;
+	vertical-align: top;
+	margin: 1ex .5ex;
+
+	a, ul {
+	    line-height: 1em;
+	}
+    }
+}
+
+a.vignette
+{
+    color: black;
+    display: block;
+    width: $taille_vignette;
+    text-decoration: none;
+    text-overflow: ellipsis;
+    text-align: center;
+
+    .section.wrapper
+    {
+	height: $taille_vignette;
+	line-height: $taille_vignette;
+
+	.image {
+	    display: inline-block;
+	    vertical-align: middle;
+	}
+    }
+
+    &.mini {
+	width: $taille_mini_vignette;
+	.section.wrapper {
+	    height: $taille_mini_vignette;
+	    line-height: $taille_mini_vignette;
+	}
+
+	.image.empty.paragraph {
+	    line-height: .9 * $taille_mini_vignette;
+	    font-size: 70%;
+	}
+    }
+
+    .image
+    {
+	max-width: 90%;
+	max-height: 90%;
+	width: auto;
+	height: auto;
+	padding: 2px;
+	margin: 0 auto;
+
+	&.empty.paragraph {
+	    width: 100%;
+	    vertical-align: middle;
+	    color: $disabled;
+	    padding: 0;
+	    line-height: .9 * $taille_vignette;
+	    background-color: rgba(255, 255, 255, .7);
+	}
+    }
+
+    audio
+    {
+	max-width: 100%;
+	max-height: 100%;
+    }
+
+    &.photo .image,
+    &.album .image,
+    &.individu .image,
+    &.document .image
+    {
+	border: 1pt solid $highlight_color;
+	background: white;
+    }
+
+    p.label {
+	text-align: center;
+	width: 100%;
+    }
+}
+
+.vignette.nolabel,
+.vignettes.photos .vignette
+{
+    p.label {
+	display: none;
+    }
+}
+
+#statique {
+    @include minipage;
+}
+
+.signature {
+    text-align: right;
+    font-style: italic;
+}
+
+#document.citation {
+    form {
+	@include minipage;
+    }
+
+    .section.citation {
+	@include minipage;
+	@include message;
+
+	p.citation {
+	    white-space: pre-wrap;
+	}
+    }
+}
+
+#commentaires form {
+    @include minipage;
+}
+
+#document.documents form
+{
+    @include minipage;
+}
+
+.section.document {
+    @include smallcontent;
+
+    .telechargement a {
+	@include adminlink;
+	font-weight: bold;
+	font-size: 110%;
+	margin: 1ex 0;
+	line-height: 2em;
+	padding-left: 3em;
+	background: $info_bg url("icones/sign-up.png") .5em center no-repeat;
+	background-size: auto 2em;
+    }
+
+    #description {
+	font-size: 110%;
+	margin: 1em;
+    }
+}
+
+#document.documents.supprimer #vignette {
+    text-align: center;
+    margin: 1em auto;
+}
+
+#document.liens {
+    ul {
+	width: 80%;
+	padding: 0;
+	margin: 1em auto 3em;
+	text-align: center;
+
+	li {
+	    display: inline-block;
+	    vertical-align: top;
+	    width: 100%;
+	    max-width: 24em;
+	    padding: 1.5em 1em 0;
+	}
+    }
+
+    p.lien {
+	margin: 0;
+	font-size: 140%;
+    }
+
+    p.description {
+	margin: 0;
+	font-style: italic;
+	text-align: left;
+	margin: .5ex 0 1ex 1em;
+	color: $alt_color;
+    }
+}
+
+@media screen {
+    html {
+	margin: 0;
+	padding: 0;
+	position: relative;
+	min-height: 100%;
+    }
+
+    body {
+	margin: 0 auto $taille_piedpage + 6em;
+	padding: 0;
+	width: 96%;
+	min-height: 100%;
+	min-width: 42em + $taille_menu;
+	max-width: 106em + $taille_menu;
+	overflow-x: hidden;
+	overflow-y: auto;
+
+	& > div	{
+	    margin: 1ex auto;
+	}
+    }
+
+    #header .h {
+	text-align: center;
+	padding: 0 $taille_logo * 2;
+    }
+
+    #contentwrapper {
+	float: right;
+	width: 100%;
+    }
+
+    #document {
+	padding: .9em;
+	padding-top: 5em;
+	margin-right: $taille_menu;
+	min-height: 40em;
+    }
+
+    #aside {
+	float: right;
+	width: $taille_menu;
+	margin: 0;
+	margin-right: -100%;
+    }
+
+    #footer {
+	position: absolute;
+	left: 0;
+	bottom: 0;
+	width: 100%;
+	height: $taille_piedpage;
+	overflow: hidden;
+
+	#wrapper {
+	    margin: 0 auto;
+	    width: 96%;
+	    min-width: 50em;
+	    max-width: 80em;
+	    text-align: center;
+
+	    div.section {
+		display: inline-block;
+		padding: 1ex 2em;
+		margin: 0;
+		vertical-align: top;
+		width: 30%;
+		max-width: 15em;
+		text-align: left;
+	    }
+
+	    #citation {
+		width: 35%;
+		max-width: none;
+	    }
+
+	    #menu {
+		width: 20%;
+		max-width: 15em;
+	    }
+
+	    #about {
+		width: 40%;
+		max-width: 40em;
+	    }
+
+	    .date, .author {
+		display: none;
+	    }
+	}
+    }
+
+    #header {
+	& > .h {
+
+	    a {
+		text-decoration: inherit;
+	    }
+	}
+    }
+
+    #document {
+	& > h1 {
+	    position: absolute;
+	    top: 0;
+	    left: 0;
+	    font-size: 150%;
+	    padding: 1ex 5em 1ex 1em;
+	    margin: 0;
+	}
+
+	div.dialog {
+	    .h {
+		text-align: center;
+		margin: 1ex;
+		font-size: 140%;
+	    }
+
+	    &.info {
+		background-color: $info_bg;
+	    }
+
+	    &.warn, &.error {
+		background-color: $warn_bg;
+
+		&.showtrace {
+		    width: 80%;
+		    overflow-x: auto;
+
+		    .h {
+			margin-left: 48px;
+			text-align: left;
+		    }
+
+		    #details {
+			display: block;
+
+			& > .h {
+			    font-size: 1em;
+			    text-align: right;
+			    cursor: pointer;
+			    color: lighten($highlight_color, 10%);
+			}
+		    }
+		}
+	    }
+	}
+    }
+
+    /* Masquer la trace par défaut en prod */
+    body.production #page #document #details {
+	& > .error {
+	    display: none;
+	}
+
+	&:hover > *,
+	&:active > *
+	{
+	    display: block;
+	}
+    }
+
+    /* Calendrier Dojo */
+    .dojoxCalendarContainer
+    {
+      cursor: default;
+      font-family: "DeJaVu Sans",tahoma, verdana, helvetica;
+      padding: 4px;
+      text-align: center;
+      width: 18em !important;
+      background: white;
+      border: 1px solid black ;
+      border-radius: 0 0 1ex 1ex;
+      }
+
+
+    .dojoxCalendar .dijitCalendarNextMonth .dijitCalendarDateLabel,
+    .dojoxCalendar .dijitCalendarPreviousMonth .dijitCalendarDateLabel
+    {
+      border: 0px;
+      color: #444;
+      background: #EEE;
+      padding-left: 0px;
+      padding-right: 0px;
+      }
+
+    .dojoxCalendar .dijitCalendarNextMonth .dojoxCalendarYearLabel,
+    .dojoxCalendar .dijitCalendarPreviousMonth .dojoxCalendarYearLabel
+    {
+      background-color: white;
+      border-color: white;
+      color: #646464;
+      }
+
+    .dojoxCalendar .dijitCalendarSelectedDate
+    {
+      /* cell for the selected date */
+      background: #EAD382;
+      color: black !important;
+      border: 1px dotted #444 !important;
+      }
+
+    .dojoxCalendar thead .dijitCalendarDayLabel
+    {
+      cursor: auto;
+      font-weight: bold;
+      color: #222;
+      }
+
+    .dojoxCalendarBody
+    {
+      height: 11em;
+      overflow: hidden;
+      position: relative;
+      margin: auto;
+      }
+
+    .dojoxCalendar .dijitCalendarDayLabels,
+    .dojoxCalendarMonthLabels,
+    .dojoxCalendarYearLabels
+    {
+      width: 100%;
+      height: inherit;
+      top: 0px;
+      position: absolute;
+      left: 0px;
+      margin: auto;
+      text-align: center;
+      }
+
+    .dojoxCalendarYearLabels table,
+    .dojoxCalendarMonthLabels table,
+    .dojoxCalendar .dijitCalendarDayLabels table
+    {
+      width: 100%;
+      height: inherit;
+      }
+
+    .dojoxCalendarMonthLabels td
+    {
+      height: 33.3%;
+      vertical-align: 50%;
+      }
+
+    .dojoxCalendar .dijitCalendarDateTemplate
+    {
+      padding: 0px;
+      }
+
+    .dojoxCalendar .noPointer,
+    .dojoxCalendar .noPointer *
+    {
+      cursor: auto;
+      }
+
+    .dojoxCalendarHeader
+    {
+      width: 100%;
+      border-bottom: 1px solid black;
+      }
+
+    .dojoxCalendarDecrease,
+    .dojoxCalendarIncrease
+    {
+      min-height: 12px;
+      width: 15px;
+      cursor: pointer;
+      }
+
+    .dojoxCalendarDecrease
+    {
+      background-image: url("ui/fleche-gauche.png");
+      background-repeat: no-repeat;
+      background-position: left center;
+      float: left;
+      }
+
+    .dojoxCalendarIncrease
+    {
+      background: url("ui/fleche-droite.png");
+      background-repeat: no-repeat;
+      background-position: right center;
+      float: right;
+      }
+
+
+    .dojoxCalendarMonthLabel
+    {
+      cursor: pointer;
+      height: 100%;
+      width: 100%;
+      text-align: center;
+      padding-top: 25%;
+      }
+
+    .dojoxCalendarYearLabel
+    {
+      cursor: pointer;
+      text-align: center;
+      padding-top: 10px;
+      }
+
+    .dojoxCalendarTitle
+    {
+      cursor: pointer;
+      font-weight: bold;
+      }
+
+    .dojoxCalendar .dijitCalendarDateLabel
+    {
+      cursor: pointer;
+      padding: 1px 2px;
+      text-align: center;
+      }
+
+    .dojoxCalendar .dijitCalendarDayLabel
+    {
+      cursor: pointer;
+      padding: 0pt 2px;
+      text-align: center;
+      }
+
+    .dojoxCalendar .dijitCalendarDisabledDate
+    {
+      text-decoration:line-through !important;
+      cursor:default !important;
+      }
+
+    .dojoxCalendarBody + div
+    {
+      width: auto;
+      }
+
+    .dojoxCalendar .dojoxCalendarFooter
+    {
+      border-top: 1px dotted #EEE;
+      padding-top: 4px;
+      cursor: pointer;
+      width: 100%;
+      }
+
+    .dojoxCalendar .dijitCalendarCurrentMonth
+    {
+      color: black;
+      }
+
+    .dojoxCalendar .dijitCalendarSelectedDate .dijitCalendarDateLabel
+    {
+      padding: 0px 1px;
+      }
+
+    .dojoxCalendar .monthOnly .dijitCalendarDayLabels,
+    .dojoxCalendar .yearOnly .dijitCalendarDayLabels,
+    .dojoxCalendar .monthOnly .dojoxCalendarComma,
+    .dojoxCalendar .yearOnly .dojoxCalendarComma,
+    .dojoxCalendar .monthOnly .dojoxCalendarFooter,
+    .dojoxCalendar .yearOnly .dojoxCalendarFooter,
+    .dojoxCalendar .monthOnly .dojoxCalendarYearHeader,
+    .dojoxCalendar .monthOnly .dojoxCalendarIncrease,
+    .dojoxCalendar .monthOnly .dojoxCalendarDecrease,
+    .dojoxCalendar .yearOnly .dojoxCalendarMonthLabelNode
+    {
+      display: none;
+      }
+
+
+    /* Heure */
+    .dijitTimePicker
+    {
+      background: white;
+      border: 1px solid black;
+      border-radius: 0 0 1ex 1ex;
+      }
+
+    .dijitArrowButtonInner
+    {
+      display: none;
+      }
+
+    .dijitArrowButtonChar
+    {
+      width: 100%;
+      text-align: center;
+      padding: .25ex 0;
+      }
+
+    .dijitTimePickerTick,
+    .dijitTimePickerMarker
+    {
+      }
+
+    .dijitTimePickerTick
+    {
+      color: #888;
+      background: #EEE;
+      }
+
+    .dijitTimePickerMarker
+    {
+      background: white;
+      color: black;
+      font-weight: bold;
+      }
+
+    .dijitTimePickerItemSelected
+    {
+      color: black;
+      background: #ffe284 none;
+      }
+
+    .dijitTimePickerItemHover
+    {
+      background: lightgrey;
+      color:black;
+      cursor: pointer;
+      }
+
+    .dijitTimePickerItemHover,
+    .dijitTimePickerItemSelected
+    {
+      position: relative;
+      z-index: 10;
+      }
+
+    .dijitTimePickerTick .dijitTimePickerItemInner
+    {
+      font-size:0.4em;
+      color: black;
+      }
+
+    .dijitTimePickerItemInner
+    {
+      text-align: center;
+      }
+
+    .dijitTimePickerItemHover .dijitTimePickerItemInner,
+    .dijitTimePickerItemSelected .dijitTimePickerItemInner
+    {
+      font-size: 1em;
+      }
+
+    .dijitTimePickerTickHover,
+    .dijitTimePickerTickSelected,
+    .dijitTimePickerMarkerHover,
+    .dijitTimePickerMarkerSelected
+    {
+      margin-top:-0.3em;
+      margin-bottom:-0.3em;
+      border: none;
+      font-size: 1.2em;
+      font-weight: bold;
+      }
+
+    .dijit_a11y .dijitTimePickerTickHover
+    {
+      background-color: #CCC !important;
+      border-top: 1px solid #333 !important;
+      border-bottom: 1px solid #333 !important;
+      }
+
+    .dijit_a11y .dijitTimePickerMarkerHover
+    {
+      border-bottom-width: 2px;
+      }
+
+
+    #footer
+    {
+	li {
+	    padding: .5ex 0;
+	}
+    }
+
+    #admin {
+	ul {
+	    transition: max-height 1s ease-out;
+	    max-height: 4.5em;
+	    overflow: hidden;
+
+	    li + li + li {
+		transition: opacity .5s ease-out .5s;
+		opacity: 0;
+	    }
+	}
+
+	&:hover ul {
+	    max-height: 30em;
+	    transition-delay: .25s;
+
+	    li + li + li {
+		opacity: 1;
+		transition-delay: .25s;
+	    }
+	}
+    }
+
+    #citation {
+	p {
+	    font-size: 140%;
+	    font-style: italic;
+	    text-align: left;
+	    white-space: pre-wrap;
+	}
+
+	.signature
+	{
+	    font-size: 0.8em;
+	    font-weight: bold;
+	    font-style: italic;
+	    text-align: right;
+	}
+    }
+
+    #aside
+    {
+	padding-top: 2em;
+	padding-bottom: 4em;
+
+	.section > * + * {
+	    margin-left: 1ex;
+	}
+
+	.h, li a {
+	    font-size: 130%;
+	}
+
+	.h {
+	    text-align: right;
+	    margin: 0;
+	    padding: 1ex;
+	    max-height: 3em;
+	    white-space: nowrap;
+	    overflow: hidden;
+
+	    a {
+		color: inherit;
+		text-decoration: inherit;
+		font-size: inherit;
+	    }
+	}
+
+	li a {
+	    padding: .5ex 0 .5ex 2.5em;
+	    width: 100%;
+	}
+
+	li.current a {
+	    color: black;
+	    text-decoration: none;
+	    font-weight: bold;
+	}
+    }
+
+    #aside, #footer {
+	ul {
+	    padding-left: 1ex;
+
+	    li {
+		list-style-type: none;
+		line-height: 1.5em;
+
+		a {
+		    display: inline-block;
+		    vertical-align: middle;
+
+		    &:hover {
+			text-shadow: 1pt 1pt 10pt rgba(50, 51, 48, .25);
+		    }
+		}
+	    }
+	}
+    }
+
+    /* BRANCHE */
+    #branche {
+	font-size: 9pt !important;
+
+	/* branche a un traitement *très* spéciale, on réinitialise tout */
+	* {
+	    position: static !important;
+	    top: 0 !important;
+	    margin: 0 !important;
+	    display: inline !important;
+	    padding: 0 !important;
+	    background: none !important;
+	}
+
+	.h {
+	    text-align: left;
+	    font-size: inherit;
+	}
+
+	li + li:before {
+	    content: "/";
+	    margin: 0 1ex;
+	}
+    }
+
+    /* CONSOLE */
+    #console, #login {
+	form {
+	    margin: 0;
+
+	    .buttonbox {
+		padding: 1ex;
+		display: block;
+	    }
+	}
+    }
+
+    a.adminlink {
+	@include adminlink;
+
+	&.supprimer, &.admin, &.editer {
+	    width: 0;
+	    height: 0;
+	    overflow: hidden;
+	    background-repeat: no-repeat;
+	    background-size: auto 70%;
+	    background-position: center center;
+	    padding: 1.75em 1.75em 0 0;
+	}
+
+	&.supprimer {
+	    background-image: url("icones/supprimer.png");
+	}
+
+	&.admin {
+	    background-image: url("icones/settings.png");
+	}
+
+	&.editer {
+	    background-image: url("icones/pencil.png");
+	}
+    }
+
+    td a.adminlink {
+	font-size: 80%;
+    }
+
+    ul.adminlinks {
+	position: absolute;
+	top: -.5ex;
+	right: 0;
+	margin: 0;
+	display: block;
+	text-align: right;
+	visibility: hidden;
+
+	li {
+	    display: inline-block;
+	    margin: 0 .5ex;
+
+	    a {
+		@include adminlink;
+	    }
+	}
+    }
+
+    :hover > ul.adminlinks {
+	visibility: visible;
+    }
+
+    .pages.links {
+	margin: 1ex;
+	text-align: center;
+	clear: both;
+
+	li {
+	    list-style: none;
+	    margin: 1ex;
+	    display: inline;
+
+	    &.current a {
+		color: black;
+		text-decoration: none;
+		font-weight: bold;
+	    }
+	}
+    }
+
+    /* Historique */
+    #historique.pagelinks {
+	clear: both;
+	padding: 1ex;
+	margin: 5em 3em 3em;
+	display: flex;
+	flex-direction: row-reverse;
+	flex-wrap: wrap;
+        background: $alt_background;
+
+	.h {
+	    width: 100%;
+	    font-size: 1.5ex;
+	    margin-top: 0;
+	}
+
+	div.section {
+	    display: inline-block;
+	    vertical-align: top;
+	    width: 32.5%;
+	    min-width: 16em;
+	    max-width: 22em;
+	    padding: 1ex 2em;
+	    margin: 0;
+
+	    .h {
+		margin-bottom: .5ex;
+	    }
+	}
+
+	ul {
+	    display: flex;
+	    flex-direction: row-reverse;
+	    flex-wrap: wrap;
+	    justify-content: flex-end;
+	    margin: 0;
+	    padding: 0;
+
+	    li {
+		display: inline-block;
+		margin: .5ex;
+	    }
+	}
+
+	a {
+	    color: inherit !important;
+	}
+
+	.selectionnee a
+	{
+	    font-weight: bold;
+	    text-decoration: none;
+	    color: black;
+	}
+    }
+
+    /* Glisser-déposer */
+    .dojoDndItem {
+	cursor: pointer;
+    }
+
+    .dojoDndItemBefore,
+    .dojoDndItemBefore td {
+	border-top: 2px solid red;
+    }
+
+    .dojoDndItemAfter,
+    .dojoDndItemAfter td {
+	border-bottom: 2px solid red;
+    }
+
+    .dojoDndAvatar {
+	-moz-opacity: .75;
+	opacity: .75;
+    }
+}
+
+@media print {
+    body {
+	margin: .5ex;
+	padding: .5ex;
+    }
+
+    #contentwrapper {
+	position: relative;
+	top: 2em;
+	width: auto;
+	margin: 0 auto;
+	padding: 0;
+
+	#document > h1 {
+	    font-size: 250%;
+	    margin-bottom: 10pt;
+	}
+    }
+
+    #footer #about .author {
+	display: block;
+	position: absolute;
+	top: 20pt;
+	left: .5ex;
+	margin: 0;
+	padding: 0;
+    }
+
+    #header,
+    #footer #citation,
+    #footer #menu,
+    #footer #about .h,
+    #footer #about li,
+    #branche,
+    #aside,
+    #historique
+    {
+	display: none;
+    }
+
+    html, body {
+	font-size: 9pt;
+	font-family: serif;
+	background: white;
+	color: black;
+    }
+
+    body {
+	background-repeat: no-repeat;
+	background-position: 100% top;
+	background-size: 6em 6em;
+
+	&.suf {
+	    background-image: url("mouvements/suf.png");
+	}
+
+	&.fse {
+	    background-image: url("mouvements/fse.png");
+	}
+
+	&.europa {
+	    background-image: url("mouvements/europa.png");
+	}
+    }
+
+    .h, h3, h4, h5, h6 {
+	margin-bottom: 0;
+    }
+
+    a {
+	color: inherit;
+	text-decoration: none;
+    }
+
+    p {
+	margin-top: 0;
+    }
+
+    td {
+	padding: .25ex .75ex;
+    }
+
+    tr.odd {
+	background-color: #F0F0F0;
+    }
+
+    div.dialog {
+	font-size: 140%;
+    }
+
+    #footer #about .author {
+	font-size: 1.5em;
+    }
+}

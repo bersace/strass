@@ -1,0 +1,34 @@
+/*-*- css -*-*/
+
+@import "lib";
+
+#valider .form .select {
+    display: block;
+    width: 100%;
+}
+
+@media screen {
+    #document > form,
+    #document.inscriptions table,
+    #document.parametres #parametres
+    {
+	@include minipage;
+    }
+
+    .valider form {
+	.h {
+	    clear: both;
+	}
+
+	#presentation {
+	    @include message;
+	    clear: both;
+	}
+
+	.control[id*=message] {
+	    .input, textarea {
+		width: 100%;
+	    }
+	}
+    }
+}
