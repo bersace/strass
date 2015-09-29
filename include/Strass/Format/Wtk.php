@@ -22,7 +22,15 @@ abstract class Strass_Format_Wtk extends Strass_Format
     $document = new Wtk_Document($page->metas);
     $document->sitemap = '/sitemap';
     $document->addFlags($mn, $cn, $an);
-    $document->setStyle(Wtk_Document_Style::factory($config->get('system/style', 'strass')));
+
+    $style = $config->get('system/style', 'joubert');
+    try {
+        $document->setStyle(Wtk_Document_Style::factory($style));
+    }
+    catch (Wtk_Document_Style_NotFound $e) {
+        error_log("Style " . $style . " inconnu.");
+    }
+
     $document->addStyleComponents('layout', 'common', $cn, $mn, $mouvement);
 
     if ($view->unite)

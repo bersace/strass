@@ -1,5 +1,7 @@
 <?php
 
+class Wtk_Document_Style_NotFound extends Exception {}
+
 class Wtk_Document_Style {
   static public $path;
     public $id;
@@ -13,7 +15,7 @@ class Wtk_Document_Style {
           return new self($id, $path);
         }
       }
-      throw new Exception("Style ".$id." introuvable");
+      throw new Wtk_Document_Style_NotFound("Style ".$id." introuvable");
     }
 
     static function listAvailables()
