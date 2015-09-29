@@ -69,7 +69,7 @@ class Strass_Installer
 					'mail' => array('enable' => true,
 							'smtp' => '',
 							),
-					'style' => 'strass',
+					'style' => 'joubert',
 					),
 		     );
     $config = new Strass_Config_Php('strass', $config);
