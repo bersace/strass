@@ -14,14 +14,19 @@ SELECT DISTINCT
         coalesce(individu.titre, '') || ' ' || prenom || ' ' || individu.nom
         || ' ' || individu.adelec
         || ' ' || group_concat(coalesce(e.titre, ''), ' ')
+        || ' ' || group_concat(coalesce(a.titre, ''), ' ')
         || ' ' || group_concat(coalesce(u.nom, ''), ' ')
         || ' ' || group_concat(coalesce(u.extra, ''), ' ')
-        || ' ' || group_concat(coalesce(t.nom, ''), ' ') AS content
+        || ' ' || group_concat(coalesce(t.nom, ''), ' ')
+        || ' ' || group_concat(coalesce(r.slug, ''), ' ')
+        || ' ' || group_concat(coalesce(r.accr, ''), ' ')
+        AS content
 FROM individu
 LEFT OUTER JOIN etape AS e ON e.id = individu.etape
 LEFT OUTER JOIN appartenance AS a ON a.individu = individu.id
 LEFT OUTER JOIN unite AS u ON u.id = a.unite
 LEFT OUTER JOIN unite_type AS t ON t.id = u.`type`
+LEFT OUTER JOIN unite_role AS r ON r.id = a.`role`
 GROUP BY individu.id
 ORDER BY individu.id;
 
