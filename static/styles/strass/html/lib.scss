@@ -20,6 +20,9 @@ $taille_logo: 80pt;
 $taille_menu: 18em;
 $taille_piedpage: 25em;
 $taille_mini_vignette: $taille_vignette / 2;
+/* Largeur des noms des champs de formulaire. */
+$taille_etiquette: 12em;
+
 
 
 @mixin headfont {
@@ -27,81 +30,24 @@ $taille_mini_vignette: $taille_vignette / 2;
     font-weight: normal;
 }
 
-@mixin minipage {
-    /* style commun pour les pages avec peu de contenu, on utilise réduit
-       la largeur et on contre */
-
-    width: 60%;
-    max-width: 50em;
-    margin: 1em auto;
-}
-
 /* Il s'agit d'un contenu comme une carte de visite, un évènement, un
    document, etc. qui contient un titre, une vignette, un listing
    d'information détaillés et peut-être plus */
 @mixin smallcontent {
-    position: relative;
-    display: block;
-    width: 80%;
-    max-width: 55em;
-    margin: 1em auto 4em;
-    padding: 1ex;
     background: lighten($alt_background, 10%);
     border-radius: 1ex;
-    font-size: 130%;
 
     & > .h {
 	@include headfont;
-	font-size: 140%;
-	text-align: right;
-	margin-right: 1em;
-	padding-left: $taille_vignette + 10;
-    }
-
-    a.vignette {
-	display: inline-block;
-	vertical-align: top;
-	margin-top: -3em;
-    }
-
-    ul.infos
-    {
-	position: absolute;
-	top: 4em;
-	left: $taille_vignette;
-	right: 1em;
-	padding: 1ex 0 1ex 2em;
-	max-width: 60%;
-
-	li {
-	    list-style: none;
-	    margin: .5ex;
-	}
     }
 }
 
 @mixin message {
-    position: relative;
-    padding: 1ex;
-    margin: 2pt auto;
     background-color: $alt_background;
-
-    p {
-	margin: 1ex;
-	line-height: 1.1em;
-    }
-
-    .auteur {
-	float: left;
-	margin: 1ex 1em 0 1ex;
-	font-weight: bold;
-    }
 }
 
 @mixin adminlink {
-    display: inline-block;
     background-color: $page_background;
-    padding: .5ex 1em;
     border-radius: 1ex;
 
     &.critical {

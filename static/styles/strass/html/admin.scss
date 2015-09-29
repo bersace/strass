@@ -3,68 +3,12 @@
 @import "lib";
 
 .admin {
-    &.parametres form,
-    &.unites table,
-    &.membres table,
-    &.individus table
-    {
-	@include minipage;
-    }
-
-    &.unites table,
-    &.membres table,
-    &.individus table.individus
-    {
-	td {
-	    white-space: nowrap;
-	}
-
-	td.adminlinks {
-	    padding-left: 1em;
-	    padding-right: 1em;
-	}
-    }
-
-    &.index h2 {
-	margin: 0 0 1ex;
-    }
-
-    &.unites {
-	td.nom {
-	    vertical-align: middle;
-	}
-
-	td.statut, td.chef, td.inscrits, td.adminlinks {
-	    text-align: center;
-	    vertical-align: middle;
-	}
-
-    }
-
-    &.log table {
-	width: 100%;
-    }
-
-    &.event #event {
-	@include minipage;
-
-	#detail {
-	    width: 100%;
-	    overflow: auto;
-	}
-    }
-
     tr.critical, tr.error {
-	font-weight: bold;
 	color: $critical;
 	background: $critical_bg;
 
 	&.odd {
 	    background: lighten($critical_bg, 5%);
-	}
-
-	a {
-	    color: inherit;
 	}
     }
 
@@ -80,50 +24,4 @@
 	    color: $warn;
 	}
     }
-
-    td.level {
-	text-transform: uppercase;
-    }
-
-    td.level, td.date, td.logger,
-    tr.level td.valeur, tr.date td.valeur, tr.logger td.valeur, tr.url td.valeur
-    {
-	font-family: monospace;
-    }
-
-    td.date {
-        white-space: nowrap;
-    }
-}
-
-table {
-    width: 100%;
-    margin-bottom: 1em;
-}
-
-#indicateurs, #membres
-{
-    float: left;
-    clear: left;
-    width: 22em;
-    position: relative;
-    z-index: 1;
-}
-
-#log
-{
-    position: relative;
-    float: right;
-    width: 100%;
-    padding-left: 23em;
-    margin-left: -23em;
-    min-height: 32em;
-    overflow: hidden;
-    z-index: 0;
-}
-
-table.logs td,
-.individus td
-{
-    white-space: nowrap;
 }

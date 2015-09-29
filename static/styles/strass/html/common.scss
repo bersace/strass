@@ -28,99 +28,114 @@ html {
     margin-bottom: 1ex;
 }
 
-h1 {
-    font-size: 1.40em;
-}
-
-h2 {
-    font-size: 1.30em;
-}
-
-h3 {
-    font-size: 1.25em;
-}
-
-h4 {
-    font-size: 1.20em;
-}
-
-h5 {
-    font-size: 1.15em;
-}
-
-h6 {
-    font-size: 1.10em;
-}
-
-p {
-    text-align: justify;
-    margin: 0 0 1ex;
-}
-
-ul {
-    list-style-type: disc;
-}
-
 a {
     color: $highlight_color;
-    text-decoration: none;
 
     &:hover, &:visited
     {
 	color: $highlight_color;
     }
-
-    &:hover
-    {
-	text-decoration: underline;
-    }
 }
 
-.development #body {
-    background: url("illustrations/travaux.png") 4% top no-repeat;
-    background-size: auto .7 * $taille_logo;
+/* Formulaires */
+input[type=text],
+input[type=password],
+textarea
+{
+    border: 1pt solid $highlight_color;
+    background: lighten($alt_background, 25%);
 }
 
-#header {
-    background-repeat: no-repeat;
-    background-position: 96% center;
-    background-size: $taille_logo auto;
-
-    &.suf {
-    	background-image: url("mouvements/suf.png");
-    }
-
-    &.fse {
-    	background-image: url("mouvements/fse.png");
-    }
-
-    &.europa {
-    	background-image: url("mouvements/europa.png");
-    }
-}
-
-#document {
+fieldset {
     position: relative;
+    margin-top: 1em;
+    padding-top: 2.5em;
 
+    border: 1pt solid $highlight_color;
+    border-radius: 1ex;
+
+    legend {
+	@include headfont;
+	position: absolute;
+        top: 0;
+        right: 0;
+        margin: 0;
+        padding: .5ex 1em .5ex 3em;
+
+	color: $content_background;
+	background-color: $highlight_color;
+	border-radius: 0 0 0 2em;
+    }
+}
+
+/* Aide en ligne dans le formulaire */
+form {
+    p.info, p.warn {
+	box-shadow: 2pt 4pt 1ex rgba(4, 4, 4, 0.5);
+	border-radius: 1ex;
+	background-repeat: no-repeat;
+	padding: 1ex 1em 1ex 48px;
+	margin: 1ex 1ex .5ex;
+	font-size: 120%;
+	min-height: 40px;
+    }
+
+    p.info {
+	color: $info;
+	background-color: $info_bg;
+    }
+
+    p.warn {
+	color: $warn;
+	background-color: $warn_bg;
+    }
+}
+
+div.control.invalid {
+    background-color: $error_bg;
+    border-radius: .75ex;
+
+    label {
+	color: $error;
+    }
+
+    input[type=text],
+    input[type=password],
+    textarea {
+	border-color: $error;
+    }
+
+    div.error {
+	color: $error;
+    }
+}
+
+div.required > label:before {
+    color: $error;
+}
+
+.buttonbox .critical {
+    color: $critical;
+}
+
+/* Tableau */
+table {
+    border-collapse: separate;
+    border-spacing: 0 1pt;
+}
+
+thead th {
+    border-bottom: 2px solid #845d18;
+}
+
+tr.odd {
+    background: lighten($alt_background, 15%);
+}
+
+/* Document */
+#document {
     h1 {
 	@include headfont;
-    }
-
-    #flash {
-	font-size: 105%;
-	background-position: 1em .75em;
-
-	.message {
-	    height: 3em;
-	    line-height: 3em;
-	    margin: 0;
-	    font-weight: bold;
-	    text-align: center;
-	}
-
-	.detail {
-	    margin: 0;
-	}
     }
 
     &.error {
@@ -152,61 +167,197 @@ a {
 	background-size: auto 20em;
 	padding-bottom: 25em;
     }
-
-    div.dialog {
-	&.info, &.warn, &.error {
-	    & > *:first-child {
-		padding-left: 48px;
-	    }
-	}
-
-	&.info {
-	    color: $info;
-	    background-image: url("ui/information.png");
-	    background-position: 1ex .72ex;
-	    background-repeat: no-repeat;
-	}
-
-	&.warn, &.error {
-	    color: $warn;
-	    background-image: url("ui/attention.png");
-	    background-position: 1em 1em;
-	    background-repeat: no-repeat;
-
-	    #aide {
-		font-size: 120%;
-		width: 90%;
-		margin: 0 auto;
-	    }
-
-	    #details {
-		display: none;
-	    }
-	}
-    }
 }
 
-.empty
+/* VIGNETTE */
+
+/* Vignette seule, pour suppression */
+a.vignette
 {
-    text-align: center;
-    height: 16em;
-    line-height: 16em;
-    color: #7f7d73;
-
-    &.image {
-	border: 1pt dashed black;
+    color: black;
+    .image
+    {
 	padding: 1ex;
-	margin: 1ex;
+	border-radius: .5ex;
+
+	&.empty.paragraph {
+	    color: $disabled;
+	    background-color: rgba(255, 255, 255, .7);
+	}
+    }
+
+    &.photo .image,
+    &.album .image,
+    &.individu .image,
+    &.document .image
+    {
+	border: 1pt solid $highlight_color;
+	background: white;
+	box-shadow: .25ex .25ex .75em rgba(40, 40, 40, .75);
     }
 }
 
-#statique {
-    @include minipage;
+/* Indidivus */
+#cartevisite, ul.annuaire li .cartevisite
+{
+    @include smallcontent;
 }
 
-.signature {
-    text-align: right;
-    font-style: italic;
+#document.annuaire {
+    background-image: url("illustrations/ancien-moderne.png");
+    background-position: 5% bottom;
+    background-size: 15em auto;
+    background-repeat: no-repeat;
+    padding-bottom: 20em;
+
+    #filtres {
+        ul {
+            li {
+                background: $alt_background;
+            }
+
+            li.current {
+                background: darken($alt_background, 10%);
+                a {
+                    color: darken($highlight_color, 15%);
+                }
+            }
+        }
+    }
+}
+
+/* Unités */
+#presentation {
+    @include smallcontent;
+}
+
+.effectifs tr.category td a {
+    @include headfont;
+    color: $highlight_color;
+    font-size: 125%;
+    text-decoration: none;
+    padding-top: 1em;
+}
+
+#document.archives
+{
+    background-image: url("illustrations/ancien-moderne.png");
+    background-position: 95% bottom;
+    background-size: 15em auto;
+    background-repeat: no-repeat;
+    padding-bottom: 20em;
+}
+
+#document.effectifs
+{
+    background-image: url("illustrations/panorama-rassemblement.png");
+    background-position: bottom;
+    background-size: auto 10em;
+    background-repeat: no-repeat;
+    padding-bottom: 12em;
+}
+
+/* Activités */
+#document.calendrier #calendrier {
+    background-image: url("illustrations/panorama-raid.png");
+    background-position: center bottom;
+    background-size: 100% auto;
+    background-repeat: no-repeat;
+    padding-bottom: 25em;
+}
+
+#evenement {
+    @include smallcontent;
+}
+
+/* Photos */
+#document.photos.consulter,
+#document.photos.voir
+{
+    background-image: url("illustrations/eclaireur-admirant.png");
+    background-position: right bottom;
+    background-size: auto 20em;
+    background-repeat: no-repeat;
+    padding-bottom: 20em;
+}
+
+#contentwrapper #document.photos.voir h1 {
+    color: $highlight_color;
+}
+
+#document.photos.voir img,
+#document.photos.editer img
+{
+    border: 1px solid black;
+    border-radius: .5ex;
+    box-shadow: .5ex .5ex 1.5em rgba(35, 35, 30, .75);
+    background: white;
+}
+
+/* Citations */
+#document.citation {
+    background-image: url("illustrations/portrait-bp.png");
+    background-position: 5% 10em;
+    background-size: 12% auto;
+    background-repeat: no-repeat;
+
+    .section.citation {
+	@include message;
+    }
+}
+
+/* Liens */
+#document.liens {
+    background-image: url("illustrations/poignee.png");
+    background-position: center 95%;
+    background-size: 15em auto;
+    background-repeat: no-repeat;
+    padding-bottom: 20em;
+
+    p.description {
+	color: $alt_color;
+    }
+}
+
+/* Livre d'or */
+#document.livredor {
+    background-image: url("illustrations/courrier.png");
+    background-position: center bottom;
+    background-size: auto 15em;
+    background-repeat: no-repeat;
+    padding-bottom: 20em;
+
+    .section.message {
+	@include message;
+    }
+}
+
+/* Journaux */
+#document.journal.index,
+#document.brouillons
+{
+    background-image: url("illustrations/salut-avec-plume.png");
+    background-position: 5% 10em;
+    background-size: 12% auto;
+    background-repeat: no-repeat;
+
+    .article {
+	& + .article {
+	    border-top: 1pt dashed $highlight_color;
+	}
+
+	.suite, .signature { display: none;  }
+    }
+}
+
+/* Documents */
+.section.document {
+    @include smallcontent;
+
+    .telechargement a {
+	@include adminlink;
+	background-color: $info_bg;
+    }
 }
 
 @media screen {
@@ -229,13 +380,8 @@ a {
 	border-radius: 1ex;
 
 	& > h1 {
-	    position: absolute;
-	    top: 0;
-	    left: 0;
-	    font-size: 150%;
 	    border-radius: 0 0 2em 0;
 	    padding: 1ex 5em 1ex 1em;
-	    margin: 0;
 	    background: $highlight_color;
 	    color: $content_background;
 
@@ -249,53 +395,13 @@ a {
 	    box-shadow: 2pt 4pt 1ex rgba(4, 4, 4, 0.5);
 	    border-radius: 1ex;
 
-	    .h {
-		text-align: center;
-		margin: 1ex;
-		font-size: 140%;
-	    }
-
 	    &.info {
 		background-color: $info_bg;
 	    }
 
 	    &.warn, &.error {
 		background-color: $warn_bg;
-
-		&.showtrace {
-		    width: 80%;
-		    overflow-x: auto;
-
-		    .h {
-			margin-left: 48px;
-			text-align: left;
-		    }
-
-		    #details {
-			display: block;
-
-			& > .h {
-			    font-size: 1em;
-			    text-align: right;
-			    cursor: pointer;
-			    color: lighten($highlight_color, 10%);
-			}
-		    }
-		}
 	    }
-	}
-    }
-
-    /* Masquer la trace par défaut en prod */
-    body.production #page #document #details {
-	& > .error {
-	    display: none;
-	}
-
-	&:hover > *,
-	&:active > *
-	{
-	    display: block;
 	}
     }
 
@@ -312,138 +418,33 @@ a {
 	    color: $page_background;
 	}
 
-	li {
-	    padding: .5ex 0;
-
-	    a {
-		color: inherit;
-	    }
-	}
+        li a {
+            color: inherit;
+        }
     }
 
-    #admin {
-	ul {
-	    transition: max-height 1s ease-out;
-	    max-height: 4.5em;
-	    overflow: hidden;
-
-	    li + li + li {
-		transition: opacity .5s ease-out .5s;
-		opacity: 0;
-	    }
-	}
-
-	&:hover ul {
-	    max-height: 30em;
-	    transition-delay: .25s;
-
-	    li + li + li {
-		opacity: 1;
-		transition-delay: .25s;
-	    }
-	}
-    }
-
-    #citation {
-	p {
-	    font-size: 140%;
-	    font-style: italic;
-	    text-align: left;
-	    white-space: pre-wrap;
-	}
-
-	.signature
-	{
-	    font-size: 0.8em;
-	    font-weight: bold;
-	    font-style: italic;
-	    text-align: right;
-	}
-    }
-
-    #aside
-    {
-	padding-top: 2em;
-	padding-bottom: 4em;
-
-	.section > * + * {
-	    margin-left: 1ex;
-	}
-
-	.h, li a {
-	    font-size: 130%;
-	}
-
-	.h {
-	    @include headfont;
-	    text-align: right;
-	    margin: 0;
-	    padding: 1ex;
-	    max-height: 3em;
-	    color: lighten($content_background, 10%);
-	    background: $highlight_color;
-	    white-space: nowrap;
-	    overflow: hidden;
-
-	    a {
-		color: inherit;
-		text-decoration: inherit;
-		font-size: inherit;
-	    }
-	}
-
-	li a {
-	    padding: .5ex 0 .5ex 2.5em;
-	    width: 100%;
-	}
-
-	li.current a {
-	    color: black;
-	    text-decoration: none;
-	    font-weight: bold;
-	}
+    #aside .h {
+	@include headfont;
+	color: lighten($content_background, 10%);
+	background: $highlight_color;
     }
 
     #aside, #footer {
-	ul {
-	    padding-left: 1ex;
+        ul li {
+            background-repeat: no-repeat;
+            background-position: left center;
+            background-size: auto 80%;
+            line-height: 1.5em;
 
-	    li {
-		list-style-type: none;
-		background-repeat: no-repeat;
-		background-position: left center;
-		background-size: auto 80%;
-		line-height: 1.5em;
-
-		a {
-		    display: inline-block;
-		    vertical-align: middle;
-
-		    &:hover {
-			text-shadow: 1pt 1pt 10pt rgba(50, 51, 48, .25);
-		    }
-		}
-	    }
+            a:hover {
+	        text-shadow: 1pt 1pt 10pt rgba(50, 51, 48, .25);
+            }
 	}
     }
 
     /* BRANCHE */
     #branche {
-	font-size: 9pt !important;
-
-	/* branche a un traitement *très* spéciale, on réinitialise tout */
-	* {
-	    position: static !important;
-	    top: 0 !important;
-	    margin: 0 !important;
-	    display: inline !important;
-	    padding: 0 !important;
-	    background: none !important;
-	}
-
 	.h {
-	    text-align: left;
-	    font-size: inherit;
 	    color: #483005 !important;
 	}
 
@@ -451,18 +452,6 @@ a {
 	    content: "/";
 	    margin: 0 1ex;
 	    color: $highlight_color;
-	}
-    }
-
-    /* CONSOLE */
-    #console, #login {
-	form {
-	    margin: 0;
-
-	    .buttonbox {
-		padding: 1ex;
-		display: block;
-	    }
 	}
     }
 
@@ -563,201 +552,27 @@ a {
 
     a.adminlink {
 	@include adminlink;
-
-	&.supprimer, &.admin, &.editer {
-	    width: 0;
-	    height: 0;
-	    overflow: hidden;
-	    background-repeat: no-repeat;
-	    background-size: auto 70%;
-	    background-position: center center;
-	    padding: 1.75em 1.75em 0 0;
-	}
-
-	&.supprimer {
-	    background-image: url("icones/supprimer.png");
-	}
-
-	&.admin {
-	    background-image: url("icones/settings.png");
-	}
-
-	&.editer {
-	    background-image: url("icones/pencil.png");
-	}
     }
 
-    td a.adminlink {
-	font-size: 80%;
-    }
-
-    ul.adminlinks {
-	position: absolute;
-	top: -.5ex;
-	right: 0;
-	margin: 0;
-	display: block;
-	text-align: right;
-	visibility: hidden;
-
-	li {
-	    display: inline-block;
-	    margin: 0 .5ex;
-
-	    a {
-		@include adminlink;
-		box-shadow: 2pt 4pt 1ex rgba(4, 4, 4, 0.5);
-	    }
-	}
-    }
-
-    :hover > ul.adminlinks {
-	visibility: visible;
-    }
-
-    .pages.links {
-	margin: 1ex;
-	text-align: center;
-	clear: both;
-
-	li {
-	    list-style: none;
-	    margin: 1ex;
-	    display: inline;
-
-	    &.current a {
-		color: black;
-		text-decoration: none;
-		font-weight: bold;
-	    }
-	}
+    ul.adminlinks li a {
+	@include adminlink;
+	box-shadow: 2pt 4pt 1ex rgba(4, 4, 4, 0.5);
     }
 
     /* Historique */
     #historique.pagelinks {
-	clear: both;
 	background: lighten($alt_background, 10%);
 	border-radius: 1ex;
-	padding: 1ex;
-	margin: 5em 3em 3em;
-	display: flex;
-	flex-direction: row-reverse;
-	flex-wrap: wrap;
 
 	.h {
 	    @include headfont;
-	    width: 100%;
-	    font-size: 1.5ex;
-	    margin-top: 0;
 	}
-
-	div.section {
-	    display: inline-block;
-	    vertical-align: top;
-	    width: 32.5%;
-	    min-width: 16em;
-	    max-width: 22em;
-	    padding: 1ex 2em;
-	    margin: 0;
-
-	    .h {
-		margin-bottom: .5ex;
-	    }
-	}
-
-	ul {
-	    display: flex;
-	    flex-direction: row-reverse;
-	    flex-wrap: wrap;
-	    justify-content: flex-end;
-	    margin: 0;
-	    padding: 0;
-
-	    li {
-		display: inline-block;
-		margin: .5ex;
-	    }
-	}
-
-	a {
-	    color: inherit !important;
-	}
-
-	.selectionnee a
-	{
-	    font-weight: bold;
-	    text-decoration: none;
-	    color: black;
-	}
-    }
-
-    /* Glisser-déposer */
-    .dojoDndItem {
-	cursor: pointer;
-    }
-
-    .dojoDndItemBefore,
-    .dojoDndItemBefore td {
-	border-top: 2px solid red;
-    }
-
-    .dojoDndItemAfter,
-    .dojoDndItemAfter td {
-	border-bottom: 2px solid red;
-    }
-
-    .dojoDndAvatar {
-	-moz-opacity: .75;
-	opacity: .75;
     }
 }
 
 @media print {
-    html, body {
-	font-size: 9pt;
-	font-family: serif;
-	background: white;
-	color: black;
-    }
-
-    body {
-	background-repeat: no-repeat;
-	background-position: 100% top;
-	background-size: 6em 6em;
-
-	&.suf {
-	    background-image: url("mouvements/suf.png");
-	}
-
-	&.fse {
-	    background-image: url("mouvements/fse.png");
-	}
-
-	&.europa {
-	    background-image: url("mouvements/europa.png");
-	}
-    }
-
-    .h, h3, h4, h5, h6 {
-	margin-bottom: 0;
-    }
-
-    a {
-	color: inherit;
-	text-decoration: none;
-    }
-
-    p {
-	margin-top: 0;
-    }
-
-    div.dialog {
-	font-size: 140%;
-    }
-
     #footer #about .author {
 	@include headfont;
-	font-size: 1.5em;
 	color: $highlight_color;
     }
 }

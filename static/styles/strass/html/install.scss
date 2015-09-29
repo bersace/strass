@@ -1,50 +1,15 @@
 /*-*- css -*-*/
 
-@import 'lib';
-
 .document #body {
     background: url("illustrations/ratelier.png") 1em 2em no-repeat;
     background-size: auto 16em;
     padding-top: 6em;
 }
 
-
-body.development div#body {
-    background: url("illustrations/travaux.png") 1em 10em no-repeat;
-    background-size: auto .7 * $taille_logo;
-}
-
 form.site {
     background: url("illustrations/panorama-scouts-du-monde.png") bottom no-repeat;
     background-size: auto 10em;
     padding-bottom: 15em;
-
-    #control-installation-site-mouvement span.control {
-	label {
-	    display: list-item;
-	    list-style-type: none;
-	    font-size: 130%;
-	    line-height: 2em;
-	    vertical-align: middle;
-	    padding-left: 3em;
-	    margin: 1ex 0;
-	    background-position: left;
-	    background-repeat: no-repeat;
-	    background-size: 2em auto;
-
-	    &.suf {
-		background-image: url("mouvements/suf.png");
-	    }
-
-	    &.fse {
-		background-image: url("mouvements/fse.png");
-	    }
-
-	    &.europa {
-		background-image: url("mouvements/europa.png");
-	    }
-	}
-    }
 }
 
 form.admin {
@@ -53,32 +18,8 @@ form.admin {
     padding: 0 10em;
 }
 
-#document #wait {
-    /* masqué par défaut, à activer en JS. On utilise visibility + height pour charger les images. */
-    visibility: hidden;
-    height: 0;
-    overflow: hidden;
-    margin: 0;
-    padding: 0;
-
-    &.show {
-	height: auto;
-	visibility: visible;
-	margin: inherit;
-    }
-
-    .h {
-	background: url("illustrations/froissartage.png") bottom no-repeat;
-	background-size: 20em auto;
-	padding-bottom: 18em;
-    }
-
-    img { /* animation de patience */
-	display: block;
-	margin: 1em auto;
-    }
-
-    p {
-	text-align: center;
-    }
+#document #wait .h {
+    background: url("illustrations/froissartage.png") bottom no-repeat;
+    background-size: 20em auto;
+    padding-bottom: 18em;
 }
