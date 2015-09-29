@@ -91,7 +91,7 @@ class Wtk_Document extends Wtk_Section
 		$this->finalize();
 		if (!$this->template) {
 			if (!count($this->styles))
-			  $this->styles = array(Wtk_Document_Style::factory('default'));
+                $this->styles = array(new Wtk_Document_Style_Empty());
 
 			if (!$this->default_style)
 				$this->default_style = $this->styles[0];

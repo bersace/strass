@@ -109,3 +109,32 @@ class Wtk_Document_Style {
         return $files;
     }
 }
+
+class Wtk_Document_Style_Empty extends Wtk_Document_Style {
+    function __construct() {
+        $this->id = '';
+        $this->title = '';
+    }
+
+    function getFavicon()
+    {
+        return self::$basestyle.'/favicon.png';
+    }
+
+    function getFiles(array $components, $format = 'Xhtml') {
+        $files = array();
+
+        switch ($format) {
+        case 'Xhtml':
+        case 'Html5':
+            $files = $this->findCss(
+                $components,
+                self::$basestyle,
+                'static/styles/' . basename(self::$basestyle) . '/'
+            );
+          break;
+        }
+
+        return $files;
+    }
+}
