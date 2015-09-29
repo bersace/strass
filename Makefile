@@ -67,8 +67,13 @@ serve: all
 # Restaure les données uniquement. Pour tester la migration.
 .PHONY: restore
 restore:
+ifeq (,$(wildcard $(STRASS_ROOT).git/))
+	$(GIT) reset --hard
+	$(GIT) clean --force -d
+else
 	git checkout -- $(STRASS_ROOT)
 	git clean --force -d $(STRASS_ROOT)
+endif
 
 .PHONY: dbshell
 dbshell:
