@@ -26,7 +26,7 @@ class Wtk_Document_Style {
         if (!file_exists($basedir))
           continue;
 
-        foreach(wtk_glob($basedir . '*/metas.php') as $meta) {
+        foreach(glob($basedir . '*/metas.php') as $meta) {
           $name = basename(dirname($meta));
           array_push($styles, new self($name, $basedir));
         }
