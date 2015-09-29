@@ -4,6 +4,7 @@ class Wtk_Document_Style_NotFound extends Exception {}
 
 class Wtk_Document_Style {
   static public $path;
+  static public $basestyle;
     public $id;
     public $metas;
     protected $basedir;
@@ -31,17 +32,6 @@ class Wtk_Document_Style {
         }
       }
       return $styles;
-    }
-
-    static function findBaseStyleDir()
-    {
-      foreach(self::$path as $basedir) {
-          if (file_exists($dir = $basedir . 'base/')) {
-              return $dir;
-          }
-      }
-
-      throw new Exception("Pas de style de base");
     }
 
     function __construct($id = 'default', $basedir = 'static/styles/') {
@@ -110,7 +100,7 @@ class Wtk_Document_Style {
         case 'Xhtml':
         case 'Html5':
             $files = array_merge(
-                $this->findCss($components, self::findBaseStyleDir(), 'static/styles/base/'),
+                $this->findCss($components, self::$basestyle, 'static/styles/' . basename(self::$basestyle) . '/'),
                 $this->findCss($components, $this->basedir, $this->baseurl)
             );
           break;

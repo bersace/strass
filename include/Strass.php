@@ -56,9 +56,11 @@ class Strass {
     $loader->registerNamespace('Wtk_');
     $loader->registerNamespace('Strass_');
 
-    Wtk_Document_Style::$path = array(Strass::getPrefix() . 'static/styles/',
-				      'data/styles/'
-				      );
+    Wtk_Document_Style::$path = array(
+        Strass::getPrefix() . 'static/styles/',
+        'data/styles/'
+    );
+    Wtk_Document_Style::$basestyle = Strass::getPrefix() . 'static/styles/strass/';
   }
 
   static function main()
