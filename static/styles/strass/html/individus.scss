@@ -160,7 +160,7 @@ form.recherche {
     }
 
     div.entry {
-	width: 33%;
+	width: 75%;
 
 	input {
 	    width: 100%;
@@ -176,6 +176,8 @@ form.recherche {
             display: block;
             font-size: 0;
             text-align: center;
+            margin: 0;
+            padding: 0;
 
             li:first-child {
                 border-radius: 1em 0 0 1em;
