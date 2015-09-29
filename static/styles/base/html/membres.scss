@@ -8,13 +8,6 @@
 }
 
 @media screen {
-    #document > form,
-    #document.inscriptions table,
-    #document.parametres #parametres
-    {
-	@include minipage;
-    }
-
     .valider form {
 	.h {
 	    clear: both;

@@ -2,20 +2,10 @@
 
 @import "lib";
 
-#document form {
-    @include minipage;
-}
-
 #document.calendrier #calendrier {
     width: 80%;
     max-width: 45em;
     margin: 1em auto;
-
-    background-image: url("illustrations/panorama-raid.png");
-    background-position: center bottom;
-    background-size: 100% auto;
-    background-repeat: no-repeat;
-    padding-bottom: 25em;
 }
 
 #calendrier table {

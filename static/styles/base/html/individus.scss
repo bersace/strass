@@ -52,15 +52,6 @@
     margin: 0 auto;
 }
 
-.individus.editer form,
-.individus.inscrire form,
-.individus.reinscrire form,
-.individus.desinscrire form,
-.individus.supprimer form
-{
-    @include minipage;
-}
-
 #document.individus.inscrire .effectifs
 {
     width: 80%;
@@ -178,12 +169,6 @@ form.recherche {
 }
 
 #document.annuaire {
-    background-image: url("illustrations/ancien-moderne.png");
-    background-position: 5% bottom;
-    background-size: 15em auto;
-    background-repeat: no-repeat;
-    padding-bottom: 20em;
-
     #filtres {
         margin: 1em auto;
 

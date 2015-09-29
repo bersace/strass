@@ -25,16 +25,6 @@
     padding-top: 1em;
 }
 
-#document.fonder form,
-#document.editer form,
-#document.parametres form,
-#document.supprimer form,
-#document.inscrire form,
-#document.fermer form
-{
-    @include minipage;
-}
-
 #document.archives
 {
     background-image: url("illustrations/ancien-moderne.png");

@@ -6,7 +6,8 @@
     &.parametres form,
     &.unites table,
     &.membres table,
-    &.individus table
+    &.individus table,
+    &.event #event
     {
 	@include minipage;
     }
@@ -45,13 +46,9 @@
 	width: 100%;
     }
 
-    &.event #event {
-	@include minipage;
-
-	#detail {
-	    width: 100%;
-	    overflow: auto;
-	}
+    &.event #event #detail {
+	width: 100%;
+	overflow: auto;
     }
 
     tr.critical, tr.error {

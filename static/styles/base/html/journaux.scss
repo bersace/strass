@@ -2,14 +2,6 @@
 
 @import "lib";
 
-#document form,
-#document > .section,
-#document > .signature,
-#boulet, #article
-{
-    @include minipage;
-}
-
 .boulet {
     font-weight: bold;
     font-size: 120%;
@@ -66,10 +58,6 @@
 
 	.suite, .signature { display: none;  }
     }
-}
-
-form .check {
-    text-align: center;
 }
 
 #document.ecrire .entry.input textarea,

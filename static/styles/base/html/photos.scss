@@ -127,12 +127,3 @@
 	line-height: 24em;
     }
 }
-
-#document.envoyer form,
-#document.editer form,
-#document.supprimer form,
-.voir #commentaires,
-.voir #description
-{
-    @include minipage;
-}

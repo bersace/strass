@@ -9,12 +9,6 @@
     background-repeat: no-repeat;
     padding-bottom: 20em;
 
-    & > .section,
-    & > .form
-    {
-	@include minipage;
-    }
-
     .section.message {
 	@include message;
     }
