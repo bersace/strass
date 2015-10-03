@@ -156,6 +156,7 @@ tr.odd {
 
 /* Formulaire */
 input[type=text],
+input[type=search],
 input[type=password],
 textarea
 {
@@ -165,6 +166,7 @@ textarea
 }
 
 input[type=text]:focus,
+input[type=search]:focus,
 input[type=passwrd]:focus,
 textarea:focus
 {
