@@ -288,7 +288,7 @@ tr td .check label
     }
 }
 
-a.vignette
+#document a.vignette
 {
     display: block;
     width: $taille_vignette;
@@ -359,9 +359,7 @@ a.vignette
 #document > form,
 #document.activites #calendrier,
 #document.citation .section.citation,
-#document.journal > .section,
-#document.journal > .signature,
-#boulet, #article,
+#document.journaux.index > .article,
 #document.inscriptions table,
 #document.photos.voir #commentaires,
 #document.photos.voir #description,

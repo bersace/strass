@@ -18,6 +18,30 @@
     margin: 0 auto;
 }
 
+#document .article {
+    @include minipage;
+
+    position: relative;
+    padding: 2em;
+    background: $alt_background;
+
+    > .h {
+        position: static;
+        display: block;
+        margin: 0 1em 1em 0;
+        padding: 0;
+	font-size: 140%;
+    }
+
+    .avatar {
+        position: absolute;
+        float: none;
+        margin: 0;
+        top: 1em;
+        left: 105%;
+    }
+}
+
 #document .avatar {
     position: relative;
     float: right;
@@ -36,24 +60,11 @@
     .article {
 	font-size: 120%;
 	clear: both;
-	position: relative;
 	margin-bottom: 4em;
-
-	.avatar {
-	    margin-right: -12em;
-	}
-
-	.h {
-	    font-size: 140%;
-	    margin-left: -1em;
-	}
+        margin: 1em auto 4em;
 
 	.contenu {
 	    font-size: 110%;
-	}
-
-	& + .article {
-	    border-top: 1pt dashed $highlight_color;
 	}
 
 	.suite, .signature { display: none;  }

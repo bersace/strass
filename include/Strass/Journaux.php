@@ -199,10 +199,8 @@ class Article extends Strass_Db_Table_Row_Abstract implements Zend_Acl_Resource_
   {
     if ($this->boulet)
       return $this->boulet;
-    elseif ($generate)
-      return wtk_first_lines($this->article);
     else
-      return null;
+      return $this->article;
   }
 
   function findAuteur()

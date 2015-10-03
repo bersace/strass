@@ -57,6 +57,7 @@ a {
 .development #body {
     background: url("ui/travaux.png") 4% top no-repeat;
     background-size: auto .7 * $taille_logo;
+    background-position: 1% 2ex;
 }
 
 #header {
@@ -91,6 +92,8 @@ a {
     }
 
     div.dialog {
+        padding-left: 48px;
+
 	&.info {
 	    color: $info;
 	    background-image: url("ui/information.png");
