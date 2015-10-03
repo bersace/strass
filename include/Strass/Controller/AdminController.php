@@ -1,7 +1,6 @@
 <?php
 
 require_once 'Strass/Citation.php';
-require_once 'Strass/Livredor.php';
 
 function strass_admin_count_level($count, $warn, $critical)
 {
@@ -62,13 +61,6 @@ class AdminController extends Strass_Controller_Action
         $m->append(
             "Membres", $this->_helper->Url('index', 'individus', null, array('filtre' => 'membres')),
             $count, 'notice');
-
-        $t = new Livredor;
-        $count = $t->countRows($t->selectAmoderer());
-        $action = $count ? 'moderer' : 'index';
-        $m->append(
-            "Nouveaux messages du livre d'or", $this->_helper->Url($action, 'livredor'),
-            $count, strass_admin_count_level($count, 1, 10));
 
         $t = new Citation;
         $count = $t->countRows();
