@@ -264,11 +264,7 @@ tr td .check label
 /* Vignette seule, pour suppression */
 #vignette {
     text-align: center;
-    margin: 1em auto;
-
-    .vignette {
-	display: inline-block;
-    }
+    width: 100%;
 }
 
 .vignettes
@@ -290,7 +286,7 @@ tr td .check label
 
 #document a.vignette
 {
-    display: block;
+    display: inline-block;
     width: $taille_vignette;
     text-overflow: ellipsis;
     text-align: center;
@@ -398,11 +394,6 @@ tr td .check label
 	font-size: 110%;
 	margin: 1em;
     }
-}
-
-#document.documents.supprimer #vignette {
-    text-align: center;
-    margin: 1em auto;
 }
 
 #document.liens {
