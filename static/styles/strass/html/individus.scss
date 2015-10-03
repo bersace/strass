@@ -126,6 +126,8 @@ ul.annuaire {
 	    @include smallcontent;
 	    margin-bottom: 1em;
 	    width: 90%;
+            min-height: $taille_mini_vignette + 24;
+            padding: 1ex;
 
 	    & > .h {
 		padding-left: $taille_mini_vignette + 10;
