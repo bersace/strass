@@ -2,7 +2,7 @@
 
 @import "lib";
 
-.admin {
+#document.admin {
     &.parametres form,
     &.unites table,
     &.membres table,
@@ -26,8 +26,12 @@
 	}
     }
 
-    &.index h2 {
-	margin: 0 0 1ex;
+    &.index {
+        min-height: 60em;
+
+        h2 {
+	    margin: 0 0 1ex;
+        }
     }
 
     &.unites {
