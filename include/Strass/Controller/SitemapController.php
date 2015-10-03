@@ -27,7 +27,6 @@ class SitemapController extends Zend_Controller_Action
 
     $pages = array(
 		   array('uri' => '/'),
-		   array('controller' => 'livredor'),
 		   array('controller' => 'liens'),
 		   array('controller' => 'citation'),
 		   );
