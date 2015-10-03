@@ -134,6 +134,7 @@ backup:
 	$(GIT) reset --hard
 	$(GIT) clean -df
 	$(REMOTE) --verbose $@
+	$(GIT) add -u .
 	$(GIT) add .
 	$(COMMIT) BACKUP
 
