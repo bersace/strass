@@ -2,7 +2,7 @@
 
 final class Strass_Version {
   const PROJET = '2.0dev';
-  const DATA = 18;
+  const DATA = 19;
 
   static $version_filename = 'private/STRASS_VERSION';
 
