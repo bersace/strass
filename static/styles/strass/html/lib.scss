@@ -39,12 +39,14 @@ $taille_mini_vignette: $taille_vignette / 2;
 @mixin smallcontent {
     position: relative;
     display: block;
-    width: 80%;
+    width: 100%;
     max-width: 55em;
+    min-height: $taille_vignette + 68;
     margin: 1em auto 4em;
-    padding: 1ex;
+    padding: 2em;
     font-size: 130%;
     background: $alt_background;
+    text-align: left;
 
     & > .h {
 	font-size: 140%;

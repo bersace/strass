@@ -5,12 +5,7 @@
 /* ACCUEIL */
 #presentation {
     @include smallcontent;
-    width: 100%;
     max-width: 40em;
-    min-height: $taille_vignette;
-    margin: 0 auto;
-    padding: 2em;
-    text-align: left;
 
     .image {
 	float: left;
