@@ -54,9 +54,11 @@ class Strass_Controller_Plugin_Auth extends Zend_Controller_Plugin_Abstract
         $config = Zend_Registry::get('config');
         try {
             $lifetime = $config->system->duree_connexion;
-            Zend_Session::setOptions(array('cookie_path'	=> '/',
-            'cookie_lifetime'=> $lifetime,
-            'cache_expire'	=> $lifetime));
+            Zend_Session::setOptions(array(
+                'cookie_path'	=> '/',
+                'cookie_lifetime'=> $lifetime,
+                'cache_expire'	=> $lifetime,
+            ));
         } catch (Exception $e) {
             error_log((string) $e);
         }
@@ -83,10 +85,11 @@ class Strass_Controller_Plugin_Auth extends Zend_Controller_Plugin_Abstract
         $this->db = new Strass_Auth_Adapter_DbTable($db, 'user', 'username', 'password');
 
         // HTTP_AUTH
-        $config = array('accept_schemes' => 'digest',
-        'realm'	     => $config->system->realm,
-        'digest_domains' => '/',
-        'nonce_timeout'  => $config->system->duree_connexion);
+        $config = array(
+            'accept_schemes' => 'digest',
+            'realm'	     => $config->system->realm,
+            'digest_domains' => '/',
+            'nonce_timeout'  => $config->system->duree_connexion);
         $this->http = new Zend_Auth_Adapter_Http($config);
         $resolver = new Strass_Auth_Adapter_Http_Resolver_DbTable($db, 'user', 'username', 'password');
         $this->http->setDigestResolver($resolver);
