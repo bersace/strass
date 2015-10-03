@@ -14,9 +14,6 @@ class Strass_Addon_Menu extends Strass_Addon_Liens
             'acl'   => array(null, 'membres', 'voir'),
         ),
         array(
-            'metas' => "Livre d'or",
-            'url'   => array('controller' => 'livredor')),
-        array(
             'metas' => 'Liens',
             'url'   => array('controller' => 'liens')),
         array(
