@@ -68,11 +68,11 @@ serve: all
 .PHONY: restore
 restore:
 ifeq (,$(wildcard $(STRASS_ROOT).git/))
-	$(GIT) reset --hard
-	$(GIT) clean --force -d
-else
 	git checkout -- $(STRASS_ROOT)
 	git clean --force -d $(STRASS_ROOT)
+else
+	$(GIT) reset --hard
+	$(GIT) clean --force -d
 endif
 
 .PHONY: dbshell
