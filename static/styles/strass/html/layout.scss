@@ -378,6 +378,12 @@ tr td .check label
     }
 }
 
+#document.liens.editer form {
+    width: auto;
+    max-width: none;
+}
+
+
 .section.document {
     @include smallcontent;
 
@@ -458,7 +464,7 @@ tr td .check label
     }
 
     #document {
-	padding: .9em;
+	padding: 2em;
 	padding-top: 5em;
 	margin-right: $taille_menu;
 	min-height: 40em;
@@ -511,7 +517,7 @@ tr td .check label
 		max-width: 40em;
 	    }
 
-	    .date, .author {
+	    .date, .author, .title {
 		display: none;
 	    }
 	}

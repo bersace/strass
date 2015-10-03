@@ -411,22 +411,39 @@ a.vignette
     /* Glisser-déposer */
     .dojoDndItem {
 	cursor: pointer;
+
+        td {
+            border-style: solid;
+            border-color: $content_background;
+            border-width: 0;
+            transition: border-top-width .25s, border-bottom .25s;
+        }
     }
 
-    .dojoDndItemBefore,
-    .dojoDndItemBefore td {
-	border-top: 2px solid red;
+    .dojoDndItemAnchor.dojoDndItemBefore td,
+    .dojoDndItemAnchor.dojoDndItemAnchor td
+     {
+         border: none !important;
+     }
+
+    .dojoDndItemBefore td
+    {
+        border-top-width: 2em;
     }
 
-    .dojoDndItemAfter,
-    .dojoDndItemAfter td {
-	border-bottom: 2px solid red;
+    .dojoDndItemAfter td
+    {
+        border-bottom-width: 2em;
+    }
+
+    .dojoDndAvatarHeader {
+        display: none;
     }
 
     .dojoDndAvatar {
-	-moz-opacity: .75;
-	opacity: .75;
+	opacity: .9;
     }
+
 }
 
 @media print {
