@@ -58,6 +58,7 @@ class Strass_Controller_Plugin_Auth extends Zend_Controller_Plugin_Abstract
                 'cookie_path'	=> '/',
                 'cookie_lifetime'=> $lifetime,
                 'cache_expire'	=> $lifetime,
+                'httponly' => true,
             ));
         } catch (Exception $e) {
             error_log((string) $e);
