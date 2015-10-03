@@ -54,7 +54,6 @@ class Strass_Controller_Plugin_Auth extends Zend_Controller_Plugin_Abstract
         $config = Zend_Registry::get('config');
         try {
             $lifetime = $config->system->duree_connexion;
-            Zend_Session::rememberMe($lifetime);
             Zend_Session::setOptions(array('cookie_path'	=> '/',
             'cookie_lifetime'=> $lifetime,
             'cache_expire'	=> $lifetime));
