@@ -52,7 +52,7 @@ class Text_Wiki_Parse_List extends Text_Wiki_Parse {
     *
     */
 
-    var $regex = '/^((\*|#) .*\n)(?!\2 |(?: {1,}((?:\*|#) |\n)))/Usm';
+    var $regex = '/^((\*|#|-) .*\n)(?!\2 |(?: {1,}((?:\*|#) |\n)))/Usm';
 
 
     /**
@@ -106,7 +106,7 @@ class Text_Wiki_Parse_List extends Text_Wiki_Parse {
         // populate $list with this set of matches. $matches[1] is the
         // text matched as a list set by parse().
         preg_match_all(
-            '=^( {0,})(\*|#) (.*)$=Ums',
+            '=^( {0,})(\*|#|-) (.*)$=Ums',
             $matches[1],
             $list,
             PREG_SET_ORDER
@@ -125,7 +125,7 @@ class Text_Wiki_Parse_List extends Text_Wiki_Parse {
             $level = strlen($val[1]) + 1;
 
             // get the list item type
-            if ($val[2] == '*') {
+            if ($val[2] == '*' || $val[2] == '-') {
                 $type = 'bullet';
             } elseif ($val[2] == '#') {
                 $type = 'number';
