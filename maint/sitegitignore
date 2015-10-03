@@ -1,5 +1,4 @@
 .*
 !.gitignore
-*.scss
 maintenance.html
 private/cache/
