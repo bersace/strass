@@ -35,6 +35,11 @@ class Strass_Pages_Renderer_Individus extends Wtk_Pages_Renderer
         if ($telephone = $i->getTelephone())
             $l->addItem()->addFlags('telephone')->addLink("tel:".$telephone, $telephone);
     }
+
+    function renderEmpty($container)
+    {
+        return $container->addParagraph("Aucun résultat")->addFlags('empty');
+    }
 }
 
 $this->document->addFlags('annuaire');
