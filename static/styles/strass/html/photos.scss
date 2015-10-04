@@ -64,7 +64,7 @@
 	    margin: 0;
 	    padding: 0;
 	    width: 100%;
-	    height: 100%;
+	    height: 0;
 	    line-height: $height;
 
 	    a {
@@ -78,8 +78,9 @@
 
 	    .item {
 		position: absolute;
+                top: $height / 3;
 		width: 25%;
-		height: 100%;
+		height: $height / 3;
 		background-repeat: no-repeat;
 		background-size: 6em auto;
 	    }
