@@ -47,13 +47,13 @@ END;
 
 CREATE TRIGGER individu_after_update_fts AFTER UPDATE ON individu BEGIN
   INSERT INTO individu_fts (docid, content)
-  SELECT * FROM individu_content AS individu
+  SELECT individu.* FROM individu_content AS individu
   WHERE individu.id = NEW.id;
 END;
 
 CREATE TRIGGER individu_after_insert_fts AFTER INSERT ON individu BEGIN
   INSERT INTO individu_fts (docid, content)
-  SELECT * FROM individu_content AS individu
+  SELECT individu.* FROM individu_content AS individu
   WHERE individu.id = NEW.id;
 END;
 
@@ -68,7 +68,7 @@ END;
 CREATE TRIGGER appartenance_after_insert_fts AFTER INSERT ON appartenance BEGIN
   DELETE FROM individu_fts WHERE docid=new.individu;
   INSERT INTO individu_fts (docid, content)
-  SELECT * FROM individu_content AS individu
+  SELECT individu.* FROM individu_content AS individu
   WHERE individu.id = NEW.individu;
 END;
 
@@ -86,7 +86,7 @@ END;
 
 CREATE TRIGGER unite_after_update_fts AFTER UPDATE ON unite BEGIN
   INSERT INTO individu_fts (docid, content)
-  SELECT * FROM individu_content AS individu
+  SELECT individu.* FROM individu_content AS individu
   -- Mettre à jour uniquement les individus de cette unité
   JOIN appartenance AS ca ON ca.individu = individu.id AND ca.unite = NEW.id;
 
