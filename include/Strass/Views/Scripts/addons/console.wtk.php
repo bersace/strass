@@ -13,10 +13,6 @@ if ($user->username == 'nobody') {
 				'action'	=> 'inscription'),
 			  "S'enregistrer", true))->addFlags('inscription');
 
-  $l->addItem($this->lien(array('controller'	=> 'membres',
-				'action'	=> 'index'),
-			  "Connection sécurisée", true));
-
   $model = $this->auth_login_model;
   $form = $section->addForm($model);
   $form->addEntry('username', 34);
