@@ -29,6 +29,6 @@ $document->header->setTitle(new Wtk_Link('/', Strass::getSiteTitle()));
 $document->header->addFlags($mouvement);
 $dialog = $document->addDialog("Webmestre au travail !");
 $dialog->addFlags('error');
-$dialog->addSection('aide')->addParagraph("Le site est actuellement en maintance. Désolé et à bientot !");
+$dialog->addSection('aide')->addParagraph("Le site est actuellement en maintance. Désolé et à bientôt !");
 $render = Wtk_Render::factory($document, 'Html5');
 echo $render->render();
