@@ -7,6 +7,11 @@ body.development div#body {
     background-size: auto .7 * $taille_logo;
 }
 
+#body #document form {
+    width: auto;
+    max-width: none;
+}
+
 #control-installation-site-mouvement span.control label {
     display: list-item;
     list-style-type: none;
