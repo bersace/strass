@@ -44,7 +44,7 @@ class Strass_View_Helper_CvScout
 
     $t = new Wtk_Table($m, true, array('acl', 'role'));
     $config = Zend_Registry::get('config');
-    $t->addFlags('effectifs', $config->system->mouvement, 'appartenances');
+    $t->addFlags('effectifs', $config->system->association, 'appartenances');
     $t->addNewColumn('Poste', new Wtk_Table_CellRenderer_Text('text', 'accr'));
     $t->addNewColumn('Unité', new Wtk_Table_CellRenderer_Link('href', 'unite_lien',
 							      'label', 'unite_nom'), 'unite');

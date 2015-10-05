@@ -37,7 +37,7 @@ class AdminController extends Strass_Controller_Action
             'version-data',
             strass_admin_count_level(Strass_Version::DATA - Strass_Version::dataCurrent(),
             1, 1)));
-        $m->append('Mouvement', null, strtoupper($config->system->mouvement), 'notice');
+        $m->append('Association', null, strtoupper($config->system->association), 'notice');
         $t = new Inscriptions;
         $count = $t->countRows();
         $m->append(

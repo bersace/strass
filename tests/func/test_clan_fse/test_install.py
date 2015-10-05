@@ -11,7 +11,7 @@ class TestInstaller(ClientTestCase):
             .get()
 
             # Étape association
-            .click('input#installation-site-mouvement-fse')
+            .click('input#installation-site-association-fse')
             .click('button[type=submit]')
 
             # Étape administrateur

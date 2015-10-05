@@ -2,7 +2,7 @@
 
 class IndexController extends Strass_Installer_Controller_Action
 {
-    static $mouvements = array(
+    static $associations = array(
         'suf' => 'Scouts unitaires de France',
         'fse' => "Association guides et scouts d'Europe",
     );
@@ -12,7 +12,7 @@ class IndexController extends Strass_Installer_Controller_Action
         $m = new Wtk_Form_Model('installation');
 
         $g = $m->addGroup('site', "Le site" );
-        $i = $g->addEnum('mouvement', "Mouvement", null, self::$mouvements);
+        $i = $g->addEnum('association', "Association", null, self::$associations);
         $m->addConstraintRequired($i);
 
         $g = $m->addGroup('admin', "Votre compte" );

@@ -21,11 +21,11 @@ $document = new Wtk_Document(new Wtk_Metas(array('DC.Title' => 'Erreur fatale'))
 $style = $config->get('system/style', 'strass');
 $document->setStyle(Wtk_Document_Style::factory($style));
 $document->addStyleComponents('layout', 'minilayout', 'common');
-$mouvement = $config->get('system/mouvement', null);
-$document->addFlags($mouvement, 'error');
+$association = $config->get('system/association', null);
+$document->addFlags($association, 'error');
 $document->embedStyle();
 $document->header->setTitle(new Wtk_Link('/', Strass::getSiteTitle()));
-$document->header->addFlags($mouvement);
+$document->header->addFlags($association);
 
 $dialog = $document->addDialog("Oups !");
 $dialog->addFlags('error');

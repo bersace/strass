@@ -13,15 +13,15 @@ class Strass_Pages_Renderer_Install extends Wtk_Pages_Renderer_Form
   function renderSite($g, $f)
   {
     $this->view->document->setTitle("Votre unité");
-    $f->addSelect('site/mouvement', false);
+    $f->addSelect('site/association', false);
   }
 
   function renderAdmin($g, $f)
   {
-    $mouvement = $f->getModel()->get('site/mouvement');
+    $association = $f->getModel()->get('site/association');
     $this->view->document->setTitle("Votre compte");
-    $this->view->document->addFlags($mouvement);
-    $this->view->document->header->addFlags($mouvement);
+    $this->view->document->addFlags($association);
+    $this->view->document->header->addFlags($association);
 
     $d = $this->view->document->addDialog("Initialisation")
       ->setId('wait');

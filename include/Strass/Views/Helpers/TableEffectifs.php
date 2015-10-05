@@ -24,7 +24,7 @@ class Strass_View_Helper_TableEffectifs
     $config = Zend_Registry::get('config');
     $type = $unite->findParentTypesUnite();
 
-    $t->addFlags('effectifs', $config->system->mouvement, $type->slug,
+    $t->addFlags('effectifs', $config->system->association, $type->slug,
 		 $fiches ? 'fiches' : 'sansfiche');
 
     if ($type->virtuelle)

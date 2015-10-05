@@ -12,7 +12,7 @@ body.development div#body {
     max-width: none;
 }
 
-#control-installation-site-mouvement span.control label {
+#control-installation-site-association span.control label {
     display: list-item;
     list-style-type: none;
     font-size: 130%;
@@ -25,15 +25,15 @@ body.development div#body {
     background-size: 2em auto;
 
     &.suf {
-        background-image: url("mouvements/suf.png");
+        background-image: url("associations/suf.png");
     }
 
     &.fse {
-        background-image: url("mouvements/fse.png");
+        background-image: url("associations/fse.png");
     }
 
     &.europa {
-        background-image: url("mouvements/europa.png");
+        background-image: url("associations/europa.png");
     }
 }
 

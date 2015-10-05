@@ -72,8 +72,8 @@ CHANGEMENTS WEBMESTRE
    opérations dessus, et de sauvegarder les données dans git. Voir
    make help pour ça.
 
- - Un assistant d'installation permet d'initialiser la base selon le
-   mouvement scout et de créer le premier compte administrateur.
+ - Un assistant d'installation permet d'initialiser la base selon l'association
+   scoute et de créer le premier compte administrateur.
 
  - Les admins peuvent éditer et supprimer les citations.
 
@@ -93,7 +93,7 @@ CHANGEMENTS WEBMESTRE
 
  - Un thème par défaut est proposé. Avec visionneuse de photos, menu
    déroulant, barettes de poste dans une unité, compatible
-   multi-mouvement, impressions des effectifs et calendrier, etc. Peut
+   multi-association, impressions des effectifs et calendrier, etc. Peut
    servir de base pour faire un style personnalisé.
 
  - L'année est un paramètre de base dans les URL

@@ -16,7 +16,7 @@ abstract class Strass_Format_Wtk extends Strass_Format
     $an = strtolower($request->getActionName());
     $mn = strtolower($request->getModuleName());
 
-    $mouvement = $config->get('system/mouvement');
+    $association = $config->get('system/association');
 
     $view = $controller->view;
     $document = new Wtk_Document($page->metas);
@@ -31,7 +31,7 @@ abstract class Strass_Format_Wtk extends Strass_Format
         error_log("Style " . $style . " inconnu.");
     }
 
-    $document->addStyleComponents('layout', 'common', $cn, $mn, $mouvement);
+    $document->addStyleComponents('layout', 'common', $cn, $mn, $association);
 
     if ($view->unite)
       $unite = $view->unite;
@@ -49,8 +49,8 @@ abstract class Strass_Format_Wtk extends Strass_Format
       $document->addFlags($unite->slug, $unite->findParentTypesUnite()->slug);
     $document->addFlags(Strass::onDevelopment() ? 'development' : 'production');
 
-    $document->addFlags($mouvement);
-    $document->header->addFlags($mouvement);
+    $document->addFlags($association);
+    $document->header->addFlags($association);
     $document->footer->addSection('wrapper');
 
     $link = new Wtk_Link('/', $page->metas->site);

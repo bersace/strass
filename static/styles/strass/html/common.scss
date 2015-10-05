@@ -66,15 +66,15 @@ a {
     background-size: $taille_logo auto;
 
     &.suf {
-    	background-image: url("mouvements/suf.png");
+    	background-image: url("associations/suf.png");
     }
 
     &.fse {
-    	background-image: url("mouvements/fse.png");
+    	background-image: url("associations/fse.png");
     }
 
     &.europa {
-    	background-image: url("mouvements/europa.png");
+    	background-image: url("associations/europa.png");
     }
 }
 
@@ -460,15 +460,15 @@ a.vignette
 	background-size: 6em 6em;
 
 	&.suf {
-	    background-image: url("mouvements/suf.png");
+	    background-image: url("associations/suf.png");
 	}
 
 	&.fse {
-	    background-image: url("mouvements/fse.png");
+	    background-image: url("associations/fse.png");
 	}
 
 	&.europa {
-	    background-image: url("mouvements/europa.png");
+	    background-image: url("associations/europa.png");
 	}
     }
 

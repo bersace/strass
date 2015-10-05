@@ -7,6 +7,6 @@ class TestInstaller(ClientTestCase):
             .get()
             .click('button[type=submit]')
 
-            # S'assurer que le champ mouvement est refusé.
-            .find('#control-installation-site-mouvement.invalid')
+            # S'assurer que le champ association est refusé.
+            .find('#control-installation-site-association.invalid')
         )

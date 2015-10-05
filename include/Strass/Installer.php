@@ -59,10 +59,10 @@ class Strass_Installer
     $config = array ('metas' => array ('title' => null,
 				       'author' => null,
 				       'creation' => strftime('%Y'),
-				       'subject' => 'scout,' . $this->data['site']['mouvement'],
+				       'subject' => 'scout,' . $this->data['site']['association'],
 				       ),
 		     'system' => array ('short_title' => null,
-					'mouvement' => $this->data['site']['mouvement'],
+					'association' => $this->data['site']['association'],
 					'realm' => $this->generateRealm(),
 					'duree_connexion' => 2678400,
 					'admin' => $this->data['admin']['adelec'],
@@ -83,9 +83,9 @@ class Strass_Installer
        temps, et nous somme online */
     $db = Strass_Db::setup($this->dbname, true);
 
-    $dump = $this->sql_dir . '/dump-' .$this->data['site']['mouvement']. '.sql';
+    $dump = $this->sql_dir . '/dump-' .$this->data['site']['association']. '.sql';
     if (!file_exists($dump))
-      throw new Exception("Pas de données pour ce mouvement !");
+      throw new Exception("Pas de données pour cette association !");
     $sql = file_get_contents($dump);
     $snippets = array_filter(explode(";\n", $sql));
     foreach($snippets as $snippet)
