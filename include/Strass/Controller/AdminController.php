@@ -159,6 +159,11 @@ class AdminController extends Strass_Controller_Action
 
         if ($m->validate()) {
             $new = new Strass_Config_Php('strass', $m->get());
+            /* Migration en douceur de mouvement vers association. */
+            if ($config->system->mouvement) {
+                $new->system->association = $config->system->mouvement;
+                unset($new->system->mouvement);
+            }
             $new->system->short_title = $new->metas->short_title;
             unset($new->metas->short_title);
             $config->merge($new);
