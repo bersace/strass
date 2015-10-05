@@ -12,28 +12,43 @@ body.development div#body {
     max-width: none;
 }
 
-#control-installation-site-association span.control label {
-    display: list-item;
-    list-style-type: none;
-    font-size: 130%;
-    line-height: 2em;
-    vertical-align: middle;
-    padding-left: 3em;
-    margin: 1ex 0;
-    background-position: left;
-    background-repeat: no-repeat;
-    background-size: 2em auto;
 
-    &.suf {
-        background-image: url("associations/suf.png");
+#control-installation-site-association
+{
+    label[for=installation-site-association] {
+        display: none;
     }
 
-    &.fse {
-        background-image: url("associations/fse.png");
-    }
+    span.control {
+        display: block;
+        margin: 1ex auto;
+        padding: 0;
+        max-width: 60%;
 
-    &.europa {
-        background-image: url("associations/europa.png");
+        label {
+            display: block;
+            padding-left: 3em;
+            margin: 1em auto;
+            font-size: 130%;
+            line-height: 2em;
+            vertical-align: middle;
+
+            background-position: left;
+            background-repeat: no-repeat;
+            background-size: 2em auto;
+
+            &.suf {
+                background-image: url("associations/suf.png");
+            }
+
+            &.fse {
+                background-image: url("associations/fse.png");
+            }
+
+            &.europa {
+                background-image: url("associations/europa.png");
+            }
+        }
     }
 }
 
