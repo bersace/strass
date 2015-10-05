@@ -1,6 +1,8 @@
 /*-*- css -*-*/
 
-.document #body {
+@import "lib";
+
+.strass.document #body {
     background: url("illustrations/ratelier.png") 1em 2em no-repeat;
     background-size: auto 16em;
     padding-top: 6em;
