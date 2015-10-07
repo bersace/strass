@@ -19,6 +19,7 @@ class Strass_Controller_Plugin_Auth extends Zend_Controller_Plugin_Abstract
                 return;
             }
 
+            $acl->add(new Zend_Acl_Resource('visiteur'));
             $acl->add(new Zend_Acl_Resource('membres'));
             $acl->add(new Zend_Acl_Resource('inscriptions'));
             $acl->add(new Zend_Acl_Resource('site'));
