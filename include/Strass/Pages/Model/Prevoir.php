@@ -49,7 +49,7 @@ class Strass_Pages_Model_Prevoir extends Strass_Pages_Model_Historique
       $a->debut = $m->debut;
       $a->fin = $m->fin;
 
-      $unites = call_user_func_array(array($tu, 'find'), (array) $m->unites);
+      $unites = call_user_func(array($tu, 'find'), (array) $m->unites);
       // génération de l'intitulé
       $type = $unites->current()->findParentTypesUnite();
       $a->intitule = $m->intitule;
