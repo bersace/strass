@@ -22,6 +22,11 @@ class UnitesController extends Strass_Controller_Action
     $default = $u->isTerminale() ? array('photos') : array('unites');
     $this->view->blocs = $config->get('blocs', $default);
 
+    if ($u->isFermee())
+      $this->actions->append("Rouvrir",
+			     array('action' => 'inscrire'),
+			     array(null, $u));
+
     $soustypename = $u->getSousTypeName();
     if (!$u->isTerminale() && $soustypename)
       $this->actions->append(array('label' => "Fonder une ".$soustypename),
