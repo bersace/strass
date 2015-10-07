@@ -79,7 +79,7 @@ class Strass_Controller_Plugin_Auth extends Zend_Controller_Plugin_Abstract
 
         $db = Zend_Registry::get('db');
 
-        // initialise la session.
+        // initialise les méthodes d'authentifications.
         $auth = Zend_Auth::getInstance();
 
         // DB AUTH
@@ -98,9 +98,9 @@ class Strass_Controller_Plugin_Auth extends Zend_Controller_Plugin_Abstract
         // SUDO AUTH
         $this->sudo = new Strass_Auth_Adapter_Sudo;
 
+        $this->sudo();
         $this->form();
         $this->getUser();
-        $this->sudo();
     }
 
     /* Authentification via formulaire */
@@ -119,7 +119,10 @@ class Strass_Controller_Plugin_Auth extends Zend_Controller_Plugin_Abstract
                 $this->db->setCredential($im->password);
                 $result = $auth->authenticate($this->db);
 
-                if (!$result->isValid()) {
+                if ($result->isValid()) {
+                    return true;
+                }
+                else {
                     switch($result->getCode()) {
                     case Zend_Auth_Result::FAILURE_IDENTITY_NOT_FOUND:
                         throw new Wtk_Form_Model_Exception('%s inexistant.',
@@ -143,7 +146,7 @@ class Strass_Controller_Plugin_Auth extends Zend_Controller_Plugin_Abstract
             }
         }
         catch (Wtk_Form_Model_Exception $e) {
-            error_log($e->getMessage());
+            error_log("[AUTH][FORM] " . $e->getMessage());
             $auth->clearIdentity();
             $im->errors[] = $e;
         }
@@ -162,27 +165,56 @@ class Strass_Controller_Plugin_Auth extends Zend_Controller_Plugin_Abstract
             if (!$result->isValid())
                 return false;
         }
-        return $this->getUser();
+        return true;
     }
 
-    /* Prise de privilège */
-    function sudo()
+    function sudo($target = null)
     {
+        /* Fonction appelée dans deux cas : au début, pour recharger un
+         * éventuel sudoer en cours, depuis la session, dans le registre. Et en
+         * cas de sudo effectif. */
+        $session = new Zend_Session_Namespace;
         $auth = Zend_Auth::getInstance();
-        $result = $auth->authenticate($this->sudo);
-        return $this->getUser();
+        if ($target) {
+            /* Changer l'identité */
+            $this->sudo->target = $target;
+            $result = $auth->authenticate($this->sudo);
+            if ($result->isValid()) {
+                $sudoer = Zend_Registry::get('user');
+                $session->sudoer = $sudoer->getIdentity();
+            }
+        }
+
+        if ($session->sudoer) {
+            /* Restaurer l'objet sudoer depuis la session. */
+            extract($session->sudoer);
+            $t = new Users;
+            $sudoer = $t->findByUsername($username);
+            Zend_Registry::set('sudoer', $sudoer);
+        }
     }
 
     function unsudo()
     {
-        $this->sudo->unsudo = true;
+        /* Restaure l'identité du sudoer et nettoye la session et le
+         * registre. */
+
+        $session = new Zend_Session_Namespace;
         $auth = Zend_Auth::getInstance();
+        $this->sudo->target = Zend_Registry::get('sudoer');
         $result = $auth->authenticate($this->sudo);
-        return $this->getUser();
+        if ($result->isValid()) {
+            unset($session->sudoer);
+            $registry = Zend_Registry::getInstance();
+            $registry->offsetUnset('sudoer');
+        }
+        return $result->isValid();
     }
 
     function getUser()
     {
+        /* Récupère l'utilisateur depuis l'identité, et l'injecte dans le
+         * registre. Initialise les ACL. */
         $auth = Zend_Auth::getInstance();
         $username = null;
         $user = null;

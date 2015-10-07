@@ -12,8 +12,7 @@ class Strass_Controller_Action_Helper_Auth extends Zend_Controller_Action_Helper
 
   function sudo($target)
   {
-    $this->plugin->sudo->target = $target;
-    return $this->plugin->sudo();
+    return $this->plugin->sudo($target);
   }
 
   function unsudo()
