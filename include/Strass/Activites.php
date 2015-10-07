@@ -254,7 +254,15 @@ class Activite extends Strass_Db_Table_Row_Abstract implements Zend_Acl_Resource
             $p = new Participation;
             $p->activite = $this->id;
             $p->unite = $parente->id;
-            $p->save();
+            try {
+                $p->save();
+            }
+            catch (Zend_Db_Statement_Exception $e) {
+                if (strpos($e->getMessage(), 'UNIQUE') === false)
+                    throw $e;
+                /* L'unité a déjà été ajoutée. Peut-être une sous unité cliqué
+                 * explicitement dans les participantes. */
+            }
 
             foreach ($parente->findSousUnites($annee, true) as $unite) {
 
