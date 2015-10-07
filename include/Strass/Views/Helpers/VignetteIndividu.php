@@ -31,9 +31,14 @@ class Strass_View_Helper_VignetteIndividu
     else
       $section->addParagraph("Pas de photo")->addFlags('empty', 'image');
     $item->addParagraph($label)->addFlags('label');
-    $link = new Wtk_Link($this->view->url($urlOptions, true, true),
-			 $label, $item);
+    if ($individu->slug)
+        $url = $this->view->url($urlOptions, true, true);
+    else
+        $url = null;
+
+    $link = new Wtk_Link($url, $label, $item);
     $link->addFlags('vignette', 'individu', 'avatar');
+
     return $link;
   }
 }
