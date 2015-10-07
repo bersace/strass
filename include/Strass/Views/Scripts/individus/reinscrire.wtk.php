@@ -3,9 +3,9 @@
 $l = $this->document->addList()->addFlags('vignettes');
 $l->addItem($this->vignetteIndividu($this->individu));
 $l->addItem(' et ')->addFlags('liaison');
+$l->addItem($this->vignetteUnite($this->unite));
 
 $f = $this->document->addForm($this->model);
-$l->addItem($this->vignetteUnite($this->unite));
 $f->addSelect('role', true);
 $f->addEntry('titre');
 $f->addDate('debut', '%e/%m/%Y');
