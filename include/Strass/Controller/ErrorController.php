@@ -5,6 +5,19 @@ class ErrorController extends Strass_Controller_Action implements Strass_Control
 {
   public $_afficherMenuUniteRacine = true;
 
+
+  public function preDispatch ()
+  {
+      try {
+          $this->initPage();
+      }
+      catch (Exception $e) {
+          error_log($e->getMessage());
+      }
+
+      $this->view = $this->initView();
+  }
+
   public function errorAction()
   {
     $this->view->errors = $errors = $this->getResponse()->getException();

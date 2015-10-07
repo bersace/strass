@@ -79,8 +79,6 @@ abstract class Strass_Controller_Action extends Zend_Controller_Action implement
             $this->logger = new Strass_ActionLogger($this);
             Zend_Registry::set('logger', $this->logger);
         }
-
-        $this->initPage();
     }
 
     function redirectUrl($urlOptions = array(), $route = null, $reset = false)
@@ -178,6 +176,7 @@ abstract class Strass_Controller_Action extends Zend_Controller_Action implement
 
     public function preDispatch ()
     {
+        $this->initPage();
         $this->view = $this->initView();
     }
 
