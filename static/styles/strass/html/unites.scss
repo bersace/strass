@@ -38,14 +38,40 @@
     padding-bottom: 12em;
 }
 
-#document.inscrire table.effectifs
+#document.inscrire
 {
-    width: 40%;
-    max-width: 50em;
-    margin: 4em auto;
+    .vignettes {
+	white-space: nowrap;
+	text-align: center;
 
-    thead, tr.category {
-	display: none;
+        li.individu {
+            width: 30em;
+        }
+
+	li.liaison {
+            height: $taille_vignette;
+            line-height: $taille_vignette;
+	    font-size: 200%;
+	    font-style: italic;
+	    font-family: serif;
+	    margin: 1em;
+	}
+    }
+
+    form#inscrire .control.compound {
+        text-align: center;
+        padding: 1em;
+    }
+
+    table.effectifs
+    {
+        width: 40%;
+        max-width: 50em;
+        margin: 4em auto;
+
+        thead, tr.category {
+	    display: none;
+        }
     }
 }
 
