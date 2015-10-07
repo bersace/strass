@@ -196,12 +196,14 @@ class Strass_Controller_Plugin_Auth extends Zend_Controller_Plugin_Abstract
             $t = new Users;
             try {
                 $user = $t->findByUsername($username);
-                $user->last_login = new Zend_Db_Expr('CURRENT_TIMESTAMP');
+                if (Zend_Registry::isRegistered('sudoer'))
+                    $user->last_login = new Zend_Db_Expr('CURRENT_TIMESTAMP');
                 $user->save();
             }
             catch (Exception $e) {
                 /* Ça arrive plutôt par un bug de développement, l'identité
                    dans la session n'existe plus. On déconnecte. */
+                error_log($e->getMessage());
                 $auth->clearIdentity();
             }
         }
