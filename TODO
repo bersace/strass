@@ -1,8 +1,5 @@
 FONCTIONS :
 
- * Début et fin de role via les activités. Activités ->
-   inscrire. Pas de pagination par année.
-
  * Gérer le sexe et l'âge min-max par rôle et non par type
    d'unité. Permettre notamment n'importe quel âge pour les aumôniers…
 
@@ -15,18 +12,14 @@ FONCTIONS :
 
  * Cohérence des dates d'activités. debut < fin.
 
- * Script de test de l'hébergeur
-
-BUGS :
-
- * …
-
 
 AUTRES :
 
  * Gérer le type date de SQLite dans l'adapter.
 
  * Passer à dojo 1.9
+
+ * Rédiger les tests fonctionnels des cas listés ci-dessous.
 
 
 CAS :
