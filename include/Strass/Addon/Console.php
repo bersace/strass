@@ -15,14 +15,6 @@ class Strass_Addon_Console extends Strass_Addon_Liens
     $acl = Zend_Registry::get('acl');
     $user = Zend_Registry::get('user');
 
-    if ($user->isMember()) {
-      $this->append('Votre fiche',
-		    array('controller' => 'individus',
-			  'action' => 'fiche',
-			  'individu' => $user->findParentIndividus()->slug));
-    }
-
-
     try {
       $sudoer = Zend_Registry::get('sudoer');
       $this->append('Redevenir '.$sudoer->username,

@@ -284,7 +284,7 @@ tr td .check label
     }
 }
 
-#document a.vignette
+a.vignette
 {
     display: inline-block;
     width: $taille_vignette;
@@ -683,6 +683,11 @@ tr td .check label
 		display: block;
 	    }
 	}
+
+        .vignette {
+            display: block;
+            margin: 1em auto;
+        }
     }
 
     a.adminlink {

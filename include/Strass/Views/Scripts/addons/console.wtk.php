@@ -1,6 +1,7 @@
 <?php
 
 $user = Zend_Registry::get('user');
+$individu = Zend_Registry::get('individu');
 
 $this->document->addStyleComponents('form');
 $parent = $this->document->aside;
@@ -23,6 +24,7 @@ else {
   // console
   $s = $parent->addSection('console', "Mon compte");
 
+  $s->addChild($this->vignetteIndividu($individu)->addFlags('mini'));
   if (count($this->liens)) {
     $l = $s->addList();
     foreach ($this->liens as $lien) {
