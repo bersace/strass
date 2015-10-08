@@ -136,6 +136,11 @@ class JournauxController extends Strass_Controller_Action
                dans la gazette de troupe */
             foreach($u->findInscrits(null, 1) as $individu)
                 $i->addItem($individu->id, $individu->getFullname(false));
+
+            if (!count($i))
+                throw new Strass_Controller_Action_Exception_Notice(
+                    "L'auteur de l'article doit être un membre, mais cette unité n'a aucun membre !");
+
             if ($a)
                 $i->set($a->findAuteur()->id);
             else
