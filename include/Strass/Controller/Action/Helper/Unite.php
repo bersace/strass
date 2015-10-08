@@ -78,14 +78,21 @@ class Strass_Controller_Action_Helper_Unite extends Zend_Controller_Action_Helpe
             'unite' => $unite->slug),
             array(), true);
 
+        $journal = $unite->findJournaux()->current();
+        if ($journal)
+            $connexes->append(
+                $journal->__toString(),
+                array('controller' => 'journaux',
+                'action' => 'index',
+                'journal' => $journal->slug),
+                array(), true);
+
         $connexes->append(
-            'Effectifs',
-            array('controller' => 'unites',
-            'action' => 'effectifs',
-            'annee' => $annee,
+            "Documents",
+            array('controller' => 'documents',
+            'action' => 'index',
             'unite' => $unite->slug),
-            array(null, $unite, 'effectifs'),
-            true);
+            array(), true);
 
         $connexes->append(
             "Calendrier",
@@ -96,11 +103,13 @@ class Strass_Controller_Action_Helper_Unite extends Zend_Controller_Action_Helpe
             array(), true);
 
         $connexes->append(
-            "Documents",
-            array('controller' => 'documents',
-            'action' => 'index',
+            'Effectifs',
+            array('controller' => 'unites',
+            'action' => 'effectifs',
+            'annee' => $annee,
             'unite' => $unite->slug),
-            array(), true);
+            array(null, $unite, 'effectifs'),
+            true);
 
         if ($unite->findFermees()->count())
             $connexes->append(
@@ -109,14 +118,5 @@ class Strass_Controller_Action_Helper_Unite extends Zend_Controller_Action_Helpe
                 'action' => 'archives',
                 'unite' => $unite->slug),
 			array(), true);
-
-        $journal = $unite->findJournaux()->current();
-        if ($journal)
-            $connexes->append(
-                $journal->__toString(),
-                array('controller' => 'journaux',
-                'action' => 'index',
-                'journal' => $journal->slug),
-                array(), true);
     }
 }
