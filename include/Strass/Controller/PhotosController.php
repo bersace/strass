@@ -12,8 +12,9 @@ class PhotosController extends Strass_Controller_Action
         if (!$annee) {
             try {
                 $annee = $this->view->unite->findLastAlbum()->getAnnee();
-            } catch (Exception $e) {
-                Orror::kill($e);
+            }
+            catch(Strass_Db_Table_NotFound $e) {
+                $annee = null;
             }
         }
         $this->view->model = new Strass_Pages_Model_Photos($this->view->unite, $annee);
