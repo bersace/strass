@@ -45,6 +45,12 @@ class Wtk_Pages_Model_Form extends Wtk_Pages_Model
         if (!$values = $model->getRawSubmittedValues())
             return false;
 
+        /* Nettoyer les erreurs et leurs références. */
+        foreach($model->errors as $e) {
+            $i = $e->getInstance();
+            $i->valid = null;
+            $i->errors = array();
+        }
         $model->errors = array();
 
         /* Récupérer la page courante */
@@ -54,6 +60,7 @@ class Wtk_Pages_Model_Form extends Wtk_Pages_Model
         /* Ne récupérer depuis _POST que les valeurs des pages précédentes
            et actuelle */
         foreach ($root->value as $id => $child) {
+            /* zapper les instances de méta informations */
             if (strpos($id, '$$') === false && $this->pageCmp($id, $current) > 0)
                 continue;
 
