@@ -79,14 +79,14 @@ END;
 
 CREATE TRIGGER unite_before_update_fts BEFORE UPDATE ON unite BEGIN
   DELETE FROM individu_fts WHERE docid IN (
-    SELECT individu.id FROM individu
+    SELECT DISTINCT individu.id FROM individu
     JOIN appartenance AS a ON a.individu = individu.id
     WHERE a.unite = old.id);
 END;
 
 CREATE TRIGGER unite_after_update_fts AFTER UPDATE ON unite BEGIN
   INSERT INTO individu_fts (docid, content)
-  SELECT individu.* FROM individu_content AS individu
+  SELECT DISTINCT individu.* FROM individu_content AS individu
   -- Mettre à jour uniquement les individus de cette unité
   JOIN appartenance AS ca ON ca.individu = individu.id AND ca.unite = NEW.id;
 
