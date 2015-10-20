@@ -20,8 +20,25 @@ $renderer = new Strass_Pages_Renderer_Photo($this->url(array('photo' => '%i')).'
 $s = $this->document->addSection('visionneuse');
 $s->addPages(null, $this->model, $renderer);
 ;
-if ($description = $this->photo->getDescription())
-  $this->document->addSection('description')->addText($description);
+if ($description = $this->photo->getDescription()) {
+    $s = $this->document->addSection('description');
+    $s->addText($description);
+
+    $c = $this->photo->findParentCommentaires();
+    if ($this->assert(null, $c, 'editer')) {
+      $l = $s->addList()->addFlags('adminlinks');
+      $l->addItem()->addChild($this->lien(array('controller' => 'commentaires',
+						'action' => 'editer',
+						'message' => $c->id),
+					  "Éditer"));
+      $l->addItem()->addChild($this->lien(array('controller' => 'commentaires',
+						'action' => 'supprimer',
+						'message' => $c->id),
+					  "Supprimer"))
+	->addFlags('critical');
+
+    }
+}
 
 if ($this->commentaires->count() || $this->com_model) {
   $s = $this->document->addSection('commentaires', "Commentaires");
