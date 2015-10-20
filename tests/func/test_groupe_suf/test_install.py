@@ -66,3 +66,37 @@ class TestInstaller(ClientTestCase):
 
         # Redirigé vers la page d'accueil du nouveau groupe
         self.assertElementFound('#document.unites.index.groupe-st-georges.suf')
+
+    def test_03_inscrire_cg(self):
+        # On inscrit un chef de groupe actif depuis l'année dernière.
+        self.client.get()
+
+        # Aller dans la page des effectifs depuis le lien latéral
+        self.client.click('#aside #connexes li.unites.effectifs a')
+
+        # S'assurer que personne n'est inscrit à ce jour.
+        self.assertElementFound('#document p.empty')
+
+        # Aller sur le formulaire d'inscription
+        self.client.click('#aside #admin .unites.inscrire a')
+
+        (
+            self.client
+            .click('#inscrire-inscription-individu-nouveau')
+            # 1__ == Chef de groupe (premier rôle SUF, sans titre)
+            .select('#inscrire-inscription-role', '1__')
+            .fill(
+                '#control-inscrire-inscription-debut',
+                datetime.datetime.now() - datetime.timedelta(weeks=52)
+            )
+            .submit()
+
+            .fill('#inscrire-fiche-prenom', 'Arnaud')
+            .fill('#inscrire-fiche-nom', 'Martin')
+            .click('#inscrire-fiche-sexe-h')
+            # Cliquer sur le premier bouton submit
+            .submit()
+        )
+
+        # On est redirigé vers les effectifs, avec la ligne du CG :-)
+        self.assertElementFound('#document table.effectifs tr.chef.cg')
