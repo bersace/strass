@@ -37,7 +37,7 @@ class Strass_Pages_Model_PhotosEnvoyer extends Strass_Pages_Model_Historique
       $action = $m->envoyer ? 'envoyer' : 'consulter';
 
       $c = new Commentaire;
-      $c->auteur = $individu->id;
+      $c->auteur = Zend_Registry::get('individu')->id;
       $c->message = $m->commentaire;
 
       $db = $t->getAdapter();
