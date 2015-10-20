@@ -31,12 +31,6 @@ if ($description = $this->photo->getDescription()) {
 						'action' => 'editer',
 						'message' => $c->id),
 					  "Éditer"));
-      $l->addItem()->addChild($this->lien(array('controller' => 'commentaires',
-						'action' => 'supprimer',
-						'message' => $c->id),
-					  "Supprimer"))
-	->addFlags('critical');
-
     }
 }
 
