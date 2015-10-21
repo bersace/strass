@@ -12,6 +12,7 @@ dependencies:
   post:
     # Met-à-jour sqlite3 en 3.8
     - sudo apt-get install -t trusty-updates sqlite3
+    - sudo apt-get install faketime
     - yes '' | pecl install PDO_SQLite imagick
     - pip install selenium libsass
 

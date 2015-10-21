@@ -57,7 +57,7 @@ distclean:
 .PHONY: setup
 setup:
 	apt-get install -y php5-cli php5-sqlite php-pear php5-gd php5-imagick \
-	phpunit python-pip python-dev sqlite3 phantomjs
+	phpunit python-pip python-dev sqlite3 phantomjs faketime
 	pip install --upgrade libsass selenium
 
 .PHONY: serve
