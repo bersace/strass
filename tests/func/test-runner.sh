@@ -7,7 +7,7 @@
 # création du site, jusqu'à sa mort naturelle.
 #
 
-set -eu
+set -eux
 set -o pipefail
 
 SERVER_LOG=server.log
@@ -25,8 +25,19 @@ export STRASS_TEST_REPORTS=${STRASS_TEST_REPORTS-.}
 # de test dans le PATH python.
 export PYTHONPATH=${PYTHONPATH:-.}:tests/func/site-packages/
 
+# Si non vide, alors on attends une interraction utilisateur après les tests,
+# avant de tuer le serveur PHP et de nettoyer les données. Ça permet de
+# naviguer dedans et par exemple rédiger les tests, exporter les données, etc.
+BREAKPOINT=${BREAKPOINT-}
+
 teardown() {
     exit_code=$1
+
+    # Activer les breakpoint uniquement dans un shell interacti.
+    if [ -t 1 -a -n "${BREAKPOINT}" ] ; then
+        echo "Type ENTER to kill PHP and clean temporary files." >&2
+        read
+    fi
 
     # Tuer PHP
     kill -TERM ${PHP_PID}
