@@ -54,6 +54,11 @@ teardown() {
     rm -rf ${STRASS_ROOT}
 }
 
+UNITTEST_ARGS=
+if [ -n "${BREAKPOINT}" ] ; then
+    UNITTEST_ARGS="--failfast"
+fi
+
 # On précharge sqlite3 avec faketime pour que l'extension PHP5 Pdo_sqlite aussi
 # soit leurée.
 libsqlite=$(find /usr/lib -name "*libsqlite3.so")
@@ -68,4 +73,4 @@ echo "PHP PID is ${PHP_PID}" >&2
 trap 'teardown $?' EXIT QUIT INT TERM ABRT ALRM HUP CHLD
 
 # On délègue à python3 unittest les tests. Usuel.
-python3 -m unittest discover tests/func/${TESTCASE}/
+python3 -m unittest discover ${UNITTEST_ARGS} tests/func/${TESTCASE}/
