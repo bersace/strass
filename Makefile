@@ -99,7 +99,7 @@ test-unit:
 		$(shell readlink -e tests/unit)
 
 test-func: all
-	STRASS_TEST_REPORTS=$(CIRCLE_TEST_REPORTS) tests/func/run.sh
+	STRASS_TEST_REPORTS=$(CIRCLE_TEST_REPORTS) tests/func/runall.sh
 
 REMOTE=maint/scripts/remote --config $(STRASS_ROOT)strass.conf
 
