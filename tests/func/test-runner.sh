@@ -54,9 +54,9 @@ teardown() {
     rm -rf ${STRASS_ROOT}
 }
 
-UNITTEST_ARGS=
+UNITTEST_ARGS="--verbose"
 if [ -n "${BREAKPOINT}" ] ; then
-    UNITTEST_ARGS="--failfast"
+    UNITTEST_ARGS="${UNITTEST_ARGS} --failfast"
 fi
 
 # On précharge sqlite3 avec faketime pour que l'extension PHP5 Pdo_sqlite aussi
