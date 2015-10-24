@@ -25,10 +25,15 @@ export STRASS_TEST_REPORTS=${STRASS_TEST_REPORTS-.}
 # de test dans le PATH python.
 export PYTHONPATH=${PYTHONPATH:-.}:tests/func/site-packages/
 
+# Si non vide, alors on ne supprime pas les données, on saute les tests déjà
+# passés.
+REUSE=${REUSE-}
+
 # Si non vide, alors on attends une interraction utilisateur après les tests,
 # avant de tuer le serveur PHP et de nettoyer les données. Ça permet de
 # naviguer dedans et par exemple rédiger les tests, exporter les données, etc.
-BREAKPOINT=${BREAKPOINT-}
+# Par défaut, is REUSE est activé, on attends à la fin des tests.
+BREAKPOINT=${BREAKPOINT-${REUSE}}
 
 teardown() {
     exit_code=$1
@@ -49,14 +54,23 @@ teardown() {
         test -f ghostdriver.log && sed 's,^,SELENIUM: ,g' ghostdriver.log >&2
     fi
 
-    # Nettoyer systématiquement.
-    rm -f ${SERVER_LOG} ghostdriver.log
-    rm -rf ${STRASS_ROOT}
+    if [ -z "${REUSE}" ] ; then
+        rm -f ${SERVER_LOG} ghostdriver.log
+        rm -rf ${STRASS_ROOT}
+    fi
 }
 
 # Si on a installé notre propre phantomjs, l'injecter dans le PATH.
 if [ -d phantomjs/bin ] ; then
     export PATH=$(readlink -f phantomjs/bin):$PATH
+fi
+
+if [ -n "${REUSE}" ] ; then
+    UNITTEST='strass.tests'
+else
+    UNITTEST='unittest'
+    # Supprimer l'état des tests. Car on va supprimer les données !
+    rm -rf .reuse-state ${STRASS_ROOT}
 fi
 
 UNITTEST_ARGS="--verbose"
@@ -78,4 +92,4 @@ echo "PHP PID is ${PHP_PID}" >&2
 trap 'teardown $?' EXIT QUIT INT TERM ABRT ALRM HUP CHLD
 
 # On délègue à python3 unittest les tests. Usuel.
-python3 -m unittest discover ${UNITTEST_ARGS} tests/func/${TESTCASE}/
+python3 -m ${UNITTEST} discover ${UNITTEST_ARGS} tests/func/${TESTCASE}/
