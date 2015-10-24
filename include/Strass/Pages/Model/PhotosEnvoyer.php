@@ -56,13 +56,20 @@ class Strass_Pages_Model_PhotosEnvoyer extends Strass_Pages_Model_Historique
                     $p->storeFile($tmp);
                 }
 
-                $this->controller->_helper->Flash->info("Photo envoyée");
-                $this->controller->logger->info("Photo envoyée",
-                $this->controller->_helper->Url(
+                $url = $this->controller->_helper->Url(
                     'voir', 'photos', null,
-                    array('photo' => $p->slug),
-                    true));
+                    array('photo' => $p->slug), true);
 
+                $this->controller->logger->info("Photo envoyée", $url);
+
+
+                foreach($this->activite->findUnitesParticipantesExplicites() as $u) {
+                    $ident = new Identification;
+                    $ident->photo = $p->id;
+                    $ident->unite = $u->id;
+                    $ident->save();
+                    $this->controller->logger->info("Unité identifiée sur une photo", $url);
+                }
                 $db->commit();
             }
             catch(Exception $e) {
@@ -70,6 +77,7 @@ class Strass_Pages_Model_PhotosEnvoyer extends Strass_Pages_Model_Historique
                 throw $e;
             }
 
+            $this->controller->_helper->Flash->info("Photo envoyée");
             $this->controller->redirectSimple(
                 $action, null, null, array('album' => $this->activite->slug));
         }
