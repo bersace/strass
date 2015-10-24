@@ -36,7 +36,7 @@ teardown() {
     # Activer les breakpoint uniquement dans un shell interacti.
     if [ -t 1 -a -n "${BREAKPOINT}" ] ; then
         echo "Type ENTER to kill PHP and clean temporary files." >&2
-        read
+        read || true
     fi
 
     # Tuer PHP
