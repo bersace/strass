@@ -8,7 +8,7 @@ from strass.client import ClientTestCase
 from fixtures import ADMIN_EMAIL, ADMIN_PASSWORD
 
 
-class TestInstaller(ClientTestCase):
+class Test(ClientTestCase):
     # On commence par se connecter en admin. La session étant permanent dans un
     # testCase.
     def test_00_login(self):
@@ -70,7 +70,7 @@ class TestInstaller(ClientTestCase):
             .select('#inscrire-inscription-role', '1__')
             .fill(
                 '#control-inscrire-inscription-debut',
-                datetime.datetime.now() - datetime.timedelta(weeks=52)
+                datetime.date(2006, 9, 9)
             )
             .submit()
 
