@@ -35,7 +35,7 @@ class Strass_View_Helper_VignettePhoto
         $link = new Wtk_Link(
             $this->view->url($urlOptions, true, true).'#document',
             $label, $item);
-        $link->addFlags('vignette', 'photo');
+        $link->addFlags('vignette', 'photo', 'photo-'.$photo->slug);
         return $link;
     }
 }
