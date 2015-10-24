@@ -30,7 +30,7 @@ class Strass_View_Helper_VignetteAlbum
         $item->addParagraph($label)->addFlags('label');
         $link = new Wtk_Link(
             $this->view->url($urlOptions, true, true), $label, $item);
-        $link->addFlags('vignette', 'album');
+        $link->addFlags('vignette', 'album', 'album-'.$album->slug);
 
         if ($photo)
             $w->addImage(
