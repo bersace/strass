@@ -83,8 +83,8 @@ fi
 libsqlite=$(find /usr/lib -name "*libsqlite3.so")
 libfaketime=$(dpkg -L libfaketime| grep libfaketime.so)
 
-# Démarrer le serveur le 9 août 2007 à 9h32m08. Accélérer le temps par 10.
-LD_PRELOAD="${libfaketime} ${libsqlite}" FAKETIME="@2007-08-09 09:32:08 x10" \
+# Démarrer le serveur le 9 août 2007 à 9h32m08. Accélérer le temps par 100.
+LD_PRELOAD="${libfaketime} ${libsqlite}" FAKETIME="@2007-08-09 09:32:08 x100" \
           maint/scripts/serve.sh &>${SERVER_LOG} &
 PHP_PID=$!
 echo "PHP PID is ${PHP_PID}" >&2
