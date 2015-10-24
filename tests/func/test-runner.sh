@@ -54,6 +54,11 @@ teardown() {
     rm -rf ${STRASS_ROOT}
 }
 
+# Si on a installé notre propre phantomjs, l'injecter dans le PATH.
+if [ -d phantomjs/bin ] ; then
+    export PATH=$(readlink -f phantomjs/bin):$PATH
+fi
+
 UNITTEST_ARGS="--verbose"
 if [ -n "${BREAKPOINT}" ] ; then
     UNITTEST_ARGS="${UNITTEST_ARGS} --failfast"

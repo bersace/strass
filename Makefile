@@ -54,11 +54,17 @@ distclean:
 	$(MAKE) clean
 	rm -rvf $(STRASS_ROOT)
 
+PHANTOM_JS=phantomjs-1.9.8-linux-x86_64
 .PHONY: setup
 setup:
 	apt-get install -y php5-cli php5-sqlite php-pear php5-gd php5-imagick \
-	phpunit python-pip python-dev sqlite3 phantomjs faketime
+	phpunit python-pip python-dev sqlite3 faketime wget
 	pip install --upgrade libsass selenium
+	if ! test -f phantomjs/bin/phantomjs ; then \
+	    mkdir phantomjs; \
+	    wget -O - https://bitbucket.org/ariya/phantomjs/downloads/$(PHANTOM_JS).tar.bz2 \
+	        | tar -jxf - -C phantomjs --strip-components=1; \
+	fi
 
 .PHONY: serve
 serve: all
