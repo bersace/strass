@@ -186,3 +186,28 @@ class Photo extends Strass_Db_Table_Row_Abstract implements Zend_Acl_Resource_In
         unlink($this->getCheminImage());
     }
 }
+
+
+class Identifications extends Strass_Db_Table_Abstract
+{
+    protected $_name		= 'photo_identification';
+    protected $_rowClass		= 'Identification';
+    protected $_referenceMap	= array(
+        'Photo' => array(
+            'columns'		=> 'photo',
+            'refTableClass'	=> 'Photos',
+            'refColumns'	=> 'id',
+            'onUpdate'		=> self::CASCADE,
+            'onDelete'		=> self::CASCADE),
+        'Unite' => array(
+            'columns' => 'unite',
+            'refTableClass' => 'Unites',
+            'refColumns' => 'id',
+            'onUpdate' => self::CASCADE,
+            'onDelete' => self::CASCADE));
+}
+
+class Identification extends Strass_Db_Table_Row_Abstract
+{
+    protected $_tableClass = 'Identifications';
+}
