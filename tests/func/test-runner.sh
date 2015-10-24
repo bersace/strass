@@ -45,8 +45,8 @@ teardown() {
 
     if [ "$exit_code" != '0' ] ; then
         # En cas d'erreur, afficher tout les logs.
-        sed 's,^,PHP: ,g' ${SERVER_LOG} >&2
-        sed 's,^,SELENIUM: ,g' ghostdriver.log >&2
+        test -f ${SERVER_LOG} && sed 's,^,PHP: ,g' ${SERVER_LOG} >&2
+        test -f ghostdriver.log && sed 's,^,SELENIUM: ,g' ghostdriver.log >&2
     fi
 
     # Nettoyer systématiquement.
