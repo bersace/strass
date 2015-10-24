@@ -5,24 +5,8 @@
 from datetime import date
 from strass.client import ClientTestCase
 
-from fixtures import ADMIN_EMAIL, ADMIN_PASSWORD
-
 
 class Test(ClientTestCase):
-    # On commence par se connecter en admin. La session étant permanent dans un
-    # testCase.
-    def test_00_login(self):
-        (
-            self.client
-            .get()
-            .fill("#login-username", ADMIN_EMAIL)
-            .fill("#login-password", ADMIN_PASSWORD)
-            .submit('#aside button[type=submit]')
-        )
-
-        # S'assurer qu'on est connecté car la console affiche sa vignette. ;-)
-        self.assertElementFound("#console .vignette.individu.mini")
-
     def test_01_prevoir(self):
         # Aller sur le calendrier
         self.client.click('#aside #connexes li.activites a')
