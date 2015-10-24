@@ -18,7 +18,7 @@ class Strass_Addon_Liens extends Strass_Addon implements Iterator, Countable
 
     protected function lien(
         $metas=null, array $urlOptions=array(), array $acl=array(),
-        $reset=false)
+        $reset=false, $anchor=null)
     {
         if (!$metas)
             return false;
@@ -29,20 +29,20 @@ class Strass_Addon_Liens extends Strass_Addon implements Iterator, Countable
         if (!is_array($metas))
             $metas = array('label' => $metas);
 
-
         return array(
             'metas' => $metas,
             'urlOptions' => $urlOptions,
             'acl' => $acl,
             'reset' => $reset,
+            'anchor' => $anchor,
             'flags' => array(),);
     }
 
     function append(
         $metas=null, array $urlOptions=array(), array $acl=array(),
-        $reset=false)
+        $reset=false, $anchor=null)
     {
-        if ($lien = $this->lien($metas, $urlOptions, $acl, $reset))
+        if ($lien = $this->lien($metas, $urlOptions, $acl, $reset, $anchor))
             $this->liens[] = $lien;
     }
 
@@ -52,10 +52,10 @@ class Strass_Addon_Liens extends Strass_Addon implements Iterator, Countable
      */
     function insert(
         $pos, $metas=null, array $urlOptions=array(), array $acl=array(),
-        $reset=false)
+        $reset=false, $anchor=null)
     {
         $count = count($this->liens);
-        if (!$lien = $this->lien($metas, $urlOptions, $acl, $reset))
+        if (!$lien = $this->lien($metas, $urlOptions, $acl, $reset, $anchor))
             return;
 
         if ($pos < 0)

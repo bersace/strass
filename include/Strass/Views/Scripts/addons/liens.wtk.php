@@ -5,7 +5,7 @@ if (count($this->liens)) {
     $list = $connexes->addList();
     $current_uri = Zend_Controller_Front::getInstance()->getRequest()->REQUEST_URI;
     foreach ($this->liens as $lien) {
-        $url = $this->url($lien['urlOptions'], $lien['reset']);
+        $url = $this->url($lien['urlOptions'], $lien['reset'], false, $lien['anchor']);
         $i = $list->addItem();
         $i->addLink($url, new Wtk_Metas($lien['metas']));
         $i->addFlags($lien['urlOptions'], split('/', $url), $lien['flags']);
