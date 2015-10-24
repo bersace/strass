@@ -642,38 +642,26 @@ class Unite extends Strass_Db_Table_Row_Abstract implements Zend_Acl_Resource_In
 
     function findPhotoAleatoire($annee = NULL)
     {
-        // Une photos aléatoire d'une activité où l'unité à participé et
-        // où les autres unités sont des sous-unités. Ex: une photo d'un
-        // WET et pas de la rentrée de groupe.
+        /* Sur une idée de Nathanaël TARDY, on se base sur l'identification des
+         * unités sur les photos. Cela demande plus d'opération manuelle, mais
+         * ça évite de mélanger. Ce qui est pire en terme de communication. */
         $t = new Photos;
         $db = $t->getAdapter();
         $s = $t->select()
                ->setIntegrityCheck(false)
                ->from('photo', array('photo.*', 'year' => "STRFTIME('%Y', photo.date)"))
                ->join(
-                   'activite',
-                   'activite.id = photo.activite', array())
-               ->join(
-                   'participation',
-                   'participation.activite = activite.id'.
-                   ' AND '.
-                   $db->quoteInto('participation.unite = ?', intval($this->id)),
-                   array())
-               ->join('unite', 'unite.id = participation.unite', array())
-               ->joinLeft(
-                   array('parent_participation' => 'participation'),
-                   "parent_participation.activite = activite.id\n".
-                   ' AND '.
-                   "parent_participation.unite = unite.parent\n",
-                   array())
-               ->where('parent_participation.id IS NULL')
+                   array('identification' => 'photo_identification'),
+                   'identification.photo = photo.id', array())
+               ->where('identification.unite = ?', $this->id)
                ->order('photo.promotion DESC')
+               ->order('RANDOM()')
                ->order('year DESC')
                ->order('RANDOM()')
                ->limit(1);
 
         if ($annee)
-            $s->where("CAST(STRFTIME('%Y', photo.date) AS INTEGER) <= ?", $annee);
+            $s->where("year <= ?", $annee);
 
         return $t->fetchAll($s)->current();
     }
@@ -684,33 +672,38 @@ class Unite extends Strass_Db_Table_Row_Abstract implements Zend_Acl_Resource_In
 
         $t = new Photos;
         $db = $t->getAdapter();
-        $select = $t->select()
-                    ->setIntegrityCheck(false)
-                    ->distinct()
-                    ->from('photo')
-                    ->join(
-                        'activite',
-                        'activite.id = photo.activite', array())
-                    ->joinLeft(
-                        array('fille' => 'unite'),
-                        $db->quoteInto('fille.parent = ?', $this->id),
-                        array())
-                    ->joinLeft(array('petitefille' => 'unite'), 'petitefille.parent = fille.id', array())
-                    ->join(
-                        'participation',
-                        'participation.activite = activite.id'.
-                        ' AND '.
-                        $db->quoteInto('participation.unite IN (?, fille.id, petitefille.id)', intval($this->id))."\n",
-                        array())
-                    ->limit(6) // paramétrable ?
-                    ->order('photo.promotion DESC')
-                    ->order('participation.unite') // Les unités parentes en priorité
-                    ->order("RANDOM()\n");
+        $s = $t->select()
+               ->setIntegrityCheck(false)
+               ->distinct()->from('photo');
+        /* Rechercher les albums ou l'unité a participé */
+        $s->join(
+            'participation',
+            'participation.activite = photo.activite'
+            .' AND '.
+            $db->quoteInto("participation.unite = ?", $this->id),
+            array());
+        /* Rechercher si l'unité est identifiée sur la photo */
+        $s->joinLeft(
+            array('identification' => 'photo_identification'),
+            $db->quoteInto(
+                'identification.photo = photo.id'
+                .' AND '.
+                'identification.unite = ?',
+                $this->id),
+            array());
+
+        /* Préfére les photos où l'unité est identifiée explicitement. */
+        $s->order('identification.unite DESC');
+        /* Préfère les photo comm. */
+        $s->order('photo.promotion DESC');
+        /* Mélanger les photos comm. et identifie */
+        $s->order('RANDOM()');
 
         if ($annee)
-            $select->where("strftime('%Y', activite.debut, '-8 months') = ?", strval($annee));
+            $s->where("strftime('%Y', activite.debut, '-8 months') = ?", strval($annee));
 
-        return $t->fetchAll($select);
+        $s->limit(6); // paramétrable ?
+        return $t->fetchAll($s);
     }
 
     function findActivites($annee, $sousunite=false)

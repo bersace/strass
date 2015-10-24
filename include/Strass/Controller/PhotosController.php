@@ -89,6 +89,10 @@ class PhotosController extends Strass_Controller_Action
             'DC.Date.created' => $photo->date));
 
         $this->actions->append(
+            "Identifier",
+            array('action' => 'identifier'),
+            array(null, $photo));
+        $this->actions->append(
             "Éditer",
             array('action' => 'editer'),
             array(null, $photo));
@@ -139,17 +143,91 @@ class PhotosController extends Strass_Controller_Action
         $this->view->commentaires = $photo->findCommentaires();
     }
 
+    function identifierAction()
+    {
+        $this->metas(array(
+            'DC.Title' => "Identifier une unité",
+            'DC.Subject' => 'identifier,photos'));
+
+        $this->view->photo = $p = $this->_helper->Photo();
+
+        $this->assert(null, $p);
+
+        $this->actions->append(
+            "Éditer",
+            array('action' => 'editer'),
+            array(null, $p));
+
+        $this->view->model = $m = new Wtk_Form_Model('identifier');
+        $idents = $p->findIdentifications();
+        $values = array();
+        foreach($idents as $ident)
+            $values[] = $ident->unite;
+
+        $a = $p->findParentActivites();
+        $unites = $a->findUnitesParticipantes();
+        $enum = array();
+        foreach($unites as $unite)
+            $enum[$unite->id] = $unite->getFullname();
+        $m->addEnum('unites', 'Unités', $values, $enum, true); // multiple
+        $m->addNewSubmission('enregistrer', "Enregistrer");
+
+        if ($m->validate()) {
+            $db = $p->getTable()->getAdapter();
+            $db->beginTransaction();
+            $new_idents = $m->get('unites');
+            try {
+                foreach($idents as $ident) {
+                    if (($k = array_search($ident->unite, $new_idents)) !== false) {
+                        unset($new_idents[$k]);
+                        continue;
+                    }
+
+                    $ident->delete();
+                    $this->logger->warn(
+                        "Identification retirée",
+                        $this->_helper->Url('voir', 'photos'));
+                }
+
+                foreach($new_idents as $uid) {
+                    $ident = new Identification;
+                    $ident->photo = $p->id;
+                    $ident->unite = $uid;
+                    $ident->save();
+                    $this->logger->info(
+                        "Unité identifiée sur une photo",
+                        $this->_helper->Url('voir', 'photos'));
+                }
+
+                $db->commit();
+            }
+            catch(Exception $e) {
+                $db->rollBack();
+                throw $e;
+            }
+
+            $this->_helper->Flash->info("Identifications mise-à-jour");
+            $this->redirectSimple('voir');
+        }
+    }
+
     function editerAction()
     {
         $this->metas(array(
             'DC.Title' => "Envoyer une photo",
             'DC.Subject' => 'envoyer,photos'));
 
+        $this->view->photo = $p = $this->_helper->Photo();
+
+        $this->actions->append(
+            "Identifier",
+            array('action' => 'identifier'),
+            array(null, $p));
+
         $this->connexes->append("Nouvelle activité", array(
             'controller' => 'activites',
             'action'  => 'prevoir'));
 
-        $this->view->photo = $p = $this->_helper->Photo();
         $a = $activite = $p->findParentActivites();
         $this->view->unite = $u = $a->findUnitesParticipantesExplicites()->current();
         $annee = $this->_helper->Annee(false);
