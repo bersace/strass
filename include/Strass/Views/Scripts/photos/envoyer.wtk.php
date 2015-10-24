@@ -42,17 +42,6 @@ class Strass_Views_PagesRenderer_PhotosEnvoyer extends Strass_Views_PagesRendere
     {
         extract($data);
 
-        if ($photos->count()) {
-            $l = $container->addList();
-            $l->addFlags('vignettes', 'photos');
-            foreach($photos as $photo) {
-                $i = $l->addItem($this->view->vignettePhoto($photo));
-                $i->addFlags('vignette');
-            }
-        }
-        else
-            $container->addParagraph("Pas de photos")->addFlags('empty');
-
         $f = $container->addForm($model);
         $g = $f->addForm_Fieldset("Nouvelle photo");
         $g->addFile('photo');
@@ -62,6 +51,18 @@ class Strass_Views_PagesRenderer_PhotosEnvoyer extends Strass_Views_PagesRendere
 
         $b = $f->addForm_ButtonBox();
         $b->addForm_Submit($model->getSubmission('envoyer'));
+
+        /* Afficher les photos existante */
+        if ($photos->count()) {
+            $l = $container->addSection('photos', "Photos dans l'album")->addList();
+            $l->addFlags('vignettes', 'photos');
+            foreach($photos as $photo) {
+                $i = $l->addItem($this->view->vignettePhoto($photo));
+                $i->addFlags('vignette');
+            }
+        }
+        /* else */
+        /*     $container->addParagraph("Pas de photos")->addFlags('empty'); */
     }
 }
 
