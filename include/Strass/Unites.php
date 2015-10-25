@@ -3,6 +3,14 @@
 require_once 'Strass/Journaux.php';
 require_once 'Strass/Documents.php';
 
+
+class Branches extends Strass_Db_Table_Abstract
+{
+    protected $_name = 'branche';
+    protected $_dependentTables = array('TypeUnite');
+}
+
+
 class Unites extends Strass_Db_Table_Abstract
 {
     protected $_name = 'unite';
@@ -235,6 +243,17 @@ class Unite extends Strass_Db_Table_Row_Abstract implements Zend_Acl_Resource_In
     public function getSousTypes()
     {
         return $this->findParentTypesUnite()->findTypesUnite();
+    }
+
+    function getBranche()
+    {
+        $t = new Branches;
+        $s = $t->select()
+               ->distinct()
+               ->from('branche')
+               ->join('unite_type', 'unite_type.branche = branche.id', array())
+               ->where('unite_type.id = ?', $this->type);
+        return $t->fetchOne($s);
     }
 
     public function getSousTypeName($pluriel = false)
@@ -1107,6 +1126,10 @@ class TypesUnite extends Strass_Db_Table_Abstract
     protected $_rowClass = 'TypeUnite';
     protected $_dependentTables = array('Unites', 'TypesUnite', 'Roles');
     protected $_referenceMap = array(
+        'Branche' => array(
+            'columns' => 'branche',
+            'refTableClass' => 'Branches',
+            'refColumns' => 'id'),
         'Parent' => array(
             'columns' => 'parent',
             'refTableClass' => 'TypesUnite',
