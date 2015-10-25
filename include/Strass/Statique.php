@@ -13,7 +13,13 @@ class Statique implements Zend_Acl_Resource_Interface
     {
         $this->id = $id;
         $this->path = 'private/statiques/'.$id.'.wiki';
-        Zend_Registry::get('acl')->add($this);
+
+        try {
+            Zend_Registry::get('acl')->add($this);
+        }
+        catch (Zend_Acl_Exception $e) {
+            /* déjà ajoutée */
+        }
 
         $this->title = preg_match("`^\+\+ (.*)$`m", $this->read(), $res) ? $res[1] : wtk_ucfirst($this->id);
     }
