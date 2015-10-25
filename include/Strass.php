@@ -49,12 +49,8 @@ class Strass {
         }
 
         require_once 'Wtk.php';
-        require_once 'Zend/Loader/Autoloader.php';
 
-        $loader = Zend_Loader_Autoloader::getInstance();
-        $loader->registerNamespace('Dio_');
-        $loader->registerNamespace('Wtk_');
-        $loader->registerNamespace('Strass_');
+        Wtk::init();
 
         Wtk_Document_Style::$path = array(
             Strass::getPrefix() . 'static/styles/',
