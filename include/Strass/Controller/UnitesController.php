@@ -241,6 +241,7 @@ class UnitesController extends Strass_Controller_Action
     function parametresAction()
     {
         static $blocs = array(
+            'branches' => 'Les branches',
             'unites' => 'Les unités',
             'photos' => 'Photos aléatoires',
             'activites' => 'Activités marquantes',

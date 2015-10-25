@@ -17,6 +17,43 @@ class Strass_Views_Unite_Index_BlocGenerator
         }
     }
 
+    function blocBranches()
+    {
+        $s = $this->view->document->addSection('branches');
+        $liste_couleurs = $s;
+        $unite = $this->view->unite;
+        $unites = iterator_to_array($this->view->unites);
+        $current_couleur = null;
+        foreach(array_reverse($unites) as $unite) {
+            try {
+                $b = $unite->getBranche();
+            }
+            catch (Strass_Db_Table_NotFound $e) {
+                /* Unité sans branche (aînés, etc.), on zappe. */
+                continue;
+            }
+            if ($current_couleur != $b->couleur) {
+                $ligne_couleur = $liste_couleurs->addSection($b->couleur)
+                                                ->addFlags('couleur');
+                $h = $ligne_couleur->addSection()->addFlags('branche')
+                                   ->addList()->addFlags('vignettes', 'sexe-h');
+                $f = $ligne_couleur->addSection()->addFlags('branche')
+                                   ->addList()->addFlags('vignettes', 'sexe-f');
+                $current_couleur = $b->couleur;
+            }
+            $mon_sexe = $b->sexe;
+            $ma_liste = $$mon_sexe;
+
+            $section_branche = $ma_liste->getParent('Wtk_Section');
+            if (!$section_branche->id) {
+                $section_branche->setId($b->slug);
+                $section_branche->setTitle($b->nom);
+            }
+
+            $ma_liste->addItem()->addChild($this->view->vignetteUnite($unite));
+        }
+    }
+
     function blocUnites()
     {
         $s = $this->view->document;
