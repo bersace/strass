@@ -22,7 +22,7 @@ class Strass_Logger
             'user' => $user->id,
             'message' => $message,
             'url' => $url,
-            'detail' => serialize($detail),
+            'detail' => substr(serialize($detail), 0, 4096),
         );
         $t = new Logs;
         return $t->insert($data);
