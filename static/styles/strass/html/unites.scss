@@ -20,6 +20,54 @@
     padding-top: 1em;
 }
 
+#document.unites.index
+{
+    #branches .couleur {
+        display: block;
+        margin: 0;
+        padding: 0;
+        text-align: center;
+
+        .h {
+            padding: 1ex 2em;
+            width: 80%;
+            display: inline-block;
+        }
+
+        &#jaune .h {
+            background-color: $branche_jaune_bg;
+        }
+
+        &#verte .h {
+            background-color: $branche_verte_bg;
+        }
+
+        &#rouge .h {
+            background-color: $branche_rouge_bg;
+        }
+
+        .branche {
+            display: inline-block;
+            width: 47%;
+
+            &:first-child {
+                text-align: right;
+                margin-right: 2%;
+            }
+
+            &:last-child {
+                text-align: left;
+                margin-left: 2%;
+            }
+
+            .vignettes {
+                margin: 0;
+                padding: 0;
+            }
+        }
+    }
+}
+
 #document.inscrire
 {
     .vignettes {

@@ -1,6 +1,8 @@
 <?php
 /* Mini serveur de static pour le développement. */
 
+set_time_limit(5);
+
 function content_type($extension) {
     switch($extension) {
     case 'ttf':

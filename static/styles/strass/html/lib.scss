@@ -14,6 +14,9 @@ $warn: $error;
 $warn_bg: #F2C956;
 $critical: $error;
 $critical_bg: $error_bg;
+$branche_jaune_bg: $warn_bg;
+$branche_verte_bg: $info_bg;
+$branche_rouge_bg: darken($error_bg, 5%);
 /* pour les formulaire */
 $taille_etiquette: 12em;
 /* À peu près 1/3 du contenu sur un écran 1024 */

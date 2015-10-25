@@ -3,6 +3,14 @@
 require_once 'Strass/Journaux.php';
 require_once 'Strass/Documents.php';
 
+
+class Branches extends Strass_Db_Table_Abstract
+{
+    protected $_name = 'branche';
+    protected $_dependentTables = array('TypeUnite');
+}
+
+
 class Unites extends Strass_Db_Table_Abstract
 {
     protected $_name = 'unite';
@@ -237,6 +245,17 @@ class Unite extends Strass_Db_Table_Row_Abstract implements Zend_Acl_Resource_In
         return $this->findParentTypesUnite()->findTypesUnite();
     }
 
+    function getBranche()
+    {
+        $t = new Branches;
+        $s = $t->select()
+               ->distinct()
+               ->from('branche')
+               ->join('unite_type', 'unite_type.branche = branche.id', array())
+               ->where('unite_type.id = ?', $this->type);
+        return $t->fetchOne($s);
+    }
+
     public function getSousTypeName($pluriel = false)
     {
         if ($this->isTerminale())
@@ -257,6 +276,83 @@ class Unite extends Strass_Db_Table_Row_Abstract implements Zend_Acl_Resource_In
 
     }
 
+    function selectSousUnites($s=null, $recursif=true)
+    {
+        $t = $this->getTable();
+        $db = $t->getAdapter();
+
+        if (!$s)
+            $s = $t->select();
+
+        $s->setIntegrityCheck(false)
+          ->distinct()
+          ->from('unite')
+          ->join('unite_type', 'unite_type.id = unite.type', array())
+          ->joinLeft( // Sélectionner ma mère si je suis la petite fille de
+                      // l'unité $this.
+              array('mere' => 'unite'),
+              $db->quoteInto('mere.parent = ? AND unite.parent = mere.id', $this->id),
+              array());
+
+        if ($recursif) {
+            /* Me sélectionner si je suis fille ou petite fille de $this. */
+            $s->where('unite.parent IN (?, mere.id)'."\n", $this->id);
+        }
+        else {
+            /* Me sélectionner si je suis fille directe the $this. */
+            $s->where('unite.parent = ?'."\n", $this->id);
+        }
+
+        return $s;
+    }
+
+    function selectAnnee($s=null, $annee)
+    {
+        if (!$s)
+            $s = $this->selectSousUnites();
+
+        if ($annee === null)
+            return $s;
+
+        /* Pour simplifier, on ne considère pour les unités virtuelles que les
+         * inscriptions de la maîtrise.. */
+        $s->joinLeft( // Sélectionner mes filles pour savoir si j'ai des inscrits.
+              array('fille' => 'unite'),
+              'fille.parent = unite.id', array())
+          ->joinLeft(
+              array('actif' => 'appartenance'),
+              'actif.unite IN (unite.id, fille.id)'."\n".
+              ' OR '.
+              ("(unite_type.virtuelle".
+              " AND ".
+              " actif.unite = unite.parent)"),
+              array())
+          ->joinLeft(
+              array('inactif' => 'appartenance'),
+              'inactif.unite IN (unite.id, fille.id)'."\n".
+                  ' OR '.
+              ("(unite_type.virtuelle".
+              " AND ".
+              " inactif.unite = unite.parent)").
+              ' AND inactif.fin IS NOT NULL',
+              array());
+
+        /* Unité active uniquement. */
+        if ($annee === true) {
+            $s->where('actif.fin IS NULL OR inactif.id IS NULL'."\n");
+        }
+        else if ($annee) {
+            /* On considère que les effectifs sont stable à cette date :x */
+            $date = ($annee+1).'-06-01';
+            $s->where(
+                "(actif.debut < ? AND (actif.fin IS NULL OR ?<= actif.fin))".
+                " OR inactif.id IS NULL\n", $date);
+        }
+
+        return $s;
+
+    }
+
     // retourne les sous-unités, récursivement ou non
     public function findSousUnites($annee = null, $recursif = true)
     {
@@ -264,56 +360,8 @@ class Unite extends Strass_Db_Table_Row_Abstract implements Zend_Acl_Resource_In
         $id = str_replace('-', '_', trim('sous-unites-'.$this->slug.'-'.$annee.'-'.$recursif, '-'));
         if (($su = $c->load($id)) === false) {
             $t = $this->getTable();
-            $db = $t->getAdapter();
-            $select = $this->getTable()->select()
-                           ->setIntegrityCheck(false)
-                           ->from('unite')
-                           ->join('unite_type', 'unite_type.id = unite.type', array())
-                           ->order('unite_type.virtuelle DESC');
-
-            if ($recursif) {
-                $select
-                    ->joinLeft(array('fille' => 'unite'), $db->quoteInto('fille.parent = ?', $this->id), array())
-                    ->where('unite.parent IN (?, fille.id)'."\n", $this->id);
-            }
-            else {
-                $select
-                    ->where('unite.parent = ?'."\n", $this->id);
-            }
-
-            if ($annee) {
-                /* unités ouvertes */
-                $select
-                    ->joinLeft(
-                        array('petitefille' => 'unite'),
-                        'petitefille.parent = unite.id', array())
-                    ->joinLeft(
-                        array('actif' => 'appartenance'),
-                        'actif.unite IN (unite.id, petitefille.id)'."\n".
-                        ' OR '.
-                        ("(unite_type.virtuelle".
-                        " AND ".
-                        " actif.unite = unite.parent)"),
-                        array())
-                    ->joinLeft(
-                        array('inactif' => 'appartenance'),
-                        'inactif.unite IN (unite.id, petitefille.id)'."\n".
-                        ' OR '.
-                        ("(unite_type.virtuelle".
-                        " AND ".
-                        " inactif.unite = unite.parent)").
-                        ' AND inactif.fin IS NOT NULL',
-                        array());
-                if ($annee === true)
-                    $select->where('actif.fin IS NULL OR inactif.id IS NULL');
-                else {
-                    /* On considère que les effectifs sont stable à cette date :x */
-                    $date = ($annee+1).'-06-01';
-                    $select->where(
-                        "(actif.debut < ? AND (actif.fin IS NULL OR ?<= actif.fin))".
-                        " OR inactif.id IS NULL", $date);
-                }
-            }
+            $select = $this->selectSousUnites(null, $recursif);
+            $select = $this->selectAnnee($select, $annee);
             $su = $t->fetchAll($select);
             $c->save($su, $id, array('unites', 'apps'));
         }
@@ -1078,6 +1126,10 @@ class TypesUnite extends Strass_Db_Table_Abstract
     protected $_rowClass = 'TypeUnite';
     protected $_dependentTables = array('Unites', 'TypesUnite', 'Roles');
     protected $_referenceMap = array(
+        'Branche' => array(
+            'columns' => 'branche',
+            'refTableClass' => 'Branches',
+            'refColumns' => 'id'),
         'Parent' => array(
             'columns' => 'parent',
             'refTableClass' => 'TypesUnite',
