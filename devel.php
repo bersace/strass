@@ -43,7 +43,7 @@ if (preg_match('/\.(?:css|gif|ico|jpeg|jpg|js|png|ttf)$/', $uri)) {
     if (try_file($root . $uri) === true) return true;
 
     header("HTTP/1.0 404 Not Found");
-    error_log("Pas trouvé : " . $path);
+    error_log("Pas trouvé : " . $uri);
     return true;
 }
 
