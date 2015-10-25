@@ -58,6 +58,7 @@ class Zend_Db_Statement_Pdo extends Zend_Db_Statement implements IteratorAggrega
             $this->_stmt = $this->_adapter->getConnection()->prepare($sql);
         } catch (PDOException $e) {
             require_once 'Zend/Db/Statement/Exception.php';
+            error_log("Failed to prepare: " . $sql);
             throw new Zend_Db_Statement_Exception($e->getMessage(), $e->getCode(), $e);
         }
     }
