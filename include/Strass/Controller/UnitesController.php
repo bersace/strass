@@ -194,7 +194,7 @@ class UnitesController extends Strass_Controller_Action
 
         $this->metas(array('DC.Title' => 'Éditer '.$u->getFullname()));
 
-        $this->view->model = $m = new Wtk_Form_Model('unite');
+        $this->view->model = $m = new Wtk_Form_Model('editer');
         $enum = array(null => 'Orpheline');
         foreach ($u->findParenteCandidates() as $c)
             $enum[$c->id] = $c->getFullname();
