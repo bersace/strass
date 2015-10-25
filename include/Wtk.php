@@ -15,8 +15,6 @@ abstract class Wtk
 	public static function autoload ($class)
 	{
 		$file = str_replace ('_', '/', $class).'.php';
-		$exists = false;
-
 
 		if (file_exists(WTK_INCLUDE_DIR . DIRECTORY_SEPARATOR . $file))
 			include_once $file;
