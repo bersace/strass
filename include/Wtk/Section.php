@@ -4,7 +4,7 @@ class Wtk_Section extends Wtk_Container
 {
 	public		$level;
 	protected	$content;
-	protected	$title;
+	public	$title;
 
 	/**
 	 * @title is either a wiki string or a element.
