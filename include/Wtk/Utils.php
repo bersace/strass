@@ -45,27 +45,27 @@ function wtk_first_words($full, $length = 512, $ellipse = "…")
  */
 function wtk_first_lines($full, $length = 512, $maxlines=5, $ellipse = "…")
 {
-  $lines = explode("\n", $full);
-  $count = 0;
-  $out = "";
-  foreach($lines as $line) {
-    $out .= $line."\n";
-    if (strlen($out) >= $length) {
-      $out = wtk_first_words($out, $length, null);
-      break;
+    $lines = explode("\n", $full);
+    $count = 0;
+    $out = "";
+    foreach($lines as $line) {
+        $out .= $line."\n";
+        if (strlen($out) >= $length) {
+            $out = wtk_first_words($out, $length, null);
+            break;
+        }
+
+        if (trim($line))
+            $count++;
+
+        if ($count >= $maxlines)
+            break;
     }
 
-    if (trim($line))
-      $count++;
+    if ($ellipse && $out != $full)
+        $out = trim($out) . $ellipse;
 
-    if ($count >= $maxlines)
-      break;
-  }
-
-  if ($ellipse && $out != $full)
-      $out = trim($out) . $ellipse;
-
-  return $out;
+    return $out;
 }
 
 /**
@@ -77,7 +77,7 @@ function wtk_ucfirst($string)
 	$mots = preg_split('`([- ])`', $string, 2, PREG_SPLIT_DELIM_CAPTURE);
 	$incipit = $mots[0];
 	if (!preg_match('/[[:digit:]]/', $incipit[0]))
-	  $mots[0] = mb_convert_case($incipit, MB_CASE_TITLE);
+        $mots[0] = mb_convert_case($incipit, MB_CASE_TITLE);
 	return implode('', $mots);
 }
 
@@ -112,8 +112,8 @@ function wtk_steno_to_int($str)
 /* on pourrai appeler cette fonction instiancate_user_class_array() */
 function wtk_new($class, $args)
 {
-  if (!class_exists($class))
-    throw new Exception("Class $class inexistant");
+    if (!class_exists($class))
+        throw new Exception("Class $class inexistant");
 
 	$code = '$obj = new '.$class.' ('.implode(', ', wtk_args_string('args', $args)).');';
 	eval($code);
@@ -149,26 +149,28 @@ function wtk_args_string($name, $args)
  */
 function wtk_strtoid($string, $sep='-')
 {
-	static $table = array('á' => 'a', 'à' => 'a',
-			      'â' => 'a', 'ä' => 'a',
-			      'å' => 'a',
-			      'é' => 'e', 'è' => 'e',
-			      'ê' => 'e', 'ë' => 'e',
-			      'ì' => 'i', 'í' => 'i',
-			      'î' => 'i', 'ï' => 'i',
-			      'ó' => 'o', 'ô' => 'o',
-			      'ö' => 'o', 'ø' => 'o',
-			      'ò' => 'o',
-			      'ú' => 'u', 'ù' => 'u',
-			      'û' => 'u', 'ü' => 'u',
-			      'ç' => 'c',
-			      'œ' => 'oe', 'æ' => 'ae',
-			      '«' => '"', '»' => '"',
-			      "‘" => "'", "’" => "'",
-			      '“' => '"', '”' => '"',
-			      '—' => '-', '–' => '-',
-			      ' ' => ' ', "\t"=> ' ',
-			      '…' => '...', '°' => '');
+	static $table = array(
+        'á' => 'a', 'à' => 'a',
+        'â' => 'a', 'ä' => 'a',
+        'å' => 'a',
+        'é' => 'e', 'è' => 'e',
+        'ê' => 'e', 'ë' => 'e',
+        'ì' => 'i', 'í' => 'i',
+        'î' => 'i', 'ï' => 'i',
+        'ó' => 'o', 'ô' => 'o',
+        'ö' => 'o', 'ø' => 'o',
+        'ò' => 'o',
+        'ú' => 'u', 'ù' => 'u',
+        'û' => 'u', 'ü' => 'u',
+        'ç' => 'c',
+        'œ' => 'oe', 'æ' => 'ae',
+        '«' => '"', '»' => '"',
+        "‘" => "'", "’" => "'",
+        '“' => '"', '”' => '"',
+        '—' => '-', '–' => '-',
+        ' ' => ' ', "\t"=> ' ',
+        '…' => '...', '°' => '',
+    );
 	return trim(preg_replace('/[[:punct:][:space:]]+/', $sep,
 				 str_replace(array_keys($table),
 					     array_values($table),
@@ -194,8 +196,10 @@ function wtk_abs_href($href)
 
 function wtk_format_size($size, $decimals=0, $powerof=1000)
 {
-  static $units = array(1000 => array('o', 'Ko', 'Mo', 'Go'),
-			1024 => array('o', 'Kio', 'Mio', 'Gio'));
+  static $units = array(
+      1000 => array('o', 'Ko', 'Mo', 'Go'),
+      1024 => array('o', 'Kio', 'Mio', 'Gio'),
+  );
   $power = $size > 0 ? floor(log($size, $powerof)) : 0;
   return number_format($size / pow($powerof, $power), $decimals, ',', ' ') . ' ' . $units[$powerof][$power];
 }
