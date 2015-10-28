@@ -10,7 +10,7 @@ $dojodbg = 'false';
 
 ?>
 <!doctype html>
-<html lang="fr">
+<html lang="fr"<?php wtk_classes($flags); ?>>
 <head>
 <title><?php echo $metas->get('DC.Title.alternative'); ?></title>
 
