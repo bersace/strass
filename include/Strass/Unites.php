@@ -1048,6 +1048,7 @@ class Unite extends Strass_Db_Table_Row_Abstract implements Zend_Acl_Resource_In
         $s = $t->select()
                ->setIntegrityCheck(false)
                ->distinct()
+               ->where('appartenance.unite = ?', $this->id)
                ->where('appartenance.role = ?', $role->id)
                ->where('appartenance.fin IS NULL')
                ->where('appartenance.titre = ?', $titre);
