@@ -390,12 +390,15 @@ class Unite extends Strass_Db_Table_Row_Abstract implements Zend_Acl_Resource_In
                ->distinct()
                ->from('unite')
                ->joinLeft(
+                   array('fille' => 'unite'),
+                   'fille.parent = unite.id', array())
+               ->joinLeft(
                    array('actif' => 'appartenance'),
-                   'actif.unite = unite.id AND actif.fin IS NULL', array())
+                   'actif.unite IN (unite.id, fille.id) AND actif.fin IS NULL', array())
                ->where('actif.id IS NULL')
                ->joinLeft(
                    array('inactif' => 'appartenance'),
-                   'inactif.unite = unite.id AND inactif.fin IS NOT NULL', array())
+                   'inactif.unite IN (unite.id, fille.id) AND inactif.fin IS NOT NULL', array())
                ->where('inactif.id')
                ->where('unite.parent = ?', $this->id);
 
