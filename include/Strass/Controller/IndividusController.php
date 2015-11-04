@@ -68,8 +68,9 @@ class IndividusController extends Strass_Controller_Action
 
         $this->metas(array('DC.Title' => "Fiche d'individu"));
 
-        $this->assert(null, $individu, 'fiche',
-        "Vous n'avez pas le droit de voir cette fiche. ");
+        $this->assert(
+            null, $individu, 'fiche',
+            "Vous n'avez pas le droit de voir cette fiche. ");
 
         $this->metas(array('DC.Title' => $individu->getFullname(false, false)));
 
@@ -82,32 +83,38 @@ class IndividusController extends Strass_Controller_Action
         $s = $individu->getTable()->select()->order('date DESC');
         $this->view->user = $user = $individu->findUser();
 
-        $this->actions->append("Inscription",
-        array('action' => 'inscrire'),
-        array(null, $individu, 'inscrire'));
-        $this->actions->append("Éditer la fiche",
-        array('action'        => 'editer'),
-        array(null, $individu));
+        $this->actions->append(
+            "Inscription",
+            array('action' => 'inscrire'), array(null, $individu, 'inscrire'));
+        $this->actions->append(
+            "Éditer la fiche",
+            array('action' => 'editer'), array(null, $individu));
 
         if ($individu->isMember()) {
-            $this->actions->append("Paramètres utilisateur",
-            array('controller'        => 'membres',
-            'action' => 'parametres',
-            'membre' => $user->username,
-            'individu' => null),
-            array(null, null, 'admin'));
-            if (!Zend_Registry::offsetExists('sudoer')
-            && $this->assert(null, $individu->findUser(), 'sudo'))
-                $this->actions->append("Prendre l'identité",
-                array('controller'        => 'membres',
-                'action' => 'sudo',
-                'username' => $user->username),
+            $this->actions->append(
+                "Paramètres utilisateur",
+                array(
+                    'controller'        => 'membres',
+                    'action' => 'parametres',
+                    'membre' => $user->username,
+                    'individu' => null),
                 array(null, null, 'admin'));
+            if (
+                !Zend_Registry::offsetExists('sudoer')
+                && $this->assert(null, $individu->findUser(), 'sudo'))
+                $this->actions->append(
+                    "Prendre l'identité",
+                    array(
+                        'controller'        => 'membres',
+                        'action' => 'sudo',
+                        'username' => $user->username),
+                    array(null, null, 'admin'));
         }
 
-        $this->actions->append("Supprimer",
-        array('action'        => 'supprimer'),
-        array(null, $individu));
+        $this->actions->append(
+            "Supprimer",
+            array('action' => 'supprimer'),
+            array(null, $individu));
     }
 
     function editerAction()
@@ -154,8 +161,9 @@ class IndividusController extends Strass_Controller_Action
             $db->beginTransaction();
             try {
                 // contacts
-                $champs = array('nom', 'prenom', 'naissance', 'portable', 'sexe',
-                'fixe', 'adresse', 'notes', 'etape');
+                $champs = array(
+                    'nom', 'prenom', 'naissance', 'portable', 'sexe',
+                    'fixe', 'adresse', 'notes', 'etape');
                 try {
                     $m->getInstance('adelec');
                     array_push($champs, 'adelec');
@@ -194,12 +202,14 @@ class IndividusController extends Strass_Controller_Action
                 }
 
                 $this->logger->info("Fiche individu mis-à-jour",
-                $this->_helper->Url('fiche', 'individus', null,
-                array('individu' => $individu->slug)));
+                $this->_helper->Url(
+                    'fiche', 'individus', null,
+                    array('individu' => $individu->slug)));
 
                 $db->commit();
-                $this->redirectSimple('fiche', 'individus', null,
-                array('individu' => $individu->slug));
+                $this->redirectSimple(
+                    'fiche', 'individus', null,
+                    array('individu' => $individu->slug));
 
             }
             catch (Wtk_Form_Model_Exception $e) {
@@ -213,14 +223,18 @@ class IndividusController extends Strass_Controller_Action
             }
         }
 
-        $this->actions->append("Inscription",
-        array('controller'        => 'individus',
-        'action'        => 'inscrire'),
-        array(null, $individu, 'inscrire'));
-        $this->actions->append("Paramètres utilisateur",
-        array('controller'        => 'membres',
-        'action'        => 'parametres'),
-        array(null, $individu, 'admin'));
+        $this->actions->append(
+            "Inscription",
+            array(
+                'controller' => 'individus',
+                'action' => 'inscrire'),
+            array(null, $individu, 'inscrire'));
+        $this->actions->append(
+            "Paramètres utilisateur",
+            array(
+                'controller' => 'membres',
+                'action' => 'parametres'),
+            array(null, $individu, 'admin'));
     }
 
     function inscrireAction()
@@ -370,8 +384,9 @@ class IndividusController extends Strass_Controller_Action
         $this->view->app = $app = $this->_helper->Inscription();
         $this->metas(array('DC.Title' => "Éditer l'inscription"));
         $this->view->individu = $individu = $app->findParentIndividus();
-        $this->assert(null, $individu, 'inscrire',
-        "Vous n'avez pas le droit d'inscrire ".$individu->getFullname()." dans une unité.");
+        $this->assert(
+            null, $individu, 'inscrire',
+            "Vous n'avez pas le droit d'inscrire ".$individu->getFullname()." dans une unité.");
 
         $this->view->model = $m = new Wtk_Form_Model('inscription');
         $this->view->unite = $unite = $app->findParentUnites();
@@ -405,7 +420,9 @@ class IndividusController extends Strass_Controller_Action
             }
             catch (Exception $e) { $db->rollBack(); throw $e; }
 
-            $this->redirectSimple('fiche', 'individus', null, array('individu' => $individu->slug), true);
+            $this->redirectSimple(
+                'fiche', 'individus', null,
+                array('individu' => $individu->slug), true);
         }
     }
 
@@ -414,8 +431,9 @@ class IndividusController extends Strass_Controller_Action
         $this->view->app = $app = $this->_helper->Inscription();
         $this->metas(array('DC.Title' => "Annuler l'inscription"));
         $this->view->individu = $individu = $app->findParentIndividus();
-        $this->assert(null, $individu, 'inscrire',
-        "Vous n'avez pas le droit de désinscrire ".$individu->getFullname()." d'une unité.");
+        $this->assert(
+            null, $individu, 'inscrire',
+            "Vous n'avez pas le droit de désinscrire ".$individu->getFullname()." d'une unité.");
 
         $this->view->model = $m = new Wtk_Form_Model('annuler');
         $m->addBool('confirmer', "Je confirme la suppression de cette inscription dans l'historique");
@@ -447,15 +465,17 @@ class IndividusController extends Strass_Controller_Action
     {
         $this->view->individu = $individu = $this->_helper->Individu();
 
-        $this->assert(null, $individu, 'admin',
-        "Vous n'avez pas le droit d'administrer ".
-        "l'inscription de cet individu.");
+        $this->assert(
+            null, $individu, 'admin',
+            "Vous n'avez pas le droit d'administrer ".
+            "l'inscription de cet individu.");
 
         $this->metas(array('DC.Title' => 'Administrer '.$individu->getFullname()));
 
-        $this->actions->append("Éditer la fiche",
-        array('controller' => 'individus', 'action' => 'editer'),
-        array(null, $individu));
+        $this->actions->append(
+            "Éditer la fiche",
+            array('controller' => 'individus', 'action' => 'editer'),
+            array(null, $individu));
 
         $as = $individu->findAppartenances(null, 'debut DESC');
         if (!$as->count()) {
@@ -477,12 +497,13 @@ class IndividusController extends Strass_Controller_Action
                 $er[$r->id] = substr($r->slug, 0, 7);
 
             $i = $m->addTable('appartenances', "Appartenances",
-            array('unite'        => array('Enum',        'Unité',$eu),
-            'role'        => array('Enum',        'Role',        $er),
-            'titre'        => array('String',        'Titre'),
-            'debut'        => array('Date',        'Début'),
-            'clore'        => array('Bool',        'Clore', false),
-            'fin'        => array('Date',        'Fin')));
+            array(
+                'unite'        => array('Enum',        'Unité', $eu),
+                'role'         => array('Enum',        'Role', $er),
+                'titre'        => array('String',      'Titre'),
+                'debut'        => array('Date',        'Début'),
+                'clore'        => array('Bool',        'Clore', false),
+                'fin'          => array('Date',        'Fin')));
 
             foreach($as as $a)
                 $i->addRow($a->unite, $a->role, $a->titre, $a->debut, (bool) $a->fin, $a->fin);
@@ -526,8 +547,9 @@ class IndividusController extends Strass_Controller_Action
     function supprimerAction()
     {
         $this->view->individu = $i = $this->_helper->Individu();
-        $this->assert(null, $i, 'supprimer',
-        "Vous n'avez pas le droit de supprime cette fiche.");
+        $this->assert(
+            null, $i, 'supprimer',
+            "Vous n'avez pas le droit de supprime cette fiche.");
 
         $this->metas(array('DC.Title' => 'Supprimer '.$i->getFullname()));
 
