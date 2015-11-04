@@ -47,7 +47,9 @@ if ($this->assert(null, 'site') && $this->user->admin)
 else if ($this->individu->isMember())
     $l->addItem()->addFlags('member')->addStrong("Membre");
 if ($this->user->last_login)
-    $l->addItem()->addFlags('last')->addInline("Connecté ".strftime("le %e-%m-%Y à %Hh%M"));
+    $l->addItem()->addFlags('last')
+      ->addInline("Connecté ".strftime(
+          "le %e-%m-%Y à %Hh%M", strtotime($this->user->last_login)));
 if ($this->individu->notes) {
     $s->addSection('notes')->addText($this->individu->notes);
 }
