@@ -13,6 +13,10 @@ class JournauxController extends Strass_Controller_Action
         $this->view->model = new Strass_Pages_Model_Rowset($s, 7, $this->_getParam('page'));
 
         $this->actions->append(
+            "Envoyer un PDF",
+            array('action' => 'envoyer', 'journal' => $j->slug),
+            array(null, $j));
+        $this->actions->append(
             "Écrire un article",
             array('action' => 'ecrire', 'journal' => $j->slug),
             array(null, $j));
@@ -113,6 +117,10 @@ class JournauxController extends Strass_Controller_Action
         if ($this->_getParam('article')) {
             $a = $this->_helper->Article();
             $j = $a->findParentJournaux();
+            try {
+                $a->findDocument();
+                $this->redirectSimple('envoyer');
+            } catch (Strass_Db_Table_NotFound $e) {}
         }
         else {
             $a = null;
@@ -247,6 +255,142 @@ class JournauxController extends Strass_Controller_Action
         }
     }
 
+    function envoyerAction()
+    {
+        if ($this->_getParam('article')) {
+            $a = $this->_helper->Article();
+            $j = $a->findParentJournaux();
+            $c = $a->findParentCommentaires();
+            try {
+                $d = $a->findDocument();
+            }
+            catch (Strass_Db_Table_NotFound $e) {
+                $this->redirectSimple('ecrire');
+            }
+            $message = "Article édité";
+        }
+        else {
+            $a = null;
+            $j = $this->_helper->Journal();
+            $message = "Article envoyé";
+        }
+
+        $this->metas(array('DC.Title' => "Envoyer"));
+        $this->branche->append();
+        if ($a)
+            $this->assert(
+                null, $a, null,
+                "Vous n'avez pas le droit d'éditer ".$a);
+        else
+            $this->assert(
+                null, $j, null,
+                "Vous n'avez pas le droit d'envoyer un PDF dans ".$j);
+
+        $this->view->unite = $u = $j->findParentUnites();
+        $publier = $this->assert(null, $j, 'publier');
+        $this->view->model = $m = new Wtk_Form_Model('envoyer');
+        $me = Zend_Registry::get('individu');
+        if ($publier) {
+            $i = $m->addEnum('auteur', "Auteur");
+            /* on inclus les membres de sous-unité : le scout peuvent écrire
+               dans la gazette de troupe */
+            foreach($u->findInscrits(null, 1) as $individu)
+                $i->addItem($individu->id, $individu->getFullname(false));
+
+            if (!count($i))
+                throw new Strass_Controller_Action_Exception_Notice(
+                    "L'auteur de l'article doit être un membre, mais cette unité n'a aucun membre !");
+
+            if ($a)
+                $i->set($a->findAuteur()->id);
+            else
+                $i->set($me->id);
+        }
+        else {
+            $i = $m->addInteger('auteur', "Auteur", $me->id, true);
+        }
+
+        $i = $m->addInstance('File', 'fichier', "Fichier");
+        if (!$a)
+            $m->addConstraintRequired($i);
+        $i = $m->addString('titre', "Titre", $a ? $a->titre : null);
+        $m->addConstraintRequired($i);
+        $m->addDate('date', 'Date', $a ? $c->date : null);
+        if ($publier)
+            $m->addEnum(
+                'public', 'Publication', $a ? $a->public : null,
+                array(0 => 'Brouillon', 1 => 'Publier'));
+
+        $m->addNewSubmission('envoyer', "Envoyer");
+
+        if ($m->validate()) {
+            $td = new Documents;
+            $db = $td->getAdapter();
+            $db->beginTransaction();
+            try {
+                $da = (bool) $a;
+                if (!$a) {
+                    $a = new Article;
+                    $c = new Commentaire;
+                    $d = new Document;
+                }
+
+                $d->slug = $td->createSlug($j->slug . '-' . $m->titre, $d->slug);
+                $d->titre = $m->titre;
+                $d->date = $m->date;
+                $i = $m->getInstance('fichier');
+                if ($i->isUploaded()) {
+                    $d->suffixe =strtolower(end(explode('.', $m->fichier['name'])));
+                    $d->storeFile($i->getTempFilename());
+                }
+                $d->save();
+
+                $c->auteur = $m->auteur;
+                $c->date = $m->date;
+                $c->save();
+
+                $a->slug = $a->getTable()->createSlug($m->titre, $a->slug);
+                $a->journal = $j->id;
+                $a->titre = $m->titre;
+                $a->article = '!document';
+                try {
+                    $a->public = (int) $m->public;
+                }
+                catch (Exception $e) {}
+                $a->commentaires = $c->id;
+                $a->save();
+
+                if (!$da) {
+                    $da = new DocArticle;
+                    $da->article = $a->id;
+                    $da->document = $d->id;
+                    $da->save();
+                }
+
+                $this->logger->info(
+                    $message, $this->_helper->url(
+                        'consulter', 'journaux', null,
+                        array('article' => $a->slug), true));
+
+                if (!$this->assert(null, $j, 'publier')) {
+                    $mail = new Strass_Mail_Article($a);
+                    $mail->send();
+                }
+
+                $this->_helper->Flash->info($message);
+                $db->commit();
+            }
+            catch(Exception $e) {
+                $db->rollBack();
+                throw $e;
+            }
+
+            $this->redirectSimple(
+                'consulter', 'journaux', null,
+                array('article' => $a->slug), true);
+        }
+    }
+
     function brouillonsAction()
     {
         $this->view->journal = $j = $this->_helper->Journal();
@@ -264,13 +408,21 @@ class JournauxController extends Strass_Controller_Action
     {
         $this->view->article = $a = $this->_helper->Article();
         $this->view->auteur = $a->findAuteur();
+        try {
+            $this->view->doc = $a->findDocument();
+            $editer = 'envoyer';
+        }
+        catch (Strass_Db_Table_NotFound $e) {
+            $this->view->doc = null;
+            $editer = 'ecrire';
+        }
 
         $this->assert(null, $a, 'voir', "Cet article n'est pas public.");
 
         $this->actions->append(
             "Éditer",
-            array('action' => 'ecrire'),
-            array(null, $a, 'editer'));
+            array('action' => $editer),
+            array(null, $a));
         $this->actions->append(
             "Supprimer",
             array('action' => 'supprimer'),

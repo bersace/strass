@@ -92,7 +92,7 @@ class Articles extends Strass_Db_Table_Abstract
 {
     protected $_name = 'article';
     protected $_rowClass = 'Article';
-    protected $_dependentTables = array('Etiquettes');
+    protected $_dependentTables = array('Etiquettes', 'DocsArticle');
     protected $_referenceMap = array(
         'Journal' => array(
             'columns' => 'journal',
@@ -154,6 +154,21 @@ class Article extends Strass_Db_Table_Row_Abstract implements Zend_Acl_Resource_
 
         if ($this->public)
             $acl->allow(null, $this, 'voir');
+    }
+
+    function findDocument()
+    {
+        $t = new Documents;
+        $db = $t->getAdapter();
+        $s = $t->select()
+               ->setIntegrityCheck(false)
+               ->distinct()
+               ->from('document')
+               ->join('article_document', 'article_document.document = document.id', array())
+               ->where('article_document.article = ?', $this->id)
+               ->limit(1);
+
+        return $t->fetchOne($s);
     }
 
     function getDossier($data = null)
@@ -282,4 +297,28 @@ class Article extends Strass_Db_Table_Row_Abstract implements Zend_Acl_Resource_
             }
         }
     }
+}
+
+class DocsArticle extends Strass_Db_Table_Abstract
+{
+    protected $_name = 'article_document';
+    protected $_rowClass = 'DocArticle';
+    protected $_referenceMap = array(
+        'Document' => array(
+            'columns' => 'document',
+            'refTableClass' => 'Documents',
+            'refColumns' => 'id',
+            'onUpdate' => self::CASCADE,
+            'onDelete' => self::CASCADE),
+        'Article' => array(
+            'columns' => 'article',
+            'refTableClass' => 'Articles',
+            'refColumns' => 'id',
+            'onUpdate' => self::CASCADE,
+            'onDelete' => self::CASCADE));
+}
+
+class DocArticle extends Strass_Db_Table_Row_Abstract
+{
+    protected $_tableClass = 'DocsArticle';
 }

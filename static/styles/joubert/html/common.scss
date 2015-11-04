@@ -507,10 +507,14 @@ a.vignette
 	    background-image: url("icones/lock.png");
 	}
 
-	li.prevoir, li.fonder, li.inscrire, li.citation.enregistrer, li.envoyer
+	li.prevoir, li.fonder, li.inscrire, li.citation.enregistrer
 	{
 	    background-image: url("icones/plus.png");
 	}
+
+        li.envoyer {
+	    background-image: url("icones/publish.png");
+        }
 
 	li.administrer, li.admin {
 	    background-image: url("icones/settings.png");
