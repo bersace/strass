@@ -16,6 +16,8 @@ function content_type($extension) {
         return 'image/jpeg';
     case 'js':
         return 'application/javascript';
+    case 'pdf':
+        return 'application/pdf';
     default:
         return 'text/plain';
     }
@@ -36,7 +38,7 @@ function try_file($path) {
 $_SERVER['SCRIPT_NAME'] = substr($_SERVER['SCRIPT_FILENAME'], strlen($_SERVER['DOCUMENT_ROOT']));
 $uri = urldecode($_SERVER["REQUEST_URI"]);
 
-if (preg_match('/\.(?:css|gif|ico|jpeg|jpg|js|png|ttf)$/', $uri)) {
+if (preg_match('/\.(?:css|gif|ico|jpeg|jpg|js|pdf|png|ttf)$/', $uri)) {
     // Fichiers /static/
     if (try_file('.' . $uri) === true) return true;
 
