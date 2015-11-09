@@ -676,7 +676,11 @@ class FTPManager(object):
 
     def remove(self, *pathes):
         for path in pathes:
-            entry = self.tree[path]
+            try:
+                entry = self.tree[path]
+            except KeyError:
+                continue
+
             for op in entry.remove():
                 self.operations.add(op)
 
