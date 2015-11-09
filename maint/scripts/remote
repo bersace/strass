@@ -901,7 +901,7 @@ class upload(object):
                 ftp.mirror('index.php', 'include/Strass.php', 'include/Strass/', 'include/Wtk/',
                            'include/templates/', 'static/styles/')
         else:
-            ftp.mirror('data/', 'private/', 'include/')
+            ftp.mirror('index.php', 'static/', 'include/', 'data/', 'private/')
         # nettoyage
         ftp.remove('resources/', 'config/', 'cache/', 'data/private/')
         self.log.info(u"Démarrage de la mise à jour")
