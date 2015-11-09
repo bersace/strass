@@ -225,8 +225,22 @@ class FTPEntry(object):
         self._remotesize = None
         self._remoteexists = None
         self._localpath = None
-        self.git = ['git', '-C', self.manager.local_root]
 
+
+    @property
+    def is_user_data(self):
+        for pattern in self.local_files:
+            if fnmatch.fnmatch(self.path, pattern):
+                return True
+        else:
+            return False
+
+    @property
+    def git(self):
+        git = ['git']
+        if self.is_user_data:
+            git += ['-C', self.manager.local_root]
+        return git
 
     def __repr__(self):
         return "%s %r" % (self.type_, self.path,)
@@ -304,13 +318,11 @@ class FTPEntry(object):
     @property
     def localpath(self):
         if not self._localpath:
-            for pattern in self.local_files:
-                if fnmatch.fnmatch(self.path, pattern):
-                    self._localpath = os.path.join(self.manager.local_root, self.path)
-                    self.log.trace(
-                        u"Le fichier local de %s est %s",
-                        repr(self.path), repr(self._localpath))
-                    break
+            if self.is_user_data:
+                self._localpath = os.path.join(self.manager.local_root, self.path)
+                self.log.trace(
+                    u"Le fichier local de %s est %s",
+                    repr(self.path), repr(self._localpath))
             else:
                 self._localpath = self.path
         return self._localpath
