@@ -103,8 +103,6 @@ class Script(object):
                     u"Fichier %s est inexistant. Ignoré.", args.config)
 
         except Exception, e:
-            log.exception(e)
-            log.debug("%r", e)
             log.error("%s", e)
             if args.debug:
                 import pdb; pdb.post_mortem()
@@ -119,6 +117,7 @@ class Script(object):
         except (FTPError, error_perm), e:
             log.error("%s", e)
         except Exception, e:
+            log.error("%s", e)
             if args.debug:
                 import pdb; pdb.post_mortem()
             return 1
