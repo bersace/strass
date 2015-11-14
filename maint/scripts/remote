@@ -98,6 +98,9 @@ class Script(object):
                 with open(args.config) as f:
                     config.readfp(f, args.config)
                     logger.trace(u"Configurations lues: %s", args.config)
+            else:
+                logger.warning(
+                    u"Fichier %s est inexistant. Ignoré.", args.config)
 
         except Exception, e:
             log.exception(e)
