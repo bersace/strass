@@ -20,6 +20,7 @@ class Photos extends Strass_Db_Table_Abstract
             'refColumns' => 'id',
             'onUpdate' => self::CASCADE,
             'onDelete' => self::CASCADE));
+    protected $_dependentTables = array('Identifications');
 }
 
 class Photo extends Strass_Db_Table_Row_Abstract implements Zend_Acl_Resource_Interface
