@@ -146,7 +146,6 @@ class Strass_Controller_Plugin_Auth extends Zend_Controller_Plugin_Abstract
             }
         }
         catch (Wtk_Form_Model_Exception $e) {
-            error_log("[AUTH][FORM] " . $e->getMessage());
             $auth->clearIdentity();
             $im->errors[] = $e;
         }
