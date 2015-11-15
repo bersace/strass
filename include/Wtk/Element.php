@@ -180,7 +180,7 @@ abstract class Wtk_Element
 	 */
 	function elementTemplate($class = NULL)
 	{
-		$klass = $class ? $class : get_class($this);
+		$klass = $class ? $class : get_called_class();
 		$template = str_replace('_', '/', strtolower($klass));
 		return new Temple($template, $this->data);
 	}
