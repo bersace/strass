@@ -45,7 +45,8 @@ class Strass_Pages_Renderer_Individus extends Wtk_Pages_Renderer
 $this->document->addFlags('annuaire');
 
 $f = $this->document->addForm($this->recherche)->addFlags('recherche');
-$f->addSearch('recherche', 24)->useLabel(false);
+$f->addSearch('recherche', 24)->useLabel(false)
+  ->setPlaceHolder('prénom, nom, poste, patrouille, ...');
 $b = $f->addForm_ButtonBox();
 $b->addForm_Submit($this->recherche->getSubmission('chercher'));
 
