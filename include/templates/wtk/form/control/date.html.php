@@ -47,19 +47,35 @@ for ($i = 0; $i < $len; $i++) {
   }
 }
 if ($sep) {
-  array_push($items, $sep);
- }
+    array_push($items, $sep);
+}
 
+$minvalues = array(
+    'month' => 1,
+    'day' => 1,
+    'hour' => 0,
+    'min' => 0,
+    'sec' => 0,
+);
+
+$maxvalues = array(
+    'month' => 12,
+    'day' => 31,
+    'hour' => 23,
+    'min' => 59,
+    'sec' => 60,
+);
 ?>
 <?php foreach ($items as $item): ?>
 <?php if ($item): ?>
 <?php
 switch ($item) {
  case 'year':
-   echo "<input type=\"text\" size=\"5\" maxlength=\"4\"";
+   echo "<input size=\"5\" maxlength=\"4\"";
    wtk_classes($flags, $item);
    wtk_attr ('name', $name.'[year]');
    wtk_attr ('value', $year);
+   wtk_attr ('type', 'number');
    echo " />";
    break;
  case 'month':
@@ -67,10 +83,13 @@ switch ($item) {
  case 'hour':
  case 'min':
  case 'sec':
-   echo "<input type=\"text\" size=\"2\" maxlength=\"2\"";
+   echo "<input size=\"2\" maxlength=\"2\"";
    wtk_classes($flags, $item);
-   wtk_attr ('name', $name.'['.$item.']');
-   wtk_attr ('value', $$item);
+   wtk_attr('name', $name.'['.$item.']');
+   wtk_attr('value', $$item);
+   wtk_attr('type', 'number');
+   wtk_attr('min', $minvalues[$item]);
+   wtk_attr('max', $maxvalues[$item]);
    echo " />";
    break;
  default:

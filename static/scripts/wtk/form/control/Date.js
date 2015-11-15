@@ -41,73 +41,95 @@ dojo.declare("wtk.form.control.Date",[dijit._Widget],{
 	    var cn = dojo.coords(node);
 	    this._popupWidths[type] = cn.l+cn.w-cf.l;
 
-	    var val = node.value;
-
-	    if (part == "year")
-		this._value.setYear(val);
-	    else if (part == "month")
-		this._value.setMonth(val-1);
-	    else if (part == "day")
-		this._value.setDate(val);
-	    else if (part == "hour")
-		this._value.setHours(val);
-	    else if (part == "min")
-		this._value.setMinutes(val);
-
 	    this._inputs[part] = node;
 	    dojo.connect(node, "onclick", this, this._onClick);
+	    dojo.connect(node, "onclick", this, this._onFieldChange);
+            this._onFieldChange({"target": node});
 	}, this);
 	this._value.setSeconds(0);
     },
 
+    _onFieldChange: function (e) {
+        var node = e.target;
+	var part = this._getPartName(node);
+	var val = node.value;
+
+	if (part == "year")
+	    this._value.setYear(val);
+	else if (part == "month")
+	    this._value.setMonth(val-1);
+	else if (part == "day")
+	    this._value.setDate(val);
+	else if (part == "hour")
+	    this._value.setHours(val);
+	else if (part == "min")
+	    this._value.setMinutes(val);
+
+        if (this._popup) {
+            this._popup.setValue(new Date(this._value));
+        }
+    },
+
     _onClick: function(e){
+        console.log("wtk.form.controle.Date", "Clic");
 	this._open(e.target);
     },
 
     onBlur: function(e){
+        console.log("wtk.form.controle.Date", "Blur");
 	this._close();
     },
 
     _open: function(target){
-	if (this._target == target)
-	    return;
-
+        // Détecter si c'est le popup calendrier ou horlge.
 	this._target = target;
 	this._targetPart = this._getPartName(this._target);
 	var targetClass = this._getInputClass(this._target);
 	if (targetClass != this._targetClass) {
+            console.log("wtk.form.controle.Date", "Changement de popup");
 	    this._close();
 	    this._targetClass = targetClass;
+            if (this._popup) {
+                this._popup.destroy();
+                this._popup = null;
+            }
 	}
 
-	if (!this._popup)
+	if (!this._popup) {
+            console.log("wtk.form.controle.Date", "Création de popup");
 	    this._popup = this._getPopup();
+        }
 
-	if (this._opened)
+	if (this._opened) {
+            console.log("wtk.form.controle.Date", "Popup déjà ouverte");
 	    return;
+        }
 
+        console.log("wtk.form.controle.Date", "Ouverture du popup", {
+            "input": this._firstInputs[this._targetClass]});
 	dojo.marginBox(this._popup.domNode,{ w:this._popupWidths[this._targetClass] });
+	this._opened = true;
 	dijit.popup.open({
 	    parent: this,
 	    popup: this._popup,
 	    around: this._firstInputs[this._targetClass],
 	    onCancel: dojo.hitch(this, this._close),
 	});
-	dojo.style(this._popup.domNode.parentNode, "position", "absolute");
-	this._opened = true;
     },
 
     _cancel: function(){
-	console.log("cancel");
+	console.log("wtk.form.controle.Date", "cancel");
     },
 
     _close: function(){
 	if (this._opened) {
+            console.log("wtk.form.controle.Date", "Fermeture du popup");
 	    dijit.popup.close(this._popup);
-	    this._popup.destroy();
-	    this._popup =  this._target = this._targetClass = null;
 	    this._opened = false;
 	}
+        else {
+            console.log("wtk.form.controle.Date", "Déjà fermé");
+        }
     },
 
     _set: function(part, val){
