@@ -16,12 +16,23 @@ class Wtk_Form_Control_Entry extends Wtk_Form_Control
             $parts = explode('_', $klass);
             $this->type = strtolower(end($parts));
         }
+
+        $this->placeholder = null;
 	}
 
 	function useSuffix($suffix)
 	{
 		$this->suffix = $suffix;
 	}
+
+    function setPlaceHolder($placeholder=null)
+    {
+        if (is_null($placeholder))
+            $this->placeholder = $this->instance->label;
+        else
+            $this->placeholder = $placeholder;
+    }
+
 
 	function setSize ($width, $height)
 	{

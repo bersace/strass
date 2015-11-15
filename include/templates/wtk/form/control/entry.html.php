@@ -5,6 +5,7 @@ wtk_attr('type', $type);
 wtk_attr('name', $name);
 wtk_attr('value', $value);
 wtk_attr('size', $width);
+wtk_attr('placeholder', $placeholder);
 if ($readonly)
 	wtk_attr('disabled', 'disabled');
 ?>/><?php echo $suffix; ?>
@@ -14,6 +15,7 @@ wtk_id_classes($id, $flags);
 wtk_attr('name', $name);
 wtk_attr('rows', $height);
 wtk_attr('cols', $width);
+wtk_attr('placeholder', $placeholder);
 if ($readonly)
 	wtk_attr('disabled', 'disabled');
 ?>><?php echo htmlspecialchars($value); ?>
