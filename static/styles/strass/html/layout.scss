@@ -259,6 +259,10 @@ tr td .check label
     input {
 	max-width: 6em;
     }
+
+    &.nocaption input {
+        max-width: 100%;
+    }
 }
 
 /* Vignette seule, pour suppression */
