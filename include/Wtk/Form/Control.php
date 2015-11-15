@@ -72,8 +72,13 @@ abstract class Wtk_Form_Control extends Wtk_Element
 		  $tpl->addChild('errors', $this->errors->template());
 		}
 
-		$control = $this->elementTemplate();
+		$control = $this->controlTemplate();
 		$tpl->addChild('control', $control);
 		return $tpl;
 	}
+
+    function controlTemplate()
+    {
+        return $this->elementTemplate();
+    }
 }
