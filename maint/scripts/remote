@@ -500,12 +500,12 @@ class FTPEntry(object):
 
     def localremove(self):
         if not os.path.exists(self.localpath):
+            self.log.trace(u"%s déjà supprimé", self.localpath)
             return
 
         if self.isdir():
             for child in self:
-                for op in child.localremove():
-                    yield op
+                child.localremove()
 
             self.log.debug("Suppression de %s", self.localpath)
             if not DRY_RUN:
