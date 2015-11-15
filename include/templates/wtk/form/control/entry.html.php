@@ -1,4 +1,4 @@
-<?php if ($height == 1): ?>
+<?php if ($height == 1 || $type != 'text'): ?>
 <input<?php
 wtk_id_classes ($id, $flags, $dojoType);
 wtk_attr('type', $type);
