@@ -22,6 +22,9 @@ def trace(self, message, *args, **kwargs):
 logging.Logger.trace = trace
 
 
+DRY_RUN = False
+
+
 class ColorFormatter(logging.Formatter):
     BLACK, RED, GREEN, YELLOW, BLUE, MAGENTA, CYAN, WHITE = range(8)
 
@@ -63,6 +66,9 @@ class Script(object):
         '-d', '--debug',
         action='store_true', dest='debug')
     parser.add_argument(
+        '-n', '--dry-run',
+        action='store_true', dest='dry_run')
+    parser.add_argument(
         '-v', '--verbose',
         action='store_const', dest='loglevel', const=logging.DEBUG)
     parser.add_argument(
@@ -80,6 +86,8 @@ class Script(object):
     subparsers = parser.add_subparsers(metavar='ACTION', help=u'Opération avec le site distant')
 
     def __call__(self):
+        global DRY_RUN
+
         args = self.parser.parse_args()
 
         format_ = "%(asctime)s %(name)s: %(message)s" if args.loglevel < logging.INFO else "%(message)s"
@@ -91,6 +99,8 @@ class Script(object):
         logger.setLevel(args.loglevel)
 
         logger.trace(u"Journalisation configurée")
+
+        DRY_RUN= args.dry_run
 
         try:
             config = RawConfigParser()
@@ -497,9 +507,13 @@ class FTPEntry(object):
                 for op in child.localremove():
                     yield op
 
-            os.rmdir(self.localpath)
+            self.log.debug("Suppression de %s", self.localpath)
+            if not DRY_RUN:
+                os.rmdir(self.localpath)
         else:
-            os.remove(self.localpath)
+            self.log.debug("Suppression de %s", self.localpath)
+            if not DRY_RUN:
+                os.remove(self.localpath)
 
 
     def mkdir(self):
@@ -573,17 +587,20 @@ class FTPLogger(object):
 
     def mkd(self, path):
         self._log("MKD %s", path)
-        self.client.mkd(path)
+        if not DRY_RUN:
+            self.client.mkd(path)
 
 
     def rmd(self, path):
         self._log("RMD %s", path)
-        self.client.rmd(path)
+        if not DRY_RUN:
+            self.client.rmd(path)
 
 
     def delete(self, path):
         self._log("DELE %s", path)
-        self.client.delete(path)
+        if not DRY_RUN:
+            self.client.delete(path)
 
 
     def sendcmd(self, cmd):
@@ -598,12 +615,14 @@ class FTPLogger(object):
 
     def retrbinary(self, cmd, *args, **kwargs):
         self._log(cmd)
-        return self.client.retrbinary(cmd, *args, **kwargs)
+        if not DRY_RUN:
+            return self.client.retrbinary(cmd, *args, **kwargs)
 
 
     def storbinary(self, cmd, *args):
         self._log(cmd)
-        return self.client.storbinary(cmd, *args)
+        if not DRY_RUN:
+            return self.client.storbinary(cmd, *args)
 
 
     def __getattr__(self, name):
