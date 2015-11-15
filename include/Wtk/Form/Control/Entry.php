@@ -10,8 +10,12 @@ class Wtk_Form_Control_Entry extends Wtk_Form_Control
 
         /* Calcule le type HTML depuis le nom de la classe. */
         $klass = get_called_class();
-        $parts = explode('_', $klass);
-        $this->type = strtolower(end($parts));
+        if ($klass == get_class())
+            $this->type = 'text';
+        else {
+            $parts = explode('_', $klass);
+            $this->type = strtolower(end($parts));
+        }
 	}
 
 	function useSuffix($suffix)
