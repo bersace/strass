@@ -53,16 +53,18 @@ class Wtk_Form extends Wtk_Container {
 
 		$class = 'Wtk_Form_Control_'.$matches[1];
 		if (!@class_exists($class)) {
+            /* Le contrôle n'existe pas, alors on délègue la créations d'enfant
+             * courant. */
 			return parent::__call($method, $args);
 		}
 
 		$instance = $i = array_shift($args);
 		if (is_string($instance)) {
 		  try {
-		    $instance = $this->model->getInstance($instance);
+              $instance = $this->model->getInstance($instance);
 		  }
 		  catch (Exception $e) {
-		    $instance = null;
+              $instance = null;
 		  }
 		}
 
@@ -73,10 +75,11 @@ class Wtk_Form extends Wtk_Container {
 		$path = $instance->path;
 
 		array_unshift($args, $instance);
-
-		$cargs = wtk_args_string("args", $args);
-		$code = "\$el = new ".$class."(".implode(",", $cargs).");";
-		eval($code);
+        /* Ne fonctionne pas… */
+		/* $el = wtk_new($class, $args); */
+        $cargs = wtk_args_string("args", $args);
+        $code = "\$el = new ".$class."(".implode(",", $cargs).");";
+        eval($code);
 
 		foreach($this->model->constraints as $cons)
 			if ($cons->getInstance()->path == $instance->path)

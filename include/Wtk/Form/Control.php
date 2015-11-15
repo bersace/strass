@@ -47,6 +47,7 @@ abstract class Wtk_Form_Control extends Wtk_Element
 		else
 			$this->caption = null;
 
+        return $this;
 	}
 
 	function setReadonly($readonly = true)

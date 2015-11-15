@@ -109,7 +109,7 @@ function wtk_steno_to_int($str)
 	return $n * $m;
 }
 
-/* on pourrai appeler cette fonction instiancate_user_class_array() */
+/* on pourrai appeler cette fonction instianciate_user_class_array() */
 function wtk_new($class, $args)
 {
     if (!class_exists($class))
