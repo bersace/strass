@@ -38,14 +38,6 @@ a {
 }
 
 /* Formulaires */
-input[type=text],
-input[type=password],
-textarea
-{
-    border: 1pt solid $highlight_color;
-    background: lighten($alt_background, 25%);
-}
-
 fieldset {
     position: relative;
     margin-top: 1em;
@@ -97,12 +89,6 @@ div.control.invalid {
 
     label {
 	color: $error;
-    }
-
-    input[type=text],
-    input[type=password],
-    textarea {
-	border-color: $error;
     }
 
     div.error {

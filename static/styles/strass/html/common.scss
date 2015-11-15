@@ -155,9 +155,10 @@ tr.odd {
 }
 
 /* Formulaire */
-input[type=text],
-input[type=search],
+input[type=email],
 input[type=password],
+input[type=search],
+input[type=text],
 textarea
 {
     border: 1pt solid $highlight_color;
@@ -165,13 +166,14 @@ textarea
     background: lighten($alt_background, 2%);
 }
 
+input[type=email]:focus,
 input[type=text]:focus,
 input[type=search]:focus,
-input[type=passwrd]:focus,
+input[type=password]:focus,
 textarea:focus
 {
     color: black;
-    background: white;;
+    background: white;
 }
 
 fieldset {
@@ -222,6 +224,7 @@ div.control {
 	    color: $error;
 	}
 
+        input[type=email],
 	input[type=text],
 	input[type=password],
 	textarea
