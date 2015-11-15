@@ -159,6 +159,7 @@ input[type=email],
 input[type=password],
 input[type=search],
 input[type=text],
+input[type=url],
 textarea
 {
     border: 1pt solid $highlight_color;
@@ -170,6 +171,7 @@ input[type=email]:focus,
 input[type=text]:focus,
 input[type=search]:focus,
 input[type=password]:focus,
+input[type=url]:focus,
 textarea:focus
 {
     color: black;
@@ -225,8 +227,9 @@ div.control {
 	}
 
         input[type=email],
-	input[type=text],
 	input[type=password],
+	input[type=text],
+        input[type=url],
 	textarea
 	{
 	    border-color: $error;
