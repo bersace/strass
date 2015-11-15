@@ -68,7 +68,7 @@ class Strass_Views_PagesRenderer_UnitesInscrireAssistant extends Wtk_Pages_Rende
     }
     catch (Exception $e) {}
     $f->addEntry('fiche/portable', 14);
-    $f->addEntry('fiche/adelec', 14);
+    $f->addEMail('fiche/adelec', 14);
   }
 
   function renderCloture($g, $f)

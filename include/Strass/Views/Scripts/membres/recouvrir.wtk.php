@@ -23,6 +23,6 @@ else if ($this->send) {
     $f->addSection()->addFlags('info')
       ->addText("Un courriel va vous être envoyé avec un lien temporaire ".
       "vers la page pour définir un nouveau mot de passe.");
-    $f->addEntry('adelec', 24);
+    $f->addEMail('adelec', 24);
     $f->addForm_ButtonBox()->addForm_Submit($this->send->getSubmission('envoyer'));
 }

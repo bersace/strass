@@ -17,7 +17,7 @@ if ($this->migrate) {
 if ($this->adelec) {
     $s = $p->addSection('chmail', "Changer d'adresse électronique");
     $f = $s->addForm($this->adelec);
-    $f->addEntry('adelec', 24);
+    $f->addEMail('adelec', 24);
     $f->addPassword('motdepasse', 12);
     $f->addForm_ButtonBox()->addForm_Submit($this->adelec->getSubmission('enregistrer'));
 }

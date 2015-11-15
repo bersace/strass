@@ -47,7 +47,7 @@ if ($this->individu->isMember()) {
     ->addInline("[".$url." Éditer l'adresse électronique]");
 }
 else {
-  $g->addEntry('adelec', 24);
+  $g->addEMail('adelec', 24);
 }
 
 $g = $f->addForm_Fieldset('Notes');
