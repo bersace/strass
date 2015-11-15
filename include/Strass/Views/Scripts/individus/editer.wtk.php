@@ -35,8 +35,8 @@ if (!$g->count())
 // contacts
 $g = $f->addForm_Fieldset('Contacts');
 $g->addEntry('adresse', 32, 2);
-$g->addEntry('fixe', 14);
-$g->addEntry('portable', 14);
+$g->addTel('fixe', 14);
+$g->addTel('portable', 14);
 if ($this->individu->isMember()) {
     $url = $this->url(
         array('controller' => 'membres',
