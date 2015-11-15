@@ -25,9 +25,9 @@ class Wtk_Form_Control_Entry extends Wtk_Form_Control
 		$this->height = is_null ($height) ? $this->height : $height;
 	}
 
-	function template()
+	function controlTemplate()
 	{
         /* On utilise le template Entry, même pour les sous-classes. */
-		return $this->elementTemplate(get_class());
+		return parent::elementTemplate(get_class());
 	}
 }
