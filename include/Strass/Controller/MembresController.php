@@ -64,8 +64,7 @@ class MembresController extends Strass_Controller_Action implements Zend_Acl_Res
 
         // COMPTE
         $g = $m->addGroup('compte');
-        $i = $g->addString('adelec', "Adresse électronique");
-        $m->addConstraintEMail($i);
+        $i = $g->addEMail('adelec', "Adresse électronique");
         $t = new Inscriptions;
         $m->addConstraintForbid($i, $t->findAllEMails(),
         "Cette adresse électronique est déjà utilisée");
