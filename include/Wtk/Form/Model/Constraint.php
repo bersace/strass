@@ -45,7 +45,8 @@ abstract class Wtk_Form_Model_Constraint
 
 	function validate ()
 	{
-		$this->instance->valid = $v = $this->_validate($this->instance->get());
+        $v = $this->_validate($this->instance->get());
+		$this->instance->valid = $this->instance->valid && $v;
 		if (!$v)
 			throw new Wtk_Form_Model_Exception($this->message, $this->instance);
 

@@ -103,11 +103,25 @@ class Wtk_Form_Model_Instance_Group extends Wtk_Form_Model_Instance implements I
 	    return true;
 
 		$valid = true;
+        $errors = array();
 
 		foreach ($this->value as $id => $child) {
-			$chval = $this->value[$id]->retrieve (isset ($values[$id]) ? $values[$id] : NULL);
-			$valid = $chval && $valid;
+            try {
+                $chval = $this->value[$id]->retrieve(isset ($values[$id]) ? $values[$id] : NULL);
+                $valid = $chval && $valid;
+            }
+            catch (Wtk_Form_Model_CompoundException $e) {
+                $errors = array_merge($errors, $e->errors);
+            }
+            catch (Wtk_Form_Model_Exception $e) {
+                array_push($errors, $e);
+            }
 		}
+
+        if ($errors) {
+            throw new Wtk_Form_Model_CompoundException($errors);
+        }
+
 		return $valid;
 	}
 

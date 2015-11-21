@@ -67,8 +67,8 @@ class Wtk_Pages_Model_Form extends Wtk_Pages_Model
             try {
                 $root->value[$id]->retrieve(isset ($values[$id]) ? $values[$id] : NULL);
             }
-            catch (Wtk_Form_Model_Exception $e) {
-                array_push($model->errors, $e);
+            catch (Wtk_Form_Model_CompoundException $e) {
+                $model->errors = array_merge($model->errors, $e->errors);
             }
         }
 

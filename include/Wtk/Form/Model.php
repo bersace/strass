@@ -158,8 +158,8 @@ class Wtk_Form_Model
     try {
       $this->instance->retrieve($values);
     }
-    catch (Wtk_Form_Model_Exception $e) {
-      array_push($this->errors, $e);
+    catch (Wtk_Form_Model_CompoundException $e) {
+        $this->errors = $e->errors;
     }
 
     $valid = $this->checkConstraints();
@@ -195,7 +195,6 @@ class Wtk_Form_Model
 class Wtk_Form_ModelException extends Exception implements Iterator
 {
   protected $model;
-  protected $errors;
 
   function __construct ($model)
   {
@@ -225,5 +224,3 @@ class Wtk_Form_ModelException extends Exception implements Iterator
     return $this->current () !== false;
   }
 }
-
-?>
