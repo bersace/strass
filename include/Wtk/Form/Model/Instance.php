@@ -13,7 +13,7 @@ abstract class Wtk_Form_Model_Instance
   function __construct ($path, $label = null, $value = NULL, $readonly = false)
   {
     $this->label	= $label;
-    $this->valid	= NULL;
+    $this->valid	= true;
     $this->setPath ($path);
     $this->set($value);
     $this->setReadonly($readonly);
