@@ -1,4 +1,5 @@
 import datetime
+from strass.reuse import run_always
 from strass.client import ClientTestCase
 
 from fixtures import ADMIN_EMAIL, ADMIN_PASSWORD
@@ -53,7 +54,7 @@ class TestInstaller(ClientTestCase):
             .click('button[type=submit].primary')
         )
 
-    def test_99_succes(self):
+    def test_04_succes(self):
         self.client.get()
 
         # L'installation est terminée.
@@ -61,3 +62,21 @@ class TestInstaller(ClientTestCase):
         # Page d'erreur qu'il n'y a pas d'unité :-)
         self.assertElementFound('#document.http-404')
         self.assertIn("Pas d'unit", self.client.page_source)
+
+    def test_05_deconnexion(self):
+        (
+            self.client
+            .submit('#aside button[type=submit]')
+        )
+        self.assertElementNotFound('#aside #logout')
+
+    @run_always
+    def test_06_reconnexion(self):
+        (
+            self.client
+            .get()
+            .fill('input#login-username', ADMIN_EMAIL)
+            .fill('input#login-password', ADMIN_PASSWORD)
+            .click('#aside button[type=submit]')
+        )
+        self.assertElementFound('#aside #logout')
