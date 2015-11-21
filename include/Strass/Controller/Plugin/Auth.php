@@ -112,7 +112,7 @@ class Strass_Controller_Plugin_Auth extends Zend_Controller_Plugin_Abstract
             $om = Zend_Registry::get('logout_model');
 
             if ($im->validate()) {
-                $username = $im->username;
+                $username = strtolower($im->username);
                 // Regénérer le digest à partir du username original
                 $config = Zend_Registry::get('config');
                 $this->db->setIdentity(array('username' => $username, 'realm' => $config->system->realm));
