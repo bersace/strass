@@ -35,7 +35,7 @@ class Strass_Pages_RendererInscription extends Wtk_Pages_Renderer_Form
     $f->addParagraph()
       ->addFlags('info')
       ->addInline("Halte-là, on n'entre pas sur ce site sans présentez son CV scout ! :-)");
-    $f->addEntry('presentation', 64, 8)->useLabel(false);
+    $f->addEntry('compte/presentation', 64, 8)->useLabel(false);
   }
 }
 

@@ -75,7 +75,7 @@ class MembresController extends Strass_Controller_Action implements Zend_Acl_Res
         $i1 = $g->addString('confirmer', "Confirmer");
         $m->addConstraintEqual($i1, $i0);
 
-        $i = $m->addString('presentation', "Présentation");
+        $i = $g->addString('presentation', "Présentation");
         $m->addConstraintRequired($i);
 
         $this->view->model = $pm = new Wtk_Pages_Model_Form($m);
@@ -84,7 +84,7 @@ class MembresController extends Strass_Controller_Action implements Zend_Acl_Res
             $data['adelec'] = strtolower($m->get('compte/adelec'));
             $data['password'] = Users::hashPassword($m->get('compte/adelec'),
             $m->get('compte/motdepasse'));
-            $data['presentation'] = $m->presentation;
+            $data['presentation'] = $m->compte->presentation;
 
             $db = $t->getAdapter();
             $db->beginTransaction();
