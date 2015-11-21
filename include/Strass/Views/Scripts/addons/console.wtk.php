@@ -16,7 +16,7 @@ if ($user->username == 'nobody') {
 
     $model = $this->auth_login_model;
     $form = $section->addForm($model);
-    $r = $form->addEMail('username', 34)->useLabel(false)->setPlaceHolder();
+    $r = $form->addEntry('username', 34)->useLabel(false)->setPlaceHolder();
     $form->addPassword('password', 24)->useLabel(false)->setPlaceHolder();
     $form->addForm_ButtonBox()->addForm_Submit($model->getSubmission('login'));
 }
