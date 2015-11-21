@@ -81,7 +81,7 @@ class MembresController extends Strass_Controller_Action implements Zend_Acl_Res
     $this->view->model = $pm = new Wtk_Pages_Model_Form($m);
     if ($pm->validate()) {
       $data = $m->get('fiche');
-      $data['adelec'] = $m->get('compte/adelec');
+      $data['adelec'] = strtolower($m->get('compte/adelec'));
       $data['password'] = Users::hashPassword($m->get('compte/adelec'),
 					      $m->get('compte/motdepasse'));
       $data['presentation'] = $m->presentation;
