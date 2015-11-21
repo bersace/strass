@@ -29,7 +29,7 @@ class Strass_Pages_RendererInscription extends Wtk_Pages_Renderer_Form
 
   function renderCompte($group, $f)
   {
-    $f->addEMail('compte/adelec', 24);
+    $f->addEntry('compte/adelec', 24);
     $f->addPassword('compte/motdepasse', 24);
     $f->addPassword('compte/confirmer', 24);
     $f->addParagraph()

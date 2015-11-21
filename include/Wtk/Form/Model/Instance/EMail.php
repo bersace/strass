@@ -11,11 +11,13 @@ class Wtk_Form_Model_Instance_EMail extends Wtk_Form_Model_Instance_String
             return true;
 
         $value = strtolower($value);
+        $this->set($value);
+
         if (!(bool) preg_match(self::$pattern, $value)) {
             throw new Wtk_Form_Model_Exception(
                 "Adresse électronique invalide", $this);
         }
 
-        return parent::retrieve($value);
+        return true;
     }
 }
