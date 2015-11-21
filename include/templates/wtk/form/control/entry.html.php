@@ -6,6 +6,7 @@ wtk_attr('name', $name);
 wtk_attr('value', $value);
 wtk_attr('size', $width);
 wtk_attr('placeholder', $placeholder);
+wtk_attr('pattern', $pattern);
 if ($readonly)
 	wtk_attr('disabled', 'disabled');
 ?>/><?php echo $suffix; ?>

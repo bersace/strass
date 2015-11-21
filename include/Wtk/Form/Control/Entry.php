@@ -18,6 +18,7 @@ class Wtk_Form_Control_Entry extends Wtk_Form_Control
         }
 
         $this->placeholder = null;
+        $this->pattern = null;
 	}
 
 	function useSuffix($suffix)
