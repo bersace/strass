@@ -8,23 +8,26 @@ class Activites extends Strass_Db_Table_Abstract
 {
     protected $_name = 'activite';
     protected $_rowClass = 'Activite';
-    protected $_dependentTables = array('Participations', 'Photos', 'PiecesJointes',
-    'Commentaires');
+    protected $_dependentTables = array(
+        'Participations', 'Photos', 'PiecesJointes', 'Commentaires');
 
     function findActivites($futures = TRUE)
     {
         // +2 => heures été/hivers. :/
-        return $this->fetchAll("debut ".($futures ? '>' : '<').
-        " STRFTIME('%Y-%m-%d %H:%M', CURRENT_TIMESTAMP, '+2 HOURS')");
+        return $this->fetchAll(
+            "debut ".($futures ? '>' : '<').
+            " STRFTIME('%Y-%m-%d %H:%M', CURRENT_TIMESTAMP, '+2 HOURS')");
     }
 
     function findByAnnee($annee)
     {
         $s = $this->select()
-                  ->where("? < activite.debut",
-                  Strass_Controller_Action_Helper_Annee::dateDebut($annee))
-                  ->where("activite.fin < ?",
-                  Strass_Controller_Action_Helper_Annee::dateFin($annee))
+                  ->where(
+                      "? < activite.debut",
+                      Strass_Controller_Action_Helper_Annee::dateDebut($annee))
+                  ->where(
+                      "activite.fin < ?",
+                      Strass_Controller_Action_Helper_Annee::dateFin($annee))
                   ->order('activite.debut');
         return $this->fetchAll($s);
     }
@@ -34,11 +37,11 @@ class Activites extends Strass_Db_Table_Abstract
 class Activite extends Strass_Db_Table_Row_Abstract implements Zend_Acl_Resource_Interface
 {
     protected $_tableClass = 'Activites';
-    protected $_privileges = array(array('chef', NULL),
-    array('assistant', array('editer',
-    'envoyer-photo',
-    'dossier')),
-    array(NULL, 'consulter'));
+    protected $_privileges = array(
+        array('chef', NULL),
+        array('assistant', array(
+            'editer', 'envoyer-photo', 'dossier')),
+        array(NULL, 'consulter'));
 
     function __toString()
     {
@@ -204,15 +207,17 @@ class Activite extends Strass_Db_Table_Row_Abstract implements Zend_Acl_Resource
         if (file_exists($d)) {
             $fs = scandir($d);
             foreach($fs as $f) {
-                if ($f != '.' && $f != '..') {
-                    if (!unlink($d.'/'.$f)) {
-                        throw new
-                            Exception("Impossible de supprimer le fichier ".
-                            $f." du dossier ".$d);
-                    }
+                if ($f == '.' || $f == '..')
+                    continue;
+
+                if (false === unlink($d.'/'.$f)) {
+                    throw new Exception(
+                        "Impossible de supprimer le fichier ".$f.
+                        " du dossier ".$d);
                 }
             }
-            if (!rmdir($d)) {
+
+            if (false === rmdir($d)) {
                 throw new Exception("Impossible de supprimer le dossier ".$d);
             }
         }
@@ -247,8 +252,10 @@ class Activite extends Strass_Db_Table_Row_Abstract implements Zend_Acl_Resource
                ->from('unite')
                ->joinLeft('participation', 'participation.unite = unite.id', array())
                ->joinLeft(array('mere' => 'unite'), 'mere.id = unite.parent', array())
-               ->joinLeft(array('part_mere' => 'participation'),
-               'part_mere.unite = mere.id AND part_mere.activite = participation.activite', array())
+               ->joinLeft(
+                   array('part_mere' => 'participation'),
+                   'part_mere.unite = mere.id AND '.
+                   'part_mere.activite = participation.activite', array())
                ->where('participation.activite = ?', $this->id)
                ->where('part_mere.id IS NULL');
         return $t->fetchAll($s);
@@ -293,16 +300,19 @@ class Participations extends Strass_Db_Table_Abstract
 {
     protected $_name = 'participation';
     protected $_rowClass = 'Participation';
-    protected $_referenceMap = array('Unite' => array('columns' => 'unite',
-    'refTableClass' => 'Unites',
-    'refColumns' => 'id',
-    'onUpdate' => self::CASCADE,
-    'onDelete' => self::CASCADE),
-    'Activite' => array('columns' => 'activite',
-    'refTableClass' => 'Activites',
-    'refColumns' => 'id',
-    'onUpdate' => self::CASCADE,
-    'onDelete' => self::CASCADE));
+    protected $_referenceMap = array(
+        'Unite' => array(
+            'columns' => 'unite',
+            'refTableClass' => 'Unites',
+            'refColumns' => 'id',
+            'onUpdate' => self::CASCADE,
+            'onDelete' => self::CASCADE),
+        'Activite' => array(
+            'columns' => 'activite',
+            'refTableClass' => 'Activites',
+            'refColumns' => 'id',
+            'onUpdate' => self::CASCADE,
+            'onDelete' => self::CASCADE));
 }
 
 class Participation extends Strass_Db_Table_Row_Abstract
@@ -314,16 +324,19 @@ class PiecesJointes extends Strass_Db_Table_Abstract
 {
     protected $_name = 'activite_document';
     protected $_rowClass = 'PieceJointe';
-    protected $_referenceMap = array('Document' => array('columns' => 'document',
-    'refTableClass' => 'Documents',
-    'refColumns' => 'id',
-    'onUpdate' => self::CASCADE,
-    'onDelete'  => self::CASCADE),
-    'Activite' => array('columns' => 'activite',
-    'refTableClass' => 'Activites',
-    'refColumns' => 'id',
-    'onUpdate' => self::CASCADE,
-    'onDelete' => self::CASCADE));
+    protected $_referenceMap = array(
+        'Document' => array(
+            'columns' => 'document',
+            'refTableClass' => 'Documents',
+            'refColumns' => 'id',
+            'onUpdate' => self::CASCADE,
+            'onDelete'  => self::CASCADE),
+        'Activite' => array(
+            'columns' => 'activite',
+            'refTableClass' => 'Activites',
+            'refColumns' => 'id',
+            'onUpdate' => self::CASCADE,
+            'onDelete' => self::CASCADE));
 }
 
 class PieceJointe extends Strass_Db_Table_Row_Abstract
