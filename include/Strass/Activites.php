@@ -178,14 +178,28 @@ class Activite extends Strass_Db_Table_Row_Abstract implements Zend_Acl_Resource
         return $this->findPhotos($select);
     }
 
+    function clearCache()
+    {
+        /* Pour les activités passée, comme elles sont des albums, il faut
+         * regénérer le cache des albums. Sous peine de lien cassés. */
+        if (!$this->isFuture()) {
+            $cache = Zend_Registry::get('cache');
+            $cache->clean(Zend_Cache::CLEANING_MODE_MATCHING_ANY_TAG, array('photos'));
+        }
+    }
+
     protected function _postUpdate()
     {
+        $this->clearCache();
+
         @rename($this->getDossierPhoto($this->_cleanData['slug']),
         $this->getDossierPhoto());
     }
 
     protected function _postDelete()
     {
+        $this->clearCache();
+
         $d = $this->getDossierPhoto();
         if (file_exists($d)) {
             $fs = scandir($d);
