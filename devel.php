@@ -24,32 +24,34 @@ function content_type($extension) {
 }
 
 function try_file($path) {
-    if (!file_exists($path))
-        return false;
+    if (!file_exists($path)) {
+        header("HTTP/1.0 404 Not Found");
+        error_log("Pas trouvé : " . $path);
+        return;
+    }
 
     $info = pathinfo($path);
     $ext = @$info['extension'] ?: null;
     header('Content-Type: ' . content_type($ext));
     readfile($path);
-    return true;
 }
 
-// Contournement de bug dans le serveur embarqué de PHP
-$_SERVER['SCRIPT_NAME'] = substr($_SERVER['SCRIPT_FILENAME'], strlen($_SERVER['DOCUMENT_ROOT']));
-$uri = urldecode($_SERVER["REQUEST_URI"]);
+$data = '/data/';
+$static = '/static/';
+$path = urldecode($_SERVER["REQUEST_URI"]);
 
-if (preg_match('/\.(?:css|gif|ico|jpeg|jpg|js|pdf|png|ttf)$/', $uri)) {
-    // Fichiers /static/
-    if (try_file('.' . $uri) === true) return true;
-
-    // Fichiers /data/
-    $root = getenv('STRASS_ROOT') or 'htdocs';
-    if (try_file($root . $uri) === true) return true;
-
-    header("HTTP/1.0 404 Not Found");
-    error_log("Pas trouvé : " . $uri);
-    return true;
+/* Détecter les fichier static /data/ ou /static/ */
+if (strncmp($_SERVER['REQUEST_URI'], $data, strlen($data)) === 0) {
+    $root = getenv('STRASS_ROOT') or $_SERVER['DOCUMENT_ROOT'] . '/htdocs';
+    try_file($root . $path);
+}
+else if (strncmp($_SERVER['REQUEST_URI'], $static, strlen($static)) === 0) {
+    try_file( $_SERVER['DOCUMENT_ROOT'] . $path);
+}
+else {
+    include 'index.php';
 }
 
-/* Passer la main à index.php. */
-return false;
+/* Ne jamais passer la main au serveur PHP, c'est trop
+ * buggué. https://bugs.php.net/bug.php?id=61286 , etc. */
+return true;
