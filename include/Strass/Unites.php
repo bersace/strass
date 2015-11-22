@@ -115,7 +115,7 @@ class Unite extends Strass_Db_Table_Row_Abstract implements Zend_Acl_Resource_In
     protected $_tableClass = 'Unites';
     protected $_privileges = array(
         array('chef',		NULL),
-        array('assistant',	array('prevoir-activite')),
+        array('assistant',	array('prevoir')),
         array('membre',	array('consulter', 'calendrier', 'fiches')));
 
     public function getResourceId()
