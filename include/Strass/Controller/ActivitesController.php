@@ -38,14 +38,16 @@ class ActivitesController extends Strass_Controller_Action
         $this->view->model = new Strass_Pages_Model_Calendrier(
             $u, $this->_helper->Annee());
         $this->view->annee = $annee = $this->view->model->current;
-        $this->metas(array('DC.Title' => 'Calendrier '.$annee,
-        'DC.Title.alternative' => 'Calendrier'));
+        $this->metas(array(
+            'DC.Title' => 'Calendrier '.$annee,
+            'DC.Title.alternative' => 'Calendrier'));
         $this->branche->append(null, array('annee' => false));
         $this->_helper->Annee->setBranche($annee);
 
-        $this->actions->append("Nouvelle activité",
-        array('action' => 'prevoir'),
-        array(Zend_Registry::get('user'), $u));
+        $this->actions->append(
+            "Nouvelle activité",
+            array('action' => 'prevoir'),
+            array(null, $u));
 
         $this->formats('ics');
     }
@@ -53,8 +55,9 @@ class ActivitesController extends Strass_Controller_Action
     /* prévoir une nouvelle activité pour une ou plusieurs unités */
     function prevoirAction()
     {
-        $this->metas(array('DC.Title' => 'Prévoir une nouvelle activité',
-        'DC.Title.alternate' => 'Prévoir'));
+        $this->metas(array(
+            'DC.Title' => 'Prévoir une nouvelle activité',
+            'DC.Title.alternate' => 'Prévoir'));
         $this->view->unite = $u = $this->_helper->Unite(false);
         $this->branche->append();
 

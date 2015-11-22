@@ -546,8 +546,9 @@ class MembresController extends Strass_Controller_Action implements Zend_Acl_Res
         $cible = $this->_helper->Individu();
         $user = $cible->findUser();
 
-        $this->assert(null, $user, 'sudo',
-        "Vous n'avez pas le droit de prendre l'identité de cet individu.");
+        $this->assert(
+            null, $user, 'sudo',
+            "Vous n'avez pas le droit de prendre l'identité de cet individu.");
 
         $this->logger->warn(
             "Sudo ". $cible->getFullName(),
