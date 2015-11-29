@@ -529,7 +529,7 @@ class FTPEntry(object):
     def download(self, clean=False):
         if self.isdir():
             try:
-                os.makedirs(self.localpath, mode=0750)
+                os.makedirs(self.localpath, mode=0755)
             except OSError, e:
                 pass
 

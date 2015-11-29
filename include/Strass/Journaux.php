@@ -183,7 +183,7 @@ class Article extends Strass_Db_Table_Row_Abstract implements Zend_Acl_Resource_
     {
         $dossier = $this->getDossier();
         if (!is_readable($dossier))
-            mkdir($dossier, 0750, true);
+            mkdir($dossier, 0755, true);
 
         $target = $dossier.$name;
         if (!move_uploaded_file($tmp, $target)) {

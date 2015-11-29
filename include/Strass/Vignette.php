@@ -8,7 +8,7 @@ class Strass_Vignette {
 
     $dossier = dirname($dst);
     if (!file_exists($dossier))
-      mkdir($dossier, 0750, true);
+      mkdir($dossier, 0755, true);
 
     if (isset($_ENV['STRASS_IMAGE_BACKEND']))
       $api = $_ENV['STRASS_IMAGE_BACKEND'];

@@ -111,7 +111,7 @@ class Photo extends Strass_Db_Table_Row_Abstract implements Zend_Acl_Resource_In
 
         $dossier = $activite->getDossierPhoto();
         if (!file_exists($dossier))
-            mkdir($dossier, 0750, true);
+            mkdir($dossier, 0755, true);
 
         $suffixe = '.jpeg';
         $vignette = $dossier.'/'.$this->slug.'-vignette'.$suffixe;
@@ -174,7 +174,7 @@ class Photo extends Strass_Db_Table_Row_Abstract implements Zend_Acl_Resource_In
         $activite = $this->findParentActivites();
         $dossier = $activite->getDossierPhoto();
         if (!file_exists($dossier))
-            mkdir($dossier, 0750, true);
+            mkdir($dossier, 0755, true);
 
         rename($this->getCheminImage($this->_cleanData), $this->getCheminImage());
         rename($this->getCheminVignette($this->_cleanData), $this->getCheminVignette());

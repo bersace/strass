@@ -53,7 +53,7 @@ class Document extends Strass_Db_Table_Row_Abstract implements Zend_Acl_Resource
   {
     $fichier = $this->getFichier($this->_data);
     if (!file_exists($dossier = dirname($fichier)))
-	mkdir($dossier, 0750, true);
+	mkdir($dossier, 0755, true);
 
     if (isset($_ENV['STRASS_UNIT_TEST']))
       $ret = copy($tmp, $fichier);
