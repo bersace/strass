@@ -355,7 +355,7 @@ class FTPEntry(object):
         elif line[0] == '-':
             type_ = cls.TYPE_FILE
         else:
-            raise Exception("Type %s inconnu: %s" (line[0], line))
+            raise Exception("Type %s inconnu: %s" % (line[0], line))
 
         self = cls(client, fullpath=fullpath, type_=type_, parent=parent)
         self._remoteexists = True
