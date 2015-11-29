@@ -912,9 +912,6 @@ class upload(object):
         ftp.connect(config)
         self.log.info(u"Préparation de la mise à jour")
         ftp.mirror('500.html')
-        ftp.chmod(0700, 'private/')
-        if not args.saas:
-            ftp.chmod(0700, 'include/')
 
         if args.partial:
             ftp.mirror('data/styles/')
@@ -925,6 +922,11 @@ class upload(object):
             ftp.mirror('index.php', 'static/', 'include/', 'data/', 'private/')
         # nettoyage
         ftp.remove('resources/', 'config/', 'cache/', 'data/private/')
+
+        ftp.chmod(0700, 'private/')
+        if not args.saas:
+            ftp.chmod(0700, 'include/')
+
         self.log.info(u"Démarrage de la mise à jour")
         ftp.run()
         self.log.info(u"Site distant mise à jour !")
