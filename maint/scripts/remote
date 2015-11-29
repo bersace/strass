@@ -353,7 +353,7 @@ class FTPEntry(object):
 
         if line[0] == 'd':
             type_ = cls.TYPE_DIR
-        elif line[0] == '-':
+        elif line[0] in 'l-':   # Les liens sont considérés comme des fichiers.
             type_ = cls.TYPE_FILE
         else:
             raise Exception("Type %s inconnu: %s" % (line[0], line))
