@@ -35,8 +35,9 @@ class Strass {
         return getenv('STRASS_MODE') == 'devel';
     }
 
-    static function bootstrap()
+    static function bootstrapStage1()
     {
+        /* Initialise le minimum pour introspecter l'installation. */
         umask(0022);
         date_default_timezone_set('Europe/Paris');
         setlocale(LC_TIME, 'fr', 'fr_FR.utf8', 'fr_FR', 'fr_FR@euro', 'fr-FR', 'fra');
@@ -47,7 +48,11 @@ class Strass {
                 mkdir($root.'data/', 0770, true);
             chdir($root);
         }
+    }
 
+    static function bootstrapStage2()
+    {
+        /* Initialise une installation existante (avec Wtk, styles, etc.). */
         require_once 'Wtk.php';
 
         Wtk::init();
@@ -59,12 +64,25 @@ class Strass {
         Wtk_Document_Style::$basestyle = Strass::getPrefix() . 'static/styles/strass/';
     }
 
+    static function bootstrap()
+    {
+        /* Initialisation complète de Strass */
+        self::bootstrapStage1();
+        self::bootstrapStage2();
+    }
+
     static function main()
     {
-        self::bootstrap();
+        self::bootstrapStage1();
 
+        /* On affiche la page de maintenance avant d'initialiser Wtk et
+         * strass. Ainsi, seuls index.php et ce fichier sont requis pour
+         * afficher la page de maintenance. Pas d'inclusion de Zend, Wtk,
+         * etc. */
         if (self::onMaintenance())
             return self::showMaintenance();
+
+        self::bootstrapStage2();
 
         if (!self::isInstalled())
             return Strass_Installer::main();
