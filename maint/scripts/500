@@ -18,7 +18,7 @@ Strass_Cache::setup();
 $db = Strass_Db::setup();
 
 $document = new Wtk_Document(new Wtk_Metas(array('DC.Title' => 'Erreur fatale')));
-$style = $config->get('system/style', 'strass');
+$style = $config->get('system/style', 'joubert');
 $document->setStyle(Wtk_Document_Style::factory($style));
 $document->addStyleComponents('layout', 'minilayout', 'common');
 $association = $config->get('system/association', null);
