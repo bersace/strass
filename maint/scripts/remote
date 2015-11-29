@@ -119,6 +119,7 @@ class Script(object):
             return 1
         try:
             args.saas = config.getboolean('remote', 'saas')
+            logger.debug('Mode SAAS paramétré à %r', args.saas)
         except Exception, e:
             args.saas = None
 
@@ -851,8 +852,10 @@ class setmaint(object):
         ftp = FTPManager(local_root=args.root)
         ftp.connect(config)
         ftp.upload('maintenance.html')
-        if not config.get('remote', 'saas'):
+
+        if not args.saas:
             ftp.upload('include/Strass.php', 'index.php')
+
         ftp.run()
         self.log.info("Site distant en mode maintenance")
 
