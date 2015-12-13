@@ -12,7 +12,8 @@ class DocumentsController extends Strass_Controller_Action
         $this->branche->append(
             'Documents', array(
                 'controller' => 'documents',
-                'action' => 'index'),
+                'action' => 'index',
+                'unite' => $unite->slug),
             array(), true);
 
         $this->view->docs = $unite->findDocuments();
