@@ -43,7 +43,7 @@ class Strass_View_Helper_VignetteUnite
         $plabel->addFlags('label');
 
         $link = new Wtk_Link(
-            $this->view->url($urlOptions), $label,
+            $this->view->url($urlOptions, false, false, null, 'unites'), $label,
             new Wtk_Container($w, $plabel));
         $link->addFlags('vignette', $type->slug);
         $link->addFlags('unite');
