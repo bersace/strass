@@ -221,7 +221,7 @@ class JournauxController extends Strass_Controller_Action
                     else {
                         $if = $row->getChild('image');
                         if ($if->isUploaded()) {
-                            $nom = $row->nom ? $row->now : $if->getBasename();
+                            $nom = $row->nom ? $row->nom : $if->getBasename();
                             $a->storeImage($if->getTempFilename(), $nom);
                             array_push($newImages, $nom);
                         }
