@@ -24,7 +24,7 @@ class Strass_Pages_Model_Prevoir extends Strass_Pages_Model_Historique
 
     if (!$enum)
       throw new Strass_Controller_Action_Exception_Notice("Vous ne pouvez pas enregistrer une activité");
-    $i = $m->addEnum('unites', 'Unités participantes', key($enum), $enum, true);    // multiple
+    $i = $m->addEnum('unites', 'Unités participantes', $u->id, $enum, true);    // multiple
     $m->addConstraintRequired($i);
 
     $annee = $this->controller->_helper->Annee(false);
