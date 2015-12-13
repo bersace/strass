@@ -21,7 +21,4 @@ else
   $g->addParagraph("Pas d'image, repli sur une photo aléatoire.")->addFlags('info');
 $g->addFile('image');
 
-$f->addForm_Fieldset("Message d'accueil")
-->addEntry('presentation', 38, 8)->useLabel(false);
-
 $f->addForm_ButtonBox()->addForm_Submit($this->model->getSubmission('enregistrer'));

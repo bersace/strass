@@ -205,8 +205,6 @@ class UnitesController extends Strass_Controller_Action
         $u->extra);
         $m->addFile('image', "Nouvelle");
         $m->addBool('supprimer_image', "Supprimer l'image");
-        $w = $u->getWiki(null, false);
-        $m->addString('presentation', "Message d'accueil", is_readable($w) ? file_get_contents($w) : '');
         $m->addNewSubmission('enregistrer', "Enregistrer");
 
         if ($m->validate()) {
@@ -220,7 +218,6 @@ class UnitesController extends Strass_Controller_Action
                 $u->extra = $m->extra;
                 $u->save();
 
-                $u->storePresentation($m->get('presentation'));
                 $i = $m->getInstance('image');
                 if ($i->isUploaded())
                     $u->storeImage($i->getTempFilename());
@@ -256,6 +253,10 @@ class UnitesController extends Strass_Controller_Action
         $this->metas(array('DC.Title' => 'Paramètres '.$u->getFullname()));
 
         $this->view->model = $m = new Wtk_Form_Model('parametres');
+
+        $w = $u->getWiki(null, false);
+        $m->addString('presentation', "Message d'accueil", is_readable($w) ? file_get_contents($w) : '');
+
         $config = new Strass_Config_Php($u->slug);
         $t = $m->addTable(
             'blocs', "Blocs de la page d'accueil",
@@ -282,12 +283,15 @@ class UnitesController extends Strass_Controller_Action
         $m->addNewSubmission('enregistrer', "Enregistrer");
 
         if ($m->validate()) {
+            $u->storePresentation($m->presentation);
+
             $blocs = array();
             foreach ($m->blocs as $row)
                 if ($row['enable'])
                     array_push($blocs, $row['id']);
             $config->blocs = $blocs;
             $config->write();
+
             $this->logger->info("Configuration de page d'accueil");
             $this->redirectSimple('index', 'unites', null, array('unite' => $u->slug));
         }
