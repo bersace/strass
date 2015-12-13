@@ -37,7 +37,7 @@ h6 {
 }
 
 p {
-    text-align: justify;
+    text-align: inherit;
     margin: 0 0 1ex;
 }
 
@@ -79,6 +79,8 @@ a {
 }
 
 #document {
+    text-align: justify;
+
     &.error {
 	background-position: center 90%;
 	background-repeat: no-repeat;
