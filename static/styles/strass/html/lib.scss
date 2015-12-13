@@ -84,16 +84,19 @@ $taille_mini_vignette: $taille_vignette / 2;
     position: relative;
     padding: 1ex;
     margin: 2pt auto;
-
-    p {
-	margin: 1ex;
-	line-height: 1.1em;
-    }
+    line-height: 1.1em;
 
     .auteur {
 	float: left;
 	margin: 1ex 1em 0 1ex;
 	font-weight: bold;
+    }
+
+    &.empty {
+        color: #333;
+        height: auto;
+	line-height: 4em;
+        text-align: center;
     }
 }
 

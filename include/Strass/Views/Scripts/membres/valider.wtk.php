@@ -18,8 +18,14 @@ if ($this->individu) {
 }
 
 $s = $f->addSection('presentation');
-$s->addParagraph($this->inscription->adelec)->addFlags('auteur');
-$s->addText($this->inscription->presentation);
+if ($this->inscription->presentation) {
+    $s->addParagraph($this->inscription->adelec)->addFlags('auteur');
+    $s->addText($this->inscription->presentation);
+}
+else {
+    $s->addFlags('empty')
+      ->addText($this->inscription->adelec . " n'a pas rédigé son CV scout_!");
+}
 
 $f->addEntry('message', 48, 4);
 
