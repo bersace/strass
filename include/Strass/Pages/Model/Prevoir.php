@@ -31,9 +31,19 @@ class Strass_Pages_Model_Prevoir extends Strass_Pages_Model_Historique
         $m->addConstraintRequired($i);
 
         $annee = $this->controller->_helper->Annee(false);
-        $repere = $annee ? substr($u->findLastDate($annee), 0, 10) : strftime('%Y-%m-%d');
-        $debut = strftime('%Y-%m-%d', strtotime($repere.' next saturday +4 weeks'));
-        $fin = strftime('%Y-%m-%d', strtotime($repere.' next sunday +4 weeks'));
+        /* On cherche la date probable de l'activité qu'on veut prévoir. Soit
+         * aucune activité n'est prévue cette année, alors on propose une date
+         * près de la rentrée. Soit le calendrier est déjà remplis, alors on
+         * propose comme date 4 semaines après la dernière activité
+         * prévue. Comme ça on enchaîne l'enregistrement des activités. */
+        $repere = $u->findLastDate($annee);
+        if (!$repere) {
+            $repere = Strass_Controller_Action_Helper_Annee::dateDebut($annee);
+        }
+        else {
+            $debut = strftime('%Y-%m-%d', strtotime($repere.' next saturday +4 weeks'));
+            $fin = strftime('%Y-%m-%d', strtotime($repere.' next sunday +4 weeks'));
+        }
 
         $m->addDate('debut', 'Début', $debut.' 14:30', '%Y-%m-%d %H:%M');
         $m->addDate('fin', 'Fin', $fin.'17:00', '%Y-%m-%d %H:%M');
