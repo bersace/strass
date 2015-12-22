@@ -103,4 +103,7 @@ $taille_mini_vignette: $taille_vignette / 2;
 @mixin adminlink {
     display: inline-block;
     padding: .5ex 1em;
+    font-size: 8pt;
+    margin: .5ex;
+    vertical-align: middle;
 }

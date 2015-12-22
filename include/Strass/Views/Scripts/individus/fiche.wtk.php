@@ -58,7 +58,16 @@ else if (!count($l))
 
 
 // CV SCOUT
-$s = $this->document->addSection('cv', "CV scout");
+if ($this->assert(null, $this->individu, 'inscrire')) {
+    $s = $this->document->addSection('cv', new Wtk_Container(
+        "CV scout",
+        $this->lien(array('action' => 'inscrire'))->addFlags('adminlink', 'editer')
+    ));
+}
+else {
+    $s = $this->document->addSection('cv', "CV scout");
+}
+
 if ($this->apps->count()) {
     $s->addChild($this->cvScout($this->apps, false)); /* Administrer */
 }
