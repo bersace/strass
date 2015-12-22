@@ -84,7 +84,7 @@ class IndividusController extends Strass_Controller_Action
         $this->view->user = $user = $individu->findUser();
 
         $this->actions->append(
-            "Inscription",
+            "Éditer le CV scout",
             array('action' => 'inscrire'), array(null, $individu, 'inscrire'));
         $this->actions->append(
             "Éditer la fiche",
@@ -240,11 +240,12 @@ class IndividusController extends Strass_Controller_Action
     function inscrireAction()
     {
         $this->view->individu = $individu = $this->_helper->Individu();
-        $this->metas(array('DC.Title' => 'Inscription'));
+        $this->metas(array('DC.Title' => 'Éditer le CV'));
         $this->branche->append();
 
-        $this->assert(null, $individu, 'inscrire',
-        "Vous n'avez pas le droit d'inscrire cet individu dans une unité.");
+        $this->assert(
+            null, $individu, 'inscrire',
+            "Vous n'avez pas le droit d'inscrire cet individu dans une unité.");
 
         $this->view->apps = $individu->findAppartenances();    /* CV scout */
         $apps = $individu->findInscriptionsActives();
