@@ -60,7 +60,7 @@ else if (!count($l))
 // CV SCOUT
 $s = $this->document->addSection('cv', "CV scout");
 if ($this->apps->count()) {
-    $s->addChild($this->cvScout($this->apps, true));
+    $s->addChild($this->cvScout($this->apps, false)); /* Administrer */
 }
 else {
     $s->addParagraph('Inscrit dans aucune unité !')->addFlags('empty');

@@ -47,6 +47,6 @@ class Strass_Pages_Renderer_Inscrire extends Wtk_Pages_Renderer_Form
 
 
 $this->document->addSection('vignette')->addChild($this->vignetteIndividu($this->individu));
-$this->document->addChild($this->cvScout($this->apps));
+$this->document->addChild($this->cvScout($this->apps, true)); /* Lien admin */
 $renderer = new Strass_Pages_Renderer_Inscrire($this, $this->model->getFormModel());
 $this->document->addPages(null, $this->model, $renderer, false);
