@@ -60,6 +60,9 @@ class Strass_Controller_Router_Route_Alias extends Strass_Controller_Router_Rout
         if (($alias = array_search($target, $this->aliases)) === false)
             return false;
 
+        if (!isset($data['unite']))
+            return false;
+
         $data['__alias__'] = $alias;
 
         return parent::assemble($data, $reset, $encode);
