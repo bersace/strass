@@ -343,4 +343,11 @@ class Orror {
       error_log($params['level'].' '.$params['msg']);
     }
   }
+
+  static function log($var0) {
+      $args = func_get_args();
+      self::$html = false;
+      error_log(self::print_r($args, true));
+      self::$html = true;
+  }
 }
