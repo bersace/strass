@@ -21,11 +21,15 @@ class Strass_Controller_Router_Route_Alias extends Strass_Controller_Router_Rout
         $return = parent::match($path);
 
         if ($return) {
-            $overrides = $this->aliases[$return['__alias__']];
-            $return['controller'] = $overrides[0];
-            $return['action'] = $overrides[1];
+            $overrides = $this->aliases[$this->_values['__alias__']];
+            $this->_params['controller'] = $overrides[0];
+            $this->_params['action'] = $overrides[1];
+
+            $return = $this->_values + $this->_params + $this->_defaults;
             unset($return['__alias__']);
+            unset($return['__jocker__']);
         }
+
         return $return;
 	}
 

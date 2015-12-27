@@ -14,6 +14,10 @@ class Strass_Controller_Router_Rewrite extends Zend_Controller_Router_Rewrite
         // Use UNION (+) in order to preserve numeric keys
         $params = $userParams + $this->_globalParams;
 
+        /* Inject parameters from request. */
+        if (!$reset)
+            $params = $params + $this->_frontController->getRequest()->getParams();
+
         /* Essayer chaque route. Si false, alors cette URL n'est pas
          * assemblable par cette route. */
         foreach(array_reverse($this->_routes, true) as $name => $route) {
