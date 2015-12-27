@@ -124,6 +124,8 @@ class Strass {
         Strass_Cache::setup();
         $fc = Zend_Controller_Front::getInstance();
 
+        $fc->setRouter('Strass_Controller_Router_Rewrite');
+
         $request = new Strass_Controller_Request_Http();
         $fc->setRequest($request);
         $fc->setParam('noViewRenderer', true);

@@ -12,13 +12,13 @@ class Strass_Controller_Plugin_Routes extends Zend_Controller_Plugin_Abstract
         $routeur->removeDefaultRoutes();
 
         /* Routeur générique */
-        $p = '([[:alpha:]]+)';
-        $f = '(xhtml|ics|vcf|rss|atom|pdf|tex|txt|od[ts]|csv)';
+        $p = '[[:alpha:]]+';
+        $f = 'atom|csv|ics|rss|txt|vcf';
         $vars = array(
             'controller' => array($p, 'unites'),
             'action'     => array($p, 'index'),
             'format'     => array($f, 'html'),
-            'annee'      => array('([[:digit:]]{4})', null));
+            'annee'      => array('[[:digit:]]{4}', null));
 
         $pattern = '[%controller%[/%action%][.%format%][/%annee%]*]';
         $route = new Strass_Controller_Router_Route_Uri($vars, $pattern, null);
@@ -29,24 +29,36 @@ class Strass_Controller_Plugin_Routes extends Zend_Controller_Plugin_Abstract
         $slugs = array();
         foreach ($t->fetchAll() as $u)
             array_push($slugs, $u->slug);
-        $unite_pattern = '(' . join('|', $slugs) . ')';
+        $unite_pattern = join('|', $slugs);
 
         $routeur->addRoute(
-            'unites',
-            new Strass_Controller_Router_Route_Uri(
+            'alias',
+            $route = new Strass_Controller_Router_Route_Alias(
                 array(
-                    'action' => array($p, 'index'),
-                    'annee' => array('([[:digit:]]{4})', null),
-                    'controller' => array($p, 'unites'),
+                    'annee' => array('[12][0-9]]{3}', null),
+                    'action' => array(null, 'index'),
+                    'controller' => array(null, 'index'),
                     'format' => array($f, 'html'),
                     'unite' => array($unite_pattern, null),
                 ),
-                '[%unite%[/%controller%[/%action%[.%format%]]][/%annee%]]',
-                null)
+                '%unite%[/%__alias__%[.%format%][/%annee%]]*',
+                array(
+                    'default' => array('unites', 'index'),
+                    'archives' => array('unites', 'archives'),
+                    'calendrier' => array('activites', 'calendrier'),
+                    'editer' => array('unites', 'editer'),
+                    'effectifs' => array('unites', 'effectifs'),
+                    'fermer' => array('unites', 'fermer'),
+                    'fonder' => array('unites', 'fonder'),
+                    'inscrire' => array('unites', 'inscrire'),
+                    'parametres' => array('unites', 'parametres'),
+                    'photos' => array('photos', 'index'),
+                    'documents' => array('documents', 'index'),
+                ))
         );
 
-        /* $request = new Strass_Controller_Request_Http(); */
+        /* Orror::dump($route); */
+        /* $request = $fc->getRequest(); */
         /* Orror::kill($routeur->route($request)); */
-        /* Orror::kill($request); */
     }
 }
