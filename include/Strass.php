@@ -124,27 +124,10 @@ class Strass {
         Strass_Cache::setup();
         $fc = Zend_Controller_Front::getInstance();
 
+        $fc->setRouter('Strass_Controller_Router_Rewrite');
+
         $request = new Strass_Controller_Request_Http();
         $fc->setRequest($request);
-
-        $routeur = $fc->getRouter();
-        $routeur->removeDefaultRoutes();
-
-        $p = '([[:alpha:]]+)';
-        $f = '(xhtml|ics|vcf|rss|atom|pdf|tex|txt|od[ts]|csv)';
-        $vars = array(
-            'controller' => array($p, 'unites'),
-            'action'     => array($p, 'index'),
-            'format'     => array($f, 'html'),
-            'annee'      => array('([[:digit:]]{4})', null));
-
-        $pattern = '[%controller%[/%action%][.%format%][/%annee%]*]';
-        if ($prefix = @getenv('STRASS_ROUTE_PREFIX'))
-            $pattern = $prefix.$pattern;
-        $opattern = null;
-        $route = new Strass_Controller_Router_Route_Uri($vars, $pattern, $opattern);
-        $routeur->addRoute('default', $route);
-
         $fc->setParam('noViewRenderer', true);
 
         $fc->setModuleControllerDirectoryName('Controller');
@@ -155,6 +138,7 @@ class Strass {
         // greffons
         $fc->registerPlugin(new Strass_Controller_Plugin_Error);
         $fc->registerPlugin(new Strass_Controller_Plugin_Db);
+        $fc->registerPlugin(new Strass_Controller_Plugin_Routes);
         $fc->registerPlugin(new Strass_Controller_Plugin_Auth);
 
         $fc->dispatch();

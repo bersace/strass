@@ -4,7 +4,7 @@ if (! function_exists("array_fill_keys")) {
 	function array_fill_keys(array $keys, $value) {
 		return array_combine($keys, array_fill(0, count($keys), $value));
 	}
- }
+}
 
 
 /**
@@ -52,6 +52,8 @@ class Strass_Controller_Router_Route_Uri extends Zend_Controller_Router_Route_Re
 	// est celle par défaut.
 	protected	$inputUriDeps;
 
+    public $_regex;
+
 	/**
 	 * $vars est un table contenant la configuration de chaques
 	 * paramètre explicitement attendue, inclue la valeur jocker
@@ -69,15 +71,15 @@ class Strass_Controller_Router_Route_Uri extends Zend_Controller_Router_Route_Re
 
 		$have_jocker = strpos($inputUri, '*') !== FALSE;
 		if ($have_jocker) {
-			$vars['#'] = array('((?:/[[:alnum:]]+/[^/]+)*)', '');
-			$inputUri = str_replace ('*', '[%#%]', $inputUri);
-			$outputUri = str_replace ('*', '[%#%]', $outputUri);
+			$vars['__jocker__'] = array('((?:/[[:alnum:]]+/[^/]+)*)', '');
+			$inputUri = str_replace ('*', '[%__jocker__%]', $inputUri);
+			$outputUri = str_replace ('*', '[%__jocker__%]', $outputUri);
 		}
 
 		$i = 1;
 		foreach($vars as $var => $conf) {
 			$this->vars[] = $var;
-			$this->patterns[$var] = $conf[0];
+			$this->patterns[$var] = '(?P<' . $var . '>' . $conf[0] . ')';
 			$this->_defaults[$var] = $conf[1];
 		}
 
@@ -95,7 +97,7 @@ class Strass_Controller_Router_Route_Uri extends Zend_Controller_Router_Route_Re
 		// Détermination de l'ordre d'apparition des parametres
 		$this->inputUriDeps = $this->getUriDeps($this->inputUri);
 		$this->inputUriDeps = array_merge(array_fill_keys($this->vars, array()),
-						  $this->inputUriDeps);
+        $this->inputUriDeps);
 
 		// Transformation du modèle en pattern
 		$inputUri = $this->inputUri;
@@ -107,11 +109,11 @@ class Strass_Controller_Router_Route_Uri extends Zend_Controller_Router_Route_Re
 		// Détermination de l'ordre d'apparition des parametres
 		$this->inputUriOrder = $this->getDepsOrder();
 		$this->inputUriOrder = array_unique(array_merge($this->inputUriOrder,
-								$this->vars));
+        $this->vars));
 
 		ksort($this->inputUriOrder);
 		$this->_map = array_combine(range(1, count($this->inputUriOrder)),
-					    array_values($this->inputUriOrder));
+        array_values($this->inputUriOrder));
 
 		// Construction du pattern global
 		$patterns = array ();
@@ -205,12 +207,23 @@ class Strass_Controller_Router_Route_Uri extends Zend_Controller_Router_Route_Re
 
 	function match($path)
 	{
-		$return = parent::match($path);
+        $path = trim(urldecode($path), self::URI_DELIMITER);
+        $regex = '#^' . $this->_regex . '$#i';
 
-		if (!$return)
-			return $this->_defaults;
+        $res = preg_match($regex, $path, $values);
+        /* Orror::dump($path, $regex, $values); */
 
-		$this->_values = $return;
+        if ($res === 0)
+            return false;
+
+        // Utiliser exclusivement les valeurs nommées
+        foreach ($values as $i => $value) {
+            if (is_int($i)) {
+                unset($values[$i]);
+            }
+        }
+
+		$this->_values = $values;
 
 		// on ignore les valeur non définie.
 		foreach($this->_values as $k => $v) {
@@ -219,17 +232,17 @@ class Strass_Controller_Router_Route_Uri extends Zend_Controller_Router_Route_Re
 		}
 
 		// lecture des paramètre jocker. Stockage dans $this->_params;
-		if (array_key_exists('#', $this->_values)) {
-			preg_match_all("`([[:alpha:]]+/[^/]+)`", $this->_values['#'], $res);
+		if (array_key_exists('__jocker__', $this->_values)) {
+			preg_match_all("`([[:alpha:]]+/[^/]+)`", $this->_values['__jocker__'], $res);
 			foreach($res[1] as $r) {
 				list($k, $v) = explode('/', $r);
 				// don't overwrite existing fields
-				if (!isset($return[$k])) {
+				if (!isset($values[$k])) {
 					$this->_params[$k] = $v;
 				}
 			}
 
-			unset($this->_values['#']);
+			unset($this->_values['__jocker__']);
 		}
 
 		$return = $this->_values + $this->_params + $this->_defaults;
@@ -248,7 +261,7 @@ class Strass_Controller_Router_Route_Uri extends Zend_Controller_Router_Route_Re
 		 * values et params en fonction de $reset et de $data.
 		 */
 		foreach ($this->vars as $var) {
-			if ($var != '#') {
+			if ($var != '__jocker__') {
 				$resetVar = isset($data[$var]) && $data[$var] === null;
 
 				if (isset($data[$var]) && !$resetVar) {
@@ -263,7 +276,7 @@ class Strass_Controller_Router_Route_Uri extends Zend_Controller_Router_Route_Re
 			}
 		}
 
-		// recréer le paramètre # à partir des paramètres inconnus.
+		// recréer le paramètre __jocker__ à partir des paramètres inconnus.
 
 		$wcs = array();
 		foreach($data as $k => $v) {
@@ -279,7 +292,7 @@ class Strass_Controller_Router_Route_Uri extends Zend_Controller_Router_Route_Re
 		}
 
 		if ($wcs) {
-			$data['#'] = '/'.implode('/', $wcs);
+			$data['__jocker__'] = '/'.implode('/', $wcs);
 		}
 
 		$data = $data + $this->_defaults;
