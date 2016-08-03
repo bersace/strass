@@ -10,6 +10,8 @@ class Strass_Controller_Plugin_Routes extends Zend_Controller_Plugin_Abstract
         $fc = Zend_Controller_Front::getInstance();
         $routeur = $fc->getRouter();
         $routeur->removeDefaultRoutes();
+        $request = $fc->getRequest();
+        Orror::log($_SERVER['REQUEST_URI']);
 
         /* Routeur générique */
         $p = '[[:alpha:]]+';

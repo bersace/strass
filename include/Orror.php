@@ -347,7 +347,7 @@ class Orror {
   static function log($var0) {
       $args = func_get_args();
       self::$html = false;
-      error_log(self::print_r($args, true));
+      error_log(trim(self::print_r($args, true)));
       self::$html = true;
   }
 }

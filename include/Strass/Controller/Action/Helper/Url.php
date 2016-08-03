@@ -23,11 +23,4 @@ class Strass_Controller_Action_Helper_Url extends Zend_Controller_Action_Helper_
 
         return "http://".$request->getServer('HTTP_HOST').$url;
     }
-
-    /* Pour free, on désactive le contournement du routeur */
-    public function simple()
-    {
-        $args = func_get_args();
-        return call_user_func_array(array($this, 'full'), $args);
-    }
 }

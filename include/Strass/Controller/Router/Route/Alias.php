@@ -1,8 +1,8 @@
 <?php
 
-/* Assigne un controller selon l'action. Cela permet de créer des URL
- * raccourcis comme /troupe/effectifs/2004 plutôt que
- * /unites/effectis/unite/troupe/annee/2004 ou encore /troupe/calendrier/2012
+/* Assigne un controller et une action selon un alias. Cela permet de créer des
+ * URL raccourcis comme /troupe/effectifs/2004 plutôt que
+ * /unites/effectifs/unite/troupe/annee/2004 ou encore /troupe/calendrier/2012
  * plutôt que /activites/calendrier/unite/troupe/annee/2012.
  */
 class Strass_Controller_Router_Route_Alias extends Strass_Controller_Router_Route_Uri
@@ -11,6 +11,7 @@ class Strass_Controller_Router_Route_Alias extends Strass_Controller_Router_Rout
 
 	function __construct($vars, $uri, array $aliases)
 	{
+        /* Calculer le motif à partir des alias définis. */
         $vars['__alias__'] = array(join('|', array_keys($aliases)), 'default');
         parent::__construct($vars, $uri);
         $this->aliases = $aliases;
@@ -21,7 +22,7 @@ class Strass_Controller_Router_Route_Alias extends Strass_Controller_Router_Rout
         $return = parent::match($path);
 
         if ($return) {
-            $overrides = $this->aliases[$this->_values['__alias__']];
+            $overrides = $this->aliases[$return['__alias__']];
             $this->_params['controller'] = $overrides[0];
             $this->_params['action'] = $overrides[1];
 
