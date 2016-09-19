@@ -57,8 +57,9 @@ distclean:
 PHANTOM_JS=phantomjs-1.9.8-linux-x86_64
 .PHONY: setup
 setup:
-	apt-get install -y php5-cli php5-sqlite php-pear php5-gd php5-imagick \
-	phpunit python-pip python-dev sqlite3 faketime wget
+	apt-get install -y git php5-cli php5-sqlite php-pear php5-gd php5-imagick \
+	    phpunit python-pip python-dev python3-pip python3-dev sqlite3 \
+	    faketime wget
 	pip install --upgrade libsass
 	pip3 install --upgrade selenium
 	if ! test -f phantomjs/bin/phantomjs ; then \
