@@ -40,7 +40,7 @@ class Strass {
         /* Initialise le minimum pour introspecter l'installation. */
         umask(0022);
         date_default_timezone_set('Europe/Paris');
-        setlocale(LC_TIME, 'fr', 'fr_FR.utf8', 'fr_FR', 'fr_FR@euro', 'fr-FR', 'fra');
+        setlocale(LC_ALL, 'fr', 'fr_FR.utf8', 'fr_FR', 'fr_FR@euro', 'fr-FR', 'fra');
 
         $root = getenv('STRASS_ROOT') or null;
         if ($root) {

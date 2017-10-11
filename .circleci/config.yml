@@ -1,0 +1,44 @@
+version: 2
+
+jobs:
+  func:
+    working_directoy: /workspace
+    docker:
+    - image: php:5.6
+    environment:
+      VIRTUAL_ENV: .venv/
+    steps:
+    - run:
+        name: Initialiser le conteneur
+        command: |
+          set -x
+          echo deb http://ftp.debian.org/debian jessie-backports main > /etc/apt/sources.list.d/backports.list
+          apt update -y
+          apt install -y --no-install-recommends git openssh-client
+    - checkout
+    - run:
+        name: "Installer l'environment de test"
+        command: |
+          set -x
+          apt install -y --no-install-recommends faketime locales php5-gd php5-imagick php5-sqlite phpunit python3-dev python3-pip python3-virtualenv python3-wheel sqlite3 virtualenv xauth xvfb
+          sed -i "/fr_FR.*UTF-8/s/^# //" /etc/locale.gen
+          locale-gen
+          virtualenv --python=python3 ${VIRTUAL_ENV}
+          ${VIRTUAL_ENV}/bin/pip3 install --upgrade pip setuptools wheel
+          ${VIRTUAL_ENV}/bin/pip3 install selenium libsass
+          make phantomjs
+    - run:
+        name: Tester
+        environment:
+          LANG: fr_FR.UTF-8
+          LC_ALL: fr_FR.UTF-8
+        command: |
+          export PATH=${VIRTUAL_ENV}/bin:$PATH
+          env|sort
+          make test
+
+workflows:
+  version: 2
+  pipeline:
+    jobs:
+    - func

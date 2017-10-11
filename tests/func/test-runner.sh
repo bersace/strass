@@ -92,4 +92,4 @@ echo "PHP PID is ${PHP_PID}" >&2
 trap 'teardown $?' EXIT QUIT INT TERM ABRT ALRM HUP CHLD
 
 # On délègue à python3 unittest les tests. Usuel.
-python3 -m ${UNITTEST} discover ${UNITTEST_ARGS} tests/func/${TESTCASE}/
+xvfb-run --auto-servernum --server-args="-screen 0 1024x768x24" python3 -m ${UNITTEST} discover ${UNITTEST_ARGS} tests/func/${TESTCASE}/
