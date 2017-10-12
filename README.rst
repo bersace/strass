@@ -31,9 +31,12 @@ Tester
 
 Sur système debian ::
 
+  sudo apt install -y sqlite3
   git clone https://github.com/bersace/strass.git
-  sudo make setup
-  make serve
+  cd strass/
+  mkvirtualenv --python=python3 strass
+  make setup all
+  docker-compose up
 
-Ensuite, suivre l'assistant à l'adresse HTTP indiquée. Voir make help pour plus
-de possibilités.
+Ensuite, suivre l'assistant à l'adresse http://strass.docker:8000 . Voir make
+help pour plus de possibilités.
