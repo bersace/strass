@@ -26,17 +26,26 @@ Fonctionnalités
    :width: 90%
    :align: center
 
-Tester
-======
 
-Sur système debian ::
+Déployer avec Docker
+====================
 
-  sudo apt install -y sqlite3
-  git clone https://github.com/bersace/strass.git
-  cd strass/
-  mkvirtualenv --python=python3 strass
-  make setup all
+Sur un hôte docker::
+
   docker-compose up
 
-Ensuite, suivre l'assistant à l'adresse http://strass.docker:8000 . Voir make
-help pour plus de possibilités.
+Avec dnsdock, aller à http://www.strass.docker/ . Sinon, jouer avec l'exposition
+de port sur l'hôte.
+
+
+Développer
+==========
+
+Sur système Debian, vous avez besoin de sqlite3 et d'un virtualenv python3 ::
+
+  git clone https://github.com/bersace/strass.git
+  cd strass/
+  make setup all
+  docker-compose -f docker-compose.dev.yml up
+
+Ensuite, suivre l'assistant à l'adresse http://dev.strass.docker:8000 .
