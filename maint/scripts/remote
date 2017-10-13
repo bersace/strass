@@ -919,7 +919,8 @@ class upload(object):
         if args.partial:
             ftp.mirror('data/styles/')
             if not args.saas:
-                ftp.mirror('index.php', 'include/Strass.php', 'include/Strass/', 'include/Wtk/',
+                ftp.mirror('index.php', 'include/Statics.php',
+                           'include/Strass.php', 'include/Strass/', 'include/Wtk/',
                            'include/templates/', 'static/styles/')
         else:
             ftp.mirror('index.php', 'static/', 'include/', 'data/', 'private/')
