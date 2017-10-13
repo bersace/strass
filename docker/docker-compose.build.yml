@@ -1,0 +1,14 @@
+version: "3"
+
+volumes:
+  staticcache:
+
+services:
+  strass:
+    volumes:
+    # Pour tester sans reconstruire l'image, on remonte tout.
+    - ./docker/entrypoint.sh:/usr/local/bin/entrypoint.sh
+    - ./docker/php5-fpm-pool.conf:/etc/php5/fpm/pool.d/strass.conf
+    - ./docker/php5-fpm.conf:/etc/php5/fpm/.conf
+    - ./include/:/strass/include
+    - ./index.php:/strass/index.php

@@ -1,0 +1,10 @@
+version: "2"
+
+services:
+  strass:
+    image: php:5.6
+    volumes:
+    - .:/strass
+    command: /strass/maint/scripts/serve.sh
+    labels:
+      com.dnsdock.alias: dev.strass.docker
