@@ -1,11 +1,18 @@
 <?php
 
+require "Statics.php";
+
 class Strass {
     static $install_filename = 'private/INSTALLED';
 
     static function getPrefix()
     {
         return dirname(dirname(__FILE__)) . DIRECTORY_SEPARATOR;
+    }
+
+    static function isStatic()
+    {
+        return preg_match("#^/(static/|data/|500|google).*#", $_SERVER['REQUEST_URI']) === 1;
     }
 
     static function isInstalled()
@@ -74,6 +81,9 @@ class Strass {
     static function main()
     {
         self::bootstrapStage1();
+
+        if (self::isStatic())
+            return Statics::serve();
 
         /* On affiche la page de maintenance avant d'initialiser Wtk et
          * strass. Ainsi, seuls index.php et ce fichier sont requis pour
