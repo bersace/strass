@@ -1,12 +1,14 @@
 #!/usr/bin/make -f
 # -*- makefile -*-
 
+STRASSDO=sudo -u strass STRASS_ROOT=${STRASS_ROOT}
+
 default:
 
-devserver: fixperms
-	sudo -u strass STRASS_ROOT=${STRASS_ROOT} /strass/maint/scripts/serve.sh
+devserver: fixperms statics
+	$(STRASSDO) maint/scripts/serve.sh
 
-fcgi: fixperms
+fcgi: fixperms statics
 	/usr/sbin/php5-fpm --nodaemonize --fpm-config /etc/php5/fpm/php-fpm.conf
 
 # S'assurer que le volume est accessible à l'utilisateur strass.
@@ -17,6 +19,12 @@ fixperms:
 
 setmaint:
 	touch $${STRASS_ROOT}/MAINTENANCE
+
+# Générer les pages statiques 500.html et maintenance.html avec le script adhoc.
+$(STRASS_ROOT)/%.html:
+	$(STRASSDO) maint/scripts/$* > $@
+
+statics: $(STRASS_ROOT)/500.html $(STRASS_ROOT)/maintenance.html
 
 unsetmaint:
 	rm -vf $${STRASS_ROOT}/MAINTENANCE
