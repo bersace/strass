@@ -7,5 +7,3 @@ services:
     - ./docker/entrypoint.mk:/usr/local/bin/entrypoint.mk
     - ./docker/php5-fpm-pool.conf:/etc/php5/fpm/pool.d/strass.conf
     - ./docker/php5-fpm.conf:/etc/php5/fpm/.conf
-    - ./include/:/strass/include
-    - ./index.php:/strass/index.php
