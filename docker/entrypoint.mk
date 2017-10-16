@@ -1,6 +1,7 @@
-#!/usr/bin/make -f
+#!/usr/bin/make -rf
 # -*- makefile -*-
 
+ENTRYPOINT=$(lastword $(MAKEFILE_LIST)) --no-print-directory
 STRASSDO=sudo -u strass STRASS_ROOT=${STRASS_ROOT}
 
 default:
@@ -16,6 +17,10 @@ fixperms:
 	chmod -v 0770 $${STRASS_ROOT}
 	chown -v strass: $${STRASS_ROOT} ||:
 	chown -vR strass: $${STRASS_ROOT}/data $${STRASS_ROOT}/private ||:
+
+migrate: fixperms
+	$(STRASSDO) maint/scripts/$@
+	$(ENTRYPOINT) statics
 
 setmaint:
 	touch $${STRASS_ROOT}/MAINTENANCE
