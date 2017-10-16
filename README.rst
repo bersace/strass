@@ -30,12 +30,9 @@ Fonctionnalités
 Déployer avec Docker
 ====================
 
-Sur un hôte docker::
+Un image Docker est disponible avec serveur FCGI::
 
-  docker-compose up
-
-Avec dnsdock, aller à http://www.strass.docker/ . Sinon, jouer avec l'exposition
-de port sur l'hôte.
+  docker run --rm bersace/strass fcgi
 
 
 Développer
@@ -46,6 +43,6 @@ Sur système Debian, vous avez besoin de sqlite3 et d'un virtualenv python3 ::
   git clone https://github.com/bersace/strass.git
   cd strass/
   make setup all
-  docker-compose -f docker-compose.dev.yml up
+  docker-compose up
 
-Ensuite, suivre l'assistant à l'adresse http://dev.strass.docker:8000 .
+Ensuite, suivre l'assistant à l'adresse http://strass.docker:8000 .
