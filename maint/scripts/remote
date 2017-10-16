@@ -873,7 +873,6 @@ class unsetmaint(object):
     def __call__(self, args, config):
         ftp = FTPManager(local_root=args.root)
         ftp.connect(config)
-        ftp.remove('maintenance.html')
         ftp.run()
         self.log.info("Site distant réactivé")
 

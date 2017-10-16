@@ -27,7 +27,7 @@ class Strass {
 
     static function onMaintenance()
     {
-        return file_exists('maintenance.html');
+        return file_exists('MAINTENANCE');
     }
 
     static function showMaintenance()

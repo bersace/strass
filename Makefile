@@ -3,10 +3,11 @@ export STRASS_ROOT:=$(shell readlink -f $(STRASS_ROOT))/
 export DEBIAN_FRONTEND=noninteractive
 CIRCLE_TEST_REPORTS ?= .
 
-STRASS_EXEC=docker run --rm -v $(PWD):/strass -v $(STRASS_ROOT):/strass/htdocs bersace/strass
+STRASS_EXEC=$(if $(CI),,docker run --rm --entrypoint "/usr/bin/env" -v $(PWD):/strass -v $(STRASS_ROOT):/strass/htdocs bersace/strass)
+
 STYLES_DIRS=static/styles
 ifeq (,$(wildcard $(STRASS_ROOT)data/styles/))
-	STYLES_DIRS+=$(STRASS_ROOT)data/styles/
+STYLES_DIRS+=$(STRASS_ROOT)data/styles/
 endif
 
 SCSS=$(shell find $(STYLE_DIRS) -name "*.scss")
@@ -15,9 +16,10 @@ SUFSQL=include/Strass/Installer/sql/dump-suf.sql
 FSESQL=include/Strass/Installer/sql/dump-fse.sql
 GIT=git -C $(STRASS_ROOT)
 COMMIT=$(GIT) diff --staged --exit-code --quiet || $(GIT) commit --quiet --message
+HTML=$(STRASS_ROOT)500.html $(STRASS_ROOT)maintenance.html
 
 .PHONY: all
-all: $(CSS) $(SUFSQL) $(FSESQL)
+all: $(CSS) $(HTML) $(SUFSQL) $(FSESQL)
 
 .PHONY: help
 help:
@@ -27,13 +29,14 @@ help:
 	rm -f $@
 	sassc $< $@
 
-$(STRASS_ROOT)maintenance.html: maint/scripts/maintenance $(CSS)
-	$(STRASS_EXEC) /strass/$< > $@
-.INTERMEDIATE: $(STRASS_ROOT)maintenance.html
+$(STRASS_ROOT):
+	mkdir -p $@
 
-$(STRASS_ROOT)500.html: maint/scripts/500 $(CSS)
-	$(STRASS_EXEC) /strass/$< > $@
-.INTERMEDIATE: $(STRASS_ROOT)500.html
+$(STRASS_ROOT)maintenance.html: maint/scripts/maintenance $(STRASS_ROOT) $(CSS)
+	$(STRASS_EXEC) $< > $@
+
+$(STRASS_ROOT)500.html: maint/scripts/500 $(STRASS_ROOT) $(CSS)
+	$(STRASS_EXEC) $< > $@
 
 include/Strass/Installer/sql/dump-%.sql: include/Strass/Installer/sql/schema.sql include/Strass/Installer/sql/%.sql
 	$(MAKE) installer-$*.db
@@ -45,9 +48,8 @@ installer-%.db: include/Strass/Installer/sql/schema.sql include/Strass/Installer
 
 .PHONY: clean
 clean:
-	rm -vf $(CSS)
+	rm -vf $(CSS) $(HTML)
 	rm -vf $(SUFSQL) $(FSESQL)
-	rm -vf $(STRASS_ROOT)maintenance.html $(STRASS_ROOT)500.html
 	rm -vf $(STRASS_ROOT)private/cache/*
 
 .PHONY: distclean
@@ -72,11 +74,6 @@ PHANTOM_JS=phantomjs-1.9.8-linux-x86_64
 phantomjs/bin/phantomjs:
 	mkdir -p phantomjs
 	curl -L https://bitbucket.org/ariya/phantomjs/downloads/$(PHANTOM_JS).tar.bz2 | tar -jxf - -C phantomjs --strip-components=1
-
-
-.PHONY: serve
-serve: all
-	maint/scripts/serve.sh
 
 # Restaure les données uniquement. Pour tester la migration.
 .PHONY: restore
@@ -135,7 +132,7 @@ config: $(STRASS_ROOT).gitignore
 	$(COMMIT) CONFIG
 
 .PHONY: setmaint
-setmaint: $(STRASS_ROOT)maintenance.html
+setmaint:
 	$(REMOTE) $@
 
 .PHONY: unsetmaint
