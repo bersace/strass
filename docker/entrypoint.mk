@@ -14,3 +14,9 @@ fixperms:
 	chmod -v 0770 $${STRASS_ROOT}
 	chown -v strass: $${STRASS_ROOT} ||:
 	chown -vR strass: $${STRASS_ROOT}/data $${STRASS_ROOT}/private ||:
+
+setmaint:
+	touch $${STRASS_ROOT}/MAINTENANCE
+
+unsetmaint:
+	rm -vf $${STRASS_ROOT}/MAINTENANCE
