@@ -58,7 +58,8 @@ if (!isset($embeded[$medium])) {
   $embeded[$medium] = '';
 }
 ?>
-<?php $embeded[$medium].= is_readable($file) ? file_get_contents($file) : ''; ?>
+<?php $cssbaseurl = @dirname($f['url']).'/'; ?>
+<?php $embeded[$medium].= is_readable($file) ? str_replace('url("', 'url("'.$cssbaseurl, file_get_contents($file)) : ''; ?>
 <?php else: ?>
 <link type="text/css" rel="<?php echo $default ? "" : "alternate "; ?>stylesheet" <?php
   wtk_attr('title', $style->title); wtk_attr('media', $medium); wtk_attr('href', $baseurl.$url); ?> />
@@ -66,12 +67,11 @@ if (!isset($embeded[$medium])) {
 <?php endforeach; ?>
 <?php endforeach; ?>
 
-  <?php $cssbaseurl = @dirname($files[0]['url']).'/'; ?>
 <?php foreach($embeded as $medium => $css): ?>
 <style type="text/css" media="<?php echo $medium; ?>" title="<?php echo $et; ?>">
 <!--/*--><![CDATA[<!--*/
 
-  <?php echo str_replace('url("', 'url("'.$cssbaseurl, $css); ?>
+  <?php echo $css; ?>
 /*]]>*/-->
 </style>
 <?php endforeach; ?>

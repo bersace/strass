@@ -10,7 +10,7 @@ ifeq (,$(wildcard $(STRASS_ROOT)data/styles/))
 STYLES_DIRS+=$(STRASS_ROOT)data/styles/
 endif
 
-SCSS=$(shell find $(STYLE_DIRS) -name "*.scss")
+SCSS=$(shell find $(STYLES_DIRS) -name "*.scss")
 CSS=$(patsubst %.scss,%.css,$(SCSS))
 SUFSQL=include/Strass/Installer/sql/dump-suf.sql
 FSESQL=include/Strass/Installer/sql/dump-fse.sql
@@ -19,7 +19,7 @@ COMMIT=$(GIT) diff --staged --exit-code --quiet || $(GIT) commit --quiet --messa
 HTML=$(STRASS_ROOT)500.html $(STRASS_ROOT)maintenance.html
 
 .PHONY: all
-all: $(CSS) $(HTML) $(SUFSQL) $(FSESQL)
+all: $(CSS) $(SUFSQL) $(FSESQL)
 
 .PHONY: help
 help:
@@ -28,15 +28,6 @@ help:
 %.css: %.scss
 	rm -f $@
 	sassc $< $@
-
-$(STRASS_ROOT):
-	mkdir -p $@
-
-$(STRASS_ROOT)maintenance.html: maint/scripts/maintenance $(STRASS_ROOT) $(CSS)
-	$(STRASS_EXEC) $< > $@
-
-$(STRASS_ROOT)500.html: maint/scripts/500 $(STRASS_ROOT) $(CSS)
-	$(STRASS_EXEC) $< > $@
 
 include/Strass/Installer/sql/dump-%.sql: include/Strass/Installer/sql/schema.sql include/Strass/Installer/sql/%.sql
 	$(MAKE) installer-$*.db
@@ -156,14 +147,14 @@ migrate: all
 	$(COMMIT) MIGRATION
 
 .PHONY: upload
-upload: $(STRASS_ROOT)500.html
+upload:
 	$(COMMIT) --allow-empty UPLOAD
 	$(MAKE) setmaint
 	$(REMOTE) --verbose $@
 	$(MAKE) unsetmaint
 
 .PHONY: upload
-upgrade: $(STRASS_ROOT)500.html
+upgrade:
 	$(COMMIT) --allow-empty UPGRADE
 	$(MAKE) setmaint
 	$(REMOTE) --verbose upload --partial
