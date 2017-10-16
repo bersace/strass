@@ -7,7 +7,7 @@ STRASS_EXEC=$(if $(CI),,docker run --rm --entrypoint "/usr/bin/env" -v $(PWD):/s
 
 STYLES_DIRS=static/styles
 ifeq (,$(wildcard $(STRASS_ROOT)data/styles/))
-	STYLES_DIRS+=$(STRASS_ROOT)data/styles/
+STYLES_DIRS+=$(STRASS_ROOT)data/styles/
 endif
 
 SCSS=$(shell find $(STYLE_DIRS) -name "*.scss")
