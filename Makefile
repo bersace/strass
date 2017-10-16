@@ -10,7 +10,7 @@ ifeq (,$(wildcard $(STRASS_ROOT)data/styles/))
 STYLES_DIRS+=$(STRASS_ROOT)data/styles/
 endif
 
-SCSS=$(shell find $(STYLE_DIRS) -name "*.scss")
+SCSS=$(shell find $(STYLES_DIRS) -name "*.scss")
 CSS=$(patsubst %.scss,%.css,$(SCSS))
 SUFSQL=include/Strass/Installer/sql/dump-suf.sql
 FSESQL=include/Strass/Installer/sql/dump-fse.sql
