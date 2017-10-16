@@ -3,6 +3,7 @@ export STRASS_ROOT:=$(shell readlink -f $(STRASS_ROOT))/
 export DEBIAN_FRONTEND=noninteractive
 CIRCLE_TEST_REPORTS ?= .
 
+STRASS_EXEC=docker run --rm -v $(PWD):/strass -v $(STRASS_ROOT):/strass/htdocs bersace/strass
 STYLES_DIRS=static/styles
 ifeq (,$(wildcard $(STRASS_ROOT)data/styles/))
 	STYLES_DIRS+=$(STRASS_ROOT)data/styles/
@@ -27,11 +28,11 @@ help:
 	sassc $< $@
 
 $(STRASS_ROOT)maintenance.html: maint/scripts/maintenance $(CSS)
-	$< > $@
+	$(STRASS_EXEC) /strass/$< > $@
 .INTERMEDIATE: $(STRASS_ROOT)maintenance.html
 
 $(STRASS_ROOT)500.html: maint/scripts/500 $(CSS)
-	$< > $@
+	$(STRASS_EXEC) /strass/$< > $@
 .INTERMEDIATE: $(STRASS_ROOT)500.html
 
 include/Strass/Installer/sql/dump-%.sql: include/Strass/Installer/sql/schema.sql include/Strass/Installer/sql/%.sql
@@ -153,7 +154,7 @@ backup:
 
 .PHONY: migrate
 migrate: all
-	maint/scripts/migrate;
+	$(STRASS_EXEC) maint/scripts/migrate;
 	$(GIT) add --ignore-errors --all -- $(STRASS_ROOT) data/ private/;
 	$(COMMIT) MIGRATION
 
