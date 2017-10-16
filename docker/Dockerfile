@@ -27,6 +27,7 @@ ENV LC_ALL fr_FR.UTF-8
 WORKDIR /strass
 ADD index.php .
 ADD include ./include
+ADD maint/ ./maint
 ADD static ./static
 
 VOLUME /strass/htdocs
