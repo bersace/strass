@@ -14,7 +14,8 @@ fcgi: fixperms statics
 
 # S'assurer que le volume est accessible à l'utilisateur strass.
 fixperms:
-	chmod -v 0770 $${STRASS_ROOT}
+	chmod -v 0755 $${STRASS_ROOT}
+	chmod -v 0700 $${STRASS_ROOT}/private ||:
 	chown -v strass: $${STRASS_ROOT} ||:
 	chown -vR strass: $${STRASS_ROOT}/data $${STRASS_ROOT}/private ||:
 
@@ -41,7 +42,7 @@ $(STRASS_ROOT)/%.html:
 # Enfin, on utilise rsync pour nettoyer les fichiers plutôt que de repartir d'un
 # dossier vide.
 snapshot: fixperms
-	mkdir -p $${STRASS_ROOT}/snapshot
+	$(STRASSDO) mkdir -vp $${STRASS_ROOT}/snapshot $${STRASS_ROOT}/data
 	cp --verbose --archive --update --link $${STRASS_ROOT}/data $${STRASS_ROOT}/*.html $${STRASS_ROOT}/snapshot/
 	cp --verbose --archive --update $${STRASS_ROOT}/private $${STRASS_ROOT}/snapshot/
 	rsync --verbose --archive --delete $${STRASS_ROOT}/data $${STRASS_ROOT}/snapshot/
