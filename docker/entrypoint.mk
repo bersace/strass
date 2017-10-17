@@ -42,7 +42,7 @@ $(STRASS_ROOT)/%.html:
 # Enfin, on utilise rsync pour nettoyer les fichiers plutôt que de repartir d'un
 # dossier vide.
 snapshot: fixperms
-	mkdir -p $${STRASS_ROOT}/snapshot
+	mkdir -vp $${STRASS_ROOT}/snapshot $${STRASS_ROOT}/data
 	cp --verbose --archive --update --link $${STRASS_ROOT}/data $${STRASS_ROOT}/*.html $${STRASS_ROOT}/snapshot/
 	cp --verbose --archive --update $${STRASS_ROOT}/private $${STRASS_ROOT}/snapshot/
 	rsync --verbose --archive --delete $${STRASS_ROOT}/data $${STRASS_ROOT}/snapshot/
