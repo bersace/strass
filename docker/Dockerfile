@@ -12,6 +12,7 @@ RUN apt-get update -y && \
         php5-fpm \
         php5-imagick \
         php5-sqlite \
+        rsync \
         sudo \
         && \
     apt-get clean && \
