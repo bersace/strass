@@ -35,6 +35,7 @@ ADD static ./static
 
 VOLUME /strass/htdocs
 ENV STRASS_ROOT /strass/htdocs
+ENV STRASS_SMTP smtp
 
 ADD docker/php5-fpm.conf /etc/php5/fpm/php-fpm.conf
 ADD docker/php5-fpm-pool.conf /etc/php5/fpm/pool.d/strass.conf
