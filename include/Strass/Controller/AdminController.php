@@ -152,9 +152,7 @@ class AdminController extends Strass_Controller_Action
         $g->addEnum('style', 'Style', $config->system->style, $enum);
         $g->addString('admin', 'E-mail système', $config->system->admin);
         $g = $g->addGroup('mail');
-        $i0 = $g->addBool('enable', 'Envoyer les mails', $config->system->mail->enable);
-        $i1 = $g->addString('smtp', 'Serveur SMTP', $config->system->mail->smtp);
-        $m->addConstraintDepends($i1, $i0);
+        $g->addBool('enable', 'Envoyer les mails', $config->system->mail->enable);
         $m->addNewSubmission('enregistrer', 'Enregistrer');
 
         if ($m->validate()) {
