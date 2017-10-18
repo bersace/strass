@@ -88,7 +88,6 @@ class Strass_Mail extends Zend_Mail
     if (!isset($this->_headers['From']))
       $this->setFrom($config->system->admin, $config->system->short_title);
 
-
     $smtp = $local ? null : $config->system->mail->smtp;
 
     if ($smtp)
