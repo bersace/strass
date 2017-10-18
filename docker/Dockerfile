@@ -25,6 +25,8 @@ RUN sed -i "/fr_FR.*UTF-8/s/^# //" /etc/locale.gen && \
     :
 ENV LC_ALL fr_FR.UTF-8
 
+VOLUME /var/lib/php5/sessions
+
 WORKDIR /strass
 ADD index.php .
 ADD include ./include
