@@ -21,7 +21,6 @@ class Strass_Mail extends Zend_Mail
     $id = $config->get('system/short_title', 'STRASS');
     $title = "[".$id."] ".$metas->title;
     $this->setSubject($title);
-    $this->addTo(null);
 
     $this->_doc = $d = new Wtk_Document($metas);
     $d->level+= 2;
@@ -88,7 +87,6 @@ class Strass_Mail extends Zend_Mail
     // assure l'existence d'un expéditeur, par défaut le config.
     if (!isset($this->_headers['From']))
       $this->setFrom($config->system->admin, $config->system->short_title);
-
 
     $smtp = $local ? null : $config->system->mail->smtp;
 
