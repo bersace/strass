@@ -88,7 +88,7 @@ class Strass_Mail extends Zend_Mail
     if (!isset($this->_headers['From']))
       $this->setFrom($config->system->admin, $config->system->short_title);
 
-    $smtp = $local ? null : $config->system->mail->smtp;
+    $smtp = $local ? null : getenv('STRASS_SMTP');
 
     if ($smtp)
       return parent::send(new Zend_Mail_Transport_Smtp($smtp));

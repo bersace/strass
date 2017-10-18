@@ -16,7 +16,6 @@ else
 
 $g->addEntry('admin', 24);
 $g->addCheck('mail/enable');
-$g->addEntry('mail/smtp', 24);
 
 $b = $f->addForm_ButtonBox();
 $b->addForm_Submit($this->model->getSubmission('enregistrer'));
