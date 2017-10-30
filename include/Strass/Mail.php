@@ -78,15 +78,6 @@ class Strass_Mail extends Zend_Mail
     $r = Wtk_Render::factory($this->_doc, 'Html5');
     $this->setBodyHTML($r->render());
 
-    // assure que le courriel est bien envoyé à l'admin,
-    // pour archivage.
-    if (!isset($this->_recipients[$config->system->admin])) {
-      if (empty($this->_to))
-	$this->addTo($config->system->admin, $config->system->short_title);
-      else
-	$this->addBcc($config->system->admin, $config->system->short_title);
-    }
-
     $smtp = $local ? null : getenv('STRASS_SMTP');
 
     if ($smtp)
