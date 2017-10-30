@@ -3,6 +3,7 @@
 class Strass_Mail extends Zend_Mail
 {
   protected $_doc;
+  static $mail_dir = 'private/mails';
 
   // metas = Wtk_Metas ou string (=titre)
   function __construct($metas)
@@ -56,15 +57,6 @@ class Strass_Mail extends Zend_Mail
   {
     $this->render();
 
-    $local = getenv('STRASS_MODE') == 'devel';
-
-    if ($local) {
-      $this->_recipients = array();
-      $this->_to = array();
-      $this->_headers['To'] = array();
-      $this->_headers['Bcc'] = array();
-    }
-
     $config = Zend_Registry::get('config');
 
     if (!$config->system->mail->enable) {
@@ -76,12 +68,12 @@ class Strass_Mail extends Zend_Mail
     $r = Wtk_Render::factory($this->_doc, 'Html5');
     $this->setBodyHTML($r->render());
 
-    $smtp = $local ? null : getenv('STRASS_SMTP');
-
-    if ($smtp)
-      return parent::send(new Zend_Mail_Transport_Smtp($smtp));
+    if (getenv('STRASS_MODE') == 'devel') {
+      mkdir(self::$mail_dir);
+      return parent::send(new Zend_Mail_Transport_File(array('path' => self::$mail_dir)));
+    }
     else
-      return parent::send(new Zend_Mail_Transport_Sendmail());
+      return parent::send(new Zend_Mail_Transport_Smtp(getenv('STRASS_SMTP')));
   }
 
   function replyTo($adelec, $nom = '')
