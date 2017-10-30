@@ -6,8 +6,6 @@ class Strass_Mail_Article extends Strass_Mail
     parent::__construct("Nouvel article : ".$article->titre);
 
     $this->article = $article;
-    $auteur = $article->findAuteur();
-    $this->setFrom($auteur->adelec, $auteur->getFullname());
     $this->notifyChefsDe($article->findUnite());
   }
 
