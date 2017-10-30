@@ -13,29 +13,28 @@ class Strass_Mail_Recover extends Strass_Mail
     $fc = Zend_Controller_Front::getInstance();
     $router = $fc->getRouter();
     $request = $fc->getRequest();
+    $host = $request->getServer('HTTP_HOST');
     $url = $router->assemble(array('controller' => 'membres',
 				   'action' => 'recouvrir',
 				   'confirmer' => $this->user->recover_token));
-    $url = "http://".$request->getServer('HTTP_HOST').$url;
+    $url = "http://".$host.$url;
     $individu = $this->user->findParentIndividus();
-    $config = Zend_Registry::get('config');
-
     $this->_doc->addText(<<<EOS
 
-Bonjour {$individu->getFullName(false)},
+Bonjour {$individu->prenom},
 
-Vous avez demandé à récupérer l'accès à votre compte sur {$config->system->short_title}.
+Vous souhaitez récupérer l'accès à votre compte sur {$host}.
 
-**Si vous n'avez pas fait cette demande, ignorez ce message ou contactez l'administrateur du site !**
+**Si vous n'avez pas fait cette demande, ignorez ce message ou contactez l'administrateur du site !**
 
 Pour récupérer l'accès à votre compte, réinitialisez votre mot de passe en suivant ce lien :
 
 = [$url $url]
 
-À bientôt sur {$config->system->short_title} !
+À bientôt sur [http://$host {$host}] !
 
 FSS,
-L'automate du site {$config->system->short_title}.
+L'automate.
 EOS
 			 );
   }
