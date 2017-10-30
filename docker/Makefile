@@ -1,7 +1,6 @@
 NAME="bersace/strass"
 
 build:
-	$(MAKE) -C .. all
 	docker build --tag $(NAME) -f ../Dockerfile ..
 
 clean:

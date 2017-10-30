@@ -2,6 +2,29 @@
 # Strass servi avec PHP-FCGI sur le port 8000.
 #
 
+FROM python:3 AS static
+
+# D'abord générer les CSS et SQL.
+
+RUN apt-get update -y && \
+    DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
+        make \
+        sqlite3 \
+        && \
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists/* && \
+    pip install --no-cache-dir --upgrade libsass && \
+    :
+
+WORKDIR /strass
+ADD Makefile .
+ADD include/Strass ./include/Strass
+ADD static/styles ./static/styles
+
+RUN make clean all && \
+    find static/styles -name "*.scss" -delete && \
+    :
+
 FROM debian:jessie-slim
 
 RUN apt-get update -y && \
@@ -29,7 +52,7 @@ WORKDIR /strass
 ADD index.php .
 ADD include ./include
 ADD maint/ ./maint
-ADD static ./static
+COPY --from=static /strass/static ./static
 
 VOLUME /strass/htdocs
 
