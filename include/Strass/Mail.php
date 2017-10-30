@@ -22,6 +22,9 @@ class Strass_Mail extends Zend_Mail
     $title = "[".$id."] ".$metas->title;
     $this->setSubject($title);
 
+    $from = getenv('STRASS_EMETTEUR') or '';
+    $this->setFrom($from, 'Strass');
+
     $this->_doc = $d = new Wtk_Document($metas);
     $d->level+= 2;
     $d->addStyleComponents('mail');
@@ -74,19 +77,6 @@ class Strass_Mail extends Zend_Mail
     $this->setBodyText($r->render());
     $r = Wtk_Render::factory($this->_doc, 'Html5');
     $this->setBodyHTML($r->render());
-
-    // assure que le courriel est bien envoyé à l'admin,
-    // pour archivage.
-    if (!isset($this->_recipients[$config->system->admin])) {
-      if (empty($this->_to))
-	$this->addTo($config->system->admin, $config->system->short_title);
-      else
-	$this->addBcc($config->system->admin, $config->system->short_title);
-    }
-
-    // assure l'existence d'un expéditeur, par défaut le config.
-    if (!isset($this->_headers['From']))
-      $this->setFrom($config->system->admin, $config->system->short_title);
 
     $smtp = $local ? null : getenv('STRASS_SMTP');
 

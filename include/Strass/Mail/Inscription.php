@@ -6,7 +6,6 @@ class Strass_Mail_Inscription extends Strass_Mail
     parent::__construct("Nouvelle inscription : ".$inscription->getFullname());
 
     $this->inscription = $inscription;
-    $this->setFrom($inscription->adelec, $inscription->getFullname());
     $this->notifyAdmins();
     $this->notifyChefs();
   }

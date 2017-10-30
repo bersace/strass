@@ -14,7 +14,6 @@ if (count($this->model->getInstance('system/style')) > 1)
 else
   $g->addHidden('style');
 
-$g->addEntry('admin', 24);
 $g->addCheck('mail/enable');
 
 $b = $f->addForm_ButtonBox();
