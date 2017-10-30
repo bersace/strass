@@ -5,11 +5,7 @@ CIRCLE_TEST_REPORTS ?= .
 
 STRASS_EXEC=$(if $(CI),,docker run --rm --entrypoint "/usr/bin/env" -v $(PWD):/strass -v $(STRASS_ROOT):/strass/htdocs bersace/strass)
 
-STYLES_DIRS=static/styles
-ifeq (,$(wildcard $(STRASS_ROOT)data/styles/))
-STYLES_DIRS+=$(STRASS_ROOT)data/styles/
-endif
-
+STYLES_DIRS=$(shell readlink -e static/styles $(STRASS_ROOT)/data/styles)
 SCSS=$(shell find $(STYLES_DIRS) -name "*.scss")
 CSS=$(patsubst %.scss,%.css,$(SCSS))
 SUFSQL=include/Strass/Installer/sql/dump-suf.sql
