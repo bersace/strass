@@ -14,6 +14,8 @@ GIT=git -C $(STRASS_ROOT)
 COMMIT=$(GIT) diff --staged --exit-code --quiet || $(GIT) commit --quiet --message
 HTML=$(STRASS_ROOT)500.html $(STRASS_ROOT)maintenance.html
 
+default:
+
 .PHONY: all
 all: $(CSS) $(SUFSQL) $(FSESQL)
 
