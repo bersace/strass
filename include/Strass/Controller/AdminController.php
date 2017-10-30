@@ -150,7 +150,6 @@ class AdminController extends Strass_Controller_Action
             $enum[$style->id] = $style->title;
         }
         $g->addEnum('style', 'Style', $config->system->style, $enum);
-        $g->addString('admin', 'E-mail système', $config->system->admin);
         $g = $g->addGroup('mail');
         $g->addBool('enable', 'Envoyer les mails', $config->system->mail->enable);
         $m->addNewSubmission('enregistrer', 'Enregistrer');
