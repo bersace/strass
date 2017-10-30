@@ -21,8 +21,8 @@ class Strass_Mail extends Zend_Mail
 
     $this->setSubject($metas->title);
 
-    $from = getenv('STRASS_EMETTEUR') or '';
-    $this->setFrom($from, 'Strass');
+    $from = getenv('STRASS_EMETTEUR');
+    $this->setFrom($from ? $from : 'none@localhost', 'Strass');
 
     $this->_doc = $d = new Wtk_Document($metas);
     $d->level+= 2;
