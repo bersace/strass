@@ -22,7 +22,7 @@ class Strass_Mail_Recover extends Strass_Mail
 
     $this->_doc->addText(<<<EOS
 
-Bonjour {$individu->getFullName(false)},
+Bonjour {$individu->prenom},
 
 Vous avez demandé à récupérer l'accès à votre compte sur {$config->system->short_title}.
 
