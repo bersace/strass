@@ -17,7 +17,7 @@ class Strass_Addon_Liens extends Strass_Addon implements Iterator, Countable
     }
 
     protected function lien(
-        $metas=null, array $urlOptions=array(), array $acl=array(),
+        $metas=null, $urlOptions=array(), array $acl=array(),
         $reset=false, $anchor=null)
     {
         if (!$metas)
@@ -39,7 +39,7 @@ class Strass_Addon_Liens extends Strass_Addon implements Iterator, Countable
     }
 
     function append(
-        $metas=null, array $urlOptions=array(), array $acl=array(),
+        $metas=null, $urlOptions=array(), array $acl=array(),
         $reset=false, $anchor=null)
     {
         if ($lien = $this->lien($metas, $urlOptions, $acl, $reset, $anchor))
@@ -51,7 +51,7 @@ class Strass_Addon_Liens extends Strass_Addon implements Iterator, Countable
      * position est compté à partir de la fin.
      */
     function insert(
-        $pos, $metas=null, array $urlOptions=array(), array $acl=array(),
+        $pos, $metas=null, $urlOptions=array(), array $acl=array(),
         $reset=false, $anchor=null)
     {
         $count = count($this->liens);

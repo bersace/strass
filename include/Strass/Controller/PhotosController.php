@@ -101,6 +101,8 @@ class PhotosController extends Strass_Controller_Action
             array('action' => 'supprimer'),
             array(null, $photo));
 
+        Zend_Registry::get('page')->setDownloadUrl($photo->getCheminImage());
+
         $ps = $a->findPhotos($photo->getTable()->select()->order('date'));
         $data = array();
         foreach($ps as $p)

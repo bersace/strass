@@ -11,6 +11,7 @@ class Strass_Page implements Iterator, Countable
   {
     $this->metas = $metas;
     $this->addons = array();
+    $this->download = null;
   }
 
   public function addon(Strass_Addon $addon)
@@ -28,6 +29,10 @@ class Strass_Page implements Iterator, Countable
   {
     $this->format = $this->formats[$format];
   }
+
+    public function setDownloadUrl($url) {
+        $this->download = $url;
+    }
 
   function count()	{ return count($this->addons); }
   function rewind()	{ return reset($this->addons); }
