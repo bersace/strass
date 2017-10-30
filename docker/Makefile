@@ -2,7 +2,7 @@ NAME="bersace/strass"
 
 build:
 	$(MAKE) -C .. all
-	docker build --tag $(NAME) -f Dockerfile ..
+	docker build --tag $(NAME) -f ../Dockerfile ..
 
 clean:
 	docker-compose down -v
