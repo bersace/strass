@@ -3,6 +3,7 @@
 
 ENTRYPOINT=$(lastword $(MAKEFILE_LIST)) --no-print-directory
 STRASSDO=sudo -u strass STRASS_ROOT=${STRASS_ROOT}
+export LC_ALL=fr_FR.UTF-8
 export STRASS_ROOT?=/strass/htdocs
 
 default:

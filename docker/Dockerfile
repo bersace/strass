@@ -22,7 +22,6 @@ RUN sed -i "/fr_FR.*UTF-8/s/^# //" /etc/locale.gen && \
     locale-gen && \
     useradd --home-dir /strass --create-home --system strass && \
     :
-ENV LC_ALL fr_FR.UTF-8
 
 VOLUME /var/lib/php5/sessions
 
