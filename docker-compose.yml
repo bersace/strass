@@ -8,6 +8,7 @@ services:
     volumes:
     - ./include/:/strass/include
     - ./index.php:/strass/index.php
+    - ./static:/strass/static
     # Les données du site (base, photos, styles, etc.) sont stockées en local et
     # montées dans un volume. Par défaut, on monte les données de dév.
     - ${STRASS_ROOT-./htdocs}:/strass/htdocs
