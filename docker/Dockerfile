@@ -3,7 +3,6 @@
 #
 
 FROM debian:jessie-slim
-MAINTAINER Étienne BERSAC <bersace03@gmail.com>
 
 RUN apt-get update -y && \
     DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
