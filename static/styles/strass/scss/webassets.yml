@@ -1,0 +1,36 @@
+directory: .
+url: /static/styles/strass/html
+
+bundles:
+  install:
+    filters: libsass
+    output: ../html/install.css
+    contents:
+    - install.scss
+
+  mail:
+    filters: libsass
+    output: ../html/mail.css
+    contents:
+    - mail.scss
+
+  main:
+    filters: libsass
+    output: ../html/common.css
+    contents:
+    - common.scss
+    - activites.scss
+    - admin.scss
+    - date.screen.scss
+    - individus.scss
+    - journaux.scss
+    - layout.scss
+    - membres.scss
+    - photos.scss
+    - unites.scss
+
+  mini:
+    filters: libsass
+    output: ../html/minilayout.css
+    contents:
+    - minilayout.scss

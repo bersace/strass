@@ -4,20 +4,15 @@ CIRCLE_TEST_REPORTS ?= .
 
 STRASS_EXEC=$(if $(CI),,docker run --rm --entrypoint "/usr/bin/env" -v $(PWD):/strass -v $(STRASS_ROOT):/strass/htdocs bersace/strass)
 
-STYLES_DIRS=$(shell readlink -e static/styles $(STRASS_ROOT)/data/styles)
-SCSS=$(shell find $(STYLES_DIRS) -name "*.scss")
-CSS=$(patsubst %.scss,%.css,$(SCSS))
 SUFSQL=include/Strass/Installer/sql/dump-suf.sql
 FSESQL=include/Strass/Installer/sql/dump-fse.sql
 HTML=$(STRASS_ROOT)500.html $(STRASS_ROOT)maintenance.html
 
 default:
 
-all: $(CSS) $(SUFSQL) $(FSESQL)
-
-%.css: %.scss
-	rm -f $@
-	sassc $< $@
+all: $(SUFSQL) $(FSESQL)
+	$(MAKE) -C static/styles/strass build
+	$(MAKE) -C static/styles/joubert build
 
 include/Strass/Installer/sql/dump-%.sql: include/Strass/Installer/sql/schema.sql include/Strass/Installer/sql/%.sql
 	$(MAKE) installer-$*.db
@@ -28,7 +23,9 @@ installer-%.db: include/Strass/Installer/sql/schema.sql include/Strass/Installer
 	for f in $^ ; do sqlite3 -batch $@ ".read $$f"; done
 
 clean:
-	rm -vf $(CSS) $(HTML)
+	$(MAKE) -C static/styles/joubert clean
+	$(MAKE) -C static/styles/strass clean
+	rm -vf $(HTML)
 	rm -vf $(SUFSQL) $(FSESQL)
 	rm -vf $(STRASS_ROOT)private/cache/*
 
@@ -41,7 +38,7 @@ fixperms:
 
 setup:
 	which sqlite3
-	pip install --upgrade libsass
+	pip install --upgrade libsass pyyaml webassets
 
 setup-tests:
 	apt install -y faketime wget
