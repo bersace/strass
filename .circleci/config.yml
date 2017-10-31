@@ -29,7 +29,7 @@ jobs:
               virtualenv --python=python3 ${VIRTUAL_ENV}
           fi
           ${VIRTUAL_ENV}/bin/pip3 install --upgrade pip setuptools wheel
-          ${VIRTUAL_ENV}/bin/pip3 install selenium libsass
+          make setup
           make phantomjs
     - save_cache:
         key: strass-{{ arch }}
