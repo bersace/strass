@@ -15,10 +15,8 @@ HTML=$(STRASS_ROOT)500.html $(STRASS_ROOT)maintenance.html
 
 default:
 
-.PHONY: all
 all: $(CSS) $(SUFSQL) $(FSESQL)
 
-.PHONY: help
 help:
 	pager maint/DOC
 
@@ -34,18 +32,15 @@ include/Strass/Installer/sql/dump-%.sql: include/Strass/Installer/sql/schema.sql
 installer-%.db: include/Strass/Installer/sql/schema.sql include/Strass/Installer/sql/%.sql
 	for f in $^ ; do sqlite3 -batch $@ ".read $$f"; done
 
-.PHONY: clean
 clean:
 	rm -vf $(CSS) $(HTML)
 	rm -vf $(SUFSQL) $(FSESQL)
 	rm -vf $(STRASS_ROOT)private/cache/*
 
-.PHONY: distclean
 distclean:
 	$(MAKE) clean
 	rm -rvf $(STRASS_ROOT)
 
-.PHONY: setup
 setup:
 	which sqlite3
 	pip install --upgrade libsass
@@ -86,7 +81,6 @@ $(TESTDB): include/Strass/Installer/sql/schema.sql
 	sqlite3 -batch $@ ".read $<"
 .INTERMEDIATE: $(TESTDB)
 
-.PHONY: test
 test: test-unit test-func
 
 test-unit:
