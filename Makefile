@@ -36,6 +36,9 @@ distclean:
 	$(MAKE) clean
 	rm -rvf $(STRASS_ROOT)
 
+fixperms:
+	chgrp -R $(shell stat -c %G Makefile) $(STRASS_ROOT)
+
 setup:
 	which sqlite3
 	pip install --upgrade libsass
