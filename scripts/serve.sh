@@ -1,6 +1,6 @@
 #!/bin/bash -eux
 
-cd $(readlink -m $0/../../..)
+cd $(readlink -m $0/../..)
 
 : ${SERVE_PORT=8000}
 export STRASS_MODE=devel

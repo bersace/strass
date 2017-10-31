@@ -51,7 +51,7 @@ VOLUME /var/lib/php5/sessions
 WORKDIR /strass
 ADD index.php .
 ADD include ./include
-ADD maint/ ./maint
+ADD scripts/ ./scripts
 COPY --from=static /strass/static ./static
 
 VOLUME /strass/htdocs
