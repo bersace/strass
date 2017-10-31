@@ -4,7 +4,7 @@ services:
   strass:
     image: bersace/strass
     labels:
-      com.dnsdock.alias: strass.docker
+      com.dnsdock.alias: dev.strass.docker
     volumes:
     - ./include/:/strass/include
     - ./index.php:/strass/index.php
