@@ -1,6 +1,5 @@
 STRASS_ROOT ?= htdocs/
 export STRASS_ROOT:=$(shell readlink -f $(STRASS_ROOT))/
-export DEBIAN_FRONTEND=noninteractive
 CIRCLE_TEST_REPORTS ?= .
 
 STRASS_EXEC=$(if $(CI),,docker run --rm --entrypoint "/usr/bin/env" -v $(PWD):/strass -v $(STRASS_ROOT):/strass/htdocs bersace/strass)
