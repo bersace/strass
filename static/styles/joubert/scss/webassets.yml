@@ -1,0 +1,22 @@
+directory: .
+url: /static/styles/joubert/html
+
+bundles:
+  inline:
+    filters: libsass
+    output: ../html/inline.css
+    contents:
+    - inline.scss
+
+  install:
+    filters: libsass
+    output: ../html/install.css
+    contents:
+    - install.scss
+
+  main:
+    filters: libsass
+    output: ../html/common.css
+    contents:
+    - common.scss
+    - admin.scss
