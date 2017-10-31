@@ -1,6 +1,6 @@
 # Strass, le local scout virtuel
 
-[![Intégration continue](https://circleci.com/gh/bersace/strass.svg?style=svg)](https://circleci.com/gh/bersace/strass)
+[![Intégration continue](https://circleci.com/gh/bersace/strass.svg?style=shield)](https://circleci.com/gh/bersace/strass)
 [![Image docker](https://img.shields.io/docker/build/bersace/strass.svg)](https://hub.docker.com/r/bersace/strass/)
 
 
