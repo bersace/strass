@@ -9,7 +9,7 @@ export STRASS_ROOT?=/strass/htdocs
 default:
 
 devserver: fixperms statics
-	$(STRASSDO) maint/scripts/serve.sh
+	$(STRASSDO) scripts/serve.sh
 
 fcgi: fixperms statics
 	/usr/sbin/php5-fpm --nodaemonize --fpm-config /etc/php5/fpm/php-fpm.conf
@@ -22,7 +22,7 @@ fixperms:
 	chown -vR strass: $${STRASS_ROOT}/data $${STRASS_ROOT}/private ||:
 
 migrate: fixperms
-	$(STRASSDO) maint/scripts/$@
+	$(STRASSDO) scripts/$@
 	$(ENTRYPOINT) statics
 
 restore: fixperms
@@ -33,7 +33,7 @@ setmaint:
 
 # Générer les pages statiques 500.html et maintenance.html avec le script adhoc.
 $(STRASS_ROOT)/%.html:
-	$(STRASSDO) maint/scripts/$* > $@
+	$(STRASSDO) scripts/$* > $@
 
 # Pour sécuriser les migrations des données en prod, on créer un instantannée
 # des données. L'instantannée est optimisé pour data/ avec des liens physiques.

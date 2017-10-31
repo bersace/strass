@@ -4,10 +4,11 @@ services:
   strass:
     image: bersace/strass
     labels:
-      com.dnsdock.alias: strass.docker
+      com.dnsdock.alias: dev.strass.docker
     volumes:
     - ./include/:/strass/include
     - ./index.php:/strass/index.php
+    - ./scripts:/strass/scripts
     - ./static:/strass/static
     # Les données du site (base, photos, styles, etc.) sont stockées en local et
     # montées dans un volume. Par défaut, on monte les données de dév.

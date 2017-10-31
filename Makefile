@@ -1,6 +1,5 @@
 STRASS_ROOT ?= htdocs/
 export STRASS_ROOT:=$(shell readlink -f $(STRASS_ROOT))/
-export DEBIAN_FRONTEND=noninteractive
 CIRCLE_TEST_REPORTS ?= .
 
 STRASS_EXEC=$(if $(CI),,docker run --rm --entrypoint "/usr/bin/env" -v $(PWD):/strass -v $(STRASS_ROOT):/strass/htdocs bersace/strass)
@@ -10,18 +9,11 @@ SCSS=$(shell find $(STYLES_DIRS) -name "*.scss")
 CSS=$(patsubst %.scss,%.css,$(SCSS))
 SUFSQL=include/Strass/Installer/sql/dump-suf.sql
 FSESQL=include/Strass/Installer/sql/dump-fse.sql
-GIT=git -C $(STRASS_ROOT)
-COMMIT=$(GIT) diff --staged --exit-code --quiet || $(GIT) commit --quiet --message
 HTML=$(STRASS_ROOT)500.html $(STRASS_ROOT)maintenance.html
 
 default:
 
-.PHONY: all
 all: $(CSS) $(SUFSQL) $(FSESQL)
-
-.PHONY: help
-help:
-	pager maint/DOC
 
 %.css: %.scss
 	rm -f $@
@@ -35,18 +27,15 @@ include/Strass/Installer/sql/dump-%.sql: include/Strass/Installer/sql/schema.sql
 installer-%.db: include/Strass/Installer/sql/schema.sql include/Strass/Installer/sql/%.sql
 	for f in $^ ; do sqlite3 -batch $@ ".read $$f"; done
 
-.PHONY: clean
 clean:
 	rm -vf $(CSS) $(HTML)
 	rm -vf $(SUFSQL) $(FSESQL)
 	rm -vf $(STRASS_ROOT)private/cache/*
 
-.PHONY: distclean
 distclean:
 	$(MAKE) clean
 	rm -rvf $(STRASS_ROOT)
 
-.PHONY: setup
 setup:
 	which sqlite3
 	pip install --upgrade libsass
@@ -64,18 +53,6 @@ phantomjs/bin/phantomjs:
 	mkdir -p phantomjs
 	curl -L https://bitbucket.org/ariya/phantomjs/downloads/$(PHANTOM_JS).tar.bz2 | tar -jxf - -C phantomjs --strip-components=1
 
-# Restaure les données uniquement. Pour tester la migration.
-.PHONY: restore
-restore:
-ifeq (,$(wildcard $(STRASS_ROOT).git/))
-	git checkout -- $(STRASS_ROOT)
-	git clean --force -d $(STRASS_ROOT)
-else
-	$(GIT) reset --hard
-	$(GIT) clean --force -d
-endif
-
-.PHONY: dbshell
 dbshell:
 	sqlite3 $(STRASS_ROOT)/private/strass.sqlite
 
@@ -87,7 +64,6 @@ $(TESTDB): include/Strass/Installer/sql/schema.sql
 	sqlite3 -batch $@ ".read $<"
 .INTERMEDIATE: $(TESTDB)
 
-.PHONY: test
 test: test-unit test-func
 
 test-unit:
@@ -100,60 +76,3 @@ test-unit:
 
 test-func: all
 	STRASS_TEST_REPORTS=$(CIRCLE_TEST_REPORTS) tests/func/runall.sh
-
-REMOTE=maint/scripts/remote --config $(STRASS_ROOT)strass.conf
-
-
-$(STRASS_ROOT).git:
-	test -d $(STRASS_ROOT) || mkdir -p $(STRASS_ROOT)
-	$(GIT) init .
-	$(GIT) commit --quiet --allow-empty --message INIT
-
-$(STRASS_ROOT).gitignore: maint/sitegitignore $(STRASS_ROOT).git
-	cp $< $@
-	$(GIT) add .gitignore
-	$(COMMIT) SYSTÈME
-
-.PHONY: config
-config: $(STRASS_ROOT).gitignore
-	$(REMOTE) config
-	$(GIT) add strass.conf
-	$(COMMIT) CONFIG
-
-.PHONY: setmaint
-setmaint:
-	$(REMOTE) $@
-
-.PHONY: unsetmaint
-unsetmaint:
-	$(REMOTE) $@
-
-.PHONY: backup
-backup:
-	$(MAKE) setmaint
-	$(GIT) reset --hard
-	$(GIT) clean -df
-	$(REMOTE) --verbose $@
-	$(GIT) add -u .
-	$(GIT) add .
-	$(COMMIT) BACKUP
-
-.PHONY: migrate
-migrate: all
-	$(STRASS_EXEC) maint/scripts/migrate;
-	$(GIT) add --ignore-errors --all -- $(STRASS_ROOT) data/ private/;
-	$(COMMIT) MIGRATION
-
-.PHONY: upload
-upload:
-	$(COMMIT) --allow-empty UPLOAD
-	$(MAKE) setmaint
-	$(REMOTE) --verbose $@
-	$(MAKE) unsetmaint
-
-.PHONY: upload
-upgrade:
-	$(COMMIT) --allow-empty UPGRADE
-	$(MAKE) setmaint
-	$(REMOTE) --verbose upload --partial
-	$(MAKE) unsetmaint
