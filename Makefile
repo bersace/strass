@@ -39,7 +39,7 @@ fixperms:
 
 setup:
 	which sqlite3
-	pip install --upgrade libsass pyyaml webassets
+	pip3 install --upgrade libsass pyyaml webassets
 
 setup-tests:
 	apt install -y faketime wget
