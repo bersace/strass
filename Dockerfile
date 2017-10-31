@@ -22,7 +22,7 @@ ADD include/Strass ./include/Strass
 ADD static/styles ./static/styles
 
 RUN make clean all && \
-    find static/styles -name "*.scss" -delete && \
+    rm -rf static/styles/*/scss && \
     :
 
 FROM debian:jessie-slim
