@@ -1,0 +1,15 @@
+directory: .
+url: ./
+
+bundles:
+  mail:
+    filters: libsass
+    output: ../html/mail.css
+    contents:
+    - mail.scss
+
+  web:
+    filters: libsass
+    output: ../html/web.css
+    contents:
+    - web.scss
