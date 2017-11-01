@@ -31,7 +31,7 @@ abstract class Strass_Format_Wtk extends Strass_Format
         error_log("Style " . $style . " inconnu.");
     }
 
-    $document->addStyleComponents('layout', 'common', $cn, $mn, $association);
+    $document->addStyleComponents('layout', 'common', 'web', $cn, $mn, $association);
 
     if ($view->unite)
       $unite = $view->unite;
