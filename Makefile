@@ -13,6 +13,7 @@ default:
 all: $(SUFSQL) $(FSESQL)
 	$(MAKE) -C static/styles/strass build
 	$(MAKE) -C static/styles/joubert build
+	$(MAKE) -C static/styles/modele build
 
 include/Strass/Installer/sql/dump-%.sql: include/Strass/Installer/sql/schema.sql include/Strass/Installer/sql/%.sql
 	$(MAKE) installer-$*.db
@@ -23,6 +24,7 @@ installer-%.db: include/Strass/Installer/sql/schema.sql include/Strass/Installer
 	for f in $^ ; do sqlite3 -batch $@ ".read $$f"; done
 
 clean:
+	$(MAKE) -C static/styles/modele $@
 	$(MAKE) -C static/styles/joubert clean
 	$(MAKE) -C static/styles/strass clean
 	rm -vf $(HTML)
