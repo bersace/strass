@@ -28,18 +28,6 @@ $taille_etiquette: 12em;
     font-weight: normal;
 }
 
-/* Il s'agit d'un contenu comme une carte de visite, un évènement, un
-   document, etc. qui contient un titre, une vignette, un listing
-   d'information détaillés et peut-être plus */
-@mixin smallcontent {
-    background: lighten($alt_background, 10%);
-    border-radius: 1ex;
-
-    & > .h {
-	@include headfont;
-    }
-}
-
 @mixin message {
     background-color: $alt_background;
 }

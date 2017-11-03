@@ -153,6 +153,11 @@ tr.odd {
     }
 }
 
+.section.carte {
+    background: lighten($alt_background, 10%);
+    border-radius: 1ex;
+}
+
 /* VIGNETTE */
 
 /* Vignette seule, pour suppression */
@@ -181,12 +186,6 @@ a.vignette
     }
 }
 
-/* Indidivus */
-#cartevisite, ul.annuaire li .cartevisite
-{
-    @include smallcontent;
-}
-
 #document.annuaire {
     background-image: url("illustrations/ancien-moderne.png");
     background-position: 5% bottom;
@@ -211,10 +210,6 @@ a.vignette
 }
 
 /* Unités */
-#presentation {
-    @include smallcontent;
-}
-
 .effectifs tr.category td a {
     @include headfont;
     color: $highlight_color;
@@ -248,10 +243,6 @@ a.vignette
     background-size: 100% auto;
     background-repeat: no-repeat;
     padding-bottom: 25em;
-}
-
-#evenement {
-    @include smallcontent;
 }
 
 /* Photos */
@@ -335,13 +326,9 @@ a.vignette
 }
 
 /* Documents */
-.section.document {
-    @include smallcontent;
-
-    .telechargement a {
+.section.document .telechargement a {
 	@include adminlink;
 	background-color: $info_bg;
-    }
 }
 
 @media screen {
