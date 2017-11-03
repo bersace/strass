@@ -7,12 +7,16 @@ bundles:
     output: ../html/inline.css
     contents:
     - inline.scss
+    depends:
+    - _lib.scss
 
   install:
     filters: libsass
     output: ../html/install.css
     contents:
     - install.scss
+    depends:
+    - _lib.scss
 
   main:
     filters: libsass
@@ -20,3 +24,5 @@ bundles:
     contents:
     - common.scss
     - admin.scss
+    depends:
+    - _lib.scss
