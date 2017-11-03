@@ -170,7 +170,7 @@ class Strass_Views_Unite_Index_BlocGenerator
 
 $src = $this->unite->getCheminImage();
 if ($this->presentation || $src) {
-    $s = $this->document->addSection('presentation');
+    $s = $this->document->addSection('presentation')->addFlags('carte');
 
     if ($src)
         $s->addImage($src, "Photos d'unité", $this->unite->getFullname());

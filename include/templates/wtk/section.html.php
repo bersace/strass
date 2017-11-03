@@ -3,7 +3,8 @@
 <?php if (isset($this->title)): ?>
 <?php $level = $level > 0 ? min($level, 6) : 6; ?>
 <?php echo "<h".$level." ";
-$flags[1] = "h";
+    // Remplacer .section par .h
+$flags[0] = "h";
 wtk_classes($flags);
 echo ">";
 $this->title->output();

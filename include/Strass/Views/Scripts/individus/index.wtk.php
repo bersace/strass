@@ -23,7 +23,7 @@ class Strass_Pages_Renderer_Individus extends Wtk_Pages_Renderer
     {
         $s = $parent->addItem()->addSection(
             null, $this->view->lienIndividu($i, $i->getFullName(false, false)));
-        $s->addFlags('cartevisite');
+        $s->addFlags('carte', 'cartevisite');
         $s->addChild($this->view->vignetteIndividu($i)->addFlags('nolabel', 'mini'));
 
         $l = $s->addList()->addFlags('infos');

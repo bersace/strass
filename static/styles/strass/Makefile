@@ -1,4 +1,4 @@
 default:
 
 %:
-	webassets --config scss/webassets.yml $@
+	webassets --config src/webassets.yml $@

@@ -1,15 +1,10 @@
-/*-*- css -*-*/
-
 @import "lib.scss";
 
 /* ACCUEIL */
 #presentation {
-    @include smallcontent;
-    max-width: 40em;
-
     .image {
-	float: left;
-	margin: 0 1em 1em 0;
+        float: left;
+        margin: 0 1em 1em 0;
     }
 }
 

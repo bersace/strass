@@ -4,7 +4,7 @@ $highlight_color: #222;
 $page_background: #D6CBB4;
 $content_background: #FAFBF8;
 $alt_color: #888;
-$alt_background: rgba(#EEE, .5);
+$alt_background: rgba(#000, .2);
 $disabled: #888;
 $error: #550000;
 $error_bg: #F5756B;
@@ -29,55 +29,11 @@ $taille_mini_vignette: $taille_vignette / 2;
 
 @mixin minipage {
     /* style commun pour les pages avec peu de contenu, on utilise réduit
-       la largeur et on contre */
+       la largeur et on centre */
 
     width: 60%;
     max-width: 50em;
     margin: 1em auto;
-}
-
-/* Il s'agit d'un contenu comme une carte de visite, un évènement, un
-   document, etc. qui contient un titre, une vignette, un listing
-   d'information détaillés et peut-être plus */
-@mixin smallcontent {
-    position: relative;
-    display: block;
-    width: 100%;
-    max-width: 55em;
-    min-height: $taille_vignette + 68;
-    margin: 1em auto 4em;
-    padding: 2em;
-    font-size: 130%;
-    background: $alt_background;
-    text-align: left;
-
-    & > .h {
-	font-size: 140%;
-	text-align: right;
-	margin-right: 1em;
-	padding-left: $taille_vignette + 10;
-    }
-
-    a.vignette {
-	display: inline-block;
-	vertical-align: top;
-	margin-top: -3em;
-    }
-
-    ul.infos
-    {
-	position: absolute;
-	top: 4em;
-	left: $taille_vignette;
-	right: 1em;
-	padding: 1ex 0 1ex 2em;
-	max-width: 60%;
-
-	li {
-	    list-style: none;
-	    margin: .5ex;
-	}
-    }
 }
 
 @mixin message {

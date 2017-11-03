@@ -2,6 +2,7 @@
 
 body {
     font-family: "Liberation Sans", "Deja Vu Sans", sans-serif;
+    background: white;
     color: black;
 }
 
@@ -39,10 +40,6 @@ p {
     margin: 0 0 1ex;
 }
 
-ul {
-    list-style-type: disc;
-}
-
 a {
     text-decoration: none;
 
@@ -50,6 +47,10 @@ a {
     {
 	text-decoration: underline;
     }
+}
+
+ul {
+    list-style-type: disc;
 }
 
 .development #body {
@@ -151,6 +152,12 @@ td span.treecellnode {
 }
 
 tr.odd {
+    background: $alt_background;
+}
+
+
+// Carte façon material design
+.section.carte {
     background: $alt_background;
 }
 
@@ -296,16 +303,12 @@ a.vignette
     }
 }
 
-div.section.document {
-    @include smallcontent;
-
-    .telechargement a {
+.section.document .telechargement a {
 	@include adminlink;
 	font-weight: bold;
 	padding-left: 3em;
 	background: url("icones/sign-up.png") .5em center no-repeat;
 	background-size: auto 2em;
-    }
 }
 
 #document.liens {
