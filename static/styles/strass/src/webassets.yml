@@ -34,3 +34,5 @@ bundles:
     - membres.scss
     - photos.scss
     - unites.scss
+    depends:
+    - _lib.scss
