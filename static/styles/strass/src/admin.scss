@@ -107,6 +107,8 @@ table {
     width: 22em;
     position: relative;
     z-index: 1;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 #log
