@@ -33,6 +33,10 @@
     }
 }
 
+#document.consulter > .h {
+    display: none;
+}
+
 #document.journaux .avatar {
     position: relative;
     float: right;
