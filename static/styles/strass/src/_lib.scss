@@ -29,7 +29,7 @@ $taille_mini_vignette: $taille_vignette / 2;
 
 @mixin minipage {
     /* style commun pour les pages avec peu de contenu, on utilise réduit
-       la largeur et on contre */
+       la largeur et on centre */
 
     width: 60%;
     max-width: 50em;

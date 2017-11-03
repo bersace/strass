@@ -39,10 +39,6 @@ p {
     margin: 0 0 1ex;
 }
 
-ul {
-    list-style-type: disc;
-}
-
 a {
     text-decoration: none;
 
@@ -50,6 +46,10 @@ a {
     {
 	text-decoration: underline;
     }
+}
+
+ul {
+    list-style-type: disc;
 }
 
 .development #body {
