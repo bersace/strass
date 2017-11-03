@@ -267,6 +267,48 @@ tr td .check label
     }
 }
 
+/* Carte (façon material design) */
+
+.section.carte {
+    position: relative;
+    display: block;
+    width: 100%;
+    max-width: 50rem;
+    min-height: $taille_vignette + 68;
+    margin: 1rem auto 4rem;
+    padding: 2rem;
+    font-size: 1.1rem;
+
+    & > .h {
+	    text-align: right;
+	    margin-right: 1rem;
+	    padding-left: $taille_vignette + 10;
+	    white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    a.vignette {
+	    vertical-align: top;
+	    margin-top: -3rem;
+    }
+
+    ul.infos
+    {
+	    position: absolute;
+	    top: 6rem;
+	    left: $taille_vignette;
+	    right: 1rem;
+	    padding: 1rem 0 1rem 2rem;
+	    max-width: 60%;
+
+	    li {
+	        list-style: none;
+	        margin: .5rem;
+	    }
+    }
+}
+
 /* Vignette seule, pour suppression */
 #vignette {
     text-align: center;
@@ -387,15 +429,6 @@ a.vignette
 
 
 div.section.document {
-    @include smallcontent;
-
-    .telechargement a {
-	@include adminlink;
-	font-size: 110%;
-	margin: 1ex 0;
-	line-height: 2em;
-    }
-
     #description {
 	font-size: 110%;
 	margin: 1em;

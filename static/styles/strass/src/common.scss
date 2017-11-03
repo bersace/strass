@@ -155,6 +155,12 @@ tr.odd {
     background: $alt_background;
 }
 
+
+// Carte façon material design
+.section.carte {
+    background: $alt_background;
+}
+
 /* Formulaire */
 input[type=email],
 input[type=password],
@@ -297,16 +303,12 @@ a.vignette
     }
 }
 
-div.section.document {
-    @include smallcontent;
-
-    .telechargement a {
+.section.document .telechargement a {
 	@include adminlink;
 	font-weight: bold;
 	padding-left: 3em;
 	background: url("icones/sign-up.png") .5em center no-repeat;
 	background-size: auto 2em;
-    }
 }
 
 #document.liens {

@@ -1,12 +1,7 @@
 @import "lib.scss";
 
-#cartevisite
-{
-    @include smallcontent;
-
-    li.adresse {
-	white-space: pre-wrap;
-    }
+#cartevisite li.adresse {
+    white-space: pre-wrap;
 }
 
 #details, #cv {
@@ -114,36 +109,32 @@ ul.annuaire {
     margin: 0;
     padding: 0;
 
-    li {
-	display: inline-block;
-	width: 49%;
-	margin: 0;
-	padding: 0;
+    & > li
+    {
+        display: inline-block;
+        width: 49%;
+        min-width: 30rem;
+        vertical-align: top;
+        padding: .5rem;
 
-	.cartevisite {
-	    @include smallcontent;
-	    margin-bottom: 1em;
-	    width: 90%;
-            min-height: $taille_mini_vignette + 24;
-            padding: 1ex;
+        .section.cartevisite
+        {
+            margin: 0;
+            padding: 1rem;
+            min-height: 12rem;
 
-	    & > .h {
-		padding-left: $taille_mini_vignette + 10;
-		font-size: 120%;
-		text-align: left;
-	    }
+            & > .h
+            {
+                padding-left: $taille_mini_vignette + 10;
+            }
 
-	    ul.infos
-	    {
-		left: $taille_mini_vignette;
-		max-width: 80%;
-		top: 6ex;
-
-		li {
-		    margin: .25ex;
-		}
-	    }
-	}
+            ul.infos
+            {
+                left: $taille_mini_vignette;
+                top: 4rem;
+                max-width: 80%;
+            }
+        }
     }
 }
 

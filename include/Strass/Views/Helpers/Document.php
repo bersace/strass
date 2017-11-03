@@ -12,7 +12,7 @@ class Strass_View_Helper_Document
   public function document($document)
   {
     $s = new Wtk_Section(null, $document->titre);
-    $s->addFlags('document', $document->suffixe);
+    $s->addFlags('carte', 'document', $document->suffixe);
     $s->addChild($this->view->vignetteDocument($document)->addFlags('nolabel'));
     $l = $s->addList()->addFlags('infos');
     $l->addItem()->addFlags('telechargement')

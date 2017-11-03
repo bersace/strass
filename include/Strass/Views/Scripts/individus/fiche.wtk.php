@@ -3,6 +3,7 @@
 $this->document->addFlags('sexe-'.$this->individu->sexe);
 
 $s = $this->document->addSection('cartevisite', $this->individu->getFullName(false, false));
+$s->addFlags('carte');
 $s->addChild($this->vignetteIndividu($this->individu)->addFlags('nolabel'));
 
 $l = $s->addList()->addFlags('infos');

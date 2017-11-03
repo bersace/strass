@@ -7,25 +7,11 @@
 }
 
 #calendrier table {
-    font-size: 130%;
+    font-size: 1.1rem;
     width: 100%;
 
     td.date {
-	white-space: nowrap;
-    }
-}
-
-#evenement {
-    @include smallcontent;
-
-    ul.infos {
-	top: 6em;
-	font-size: 110%;
-    }
-
-    #description {
-	font-size: 130%;
-	margin: 0 1em;
+	    white-space: nowrap;
     }
 }
 

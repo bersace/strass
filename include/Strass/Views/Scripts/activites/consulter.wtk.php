@@ -8,6 +8,7 @@ if ($this->activite->isFuture())
 	      "pour le bon déroulement de cette activité.");
 
 $s = $this->document->addSection('evenement', $this->activite->getIntituleComplet());
+$s->addFlags('carte');
 $s->addChild($this->vignetteAlbum($this->activite)->addFlags('nolabel'));
 $l = $s->addList()->addFlags('infos');
 $datefmts = array('reunion' => 'le %A %e %B à %R',
