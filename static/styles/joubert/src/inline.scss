@@ -1,0 +1,7 @@
+@import "lib.scss";
+
+@media screen {
+    html, body {
+	    background: $page_background !important;
+    }
+}
