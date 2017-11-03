@@ -13,12 +13,20 @@ class Statics {
             return 'image/jpeg';
         case 'js':
             return 'application/javascript';
+        case 'mp3':
+            return 'audio/mp3';
+        case 'ogg':
+            return 'audio/ogg';
         case 'pdf':
             return 'application/pdf';
         case 'png':
             return 'image/png';
         case 'ttf':
             return 'application/x-font-ttf';
+        case 'wav':
+            return 'audio/wav';
+        case 'wma':
+            return 'audio/x-ms-wma';
         default:
             return 'text/plain';
         }
