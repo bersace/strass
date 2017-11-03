@@ -187,6 +187,11 @@ textarea:focus
     background: white;
 }
 
+button
+{
+    padding: .25rem .75rem;
+}
+
 fieldset {
     border: 1pt solid $highlight_color;
 
