@@ -309,9 +309,8 @@ a.vignette
 }
 
 .section.document .telechargement a {
-	@include adminlink;
 	font-weight: bold;
-	padding-left: 3em;
+    padding: .5rem .5rem .5rem 3rem;
 	background: url("icones/sign-up.png") .5em center no-repeat;
 	background-size: auto 2em;
 }
