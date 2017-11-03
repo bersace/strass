@@ -804,7 +804,10 @@ div.section.document {
 	    margin: 0;
 
 	    .h {
-		margin-bottom: .5ex;
+		    margin-bottom: .5ex;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
 	    }
 	}
 
