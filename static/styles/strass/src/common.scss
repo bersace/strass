@@ -267,7 +267,7 @@ div.required > label:before {
 }
 
 .buttonbox .critical {
-    color: $critical;
+    color: $critical_bg;
     font-weight: bold;
 }
 
@@ -378,28 +378,36 @@ a.vignette
     }
 
     a.adminlink {
-	&.supprimer, &.admin, &.editer {
-	    background-repeat: no-repeat;
-	    background-size: auto 70%;
-	    background-position: center center;
-	    padding: 1.75em 1.75em 0 0;
-	}
+      background-color: $alt_background;
 
-	&.supprimer {
-	    background-image: url("icones/supprimer.png");
-	}
+      &.supprimer, &.admin, &.editer {
+        background-repeat: no-repeat;
+        background-size: auto 50%;
+        background-position: center center;
+        padding: 1.5rem 1.5rem 0 0;
+      }
 
-	&.admin {
-	    background-image: url("icones/settings.png");
-	}
+      &.critical {
+        background-color: $critical_bg;
+        color: $critical;
+      }
 
-	&.editer {
-	    background-image: url("icones/pencil.png");
-	}
+      &.supprimer {
+        background-image: url("icones/supprimer.png");
+      }
+
+      &.admin {
+        background-image: url("icones/settings.png");
+      }
+
+      &.editer {
+        background-image: url("icones/pencil.png");
+      }
+
     }
 
     td a.adminlink {
-	font-size: 80%;
+      font-size: 80%;
     }
 
     .pages.links li.current a {

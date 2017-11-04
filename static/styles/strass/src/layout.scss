@@ -42,11 +42,6 @@ body {
     }
 }
 
-.h {
-    margin-top: 1em;
-    margin-bottom: 1ex;
-}
-
 #document {
     position: relative;
     border-width: 1pt;
@@ -495,7 +490,6 @@ div.section.document {
 
     #document {
 	padding: 2em;
-	padding-top: 5em;
 	margin-right: $taille_menu;
 	min-height: 40em;
     }
@@ -562,16 +556,6 @@ div.section.document {
 	}
     }
 
-    #document {
-	& > h1 {
-	    position: absolute;
-	    top: 0;
-	    left: 0;
-	    font-size: 150%;
-	    padding: 1ex 5em 1ex 1em;
-	    margin: 0;
-	}
-
 	div.dialog {
 	    .h {
 		text-align: center;
@@ -595,7 +579,6 @@ div.section.document {
 		}
 	    }
 	}
-    }
 
     /* Masquer la trace par défaut en prod */
     body.production #page #document #details {

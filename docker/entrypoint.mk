@@ -30,7 +30,7 @@ setmaint:
 	touch $${STRASS_ROOT}/MAINTENANCE
 
 # Générer les pages statiques 500.html et maintenance.html avec le script adhoc.
-$(STRASS_ROOT)/%.html:
+$(STRASS_ROOT)/%.html: FORCE
 	$(STRASSDO) scripts/$* > $@
 
 # Pour sécuriser les migrations des données en prod, on créer un instantannée
@@ -52,3 +52,5 @@ statics: $(STRASS_ROOT)/500.html $(STRASS_ROOT)/maintenance.html
 
 unsetmaint:
 	rm -vf $${STRASS_ROOT}/MAINTENANCE
+
+FORCE:

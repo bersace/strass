@@ -14,6 +14,7 @@ class Wtk_Form extends Wtk_Container {
 	function __construct(&$model)
 	{
 		parent::__construct();
+        unset($this->flags[0]);
 		$this->id = $model->id;
 		$this->model = $model;
 		$this->setDojoType("wtk.Form");
