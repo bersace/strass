@@ -40,6 +40,7 @@ class Statics {
         if (!file_exists($path))
             return;
 
+        header('X-Strass: statics');
         $info = pathinfo($path);
         $ext = @$info['extension'] ?: null;
         header('Content-Type: ' . self::contentType($ext));
