@@ -68,16 +68,17 @@
     }
 
     tr.warn, tr.warning {
-	background: $warn_bg;
-	font-weight: bold;
+      color: $warn;
+	    background: $warn_bg;
+	    font-weight: bold;
 
-	&.odd {
-	    background: lighten($warn_bg, 10%);
-	}
+	    &.odd {
+	      background: lighten($warn_bg, 10%);
+	    }
 
-	td.inscrits {
-	    color: $warn;
-	}
+      a {
+        color: inherit;
+      }
     }
 
     td.level {
