@@ -122,6 +122,10 @@ table {
     min-height: 32em;
     overflow: hidden;
     z-index: 0;
+
+    .h {
+      display: none;
+    }
 }
 
 table.logs td,
