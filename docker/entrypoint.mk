@@ -43,8 +43,8 @@ $(STRASS_ROOT)/%.html: FORCE
 # dossier vide.
 snapshot: fixperms
 	$(STRASSDO) mkdir -vp $${STRASS_ROOT}/snapshot $${STRASS_ROOT}/data
-	cp --verbose --archive --update --link $${STRASS_ROOT}/data $${STRASS_ROOT}/*.html $${STRASS_ROOT}/snapshot/
-	cp --verbose --archive --update $${STRASS_ROOT}/private $${STRASS_ROOT}/snapshot/
+	cp --verbose --archive --force --update --link $${STRASS_ROOT}/data $${STRASS_ROOT}/*.html $${STRASS_ROOT}/snapshot/
+	cp --verbose --archive --force --update $${STRASS_ROOT}/private $${STRASS_ROOT}/snapshot/
 	rsync --verbose --archive --delete $${STRASS_ROOT}/data $${STRASS_ROOT}/snapshot/
 	rm -rf $${STRASS_ROOT}/snapshot/private/cache/*
 
