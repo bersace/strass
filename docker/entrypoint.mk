@@ -19,7 +19,7 @@ fixperms:
 	chown -vR strass $${STRASS_ROOT}
 	find $${STRASS_ROOT} -type d -exec chmod u+rwx {} ';'
 	find $${STRASS_ROOT} -type f -exec chmod u+rw {} ';'
-	test -d $${STRASS_ROOT}/private && chown -vR o-rwx $${STRASS_ROOT}/private
+	test -d $${STRASS_ROOT}/private && chmod -vR o-rwx $${STRASS_ROOT}/private
 
 migrate: fixperms
 	$(STRASSDO) scripts/$@
