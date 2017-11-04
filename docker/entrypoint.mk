@@ -16,8 +16,10 @@ fcgi: fixperms statics
 
 # S'assurer que le volume est accessible à l'utilisateur strass.
 fixperms:
-	chmod -v o-rwx $${STRASS_ROOT} ||:
-	chown -vR strass $${STRASS_ROOT} ||:
+	chown -vR strass $${STRASS_ROOT}
+	find $${STRASS_ROOT} -type d -exec chmod u+rwx {} ';'
+	find $${STRASS_ROOT} -type f -exec chmod u+rw {} ';'
+	test -d $${STRASS_ROOT}/private && chown -vR o-rwx $${STRASS_ROOT}/private
 
 migrate: fixperms
 	$(STRASSDO) scripts/$@
