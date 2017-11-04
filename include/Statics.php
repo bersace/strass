@@ -6,6 +6,9 @@ class Statics {
         switch($extension) {
         case 'css':
             return 'text/css';
+        case 'htm':
+        case 'html':
+            return 'text/html';
         case 'ico':
             return 'image/ico';
         case 'jpeg';
