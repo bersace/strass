@@ -27,7 +27,7 @@ class Strass_Views_PagesRenderer_Articles extends Wtk_Pages_Renderer
         $s->addChild($this->view->vignetteIndividu($article->findAuteur())->addFlags('mini'));
 
         if ($d) {
-            $s->addFlags('document', $d->suffixe);
+            $s->addFlags('carte', 'document', $d->suffixe);
             $s->addChild($this->view->vignetteDocument($d)->addFlags('nolabel'));
             $l = $s->addList()->addFlags('infos');
             $l->addItem()->addFlags('telechargement')
