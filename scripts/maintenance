@@ -7,32 +7,9 @@ array_unshift($paths, dirname(dirname(__FILE__)).'/include');
 set_include_path(implode(':',$paths));
 
 require_once 'Strass.php';
-require_once 'Orror.php';
 
 Strass::bootstrap();
-
-require_once 'Strass/Unites.php';
-
-$config = new Strass_Config_Php('strass');
-Zend_Registry::set('config', $config);
-Strass_Cache::setup();
-Strass_Db::setup();
-
-$document = new Wtk_Document(new Wtk_Metas(array('DC.Title' => 'Maintenance')));
-$style = $config->get('system/style', 'joubert');
-$document->setStyle(Wtk_Document_Style::factory($style));
-$document->addStyleComponents('layout', 'minilayout', 'common', 'web');
-$association = $config->get('system/association', null);
-$document->addFlags('maintenance', 'mini', $association);
-if (Strass:onDevelopment()) {
-    $document->addFlags('development');
-    $document->embedStyle();
-}
-else
-    $document-addFlags('production');
-$document->embedStyle();
-$document->header->setTitle(new Wtk_Link('/', Strass::getSiteTitle()));
-$document->header->addFlags($association);
+$document = Strass::staticDocument();
 $dialog = $document->addDialog("Webmestre au travail !");
 $dialog->addFlags('error');
 $dialog->addSection('aide')->addParagraph("Le site est actuellement en maintance. Désolé et à bientôt !");

@@ -9,36 +9,16 @@ set_include_path(implode(':',$paths));
 require_once 'Strass.php';
 
 Strass::bootstrap();
-
-require_once 'Strass/Unites.php';
-
-$config = new Strass_Config_Php('strass');
-Zend_Registry::set('config', $config);
-Strass_Cache::setup();
-Strass_Db::setup();
-
-$document = new Wtk_Document(new Wtk_Metas(array('DC.Title' => 'Erreur fatale')));
-$style = $config->get('system/style', 'joubert');
-$document->setStyle(Wtk_Document_Style::factory($style));
-$document->addStyleComponents('layout', 'minilayout', 'common', 'web');
-$association = $config->get('system/association', null);
-$document->addFlags($association, 'mini', 'error');
-if (Strass:onDevelopment()) {
-    $document->addFlags('development');
-    $document->embedStyle();
-}
-else
-    $document-addFlags('production');
-$document->header->setTitle(new Wtk_Link('/', Strass::getSiteTitle()));
-$document->header->addFlags($association);
-
+$document = Strass::staticDocument();
 $dialog = $document->addDialog("Oups !");
 $dialog->addFlags('error');
+$config = Zend_Registry::get('config');
 $mail = $config->get('system/admin');
 if ($mail)
-  $wm = "[mailto:".$mail." webmestre]";
+    $wm = "[mailto:".$mail." webmestre]";
 else
-  $wm = "webmestre";
+    $wm = "webmestre";
+
 $dialog->addSection('aide')
 ->addText("Vous avez rencontré un gros bug. Merci de le rapporter au ".$wm." !");
 
