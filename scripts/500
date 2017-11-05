@@ -15,7 +15,7 @@ require_once 'Strass/Unites.php';
 $config = new Strass_Config_Php('strass');
 Zend_Registry::set('config', $config);
 Strass_Cache::setup();
-$db = Strass_Db::setup();
+Strass_Db::setup();
 
 $document = new Wtk_Document(new Wtk_Metas(array('DC.Title' => 'Erreur fatale')));
 $style = $config->get('system/style', 'joubert');
