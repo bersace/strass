@@ -61,7 +61,7 @@ class Wtk_Document_Style {
 
     function getFavicon()
     {
-        return $this->baseurl.'/favicon.png';
+        return str_replace('//', '/', $this->baseurl.'/favicon.png');
     }
 
     function findCss($components, $basedir, $baseurl) {
