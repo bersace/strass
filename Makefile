@@ -37,7 +37,8 @@ distclean:
 
 fixperms:
 	chgrp -R $(shell stat -c %G Makefile) $(STRASS_ROOT)
-	find $(STRASS_ROOT) -type d -exec chmod g+rwx {} ';'
+	find $(STRASS_ROOT) -exec chmod g+rw {} ';'
+	find $(STRASS_ROOT) -type d -exec chmod g+x {} ';'
 
 setup:
 	which sqlite3

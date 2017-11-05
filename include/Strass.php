@@ -78,14 +78,14 @@ class Strass {
         self::bootstrapStage2();
     }
 
-    static function staticDocument()
+    static function staticDocument($titre)
     {
         $config = new Strass_Config_Php('strass');
         Zend_Registry::set('config', $config);
         Strass_Cache::setup();
         Strass_Db::setup();
 
-        $document = new Wtk_Document(new Wtk_Metas(array('DC.Title' => 'Maintenance')));
+        $document = new Wtk_Document(new Wtk_Metas(array('DC.Title' => $titre)));
         $style = $config->get('system/style', 'joubert');
         $document->setStyle(Wtk_Document_Style::factory($style));
         $document->addStyleComponents('layout', 'minilayout', 'common', 'web');

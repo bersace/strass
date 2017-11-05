@@ -9,7 +9,7 @@ set_include_path(implode(':',$paths));
 require_once 'Strass.php';
 
 Strass::bootstrap();
-$document = Strass::staticDocument();
+$document = Strass::staticDocument('Erreur fatale');
 $dialog = $document->addDialog("Oups !");
 $dialog->addFlags('error');
 $config = Zend_Registry::get('config');

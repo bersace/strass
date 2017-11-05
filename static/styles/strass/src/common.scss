@@ -53,12 +53,6 @@ ul {
     list-style-type: disc;
 }
 
-.development #body {
-    background: url("ui/travaux.png") 4% top no-repeat;
-    background-size: auto .7 * $taille_logo;
-    background-position: 1% 2ex;
-}
-
 #header {
     background-repeat: no-repeat;
     background-position: 96% center;
@@ -90,24 +84,6 @@ ul {
 	background-position: center 90%;
 	background-repeat: no-repeat;
 	background-size: auto 20em;
-    }
-
-    div.dialog {
-        padding-left: 48px;
-
-	&.info {
-	    color: $info;
-	    background-image: url("ui/information.png");
-	    background-position: 1ex .72ex;
-	    background-repeat: no-repeat;
-	}
-
-	&.warn, &.error {
-	    color: $warn;
-	    background-image: url("ui/attention.png");
-	    background-position: 1em 1em;
-	    background-repeat: no-repeat;
-	}
     }
 }
 
@@ -151,7 +127,9 @@ td span.treecellnode {
     vertical-align: middle;
 }
 
-tr.odd {
+tr.odd,
+.section.citation:nth-of-type(odd)
+{
     background: $alt_background;
 }
 
@@ -324,24 +302,87 @@ a.vignette
 }
 
 @media screen {
-    #document {
-	div.dialog {
-	    &.info {
-		background-color: $info_bg;
-	    }
 
-	    &.warn, &.error {
-		background-color: $warn_bg;
+  #development {
+    padding: 0;
+    position: fixed;
+    top: 32px;
+    right: -64px;
+    width: 256px;
+    transform: rotate(45deg);
+
+    background-color: rgba($warn_bg, .8);
+    color: $warn;
+    font-size: 1.2rem;
+    font-weight: bold;
+    text-align: center;
+    text-transform: uppercase;
+    vertical-align: middle;
+
+    p {
+      display: inline-block;
+      margin: 0;
+      padding: 1em;
+      padding-left: 2.5em;
+
+      background-image: url("ui/travaux.png");
+      background-position: 0 center;
+      background-repeat: no-repeat;
+      background-size: auto 2em;
+    }
+  }
+
+  #document > .h
+  {
+    margin-top: 0;
+  }
+
+	div.dialog {
+    font-size: 1.2rem;
+
+	  .h {
+		  text-align: center;
+      padding-left: 48px;
+		  margin: 1ex;
+		  font-size: 140%;
+	  }
+
+
+	  &.info
+    {
+	    color: $info;
+		  background-color: $info_bg;
+	    background-image: url("ui/information.png");
+	    background-position: 1ex .72ex;
+	    background-repeat: no-repeat;
+	  }
+
+	  &.warn, &.error
+    {
+	    background-image: url("ui/attention.png");
+	    background-position: 2rem 2rem;
+	    background-repeat: no-repeat;
+	  }
+
+	  &.warn
+    {
+      color: $warn;
+		  background-color: $warn_bg;
+	  }
+
+    &.error
+    {
+      color: $error;
+		  background-color: $error_bg;
+    }
 
 		&.showtrace #details > .h {
-		    font-size: 1em;
-		    text-align: right;
-		    cursor: pointer;
-		    color: lighten($highlight_color, 10%);
+		  font-size: 1rem;
+		  text-align: right;
+		  cursor: pointer;
+		  color: lighten($highlight_color, 10%);
 		}
-	    }
 	}
-    }
 
     #citation {
 	p {
@@ -499,14 +540,6 @@ a.vignette
     a {
 	color: inherit;
 	text-decoration: none;
-    }
-
-    tr.odd {
-	background-color: #F0F0F0;
-    }
-
-    div.dialog {
-	font-size: 140%;
     }
 
     #footer #about .author {

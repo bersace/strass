@@ -32,14 +32,14 @@ body {
 
 #contentwrapper {
     margin: 0 auto;
+}
 
-    div.dialog {
+div.dialog {
 	position: relative;
 	width: 50%;
 	max-width: 40em;
 	padding: 1em;
 	margin: 3em auto;
-    }
 }
 
 #document {
@@ -352,7 +352,7 @@ a.vignette
 	    line-height: $taille_mini_vignette;
 	}
 
-	.image.empty.paragraph {
+	p.image.empty {
 	    line-height: .9 * $taille_mini_vignette;
 	    font-size: 70%;
 	}
@@ -366,14 +366,14 @@ a.vignette
 	height: auto;
 	padding: 2px;
 	margin: 0 auto;
+    }
 
-	&.empty.paragraph {
+	  p.image.empty {
 	    width: 100%;
 	    vertical-align: middle;
 	    padding: 0;
 	    line-height: .9 * $taille_vignette;
-	}
-    }
+	  }
 
     audio
     {
@@ -557,12 +557,6 @@ div.section.document {
     }
 
 	div.dialog {
-	    .h {
-		text-align: center;
-		margin: 1ex;
-		font-size: 140%;
-	    }
-
 	    &.warn, &.error {
 		&.showtrace {
 		    width: 80%;
