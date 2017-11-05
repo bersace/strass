@@ -303,7 +303,7 @@ a.vignette
 }
 
 @media screen {
-
+  /* Ruban pour distinguer la version de test et la version en développement. */
   #development {
     padding: 0;
     position: fixed;
@@ -342,12 +342,12 @@ a.vignette
     font-size: 1.2rem;
 
 	  .h {
+      color: inherit;
 		  text-align: center;
       padding-left: 48px;
 		  margin: 1ex;
-		  font-size: 140%;
+		  font-size: 1.7rem;
 	  }
-
 
 	  &.info
     {
