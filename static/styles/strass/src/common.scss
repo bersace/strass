@@ -91,24 +91,6 @@ ul {
 	background-repeat: no-repeat;
 	background-size: auto 20em;
     }
-
-    div.dialog {
-        padding-left: 48px;
-
-	&.info {
-	    color: $info;
-	    background-image: url("ui/information.png");
-	    background-position: 1ex .72ex;
-	    background-repeat: no-repeat;
-	}
-
-	&.warn, &.error {
-	    color: $warn;
-	    background-image: url("ui/attention.png");
-	    background-position: 1em 1em;
-	    background-repeat: no-repeat;
-	}
-    }
 }
 
 .empty
@@ -324,24 +306,57 @@ a.vignette
 }
 
 @media screen {
-    #document {
-	div.dialog {
-	    &.info {
-		background-color: $info_bg;
-	    }
+  #document > .h
+  {
+    margin-top: 0;
+  }
 
-	    &.warn, &.error {
-		background-color: $warn_bg;
+	div.dialog {
+    font-size: 1.2rem;
+
+	  .h {
+		  text-align: center;
+      padding-left: 48px;
+		  margin: 1ex;
+		  font-size: 140%;
+	  }
+
+
+	  &.info
+    {
+	    color: $info;
+		  background-color: $info_bg;
+	    background-image: url("ui/information.png");
+	    background-position: 1ex .72ex;
+	    background-repeat: no-repeat;
+	  }
+
+	  &.warn, &.error
+    {
+	    background-image: url("ui/attention.png");
+	    background-position: 2rem 2rem;
+	    background-repeat: no-repeat;
+	  }
+
+	  &.warn
+    {
+      color: $warn;
+		  background-color: $warn_bg;
+	  }
+
+    &.error
+    {
+      color: $error;
+		  background-color: $error_bg;
+    }
 
 		&.showtrace #details > .h {
-		    font-size: 1em;
-		    text-align: right;
-		    cursor: pointer;
-		    color: lighten($highlight_color, 10%);
+		  font-size: 1rem;
+		  text-align: right;
+		  cursor: pointer;
+		  color: lighten($highlight_color, 10%);
 		}
-	    }
 	}
-    }
 
     #citation {
 	p {
@@ -503,10 +518,6 @@ a.vignette
 
     tr.odd {
 	background-color: #F0F0F0;
-    }
-
-    div.dialog {
-	font-size: 140%;
     }
 
     #footer #about .author {

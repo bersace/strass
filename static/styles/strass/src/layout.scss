@@ -32,14 +32,14 @@ body {
 
 #contentwrapper {
     margin: 0 auto;
+}
 
-    div.dialog {
+div.dialog {
 	position: relative;
 	width: 50%;
 	max-width: 40em;
 	padding: 1em;
 	margin: 3em auto;
-    }
 }
 
 #document {
@@ -557,12 +557,6 @@ div.section.document {
     }
 
 	div.dialog {
-	    .h {
-		text-align: center;
-		margin: 1ex;
-		font-size: 140%;
-	    }
-
 	    &.warn, &.error {
 		&.showtrace {
 		    width: 80%;
