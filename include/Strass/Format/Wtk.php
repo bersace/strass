@@ -55,6 +55,8 @@ abstract class Strass_Format_Wtk extends Strass_Format
 
     $link = new Wtk_Link('/', $page->metas->site);
     $document->header->setTitle($link);
+    if (Strass::onDevelopment())
+        $document->header->addSection('development')->addParagraph('Test');
 
     foreach($page->formats as $format) {
       if ($format->suffix != $this->suffix) {

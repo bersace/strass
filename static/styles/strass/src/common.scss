@@ -53,12 +53,6 @@ ul {
     list-style-type: disc;
 }
 
-.development #body {
-    background: url("ui/travaux.png") 4% top no-repeat;
-    background-size: auto .7 * $taille_logo;
-    background-position: 1% 2ex;
-}
-
 #header {
     background-repeat: no-repeat;
     background-position: 96% center;
@@ -306,6 +300,36 @@ a.vignette
 }
 
 @media screen {
+
+  #development {
+    padding: 0;
+    position: fixed;
+    top: 32px;
+    right: -64px;
+    width: 256px;
+    transform: rotate(45deg);
+
+    background-color: rgba($warn_bg, .8);
+    color: $warn;
+    font-size: 1.2rem;
+    font-weight: bold;
+    text-align: center;
+    text-transform: uppercase;
+    vertical-align: middle;
+
+    p {
+      display: inline-block;
+      margin: 0;
+      padding: 1em;
+      padding-left: 2.5em;
+
+      background-image: url("ui/travaux.png");
+      background-position: 0 center;
+      background-repeat: no-repeat;
+      background-size: auto 2em;
+    }
+  }
+
   #document > .h
   {
     margin-top: 0;
