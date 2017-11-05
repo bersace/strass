@@ -14,23 +14,18 @@ bundles:
     contents:
     - mail.scss
 
-  mini:
-    filters: libsass
-    output: ../html/minilayout.css
-    contents:
-    - minilayout.scss
-
   web:
     filters: libsass
     output: ../html/web.css
     contents:
+    - layout.scss
+    - minilayout.scss
     - common.scss
     - activites.scss
     - admin.scss
     - date.screen.scss
     - individus.scss
     - journaux.scss
-    - layout.scss
     - membres.scss
     - photos.scss
     - unites.scss

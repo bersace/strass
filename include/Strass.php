@@ -1,6 +1,6 @@
 <?php
 
-require "Statics.php";
+require_once "Statics.php";
 
 class Strass {
     static $install_filename = 'private/INSTALLED';
@@ -12,7 +12,7 @@ class Strass {
 
     static function isStatic()
     {
-        return preg_match("#^/(static/|data/|500|google).*#", $_SERVER['REQUEST_URI']) === 1;
+        return preg_match("#^/(static/|data/|500|maintenance|google).*#", $_SERVER['REQUEST_URI']) === 1;
     }
 
     static function isInstalled()
@@ -78,6 +78,31 @@ class Strass {
         self::bootstrapStage2();
     }
 
+    static function staticDocument()
+    {
+        $config = new Strass_Config_Php('strass');
+        Zend_Registry::set('config', $config);
+        Strass_Cache::setup();
+        Strass_Db::setup();
+
+        $document = new Wtk_Document(new Wtk_Metas(array('DC.Title' => 'Maintenance')));
+        $style = $config->get('system/style', 'joubert');
+        $document->setStyle(Wtk_Document_Style::factory($style));
+        $document->addStyleComponents('layout', 'minilayout', 'common', 'web');
+        $association = $config->get('system/association', null);
+        $document->addFlags('maintenance', 'mini', $association);
+        if (Strass::onDevelopment()) {
+            $document->addFlags('development');
+            $document->embedStyle();
+        }
+        else
+            $document->addFlags('production');
+        $document->header->setTitle(new Wtk_Link('/', Strass::getSiteTitle()));
+        $document->header->addFlags($association);
+
+        return $document;
+    }
+
     static function main()
     {
         self::bootstrapStage1();
@@ -141,7 +166,7 @@ class Strass {
         $routeur->removeDefaultRoutes();
 
         $p = '([[:alpha:]]+)';
-        $f = '(xhtml|ics|vcf|rss|atom|pdf|tex|txt|od[ts]|csv)';
+        $f = '(html|ics|vcf|rss|atom|pdf|tex|txt|od[ts]|csv)';
         $vars = array(
             'controller' => array($p, 'unites'),
             'action'     => array($p, 'index'),
@@ -199,6 +224,8 @@ class Strass {
 
     static function getSiteTitle()
     {
+        require_once "Strass/Unites.php";
+
         $config = Zend_Registry::get('config');
         $t = new Unites;
         if (@$config->metas->title)
