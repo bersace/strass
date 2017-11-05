@@ -16,7 +16,7 @@
 </tbody>
  <?php endif; ?>
 <tbody<?php wtk_classes($cat_classes[$i]); ?>>
-	 <tr class="category">
+	 <tr class="category h">
    <td colspan="<?php echo count($columns); ?>"<?php wtk_classes($cat_classes[$i]); ?>><?php $this->$cat_id->output(); ?></td>
    </tr>
 </tr>
