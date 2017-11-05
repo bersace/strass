@@ -166,7 +166,7 @@ class Strass {
         $routeur->removeDefaultRoutes();
 
         $p = '([[:alpha:]]+)';
-        $f = '(xhtml|ics|vcf|rss|atom|pdf|tex|txt|od[ts]|csv)';
+        $f = '(html|ics|vcf|rss|atom|pdf|tex|txt|od[ts]|csv)';
         $vars = array(
             'controller' => array($p, 'unites'),
             'action'     => array($p, 'index'),
