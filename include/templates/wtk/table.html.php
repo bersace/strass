@@ -3,7 +3,7 @@
 <thead>
 <tr>
    <?php foreach ($columns as $i => $col): ?>
-	 <th<?php wtk_classes($cclasses[$i]); ?>><?php echo $col->getTitle(); ?></th>
+   <th<?php wtk_classes('h', $cclasses[$i]); ?>><?php echo $col->getTitle(); ?></th>
    <?php endforeach; ?>
 </tr>
 </thead>
