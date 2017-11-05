@@ -17,5 +17,6 @@ services:
     - ./docker/php5-fpm-pool.conf:/etc/php5/fpm/pool.d/strass.conf
     - ./docker/php5-fpm.conf:/etc/php5/fpm/php-fpm.conf
     environment:
+      STRASS_MODE: devel
       STRASS_ROOT: /strass/htdocs
     command: devserver
