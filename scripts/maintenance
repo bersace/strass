@@ -9,7 +9,7 @@ set_include_path(implode(':',$paths));
 require_once 'Strass.php';
 
 Strass::bootstrap();
-$document = Strass::staticDocument();
+$document = Strass::staticDocument('Maintenance');
 $dialog = $document->addDialog("Webmestre au travail !");
 $dialog->addFlags('error');
 $dialog->addSection('aide')->addParagraph("Le site est actuellement en maintance. Désolé et à bientôt !");
