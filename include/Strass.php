@@ -80,25 +80,22 @@ class Strass {
 
     static function staticDocument($titre)
     {
-        $config = new Strass_Config_Php('strass');
-        Zend_Registry::set('config', $config);
+        require_once "Strass/Unites.php";
+        require_once 'Strass/Format/Wtk.php';
+
+        Zend_Registry::set('config', new Strass_Config_Php('strass'));
         Strass_Cache::setup();
         Strass_Db::setup();
 
-        $document = new Wtk_Document(new Wtk_Metas(array('DC.Title' => $titre)));
-        $style = $config->get('system/style', 'joubert');
-        $document->setStyle(Wtk_Document_Style::factory($style));
-        $document->addStyleComponents('layout', 'minilayout', 'common', 'web');
-        $association = $config->get('system/association', null);
-        $document->addFlags('mini', $association);
-        if (Strass::onDevelopment()) {
-            $document->addFlags('development');
-            $document->embedStyle();
-        }
-        else
-            $document->addFlags('production');
-        $document->header->setTitle(new Wtk_Link('/', Strass::getSiteTitle()));
-        $document->header->addFlags($association);
+        $t = new Unites;
+        $racine = $t->findRacine();
+
+        $metas = new Wtk_Metas(array(
+            'site' => Strass::getSiteTitle($racine), 'DC.Title' => $titre
+        ));
+        $document = Strass_Format_Wtk::createDocument($metas, $racine);
+        $document->addStyleComponents('minilayout');
+        $document->addFlags('mini');
 
         return $document;
     }
@@ -222,15 +219,18 @@ class Strass {
         }
     }
 
-    static function getSiteTitle()
+    static function getSiteTitle($unite=null)
     {
         require_once "Strass/Unites.php";
 
         $config = Zend_Registry::get('config');
-        $t = new Unites;
         if (@$config->metas->title)
             return $config->metas->title;
+        else if ($unite) {
+            return $unite->getName();
+        }
         else {
+            $t = new Unites;
             try {
                 $racine = $t->findRacine();
                 return $racine->getName();
