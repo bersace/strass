@@ -127,7 +127,9 @@ td span.treecellnode {
     vertical-align: middle;
 }
 
-tr.odd {
+tr.odd,
+.section.citation:nth-of-type(odd)
+{
     background: $alt_background;
 }
 
@@ -538,10 +540,6 @@ a.vignette
     a {
 	color: inherit;
 	text-decoration: none;
-    }
-
-    tr.odd {
-	background-color: #F0F0F0;
     }
 
     #footer #about .author {
