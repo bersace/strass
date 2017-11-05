@@ -1,26 +1,30 @@
-#body {
+.mini
+{
+  #body {
     float: none;
     width: 80%;
     max-width: 60em;
-    margin: 0 auto;
-}
+  }
 
-#contentwrapper
-{
+  #contentwrapper
+  {
     margin-top: 2em;
     border-width: 1pt;
-}
+  }
 
-#document {
+  #document {
     padding: 5em 3em 3em;
     margin: auto;
     min-height: 0;
 
-    h1 {
-	margin: 0;
+    // Masquer le titre de document au profit de la boîte de dialogue d'erreur.
+    & > .h
+    {
+      display: none;
     }
-}
+  }
 
-#footer {
+  #footer {
     display: none;
+  }
 }
