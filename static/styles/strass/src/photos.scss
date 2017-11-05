@@ -6,16 +6,6 @@
     @include message;
 }
 
-#document.photos.consulter,
-#document.photos.voir
-{
-    background-image: url("illustrations/eclaireur-admirant.png");
-    background-position: right bottom;
-    background-size: auto 20em;
-    background-repeat: no-repeat;
-    padding-bottom: 20em;
-}
-
 #contentwrapper #document.voir {
     h1 {
 	background: none;
