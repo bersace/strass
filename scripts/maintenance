@@ -10,6 +10,7 @@ require_once 'Strass.php';
 
 Strass::bootstrap();
 $document = Strass::staticDocument('Maintenance');
+$document->addFlags('maintenance');
 $dialog = $document->addDialog("Webmestre au travail !");
 $dialog->addFlags('warn');
 $dialog->addSection('aide')->addParagraph("Le site est actuellement en maintance. Désolé et à bientôt !");

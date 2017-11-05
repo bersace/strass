@@ -90,7 +90,7 @@ class Strass {
         $document->setStyle(Wtk_Document_Style::factory($style));
         $document->addStyleComponents('layout', 'minilayout', 'common', 'web');
         $association = $config->get('system/association', null);
-        $document->addFlags('maintenance', 'mini', $association);
+        $document->addFlags('mini', $association);
         if (Strass::onDevelopment()) {
             $document->addFlags('development');
             $document->embedStyle();
