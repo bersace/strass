@@ -12,7 +12,7 @@ class Strass {
 
     static function isStatic()
     {
-        return preg_match("#^/(static/|data/|500|google).*#", $_SERVER['REQUEST_URI']) === 1;
+        return preg_match("#^/(static/|data/|500|maintenance|google).*#", $_SERVER['REQUEST_URI']) === 1;
     }
 
     static function isInstalled()
