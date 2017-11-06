@@ -129,14 +129,10 @@ td span.treecellnode {
 }
 
 tr.odd,
-.section.citation:nth-of-type(odd)
+.section.citation:nth-of-type(odd),
+.section.article,
+.section.carte
 {
-    background: $alt_background;
-}
-
-
-// Carte façon material design
-.section.carte {
     background: $alt_background;
 }
 
