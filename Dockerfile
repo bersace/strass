@@ -2,27 +2,14 @@
 # Strass servi avec PHP-FCGI sur le port 8000.
 #
 
-FROM python:3 AS static
+FROM bersace/strass-sdk AS static
 
-# D'abord générer les CSS et SQL.
-
-RUN apt-get update -y && \
-    DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
-        make \
-        sqlite3 \
-        && \
-    apt-get clean && \
-    rm -rf /var/lib/apt/lists/* && \
-    pip install --no-cache-dir --upgrade libsass pyyaml webassets && \
-    :
-
-WORKDIR /strass
 ADD Makefile .
 ADD include/Strass ./include/Strass
 ADD static/styles ./static/styles
 
 RUN make clean all && \
-    rm -rf static/styles/*/scss && \
+    rm -rf static/styles/*/src && \
     :
 
 FROM bersace/strass-runtime
