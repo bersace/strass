@@ -376,6 +376,11 @@ a.vignette
     {
       color: $error;
 		  background-color: $error_bg;
+
+      a {
+        color: inherit;
+        font-weight: bold;
+      }
     }
 
 		&.showtrace #details > .h {
