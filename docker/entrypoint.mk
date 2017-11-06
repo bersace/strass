@@ -19,7 +19,7 @@ fixperms:
 	chown -vR strass $${STRASS_ROOT}
 	find $${STRASS_ROOT} -type d -exec chmod u+rwx {} ';'
 	find $${STRASS_ROOT} -type f -exec chmod u+rw {} ';'
-	test -d $${STRASS_ROOT}/private && chmod -vR o-rwx $${STRASS_ROOT}/private
+	if test -d $${STRASS_ROOT}/private ; then chmod -vR o-rwx $${STRASS_ROOT}/private ; fi
 
 migrate: fixperms
 	$(STRASSDO) scripts/$@
@@ -33,7 +33,7 @@ setmaint:
 
 # Générer les pages statiques 500.html et maintenance.html avec le script adhoc.
 $(STRASS_ROOT)/%.html: FORCE
-	$(STRASSDO) scripts/$* > $@
+	if test -f ${STRASS_ROOT}/private/strass.sqlite ; then $(STRASSDO) scripts/$* > $@ ; fi
 
 # Pour sécuriser les migrations des données en prod, on créer un instantannée
 # des données. L'instantannée est optimisé pour data/ avec des liens physiques.
