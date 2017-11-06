@@ -2,52 +2,17 @@
 # Strass servi avec PHP-FCGI sur le port 8000.
 #
 
-FROM python:3 AS static
+FROM bersace/strass-sdk AS static
 
-# D'abord générer les CSS et SQL.
-
-RUN apt-get update -y && \
-    DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
-        make \
-        sqlite3 \
-        && \
-    apt-get clean && \
-    rm -rf /var/lib/apt/lists/* && \
-    pip install --no-cache-dir --upgrade libsass pyyaml webassets && \
-    :
-
-WORKDIR /strass
 ADD Makefile .
 ADD include/Strass ./include/Strass
 ADD static/styles ./static/styles
 
 RUN make clean all && \
-    rm -rf static/styles/*/scss && \
+    rm -rf static/styles/*/src && \
     :
 
-FROM debian:jessie-slim
-
-RUN apt-get update -y && \
-    DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
-        ghostscript \
-        locales \
-        make \
-        php5-fpm \
-        php5-imagick \
-        php5-sqlite \
-        rsync \
-        sudo \
-        && \
-    apt-get clean && \
-    rm -rf /var/lib/apt/lists/* && \
-    :
-
-RUN sed -i "/fr_FR.*UTF-8/s/^# //" /etc/locale.gen && \
-    locale-gen && \
-    useradd --home-dir /strass --create-home --system strass && \
-    :
-
-VOLUME /var/lib/php5/sessions
+FROM bersace/strass-runtime
 
 WORKDIR /strass
 ADD index.php .
