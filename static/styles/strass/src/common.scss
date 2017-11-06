@@ -6,7 +6,7 @@ body {
     color: black;
 }
 
-.h {
+.h, h1, h2, h3, h4, h5, h6 {
     margin-top: 1em;
     margin-bottom: 1ex;
     color: inherit;
@@ -129,14 +129,10 @@ td span.treecellnode {
 }
 
 tr.odd,
-.section.citation:nth-of-type(odd)
+.section.citation:nth-of-type(odd),
+.section.article,
+.section.carte
 {
-    background: $alt_background;
-}
-
-
-// Carte façon material design
-.section.carte {
     background: $alt_background;
 }
 
@@ -313,6 +309,7 @@ a.vignette
     transform: rotate(45deg);
 
     background-color: rgba($warn_bg, .8);
+    box-shadow: 0 .1rem 1rem rgba(black, 0.5);
     color: $warn;
     font-size: 1.2rem;
     font-weight: bold;
@@ -375,6 +372,11 @@ a.vignette
     {
       color: $error;
 		  background-color: $error_bg;
+
+      a {
+        color: inherit;
+        font-weight: bold;
+      }
     }
 
 		&.showtrace #details > .h {

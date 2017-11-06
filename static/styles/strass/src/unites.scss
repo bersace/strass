@@ -1,11 +1,9 @@
 @import "lib.scss";
 
 /* ACCUEIL */
-#presentation {
-    .image {
-        float: left;
-        margin: 0 1em 1em 0;
-    }
+#presentation .image {
+  float: left;
+  margin: 0 1em 1em 0;
 }
 
 .effectifs tr.category td a {
@@ -38,6 +36,7 @@
         }
 
         &#rouge .h {
+          color: white;
             background-color: $branche_rouge_bg;
         }
 
@@ -102,6 +101,7 @@
 
 /* EFFECTIFS */
 #document.effectifs table.effectifs {
+  text-align: left;
     width: 30em;
     margin: 0 auto;
     max-width: 100%;
