@@ -1,11 +1,9 @@
 @import "lib.scss";
 
 /* ACCUEIL */
-#presentation {
-    .image {
-        float: left;
-        margin: 0 1em 1em 0;
-    }
+#presentation .image {
+  float: left;
+  margin: 0 1em 1em 0;
 }
 
 .effectifs tr.category td a {
