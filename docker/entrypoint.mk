@@ -2,7 +2,7 @@
 # -*- makefile -*-
 
 ENTRYPOINT=$(lastword $(MAKEFILE_LIST)) --no-print-directory
-STRASSDO=sudo -u strass STRASS_ROOT=${STRASS_ROOT}
+STRASSDO=sudo -Eu strass
 export LC_ALL=fr_FR.UTF-8
 export STRASS_ROOT?=/strass/htdocs
 

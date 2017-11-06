@@ -10,6 +10,7 @@ require_once 'Strass.php';
 
 Strass::bootstrap();
 $document = Strass::staticDocument('Erreur fatale');
+$document->addFlags('error');
 $dialog = $document->addDialog("Oups !");
 $dialog->addFlags('error');
 $config = Zend_Registry::get('config');
