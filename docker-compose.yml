@@ -13,6 +13,7 @@ services:
     # Les données du site (base, photos, styles, etc.) sont stockées en local et
     # montées dans un volume. Par défaut, on monte les données de dév.
     - ${STRASS_ROOT-./htdocs}:/strass/htdocs
+    - ${STRASS_STYLES-./htdocs/data/styles}:/strass/htdocs/data/styles
     - ./docker/entrypoint.mk:/usr/local/bin/entrypoint.mk
     - ./docker/php5-fpm-pool.conf:/etc/php5/fpm/pool.d/strass.conf
     - ./docker/php5-fpm.conf:/etc/php5/fpm/php-fpm.conf
