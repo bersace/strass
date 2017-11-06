@@ -313,6 +313,7 @@ a.vignette
     transform: rotate(45deg);
 
     background-color: rgba($warn_bg, .8);
+    box-shadow: 0 .1rem 1rem rgba(black, 0.5);
     color: $warn;
     font-size: 1.2rem;
     font-weight: bold;
