@@ -14,7 +14,6 @@ class Strass_View_Helper_VignetteUnite
         if (!$unite)
             return;
 
-        $this->view->document->addStyleComponents('vignette');
         $label = $label ? $label : $unite->getName();
 
         if ($src = $unite->getCheminImage())

@@ -69,7 +69,6 @@ abstract class Strass_Format_Wtk extends Strass_Format
 
     $document = self::createDocument($page->metas, $unite);
     $document->addFlags($mn, $cn, $an);
-    $document->addStyleComponents($cn, $mn);
     $document->footer->addSection('wrapper');
 
     foreach($page->formats as $format) {

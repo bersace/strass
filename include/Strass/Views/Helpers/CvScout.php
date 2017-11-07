@@ -11,7 +11,6 @@ class Strass_View_Helper_CvScout
 
     public function cvScout($apps, $admin=false)
     {
-        $this->view->document->addStyleComponents('unites');
         $m = new Wtk_Table_Model('unite_slug', 'unite_type', 'unite_nom', 'unite_lien',
         'role', 'accr', 'acl', 'debut', 'fin',
         'url-editer', 'url-supprimer');

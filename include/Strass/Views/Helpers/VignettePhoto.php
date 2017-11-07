@@ -21,7 +21,6 @@ class Strass_View_Helper_VignettePhoto
                 'photo'         => $photo->slug),
             $urlOptions);
 
-        $this->view->document->addStyleComponents('vignette');
         $label = $label ? $label : $photo;
         $page = Zend_Registry::get('page');
         $item = new Wtk_Container;

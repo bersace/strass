@@ -11,7 +11,6 @@ class Strass_View_Helper_VignetteDocument
 
   public function vignetteDocument($document, $urlOptions=null)
   {
-    $this->view->document->addStyleComponents('vignette');
     $label = $document->titre;
     $wrapper = new Wtk_Section;
     $wrapper->addFlags('wrapper');

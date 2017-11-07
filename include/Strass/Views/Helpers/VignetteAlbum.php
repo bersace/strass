@@ -14,8 +14,6 @@ class Strass_View_Helper_VignetteAlbum
         if (!$album)
             return;
 
-        $this->view->document->addStyleComponents('vignette');
-
         $urlOptions = array_merge(
             array(
                 'controller' => 'photos',

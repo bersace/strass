@@ -21,7 +21,6 @@ class Strass_View_Helper_VignetteIndividu
 				    'individu'		=> $individu->slug),
 			      $urlOptions);
 
-    $this->view->document->addStyleComponents('vignette');
     $label = $label ? $label : $individu->getFullname();
     $item = new Wtk_Container;
     $section = $item->addSection()

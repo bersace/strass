@@ -53,7 +53,8 @@ class Strass_Installer_Controller_Action extends Zend_Controller_Action
   public function render($action = null, $controller = false)
   {
     $script = $this->getViewScript($action, $controller);
-    $this->view->document->addStyleComponents('minilayout', 'install');
+    $this->view->document->addStyleComponents('install');
+    $this->view->document->addFlags('mini');
     return $this->view->render($script);
   }
 
