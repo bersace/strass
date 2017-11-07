@@ -1,4 +1,1 @@
-default:
-
-%:
-	webassets --config src/webassets.yml $@
+../modele/Makefile
