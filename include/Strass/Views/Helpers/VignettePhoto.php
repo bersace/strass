@@ -27,7 +27,7 @@ class Strass_View_Helper_VignettePhoto
         $item->addSection()
              ->addFlags('wrapper')
              ->addImage(
-                 $photo->getCheminVignette(),
+                 $photo->getURLVignette(),
                  $photo->titre.' '.$page->metas->get('DC.Subject'),
                  $photo->titre);
         $item->addParagraph($label)->addFlags('label');

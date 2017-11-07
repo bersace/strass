@@ -21,7 +21,7 @@ class Strass_View_Helper_VignetteUnite
         else {
             $photo = $unite->findPhotoAleatoire($annee);
             if ($photo)
-                $image = new Wtk_Image($photo->getCheminVignette(),
+                $image = new Wtk_Image($photo->getURLVignette(),
                 $photo->titre, $unite->getFullname());
             else {
                 $image = new Wtk_Paragraph("Pas d'image !");
