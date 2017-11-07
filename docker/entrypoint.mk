@@ -55,4 +55,7 @@ statics: $(STRASS_ROOT)/500.html $(STRASS_ROOT)/maintenance.html
 unsetmaint:
 	rm -vf $${STRASS_ROOT}/MAINTENANCE
 
+wait:
+	tail -f /dev/null
+
 FORCE:
