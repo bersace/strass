@@ -1,4 +1,7 @@
 default:
 
+clean:
+	find html/ -name "*.css" -delete
+
 %:
-	webassets --config scss/webassets.yml $@
+	webassets --config src/webassets.yml $@
