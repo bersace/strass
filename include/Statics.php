@@ -49,4 +49,17 @@ class Statics {
         echo 'Not Found';
         exit(0);
     }
+
+    static function debug()
+    {
+        header('HTTP/1.0 200 OK');
+        header('Content-Type: text/plain');
+        echo "**DEBUG**\n\n";
+        $argv = func_get_args();
+        foreach ($argv as $arg) {
+            var_export($arg);
+            echo "\n";
+        }
+        exit(0);
+    }
 }
