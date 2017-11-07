@@ -5,6 +5,8 @@ version: "3"
 services:
   strass:
     image: bersace/strass-sdk
+    labels:
+      com.dnsdock.alias: test.strass.docker
     volumes:
     - ./my-bash_history:/root/.bash_history
     - ../..:/strass
