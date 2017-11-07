@@ -401,6 +401,11 @@ class Individu extends Strass_Db_Table_Row_Abstract implements Zend_Acl_Resource
     return !$test || is_readable($image) ? $image : null;
   }
 
+    function getURLImage()
+    {
+        return strass_append_mtime_querystring($this->getCheminImage());
+    }
+
   /*
    * Retourne la liste de toutes les unités où l'individu a un rôle,
    * récursivement.

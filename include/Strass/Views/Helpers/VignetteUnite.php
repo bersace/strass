@@ -14,15 +14,14 @@ class Strass_View_Helper_VignetteUnite
         if (!$unite)
             return;
 
-        $this->view->document->addStyleComponents('vignette');
         $label = $label ? $label : $unite->getName();
 
-        if ($src = $unite->getCheminImage())
+        if ($src = $unite->getURLImage())
             $image = new Wtk_Image($src, "Photo d'unité", $label);
         else {
             $photo = $unite->findPhotoAleatoire($annee);
             if ($photo)
-                $image = new Wtk_Image($photo->getCheminVignette(),
+                $image = new Wtk_Image($photo->getURLVignette(),
                 $photo->titre, $unite->getFullname());
             else {
                 $image = new Wtk_Paragraph("Pas d'image !");

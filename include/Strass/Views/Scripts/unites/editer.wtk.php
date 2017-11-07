@@ -15,7 +15,7 @@ if ($i->label)
 
 $g = $f->addForm_Fieldset("Image d'unité");
 $g->addSection('vignette')->addChild($this->vignetteUnite($this->unite));
-if ($this->unite->getCheminImage())
+if ($this->unite->getURLImage())
   $g->addCheck('supprimer_image');
 else
   $g->addParagraph("Pas d'image, repli sur une photo aléatoire.")->addFlags('info');

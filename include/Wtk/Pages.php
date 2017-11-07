@@ -13,7 +13,6 @@ class Wtk_Pages extends Wtk_Container
 		$this->id		= $id;
 		$this->renderer	= $renderer;
 		$this->model	= $model;
-		$this->stylecomponent ='pages';
 	}
 
 	protected function _finalize()

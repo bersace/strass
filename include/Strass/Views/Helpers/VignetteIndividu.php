@@ -21,12 +21,11 @@ class Strass_View_Helper_VignetteIndividu
 				    'individu'		=> $individu->slug),
 			      $urlOptions);
 
-    $this->view->document->addStyleComponents('vignette');
     $label = $label ? $label : $individu->getFullname();
     $item = new Wtk_Container;
     $section = $item->addSection()
       ->addFlags('wrapper');
-    if ($this->view->assert(null, $individu, 'voir-avatar') && $src = $individu->getCheminImage())
+    if ($this->view->assert(null, $individu, 'voir-avatar') && $src = $individu->getURLImage())
       $section->addImage($src, $individu->getFullname(), $individu->getFullname());
     else
       $section->addParagraph("Pas de photo")->addFlags('empty', 'image');

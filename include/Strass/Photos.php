@@ -78,14 +78,29 @@ class Photo extends Strass_Db_Table_Row_Abstract implements Zend_Acl_Resource_In
         return $d.'/'.($data ? $data['slug'] : $this->slug);
     }
 
+    protected function formatURL($path)
+    {
+        return $path . '?' . substr($this->date, 0, 10);
+    }
+
     function getCheminImage($data = null)
     {
         return $this->getChemin($data).'.jpeg';
     }
 
+    function getURLImage()
+    {
+        return $this->formatURL($this->getCheminImage());
+    }
+
     function getCheminVignette($data = null)
     {
         return $this->getChemin($data).'-vignette.jpeg';
+    }
+
+    function getURLVignette()
+    {
+        return $this->formatURL($this->getCheminVignette());
     }
 
     function getDescription()

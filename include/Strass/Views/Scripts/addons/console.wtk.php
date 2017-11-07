@@ -3,7 +3,6 @@
 $user = Zend_Registry::get('user');
 $individu = Zend_Registry::get('individu');
 
-$this->document->addStyleComponents('form');
 $parent = $this->document->aside;
 
 if ($user->username == 'nobody') {

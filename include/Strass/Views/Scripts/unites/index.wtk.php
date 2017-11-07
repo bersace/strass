@@ -168,7 +168,7 @@ class Strass_Views_Unite_Index_BlocGenerator
     }
 }
 
-$src = $this->unite->getCheminImage();
+$src = $this->unite->getURLImage();
 if ($this->presentation || $src) {
     $s = $this->document->addSection('presentation')->addFlags('carte');
 

@@ -15,7 +15,6 @@ class Strass_View_Helper_Calendrier
   public function setView($view)
   {
     $this->view = $view;
-    $this->view->document->addStyleComponents('activites');
   }
 
   function calendrier($activites, $annee)

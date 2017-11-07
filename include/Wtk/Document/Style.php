@@ -64,30 +64,48 @@ class Wtk_Document_Style {
         return str_replace('//', '/', $this->baseurl.'/favicon.png');
     }
 
+    static function readManifest($basedir)
+    {
+        $manifest = array();
+        $path = $basedir . '/html/manifest.json';
+        if ($json = @file_get_contents($path)) {
+            // Charger un manifeste généré par webassets.
+            $json = json_decode($json, false, 4);
+            foreach ($json as $path => $version) {
+                $path = basename($path);
+                $component = str_replace('.%(version)s.css', '', $path);
+                $manifest[$component] = str_replace('%(version)s', $version, $path);
+            }
+        }
+        else {
+            // Générer un manifeste naïf.
+            $files = glob($basedir . '/html/*.css');
+            foreach ($files as $path) {
+                $path = basename($path);
+                $component = str_replace('.css', '', $path);
+                $manifest[$component] = $path;
+            }
+        }
+
+        return $manifest;
+    }
+
     function findCss($components, $basedir, $baseurl) {
         $files = array();
+        $manifest = self::readManifest($basedir);
 
-        $media = array(null, 'all', 'screen', 'print', 'handheld');
-        $f = Wtk_Render::factory(null, 'Html5');
+        foreach($components as $comp) {
+            if (!array_key_exists($comp, $manifest))
+                continue;
 
-          foreach($components as $comp) {
-              foreach($media as $medium) {
-                  $css = $f->template.'/'.$comp;
-                  if ($medium)
-                      $css.= '.'.$medium;
-                  $css.= '.css';
-                  if (!file_exists($basedir . $css))
-                      continue;
+            $path = 'html/' . $manifest[$comp];
+            $files[] = array(
+                'file' => $basedir . $path,
+                'url' => $baseurl . $path,
+            );
+        }
 
-                  $files[] = array(
-                      'file' => $basedir . $css,
-                      'url' => $baseurl . $css,
-                      'medium' => $medium,
-                  );
-              }
-          }
-
-          return $files;
+        return $files;
     }
 
     /*

@@ -2,7 +2,6 @@
 
 class Wtk_Table extends Wtk_Container
 {
-  protected $stylecomponent = 'table';
   public $category_column = null;
   public $category_renderer = null;
   public $category_classes = array();

@@ -15,7 +15,6 @@ class Strass_View_Helper_TableEffectifs
   public function setView($view)
   {
     $this->view = $view;
-    $this->view->document->addStyleComponents('unites');
   }
 
   function tableEffectifs($unite, $model, $fiches=true, $colonnes=array())

@@ -65,6 +65,7 @@ class Wtk_Document extends Wtk_Section
 				array_push ($this->data['styles'], $style);
 		}
 	}
+
 	function addStyleComponents($comp)
 	{
 		$comps = func_get_args($comp);
@@ -74,8 +75,7 @@ class Wtk_Document extends Wtk_Section
 
 	function getStyleComponents()
 	{
-		return array_unique(array_merge($this->custom_style_components,
-						parent::getStyleComponents()));
+		return array_filter(array_unique($this->custom_style_components));
 	}
 
 	function addAlternative($href, $title, $type)

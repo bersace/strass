@@ -1,2 +1,3 @@
 *.css
 .webassets-cache/
+manifest.json

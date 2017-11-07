@@ -14,8 +14,6 @@ class Strass_View_Helper_VignetteAlbum
         if (!$album)
             return;
 
-        $this->view->document->addStyleComponents('vignette');
-
         $urlOptions = array_merge(
             array(
                 'controller' => 'photos',
@@ -34,7 +32,7 @@ class Strass_View_Helper_VignetteAlbum
 
         if ($photo)
             $w->addImage(
-                $photo->getCheminVignette(),
+                $photo->getURLVignette(),
                 $photo->titre, $album->getIntituleComplet());
         else {
             $w->addParagraph("Pas d'image !")->addFlags('empty', 'image');

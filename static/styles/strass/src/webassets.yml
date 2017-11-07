@@ -1,22 +1,23 @@
 directory: .
 url: /static/styles/strass/html
+manifest: json:../html/manifest.json
 
 bundles:
   install:
     filters: libsass
-    output: ../html/install.css
+    output: ../html/install.%(version)s.css
     contents:
     - install.scss
 
   mail:
     filters: libsass
-    output: ../html/mail.css
+    output: ../html/mail.%(version)s.css
     contents:
     - mail.scss
 
   web:
     filters: libsass
-    output: ../html/web.css
+    output: ../html/web.%(version)s.css
     contents:
     - layout.scss
     - minilayout.scss

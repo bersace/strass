@@ -6,7 +6,8 @@ class Strass_Pages_Renderer_Photo extends Wtk_Pages_Renderer
   {
     $c->addParagraph()
       ->addFlags('photo')
-      ->addImage($photo->getCheminImage(),
+      ->addImage(
+          $photo->getURLImage(),
 		 $photo->titre,
 		 $photo->titre);
 

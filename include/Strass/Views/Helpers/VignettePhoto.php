@@ -21,14 +21,13 @@ class Strass_View_Helper_VignettePhoto
                 'photo'         => $photo->slug),
             $urlOptions);
 
-        $this->view->document->addStyleComponents('vignette');
         $label = $label ? $label : $photo;
         $page = Zend_Registry::get('page');
         $item = new Wtk_Container;
         $item->addSection()
              ->addFlags('wrapper')
              ->addImage(
-                 $photo->getCheminVignette(),
+                 $photo->getURLVignette(),
                  $photo->titre.' '.$page->metas->get('DC.Subject'),
                  $photo->titre);
         $item->addParagraph($label)->addFlags('label');

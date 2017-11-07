@@ -11,7 +11,6 @@ class Strass_View_Helper_VignetteDocument
 
   public function vignetteDocument($document, $urlOptions=null)
   {
-    $this->view->document->addStyleComponents('vignette');
     $label = $document->titre;
     $wrapper = new Wtk_Section;
     $wrapper->addFlags('wrapper');
@@ -22,8 +21,8 @@ class Strass_View_Helper_VignetteDocument
 			       'type' =>'audio/'.$document->suffixe));
     }
     else {
-      if ($url = $document->getCheminVignette())
-	$wrapper->addImage($document->getCheminVignette(),
+      if ($url = $document->getURLVignette())
+	$wrapper->addImage($document->getURLVignette(),
 			   $document->titre, $document->titre);
       else
 	$wrapper->addParagraph("Pas d'aperçu")->addFlags('image', 'empty');

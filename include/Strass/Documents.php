@@ -38,6 +38,11 @@ class Document extends Strass_Db_Table_Row_Abstract implements Zend_Acl_Resource
       return $path;
   }
 
+    function getURLVignette()
+    {
+        return strass_append_mtime_querystring($this->getCheminVignette());
+    }
+
   function getFichier($data = null)
   {
     if (!$data) $data = $this->_data;
