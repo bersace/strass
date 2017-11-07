@@ -10,11 +10,11 @@
 set -eux
 set -o pipefail
 
-export SERVER_LOG=server.log
+export SERVER_LOG=test_server.log
 # On utilise pas le port 8000, comme ça on peut avoir un strass de dév qui
 # tourne, et lancer les tests.
 export SERVE_PORT=9000
-export STRASS_TEST_SERVER=http://localhost:${SERVE_PORT}
+export STRASS_TEST_SERVER=${STRASS_TEST_SERVER-http://strass:${SERVE_PORT}}
 # On isole chaque *scénario* : sa base, sa conf, ses photos, etc.
 export STRASS_ROOT=tests/func/${TESTCASE}/htdocs/
 
@@ -51,19 +51,12 @@ teardown() {
     if [ "$exit_code" != '0' ] ; then
         # En cas d'erreur, afficher tout les logs.
         test -f ${SERVER_LOG} && sed 's,^,PHP: ,g' ${SERVER_LOG} >&2
-        test -f ghostdriver.log && sed 's,^,SELENIUM: ,g' ghostdriver.log >&2
     fi
 
     if [ -z "${REUSE}" ] ; then
-        rm -f ${SERVER_LOG} ghostdriver.log
         rm -rf ${STRASS_ROOT}
     fi
 }
-
-# Si on a installé notre propre phantomjs, l'injecter dans le PATH.
-if [ -d phantomjs/bin ] ; then
-    export PATH=$(readlink -f phantomjs/bin):$PATH
-fi
 
 if [ -n "${REUSE}" ] ; then
     UNITTEST='strass.tests'
@@ -89,7 +82,7 @@ LD_PRELOAD="${libfaketime} ${libsqlite}" FAKETIME="@2007-08-09 09:32:08 x100" \
 PHP_PID=$!
 echo "PHP PID is ${PHP_PID}" >&2
 
-trap 'teardown $?' EXIT QUIT INT TERM ABRT ALRM HUP CHLD
+trap 'teardown $?' EXIT QUIT INT TERM HUP CHLD
 
 # On délègue à python3 unittest les tests. Usuel.
-xvfb-run --auto-servernum --server-args="-screen 0 1024x768x24" python3 -m ${UNITTEST} discover ${UNITTEST_ARGS} tests/func/${TESTCASE}/
+LC_ALL=fr_FR.UTF-8 python3 -m ${UNITTEST} discover ${UNITTEST_ARGS} tests/func/${TESTCASE}/

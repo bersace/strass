@@ -26,16 +26,15 @@ unités scout des associations SUF et FSE, suivant la pédagogie unitaire.
 
 Un image Docker est disponible avec serveur FCGI :
 
-    docker run --rm bersace/strass fcgi
+    docker run --rm bersace/strass devserver
 
 
 ## Développer
 
-Sur système Debian, vous avez besoin de sqlite3 et d'un virtualenv python3 :
+Sur système Debian, vous avez besoin de Docker :
 
     git clone https://github.com/bersace/strass.git
     cd strass/
-    make setup all
-    docker-compose up
+    docker-compose up -d
 
-Ensuite, suivre l'assistant à l'adresse http://strass.docker:8000 .
+Ensuite, suivre l'assistant à l'adresse http://dev.strass.docker:8000 .

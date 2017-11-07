@@ -44,19 +44,6 @@ setup:
 	which sqlite3
 	pip3 install --upgrade libsass pyyaml webassets
 
-setup-tests:
-	apt install -y faketime wget
-	pip3 install --upgrade selenium
-	$(MAKE) phantomjs
-
-.PHONY: phantomjs
-phantomjs: phantomjs/bin/phantomjs
-
-PHANTOM_JS=phantomjs-1.9.8-linux-x86_64
-phantomjs/bin/phantomjs:
-	mkdir -p phantomjs
-	curl -L https://bitbucket.org/ariya/phantomjs/downloads/$(PHANTOM_JS).tar.bz2 | tar -jxf - -C phantomjs --strip-components=1
-
 dbshell:
 	sqlite3 $(STRASS_ROOT)/private/strass.sqlite
 
@@ -76,6 +63,7 @@ test-unit:
 	STRASS_ROOT=$(shell readlink -f $(TESTROOT)) \
 	phpunit --bootstrap $(shell readlink -e tests/unit/bootstrap.php) \
 		--log-junit $(CIRCLE_TEST_REPORTS)/junit.xml \
+	        --colors --verbose --debug \
 		$(shell readlink -e tests/unit)
 
 test-func: all

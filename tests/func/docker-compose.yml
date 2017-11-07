@@ -1,0 +1,16 @@
+version: "3"
+
+# Environnement d'exécution des tests fonctionnels
+
+services:
+  strass:
+    image: bersace/strass-sdk
+    volumes:
+    - ./my-bash_history:/root/.bash_history
+    - ../..:/strass
+    environment:
+      STRASS_SELENIUM: http://selenium:4444/wd/hub
+    command: tail -f /dev/null
+
+  selenium:
+    image: selenium/standalone-firefox

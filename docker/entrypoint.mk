@@ -8,6 +8,11 @@ export STRASS_ROOT?=/strass/htdocs
 
 default:
 
+devperms:
+	chgrp -R $$(stat -c %g index.php) .
+	chmod -R g+rw $${STRASS_ROOT} static/
+	find $${STRASS_ROOT} static/ -type d -exec chmod g+x {} ';'
+
 devserver: fixperms statics
 	$(STRASSDO) scripts/serve.sh
 
@@ -51,6 +56,11 @@ snapshot: fixperms
 	rm -rf $${STRASS_ROOT}/snapshot/private/cache/*
 
 statics: $(STRASS_ROOT)/500.html $(STRASS_ROOT)/maintenance.html
+
+styles:
+	$(MAKE) -C static/styles/strass build
+	$(MAKE) -C static/styles/joubert build
+	$(MAKE) -C static/styles/modele build
 
 unsetmaint:
 	rm -vf $${STRASS_ROOT}/MAINTENANCE
