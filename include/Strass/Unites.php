@@ -209,6 +209,11 @@ class Unite extends Strass_Db_Table_Row_Abstract implements Zend_Acl_Resource_In
         return !$test || is_readable($image) ? $image : null;
     }
 
+    function getURLImage()
+    {
+        return strass_append_mtime_querystring($this->getCheminImage());
+    }
+
     function storeImage($path)
     {
         Strass_Vignette::reduire($path, $this->getCheminImage(null, false));

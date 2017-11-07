@@ -16,7 +16,7 @@ class Strass_View_Helper_VignetteUnite
 
         $label = $label ? $label : $unite->getName();
 
-        if ($src = $unite->getCheminImage())
+        if ($src = $unite->getURLImage())
             $image = new Wtk_Image($src, "Photo d'unité", $label);
         else {
             $photo = $unite->findPhotoAleatoire($annee);

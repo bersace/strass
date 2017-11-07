@@ -1,6 +1,7 @@
 <?php
 
 require_once "Statics.php";
+require_once 'Strass/Utils.php';
 
 class Strass {
     static $install_filename = 'private/INSTALLED';
