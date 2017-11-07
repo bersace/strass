@@ -89,7 +89,7 @@ LD_PRELOAD="${libfaketime} ${libsqlite}" FAKETIME="@2007-08-09 09:32:08 x100" \
 PHP_PID=$!
 echo "PHP PID is ${PHP_PID}" >&2
 
-trap 'teardown $?' EXIT QUIT INT TERM ABRT ALRM HUP CHLD
+trap 'teardown $?' EXIT QUIT INT TERM HUP CHLD
 
 # On délègue à python3 unittest les tests. Usuel.
 xvfb-run --auto-servernum --server-args="-screen 0 1024x768x24" python3 -m ${UNITTEST} discover ${UNITTEST_ARGS} tests/func/${TESTCASE}/
