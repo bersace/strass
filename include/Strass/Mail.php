@@ -3,7 +3,7 @@
 class Strass_Mail extends Zend_Mail
 {
   protected $_doc;
-  static $mail_dir = 'private/mails';
+  static $mail_dir = 'data/mails';
 
   // metas = Wtk_Metas ou string (=titre)
   function __construct($metas)
