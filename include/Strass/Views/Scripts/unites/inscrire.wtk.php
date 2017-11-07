@@ -23,7 +23,7 @@ class IndividuTemporaire implements Zend_Acl_Resource_Interface
         return $this->data['fiche']['prenom'] . ' ' . $this->data['fiche']['nom'];
     }
 
-    function getCheminImage()
+    function getURLImage()
     {
         return null;
     }
