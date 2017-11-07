@@ -95,6 +95,8 @@ class Strass {
         ));
         $document = Strass_Format_Wtk::createDocument($metas, $racine);
         $document->addFlags('mini');
+        if (! self::onDevelopment())
+            $document->embedStyle();
 
         return $document;
     }
