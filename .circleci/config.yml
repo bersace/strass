@@ -4,7 +4,7 @@ jobs:
   test:
     working_directoy: /strass
     docker:
-    - image: bersace/strass-sdk@sha256:abbf7c203611fa8b4185c2f897e8495b2399308187ddb2a580200ce215b6c615
+    - image: bersace/strass-sdk@sha256:4741652732bcc5d64a1b9fc003924a54e3f96a0834c83311f8d2f7bf786406bc
       environment:
         STRASS_SELENIUM: http://localhost:4444/wd/hub
         STRASS_TEST_SERVER: http://localhost:9000
