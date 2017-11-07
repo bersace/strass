@@ -1,5 +1,5 @@
 directory: .
-url: ./
+url: .
 manifest: json:../html/manifest.json
 
 bundles:
