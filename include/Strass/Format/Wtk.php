@@ -12,7 +12,7 @@ abstract class Strass_Format_Wtk extends Strass_Format
         $document = new Wtk_Document($metas);
         $document->header->setTitle(new Wtk_Link('/', $metas->site));
         $document->sitemap = '/sitemap';
-        $document->addStyleComponents('layout', 'common', 'web');
+        $document->addStyleComponents('inline', 'web');
 
         if ($unite)
             $document->addFlags($unite->slug, $unite->findParentTypesUnite()->slug);

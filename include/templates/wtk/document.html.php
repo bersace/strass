@@ -37,43 +37,34 @@ wtk_attr('href', 'http://'.$_SERVER['HTTP_HOST'].$href);
 ?> />
 <?php endforeach; ?>
 
-<?php foreach ($default_style->getFiles(array('inline'), 'Html5') as $row): ?>
-<?php extract($row); ?>
-<style type="text/css">
-<?php readfile($file); ?>
-</style>
-<?php endforeach; ?>
-
-<?php $embeded = array(); ?>
-<?php $et = ""; ?>
-<?php foreach ($styles as $style): ?>
-<?php $default = $default_style->id == $style->id; ?>
-<?php $et = $default ? $style->title : $et; ?>
-<?php $files = $style->getFiles($style_components, 'Html5'); ?>
+<?php $style = $default_style ?>
+<?php foreach($style_components as $style_component): ?>
+<?php $files = $style->getFiles(array($style_component), 'Html5'); ?>
 <?php foreach ($files as $f): ?>
 <?php extract($f); ?>
-<?php if ($default && $embed_style): ?>
-<?php
-if (!isset($embeded[$medium])) {
-  $embeded[$medium] = '';
-}
-?>
-<?php $cssbaseurl = @dirname($f['url']).'/'; ?>
-<?php $embeded[$medium].= is_readable($file) ? str_replace('url("', 'url("'.$cssbaseurl, file_get_contents($file)) : ''; ?>
-<?php else: ?>
-<link type="text/css" rel="<?php echo $default ? "" : "alternate "; ?>stylesheet" <?php
-  wtk_attr('title', $style->title); wtk_attr('media', $medium); wtk_attr('href', $baseurl.$url); ?> />
-<?php endif; ?>
-<?php endforeach; ?>
-<?php endforeach; ?>
-
-<?php foreach($embeded as $medium => $css): ?>
-<style type="text/css" media="<?php echo $medium; ?>" title="<?php echo $et; ?>">
+<?php switch($style_component): ?>
+<?php case('inline'): ?>
+<style type="text/css" media="all">
 <!--/*--><![CDATA[<!--*/
-
-  <?php echo $css; ?>
+<?php readfile($file); ?>
 /*]]>*/-->
 </style>
+<?php break; ?>
+<?php default: ?>
+<?php if ($embed_style): ?>
+<?php $cssbaseurl = dirname($f['url']).'/'; ?>
+<?php $css = str_replace('url("', 'url("'.$cssbaseurl, file_get_contents($file)); ?>
+<style type="text/css" media="all">
+<!--/*--><![CDATA[<!--*/
+<?php echo $css; ?>
+/*]]>*/-->
+</style>
+<?php else: ?>
+<link type="text/css" rel="stylesheet" media="all"<?php wtk_attr('href', $baseurl.$url); ?> />
+<?php endif; ?>
+<?php break; ?>
+<?php endswitch; ?>
+<?php endforeach; ?>
 <?php endforeach; ?>
 
 <?php if (count($dojoTypes)): ?>

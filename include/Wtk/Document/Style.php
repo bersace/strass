@@ -67,27 +67,18 @@ class Wtk_Document_Style {
     function findCss($components, $basedir, $baseurl) {
         $files = array();
 
-        $media = array(null, 'all', 'screen', 'print', 'handheld');
-        $f = Wtk_Render::factory(null, 'Html5');
+        foreach($components as $comp) {
+            $path = 'html/'.$comp . '.css';
+            if (!file_exists($basedir . $path))
+                continue;
 
-          foreach($components as $comp) {
-              foreach($media as $medium) {
-                  $css = $f->template.'/'.$comp;
-                  if ($medium)
-                      $css.= '.'.$medium;
-                  $css.= '.css';
-                  if (!file_exists($basedir . $css))
-                      continue;
+            $files[] = array(
+                'file' => $basedir . $path,
+                'url' => $baseurl . $path,
+            );
+        }
 
-                  $files[] = array(
-                      'file' => $basedir . $css,
-                      'url' => $baseurl . $css,
-                      'medium' => $medium,
-                  );
-              }
-          }
-
-          return $files;
+        return $files;
     }
 
     /*
