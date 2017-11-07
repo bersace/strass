@@ -94,8 +94,9 @@ class Strass {
             'site' => Strass::getSiteTitle($racine), 'DC.Title' => $titre
         ));
         $document = Strass_Format_Wtk::createDocument($metas, $racine);
-        $document->addStyleComponents('minilayout');
         $document->addFlags('mini');
+        if (! self::onDevelopment())
+            $document->embedStyle();
 
         return $document;
     }
