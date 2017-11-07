@@ -36,6 +36,11 @@ class Strass_Mail extends Zend_Mail
     $this->addHeader('X-MailGenerator', 'Wtk');
   }
 
+    function generateDevFilename()
+    {
+        return $_SERVER['REQUEST_TIME'] . '_' . wtk_strtoid($this->getSubject()) . '_' . mt_rand() . '.eml';
+    }
+
   function getDocument()
   {
     return $this->_doc;
@@ -69,8 +74,11 @@ class Strass_Mail extends Zend_Mail
     $this->setBodyHTML($r->render());
 
     if (getenv('STRASS_MODE') == 'devel') {
-      mkdir(self::$mail_dir);
-      return parent::send(new Zend_Mail_Transport_File(array('path' => self::$mail_dir)));
+        @mkdir(self::$mail_dir);
+      return parent::send(new Zend_Mail_Transport_File(array(
+          'path' => self::$mail_dir,
+          'callback' => array($this, 'generateDevFilename'),
+      )));
     }
     else
       return parent::send(new Zend_Mail_Transport_Smtp(getenv('STRASS_SMTP')));
