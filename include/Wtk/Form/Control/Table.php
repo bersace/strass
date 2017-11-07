@@ -54,16 +54,6 @@ class Wtk_Form_Control_Table extends Wtk_Form_Control implements Wtk_Container_I
 		return $this->table->getDojoType();
 	}
 
-	/**
-	 * retourne la liste récursive des composants de style du
-	 * conteneur et de ses enfants.
-	 */
-	function getStyleComponents()
-	{
-		return $this->table->getStyleComponents();
-	}
-
-
 	function _finalize()
 	{
 		$this->table->finalize();
@@ -83,10 +73,5 @@ class Wtk_Form_Control_Table extends Wtk_Form_Control implements Wtk_Container_I
 
 		$tpl->addChild('control', $this->table->template());
 		return $tpl;
-	}
-
-	function getStyleComponent()
-	{
-		return $this->table->getStyleComponent();
 	}
 }

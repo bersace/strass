@@ -99,23 +99,6 @@ class Wtk_Container extends Wtk_Element implements Wtk_Container_Interface, Iter
 	}
 
 	/**
-	 * retourne la liste récursive des composants de style du
-	 * conteneur et de ses enfants.
-	 */
-	function getStyleComponents()
-	{
-		$cmp = array($this->getStyleComponent());
-		foreach($this->children as $child) {
-			if ($child instanceof Wtk_Container_Interface)
-				$cmp = array_merge($cmp, $child->getStyleComponents());
-			else
-				array_push($cmp, $child->getStyleComponent());
-		}
-
-		return $cmp;
-	}
-
-	/**
 	 * Retourne la liste récursive des scripts du conteneur et de
 	 * ses enfants.
 	 */

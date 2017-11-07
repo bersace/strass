@@ -2,8 +2,6 @@
 
 class Wtk_Form_Control_Date extends Wtk_Form_Control
 {
-	protected $stylecomponent = 'date';
-
 	function __construct ($instance, $format = '%Y-%m-%d')
 	{
 		parent::__construct ($instance);

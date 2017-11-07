@@ -21,13 +21,6 @@ abstract class Wtk_Element
 	public		$flags;
 
 	/**
-	 * Le composant de style à charger pour styliser ce element. (Permet
-	 * d'éviter de charger le style pour formulaire s'il n'y a pas de
-	 * formulaire dans la page.
-	 */
-	protected	$stylecomponent = 'common';
-
-	/**
 	 * La liste des scripts à exécuter pour améliorer l'utilisabilité de
 	 * ce element.
 	 */
@@ -183,11 +176,6 @@ abstract class Wtk_Element
 		$klass = $class ? $class : get_called_class();
 		$template = str_replace('_', '/', strtolower($klass));
 		return new Temple($template, $this->data);
-	}
-
-	function getStyleComponent()
-	{
-		return $this->stylecomponent;
 	}
 
 	function getScripts()

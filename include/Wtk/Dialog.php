@@ -2,8 +2,6 @@
 
 class Wtk_Dialog extends Wtk_Container
 {
-	protected $stylecomponent = 'dialog';
-
 	function __construct ($title = NULL)
 	{
 		parent::__construct ();

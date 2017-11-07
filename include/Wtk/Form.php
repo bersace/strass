@@ -9,7 +9,6 @@
    */
 class Wtk_Form extends Wtk_Container {
 	protected $errors;
-	protected $stylecomponent = 'form';
 
 	function __construct(&$model)
 	{
