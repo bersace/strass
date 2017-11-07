@@ -1,48 +1,19 @@
 version: 2
 
 jobs:
-  func:
-    working_directoy: /workspace
+  test:
+    working_directoy: /strass
     docker:
-    - image: php:5.6
-    environment:
-      VIRTUAL_ENV: .venv/
+    - image: bersace/strass-sdk@sha256:abbf7c203611fa8b4185c2f897e8495b2399308187ddb2a580200ce215b6c615
+      environment:
+        STRASS_SELENIUM: http://localhost:4444/wd/hub
+        STRASS_TEST_SERVER: http://localhost:9000
+    - image: selenium/standalone-firefox@sha256:749fb5cc781aa50e78595cb669f242b305603feeda35d0c8860d13a63aace835
     steps:
-    - run:
-        name: Initialiser le conteneur
-        command: |
-          set -x
-          echo deb http://ftp.debian.org/debian jessie-backports main > /etc/apt/sources.list.d/backports.list
-          apt update -y
-          apt install -y --no-install-recommends git openssh-client
     - checkout
-    - restore_cache:
-        keys: ["strass-{{ arch }}"]
-    - run:
-        name: "Installer l'environment de test"
-        command: |
-          set -x
-          apt install -y --no-install-recommends faketime locales php5-gd php5-imagick php5-sqlite phpunit python3-dev python3-pip python3-virtualenv python3-wheel sqlite3 virtualenv xauth xvfb
-          sed -i "/fr_FR.*UTF-8/s/^# //" /etc/locale.gen
-          locale-gen
-          if ! [ -d ${VIRTUAL_ENV} ] ; then
-              virtualenv --python=python3 ${VIRTUAL_ENV}
-          fi
-          ${VIRTUAL_ENV}/bin/pip3 install --upgrade pip setuptools wheel
-          make setup
-          make phantomjs
-    - save_cache:
-        key: strass-{{ arch }}
-        paths:
-        - phantomjs/
-        - "{{ .Environment.VIRTUAL_ENV }}"
     - run:
         name: Tester
-        environment:
-          LANG: fr_FR.UTF-8
-          LC_ALL: fr_FR.UTF-8
         command: |
-          export PATH=${VIRTUAL_ENV}/bin:$PATH
           env|sort
           make test
 
@@ -50,4 +21,4 @@ workflows:
   version: 2
   pipeline:
     jobs:
-    - func
+    - test

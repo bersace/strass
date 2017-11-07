@@ -7,5 +7,5 @@ maintenance.html
 tests/unit/root/
 htdocs*
 __pycache__
-phantomjs
 .reuse-state
+test_*
