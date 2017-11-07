@@ -41,10 +41,11 @@ class Statics {
     static function serve()
     {
         $search_path = array('.', Strass::getPrefix());
+        $request_path = parse_url($_SERVER['REQUEST_URI'],  PHP_URL_PATH);
         foreach ($search_path as $path) {
-            $static_path = $path . $_SERVER['REQUEST_URI'];
-            self::try_file($static_path);
+            self::try_file($path . $request_path);
         }
+
         header('HTTP/1.0 404 Not Found');
         echo 'Not Found';
         exit(0);
