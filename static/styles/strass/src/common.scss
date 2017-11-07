@@ -340,11 +340,14 @@ a.vignette
 
 	  .h {
       color: inherit;
-		  text-align: center;
-      padding-left: 48px;
 		  margin: 1ex;
 		  font-size: 1.7rem;
 	  }
+
+    > .h:nth-of-type(1)
+    {
+      padding-left: 48px;
+    }
 
 	  &.info
     {
@@ -379,12 +382,15 @@ a.vignette
       }
     }
 
-		&.showtrace #details > .h {
-		  font-size: 1rem;
-		  text-align: right;
-		  cursor: pointer;
-		  color: lighten($highlight_color, 10%);
-		}
+		&.showtrace .section.details
+    {
+      font-size: .9rem;
+      margin: 1rem;
+
+      * {
+        font-size: inherit;
+      }
+    }
 	}
 
     #citation {
