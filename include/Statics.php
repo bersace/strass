@@ -31,7 +31,7 @@ class Statics {
         case 'wma':
             return 'audio/x-ms-wma';
         default:
-            return 'text/plain';
+            return 'application/octet-stream';
         }
     }
 
