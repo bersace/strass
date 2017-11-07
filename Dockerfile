@@ -14,7 +14,6 @@ RUN make clean all && \
 
 FROM bersace/strass-runtime
 
-WORKDIR /strass
 ADD index.php .
 ADD include ./include
 ADD scripts/ ./scripts

@@ -2,14 +2,11 @@ version: "3"
 
 services:
   strass:
-    image: bersace/strass
+    image: bersace/strass-sdk
     labels:
       com.dnsdock.alias: dev.strass.docker
     volumes:
-    - ./include/:/strass/include
-    - ./index.php:/strass/index.php
-    - ./scripts:/strass/scripts
-    - ./static:/strass/static
+    - .:/strass
     # Les données du site (base, photos, styles, etc.) sont stockées en local et
     # montées dans un volume. Par défaut, on monte les données de dév.
     - ${STRASS_ROOT-./htdocs}:/strass/htdocs
@@ -20,4 +17,5 @@ services:
     environment:
       STRASS_MODE: devel
       STRASS_ROOT: /strass/htdocs
-    command: devserver
+    entrypoint: /usr/local/bin/entrypoint.mk
+    command: styles devperms devserver
