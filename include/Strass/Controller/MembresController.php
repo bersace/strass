@@ -84,7 +84,7 @@ class MembresController extends Strass_Controller_Action implements Zend_Acl_Res
             $data['adelec'] = strtolower($m->get('compte/adelec'));
             $data['password'] = Users::hashPassword($m->get('compte/adelec'),
             $m->get('compte/motdepasse'));
-            $data['presentation'] = $m->compte->presentation;
+            $data['presentation'] = $m->compte['presentation'];
 
             $db = $t->getAdapter();
             $db->beginTransaction();
