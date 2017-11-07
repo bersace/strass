@@ -15,7 +15,7 @@ jobs:
         name: Tester
         command: |
           env|sort
-          make test
+          make clean test
 
 workflows:
   version: 2
