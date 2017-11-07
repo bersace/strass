@@ -34,6 +34,11 @@ class Statics {
         $info = pathinfo($path);
         $ext = @$info['extension'] ?: null;
         header('Content-Type: ' . self::contentType($ext));
+
+        $utc = new DateTimeZone('UTC');
+        $dans_un_an = new DateTime('next year', $utc);
+        header('Expires: ' . $dans_un_an->format(DATE_RFC1123));
+
         readfile($path);
         exit(0);
     }
