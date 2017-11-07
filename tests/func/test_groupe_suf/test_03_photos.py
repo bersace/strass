@@ -1,10 +1,6 @@
-import os
-import unittest
-
 from strass.client import ClientTestCase
 
 
-@unittest.skipIf(os.environ.get('CIRCLECI', None), 'Dans CircleCI')
 class Test(ClientTestCase):
     def test_01_envoi(self):
         (
