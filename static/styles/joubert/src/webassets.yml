@@ -1,10 +1,11 @@
 directory: .
 url: /static/styles/joubert/html
+manifest: json:../html/manifest.json
 
 bundles:
   inline:
     filters: libsass
-    output: ../html/inline.css
+    output: ../html/inline.%(version)s.css
     contents:
     - inline.scss
     depends:
@@ -12,15 +13,15 @@ bundles:
 
   install:
     filters: libsass
-    output: ../html/install.css
+    output: ../html/install.%(version)s.css
     contents:
     - install.scss
     depends:
     - _lib.scss
 
-  main:
+  web:
     filters: libsass
-    output: ../html/common.css
+    output: ../html/web.%(version)s.css
     contents:
     - common.scss
     - admin.scss

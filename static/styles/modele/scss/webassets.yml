@@ -1,15 +1,16 @@
 directory: .
 url: ./
+manifest: json:../html/manifest.json
 
 bundles:
   mail:
     filters: libsass
-    output: ../html/mail.css
+    output: ../html/mail.%(version)s.css
     contents:
     - mail.scss
 
   web:
     filters: libsass
-    output: ../html/web.css
+    output: ../html/web.%(version)s.css
     contents:
     - web.scss
