@@ -10,7 +10,7 @@
 set -eux
 set -o pipefail
 
-export SERVER_LOG=server.log
+export SERVER_LOG=test_server.log
 # On utilise pas le port 8000, comme ça on peut avoir un strass de dév qui
 # tourne, et lancer les tests.
 export SERVE_PORT=9000
