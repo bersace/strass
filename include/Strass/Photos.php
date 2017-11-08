@@ -140,6 +140,8 @@ class Photo extends Strass_Db_Table_Row_Abstract implements Zend_Acl_Resource_In
         $MAX = $config->get('photo/taille', 2048);
         if (min($width, $height) > $MAX)
             $photo->scale($MAX, $MAX);
+        if (@array_key_exists('Orientation', $exif))
+            $photo->autoRotate($exif['Orientation']);
         $photo->ecrire();
 
         Strass_Vignette::decouper($photo, $vignette);

@@ -85,7 +85,7 @@ class ActivitesController extends Strass_Controller_Action
                 "Envoyer une photo", array(
                     'action' => 'envoyer',
                     'controller' => 'photos',
-                    'activite' => $a->slug),
+                    'album' => $a->slug),
                 array(null, $a, 'envoyer-photo'));
         }
 
