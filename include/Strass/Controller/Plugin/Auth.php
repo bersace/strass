@@ -4,7 +4,6 @@ require_once 'Strass/Individus.php';
 
 class Strass_Controller_Plugin_Auth extends Zend_Controller_Plugin_Abstract
 {
-    public $http;
     public $db;
     public $sudo;
 
@@ -85,16 +84,6 @@ class Strass_Controller_Plugin_Auth extends Zend_Controller_Plugin_Abstract
         // DB AUTH
         $this->db = new Strass_Auth_Adapter_DbTable($db, 'user', 'username', 'password');
 
-        // HTTP_AUTH
-        $config = array(
-            'accept_schemes' => 'digest',
-            'realm'	     => $config->system->realm,
-            'digest_domains' => '/',
-            'nonce_timeout'  => $config->system->duree_connexion);
-        $this->http = new Zend_Auth_Adapter_Http($config);
-        $resolver = new Strass_Auth_Adapter_Http_Resolver_DbTable($db, 'user', 'username', 'password');
-        $this->http->setDigestResolver($resolver);
-
         // SUDO AUTH
         $this->sudo = new Strass_Auth_Adapter_Sudo;
 
@@ -149,22 +138,6 @@ class Strass_Controller_Plugin_Auth extends Zend_Controller_Plugin_Abstract
             $auth->clearIdentity();
             $im->errors[] = $e;
         }
-    }
-
-    /* Authentification via HTTP Digest. */
-    function http()
-    {
-        $m = Zend_Registry::get('logout_model');
-        if (!$m->validate()) { // Tenir compte de la déconnexion
-            $auth = Zend_Auth::getInstance();
-            $this->http->setRequest($this->getRequest());
-            $this->http->setResponse($this->getResponse());
-            $result = $auth->authenticate($this->http);
-
-            if (!$result->isValid())
-                return false;
-        }
-        return true;
     }
 
     function sudo($target = null)

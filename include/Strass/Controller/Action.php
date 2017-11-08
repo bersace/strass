@@ -112,24 +112,7 @@ abstract class Strass_Controller_Action extends Zend_Controller_Action implement
     function assert($role = null, $resource = null, $action = null, $message = null)
     {
         $role = $role ? $role : Zend_Registry::get('user');
-
         $action = $action ? $action : $this->_getParam('action');
-        // Premier controle avant auth
-        if ($this->isAllowed($role, $resource, $action)) {
-            return true;
-        }
-
-        if (!$role->isMember() && $message) {
-            /* Déclencher l'authentification HTTP Digest */
-            $res = $this->_helper->Auth->http();
-            /* si pas d'auth HTTP, en génère une page d'erreur, avec le code
-               401. Si le popup d'auth est annulé, c'est la page d'erreur
-               401 qui est affichée. */
-            if ($res === false)
-                throw new Strass_Controller_Action_Exception_Authentification($message);
-            $role = Zend_Registry::get('user');
-        }
-
         $allowed = $this->isAllowed($role, $resource, $action);
 
         if (!$allowed && $message)
