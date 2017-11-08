@@ -46,12 +46,7 @@ class Strass_Installer
 
   function generateRealm()
   {
-    if ($_SERVER['SERVER_NAME'] != 'localhost') {
-      return 'strass-'.$_SERVER['SERVER_NAME'];
-    }
-    else {
-      return 'strass-'.mt_rand(100, 999);
-    }
+      return 'strass';
   }
 
   function writeConfig()

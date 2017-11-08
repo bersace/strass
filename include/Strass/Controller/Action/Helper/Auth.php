@@ -20,12 +20,6 @@ class Strass_Controller_Action_Helper_Auth extends Zend_Controller_Action_Helper
     return $this->plugin->unsudo();
   }
 
-  /* Authentification via HTTP. */
-  function http()
-  {
-    return $this->plugin->http();
-  }
-
   function direct()
   {
     return $this->plugin->getUser();
