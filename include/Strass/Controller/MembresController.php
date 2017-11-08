@@ -416,6 +416,7 @@ class MembresController extends Strass_Controller_Action implements Zend_Acl_Res
                         'fiche', 'individus', null,
                         array('individu' => $individu->slug)));
                     $db->commit();
+                    $this->redirectSimple('fiche', 'individus', null, array('individu' => $individu->slug), true);
                 } catch(Wtk_Form_Model_Exception $e) {
                     $db->rollBack();
                     $m->errors[] = $e;
@@ -423,8 +424,6 @@ class MembresController extends Strass_Controller_Action implements Zend_Acl_Res
                     $db->rollBack();
                     throw $e;
                 }
-
-                $this->redirectSimple('fiche', 'individus', null, array('individu' => $individu->slug), true);
             }
         }
 
