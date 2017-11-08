@@ -669,12 +669,8 @@ class Users extends Strass_Db_Table_Abstract
 				   );
 
   static function hashPassword($username, $password) {
-    /* Free suffixe le realm par l'UID. On doit donc générer le
-       hash avec le suffixe pour que ça corresponde. */
     $config = Zend_Registry::get('config');
     $realm = $config->system->realm;
-    if (ini_get('safe_mode'))
-      $realm.= '-'.getmyuid();
     return hash('md5', $username.':'.$realm.':'.$password);
   }
 
