@@ -1,0 +1,3 @@
+#!/bin/bash -eux
+
+env | sort > include/DOCKER_CLOUD_BUILD_ENV
