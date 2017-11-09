@@ -22,6 +22,8 @@ class Strass_Addon_Console extends Strass_Addon_Liens
         }
         catch (Zend_Exception $e) {}
 
+        $this->append('Mon calendrier', array('controller' => 'activites', 'action' => 'index'));
+
         parent::initView($view);
     }
 
