@@ -19,11 +19,11 @@ class ActivitesController extends Strass_Controller_Action
                 "Vous devez être identifié pour voir ".
                 "le calendrier des activités.");
 
-        $u = $i->findUnites()->current();
+        $us = $i->findUnites();
 
-        if ($u)
+        if ($us)
             $this->redirectUrl(array(
-                'action' => 'calendrier', 'unite' => $u->slug));
+                'action' => 'calendrier', 'unite' => $us->current()->slug));
         else
             throw new Strass_Controller_Action_Exception_Notice(
                 "Vous n'appartenez à aucune unité", 404,
