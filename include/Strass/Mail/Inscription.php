@@ -16,7 +16,7 @@ class Strass_Mail_Inscription extends Strass_Mail
     $d->addText("Chers administrateurs,\n\n".
 		$this->inscription->getFullname()." (".
 		strftime('%e/%m/%Y', strtotime($this->inscription->naissance)).
-		") a soumis son inscriptionW :");
+		") a soumis son inscription :");
 
     $s = $d->addSection('presentation')->addFlags('message');
     $s->addText($this->inscription->presentation);
