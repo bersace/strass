@@ -15,6 +15,7 @@ abstract class Strass_Db_Table_Row_Abstract extends Zend_Db_Table_Row_Abstract
 
   function initPrivileges($acl, $unites)
   {
+      // Accorde les privilèges sur $this aux différents groupes associés aux unités (chef, assistant, membres).
     foreach ($unites as $unite) {
       foreach ($this->_privileges as $priv) {
 	list($role, $privileges) = $priv;

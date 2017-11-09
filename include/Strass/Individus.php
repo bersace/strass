@@ -96,14 +96,17 @@ class Individu extends Strass_Db_Table_Row_Abstract implements Zend_Acl_Resource
 
     $acl->allow('membres', $this, 'fiche');
     if ($app = $this->findAppartenances()->current()) {
+        // Masquer les noms des cheftaines
       if ($app->findParentRoles()->nom_jungle)
 	$acl->deny(NULL, $this, 'voir-nom');
     }
     $acl->allow('membres', $this, 'voir-nom');
 
+    // Publier les avatars des majeurs
     if ($this->getAge() > 18)
       $acl->allow(null, $this, 'voir-avatar');
 
+    // Autoriser l'auto-édition
     if ($acl->hasRole($this)) {
       $acl->allow($this, $this, array('editer', 'desinscrire'));
       $acl->deny($this, $this, 'desinscrire');
@@ -407,26 +410,17 @@ class Individu extends Strass_Db_Table_Row_Abstract implements Zend_Acl_Resource
     }
 
   /*
-   * Retourne la liste de toutes les unités où l'individu a un rôle,
-   * récursivement.
+   * Retourne la liste de toutes les unités où l'individu est actif.
    */
-  function findUnites($actif = TRUE)
+    function findUnites()
   {
     $t = new Unites;
     $s = $t->select()
-      ->setIntegrityCheck(false)
-      ->distinct()
-      ->from('unite')
-      ->joinLeft(array('parent' => 'unite'), 'parent.id = unite.parent', array())
-      ->joinLeft(array('grandparent' => 'unite'), 'grandparent.id = parent.parent', array())
-      ->join('appartenance', 'appartenance.unite IN (unite.id, parent.id, grandparent.id)', array())
-      ->where('appartenance.individu = ?', $this->id);
-
-    if ($actif === true)
-      $s->where('appartenance.fin IS NULL');
-    else if ($actif === false)
-      $s->where('appartenance.fin IS NOT NULL');
-
+       ->setIntegrityCheck(false)
+       ->distinct()
+       ->from('unite')
+       ->join('appartenance', 'appartenance.unite = unite.id', array())
+       ->where('appartenance.individu = ?', $this->id);
     return $t->fetchAll($s);
   }
 
