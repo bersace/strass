@@ -19,7 +19,7 @@ class ActivitesController extends Strass_Controller_Action
                 "Vous devez être identifié pour voir ".
                 "le calendrier des activités.");
 
-        $u = current($i->findUnites());
+        $u = $i->findUnites()->current();
 
         if ($u)
             $this->redirectUrl(array(
