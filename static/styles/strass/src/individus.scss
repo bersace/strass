@@ -4,45 +4,47 @@
     white-space: pre-wrap;
 }
 
-#details, #cv {
+.individus {
+  #details, #cv {
     padding: 0 1ex;
     display: inline-block;
     vertical-align: top;
-}
+  }
 
-#details {
+  #details {
     width: 30%;
 
     ul {
-	/* Adapté à la ligne Dernière connexion */
-	min-width: 15em;
-	padding-left: 2em;
+	    /* Adapté à la ligne Dernière connexion */
+	    min-width: 15em;
+	    padding-left: 2em;
     }
 
     #notes {
-	margin: 1ex;
-	font-style: italic;
+	    margin: 1ex;
+	    font-style: italic;
     }
-}
+  }
 
-#cv {
+  #cv {
     width: 69%;
 
     table {
-	width: 100%;
+	    width: 100%;
 
-	thead { display: none; }
-	td.unite {
-	    white-space: nowrap;
-	    width: 80%;
-	}
+	    thead { display: none; }
+	    td.unite {
+	      white-space: nowrap;
+	      width: 80%;
+	    }
     }
-}
+  }
 
-/* si pas de détails */
-#cartevisite + #cv {
+  /* si pas de détails */
+  #cartevisite + #cv {
     display: block;
     margin: 0 auto;
+  }
 }
 
 #document.individus.inscrire .effectifs
