@@ -1,7 +1,7 @@
 default:
 
 clean:
-	find . -name "*.css" -delete
+	rm -f html/manifest.json html/*.css
 	find . -name .webassets-cache | xargs -rt rm -rf
 
 %:

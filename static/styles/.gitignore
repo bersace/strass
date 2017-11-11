@@ -1,3 +1,4 @@
 *.css
+!knacss.css
 .webassets-cache/
 manifest.json
