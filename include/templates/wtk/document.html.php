@@ -1,10 +1,5 @@
 <?php
 
-$creation = $metas->creation;
-$year = date('Y');
-
-$snkp = isset($_SERVER['ORIG_SCRIPT_NAME']) ? 'ORIG_' : '';
-$sn = $_SERVER[$snkp.'SCRIPT_NAME'];
 $baseurl = '/';
 $dojodbg = 'false';
 
@@ -66,6 +61,15 @@ wtk_attr('href', 'http://'.$_SERVER['HTTP_HOST'].$href);
 <?php endswitch; ?>
 <?php endforeach; ?>
 <?php endforeach; ?>
+  </head>
+<body<?php wtk_classes($flags); ?>>
+<div id="body">
+<?php if (isset($this->header)) $this->header->output(); ?>
+<div id="contentwrapper"><?php if (isset($this->content)) $this->content->output (); ?></div>
+<?php if (isset($this->aside)) $this->aside->output(); ?>
+<?php if (isset($this->footer)) $this->footer->output(); ?>
+<hr id="clearer" style="clear: both; visibility: hidden;" />
+</div>
 
 <?php if (count($dojoTypes)): ?>
 <script language="javascript" type="text/javascript">
@@ -79,14 +83,5 @@ wtk_attr('href', 'http://'.$_SERVER['HTTP_HOST'].$href);
 dojo.require("dojo.parser");
 </script>
 <?php endif; ?>
-  </head>
-<body<?php wtk_classes($flags); ?>>
-<div id="body">
-<?php if (isset($this->header)) $this->header->output(); ?>
-<div id="contentwrapper"><?php if (isset($this->content)) $this->content->output (); ?></div>
-<?php if (isset($this->aside)) $this->aside->output(); ?>
-<?php if (isset($this->footer)) $this->footer->output(); ?>
-<hr id="clearer" style="clear: both; visibility: hidden;" />
-</div>
   </body>
 </html>

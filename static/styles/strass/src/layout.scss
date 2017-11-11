@@ -563,7 +563,7 @@ div.section.document {
 		    overflow-x: auto;
 
 		    #details {
-			display: block;
+			display: block !important;
 		    }
 		}
 	    }
