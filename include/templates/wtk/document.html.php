@@ -3,8 +3,6 @@
 $creation = $metas->creation;
 $year = date('Y');
 
-$snkp = isset($_SERVER['ORIG_SCRIPT_NAME']) ? 'ORIG_' : '';
-$sn = $_SERVER[$snkp.'SCRIPT_NAME'];
 $baseurl = '/';
 $dojodbg = 'false';
 
