@@ -1,8 +1,5 @@
 <?php
 
-$creation = $metas->creation;
-$year = date('Y');
-
 $baseurl = '/';
 $dojodbg = 'false';
 
