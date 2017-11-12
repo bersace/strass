@@ -16,10 +16,6 @@ class Strass_Addon_Menu extends Strass_Addon_Liens
         array(
             'metas' => 'Liens',
             'url'   => array('controller' => 'liens')),
-        array(
-            'metas' => 'Administration',
-            'url'   => array('controller' => 'admin'),
-            'acl'   => array(null, 'site', 'admin')),
     );
 
     function __construct()
