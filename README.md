@@ -26,7 +26,7 @@ unités scout des associations SUF et FSE, suivant la pédagogie unitaire.
 
 Un image Docker est disponible avec serveur FCGI :
 
-    docker run --rm bersace/strass devserver
+    docker run --rm bersace/strass fcgi
 
 
 ## Développer
