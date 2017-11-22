@@ -15,4 +15,4 @@ services:
     command: tail -f /dev/null
 
   selenium:
-    image: selenium/standalone-firefox
+    image: selenium/standalone-chrome
