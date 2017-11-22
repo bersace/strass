@@ -8,7 +8,7 @@ jobs:
       environment:
         STRASS_SELENIUM: http://localhost:4444/wd/hub
         STRASS_TEST_SERVER: http://localhost:9000
-    - image: selenium/standalone-firefox@sha256:749fb5cc781aa50e78595cb669f242b305603feeda35d0c8860d13a63aace835
+    - image: selenium/standalone-chrome@sha256:84b83d2c6a9cd180c38d0df8bfdf1a7c1d86398f4acc6774008d8a75899c0e33
     steps:
     - checkout
     - run:

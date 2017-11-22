@@ -1,44 +1,11 @@
 @import "lib.scss";
 
-body {
-    font-family: "Liberation Sans", "Deja Vu Sans", sans-serif;
-    background: white;
-    color: black;
-}
-
 .h, h1, h2, h3, h4, h5, h6 {
-    margin-top: 1em;
-    margin-bottom: 1ex;
     color: inherit;
-}
-
-h1 {
-    font-size: 1.40em;
-}
-
-h2 {
-    font-size: 1.30em;
-}
-
-h3 {
-    font-size: 1.25em;
-}
-
-h4 {
-    font-size: 1.20em;
-}
-
-h5 {
-    font-size: 1.15em;
-}
-
-h6 {
-    font-size: 1.10em;
 }
 
 p {
     text-align: inherit;
-    margin: 0 0 1ex;
 }
 
 a {
@@ -105,18 +72,16 @@ li {
     }
 }
 
-table {
-    border-collapse: separate;
-    border-spacing: 0;
-}
-
 thead th {
     border-bottom: 2px solid $highlight_color;
     text-align: center;
 }
 
-td {
-    padding: .5ex .75ex;
+table, .table, td, th
+{
+  border: none;
+  overflow: hidden;
+  width: auto;
 }
 
 td span.treecellpad {
@@ -139,6 +104,10 @@ tr.odd,
     background: $alt_background;
 }
 
+td.date {
+  white-space: nowrap;
+}
+
 /* Formulaire */
 input[type=email],
 input[type=password],
@@ -148,9 +117,9 @@ input[type=text],
 input[type="url"],
 textarea
 {
+    padding: 2pt;
     border: 1pt solid $highlight_color;
-    padding: 1pt;
-    background: lighten($alt_background, 2%);
+    background: lighten($alt_background, 50%);
 }
 
 input[type=email]:focus,
@@ -171,11 +140,13 @@ button
 }
 
 fieldset {
-    border: 1pt solid $highlight_color;
+  border: 1pt solid $highlight_color;
+  margin: 0 0 2rem;
 
-    legend {
-	font-size: 120%;
-    }
+  legend {
+	  font-size: 120%;
+    padding: 0 1rem;
+  }
 }
 
 /* Aide en ligne dans le formulaire */
@@ -288,7 +259,7 @@ a.vignette
 
 .section.document .telechargement a {
 	font-weight: bold;
-    padding: .5rem .5rem .5rem 3rem;
+    padding: .5rem .5rem .5rem 5rem;
 	background: url("icones/sign-up.png") .5em center no-repeat;
 	background-size: auto 2em;
 }
@@ -331,11 +302,6 @@ a.vignette
       background-repeat: no-repeat;
       background-size: auto 2em;
     }
-  }
-
-  #document > .h
-  {
-    margin-top: 0;
   }
 
 	div.dialog {
@@ -438,7 +404,7 @@ a.vignette
         background-repeat: no-repeat;
         background-size: auto 50%;
         background-position: center center;
-        padding: 1.5rem 1.5rem 0 0;
+        padding: 3rem 3rem 0 0;
       }
 
       &.critical {

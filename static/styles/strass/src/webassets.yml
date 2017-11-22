@@ -9,6 +9,10 @@ bundles:
     contents:
     - install.scss
 
+  knacss:
+    output: ../html/knacss.%(version)s.css
+    contents: knacss.css
+
   mail:
     filters: libsass
     output: ../html/mail.%(version)s.css

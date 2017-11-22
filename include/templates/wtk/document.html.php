@@ -35,20 +35,15 @@ wtk_attr('href', 'http://'.$_SERVER['HTTP_HOST'].$href);
 <?php $style = $default_style ?>
 <?php foreach($style_components as $style_component): ?>
 <?php $files = $style->getFiles(array($style_component), 'Html5'); ?>
+<?php switch($style_component): ?>
+<?php default: ?>
 <?php foreach ($files as $f): ?>
 <?php extract($f); ?>
-<?php switch($style_component): ?>
-<?php case('inline'): ?>
-<style type="text/css" media="all">
-<!--/*--><![CDATA[<!--*/
-<?php readfile($file); ?>
-/*]]>*/-->
-</style>
-<?php break; ?>
-<?php default: ?>
+<?php if ($embed_style || $style_component === 'inline'): ?>
+<?php $css = file_get_contents($file); ?>
 <?php if ($embed_style): ?>
-<?php $cssbaseurl = dirname($f['url']).'/'; ?>
-<?php $css = str_replace('url("', 'url("'.$cssbaseurl, file_get_contents($file)); ?>
+<?php $css = str_replace('url("', 'url("'.dirname($f['url']).'/', $css); ?>
+<?php endif; ?>
 <style type="text/css" media="all">
 <!--/*--><![CDATA[<!--*/
 <?php echo $css; ?>
@@ -57,9 +52,9 @@ wtk_attr('href', 'http://'.$_SERVER['HTTP_HOST'].$href);
 <?php else: ?>
 <link type="text/css" rel="stylesheet" media="all"<?php wtk_attr('href', $baseurl.$url); ?> />
 <?php endif; ?>
+<?php endforeach; ?>
 <?php break; ?>
 <?php endswitch; ?>
-<?php endforeach; ?>
 <?php endforeach; ?>
   </head>
 <body<?php wtk_classes($flags); ?>>

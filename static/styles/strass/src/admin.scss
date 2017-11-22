@@ -90,15 +90,6 @@
     {
 	font-family: monospace;
     }
-
-    td.date {
-        white-space: nowrap;
-    }
-}
-
-table {
-    width: 100%;
-    margin-bottom: 1em;
 }
 
 #indicateurs, #membres
@@ -110,6 +101,10 @@ table {
     z-index: 1;
     overflow: hidden;
     text-overflow: ellipsis;
+
+    table {
+      width: 100%;
+    }
 }
 
 #log

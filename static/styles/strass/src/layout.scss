@@ -1,15 +1,5 @@
 @import "lib.scss";
 
-* {
-    box-sizing: border-box;
-    padding: 0;
-    margin: 0;
-}
-
-body {
-    font-size: 9pt;
-}
-
 #header {
     width: 100%;
     height: $taille_logo;
@@ -208,6 +198,10 @@ table.control {
 	padding: .25ex;
     }
 
+    td.wtk-button {
+      max-width: 3rem;
+    }
+
     div.control.check > .input {
 	position: static;
     }
@@ -268,11 +262,10 @@ tr td .check label
     position: relative;
     display: block;
     width: 100%;
-    max-width: 45rem;
+    max-width: 80rem;
     min-height: $taille_vignette + 68;
     margin: 1rem auto 4rem;
     padding: 2rem;
-    font-size: 1.1rem;
 
     & > .h {
 	    text-align: right;

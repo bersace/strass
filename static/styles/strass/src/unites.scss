@@ -90,7 +90,7 @@
     table.effectifs
     {
         width: 40%;
-        max-width: 50em;
+        max-width: 80rem;
         margin: 4em auto;
 
         thead, tr.category {
@@ -102,9 +102,9 @@
 /* EFFECTIFS */
 #document.effectifs table.effectifs {
   text-align: left;
-    width: 30em;
+    width: 100%;
+    max-width: 120rem;
     margin: 0 auto;
-    max-width: 100%;
 
     /* simple listing, façon 27eparis.net */
     &.sansfiche {
@@ -169,7 +169,7 @@ td.numero {
 
 /* barrettes */
 td.accr {
-    width: 1em;
+    width: 10rem;
     padding-left: 28px;
     text-align: right;
     background-position: left center;
