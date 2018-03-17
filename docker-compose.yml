@@ -18,4 +18,4 @@ services:
       STRASS_MODE: devel
       STRASS_ROOT: /strass/htdocs
     entrypoint: /usr/local/bin/entrypoint.mk
-    command: styles devperms devserver
+    command: cron styles devperms devserver

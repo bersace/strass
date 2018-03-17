@@ -14,6 +14,8 @@ RUN make clean all && \
 
 FROM bersace/strass-runtime
 
+RUN rm -f /etc/cron.daily/*
+ADD docker/purger-sessions-php5.sh /etc/cron.daily/purger-sessions-php5.sh
 ADD index.php .
 ADD include ./include
 ADD scripts/ ./scripts
@@ -27,4 +29,4 @@ EXPOSE 8000
 
 ADD docker/entrypoint.mk /usr/local/bin/entrypoint.mk
 ENTRYPOINT ["/usr/local/bin/entrypoint.mk"]
-CMD ["fcgi"]
+CMD ["cron", "fcgi"]
