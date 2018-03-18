@@ -28,5 +28,5 @@ ADD docker/php5-fpm-pool.conf /etc/php5/fpm/pool.d/strass.conf
 EXPOSE 8000
 
 ADD docker/entrypoint.mk /usr/local/bin/entrypoint.mk
-ENTRYPOINT ["/usr/local/bin/entrypoint.mk"]
+ENTRYPOINT ["/usr/local/sbin/tini", "-gw", "--", "/usr/local/bin/entrypoint.mk"]
 CMD ["cron", "fcgi"]
