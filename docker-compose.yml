@@ -17,5 +17,5 @@ services:
     environment:
       STRASS_MODE: devel
       STRASS_ROOT: /strass/htdocs
-    entrypoint: /usr/local/bin/entrypoint.mk
-    command: styles devperms devserver
+    entrypoint: /usr/local/sbin/tini -- /usr/local/bin/entrypoint.mk
+    command: cron styles devperms devserver

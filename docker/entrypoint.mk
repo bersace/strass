@@ -8,6 +8,9 @@ export STRASS_ROOT?=/strass/htdocs
 
 default:
 
+cron:
+	$@ > /proc/1/fd/1 2>/proc/1/fd/2
+
 devperms:
 	chgrp -R $$(stat -c %g index.php) .
 	chmod -R g+rw $${STRASS_ROOT} static/
@@ -17,7 +20,7 @@ devserver: fixperms statics
 	$(STRASSDO) scripts/serve.sh
 
 fcgi: fixperms statics
-	/usr/sbin/php5-fpm --nodaemonize --fpm-config /etc/php5/fpm/php-fpm.conf
+	/usr/sbin/php5-fpm --nodaemonize --force-stderr --fpm-config /etc/php5/fpm/php-fpm.conf
 
 # S'assurer que le volume est accessible à l'utilisateur strass.
 fixperms:
@@ -29,6 +32,10 @@ fixperms:
 migrate: fixperms
 	$(STRASSDO) scripts/$@
 	$(ENTRYPOINT) statics
+
+# Purger les sessions sans accès depuis un mois.
+purgesession:
+	/etc/cron.daily/purger-sessions-php5.sh
 
 restore: fixperms
 	rsync --verbose --archive --delete $${STRASS_ROOT}/snapshot/data $${STRASS_ROOT}/snapshot/*.html $${STRASS_ROOT}/snapshot/private $${STRASS_ROOT}/
