@@ -127,18 +127,6 @@ div.control {
 	text-align: right;
     }
 
-    &.date input
-    {
-	margin: 1pt;
-	font-family: monospace;
-	text-align: center;
-        width: 3em;
-
-        &.year {
-            width: 5em;
-        }
-    }
-
     &.check {
 	position: relative;
 

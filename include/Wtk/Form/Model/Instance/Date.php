@@ -13,7 +13,6 @@ class Wtk_Form_Model_Instance_Date extends Wtk_Form_Model_Instance
 		$this->format = $format;
 	}
 
-	/* On devrait utiliser Zend_Date ? */
 	protected function timeToDateArray($time)
 	{
 		list($year, $month, $day, $hour, $min, $sec) = $time ? explode('/', strftime('%Y/%m/%d/%H/%M/%S', $time))
@@ -63,22 +62,31 @@ class Wtk_Form_Model_Instance_Date extends Wtk_Form_Model_Instance
 		if (!$value)
 			return false;
 
-		if (!is_array($value)) {
-			list($year, $month, $day, $hour, $min, $sec) = explode('/',
-									       strftime('%Y/%m/%d/%H/%M/%S',
-											strtotime($value)));
-			$value = array('year'	=> $year,
-				       'month'	=> $month,
-				       'day'	=> $day,
-				       'hour'	=> $hour,
-				       'min'	=> $min,
-				       'sec'	=> $sec);
+        if (!is_array($value)) {
+			list($year, $month, $day, $hour, $min) = explode(
+                '/', strftime('%Y/%m/%d/%H/%M', strtotime($value))
+            );
 		}
-		else
-			extract ($value);
+        else {
+            // On a au moins le champ date et éventuellement un champ time dans
+            // le formulaire.
+            list($year, $month, $day) = explode('-', $value['date']);
+            if (array_key_exists('time', $value))
+                list($hour, $min) = explode(':', $value['time']);
+            else {
+                $hour = 0;
+                $min = 0;
+            }
+        }
 
 		if (isset ($year) && isset ($month) && isset ($day)) {
-			$this->value = $value;
+			$this->value = array(
+                'year' => $year,
+                'month' => $month,
+                'day' => $day,
+                'hour' => $hour,
+                'min' => $min,
+            );
 			return TRUE;
 		}
 		else
