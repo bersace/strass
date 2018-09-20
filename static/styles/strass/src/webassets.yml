@@ -28,7 +28,6 @@ bundles:
     - common.scss
     - activites.scss
     - admin.scss
-    - date.screen.scss
     - individus.scss
     - journaux.scss
     - membres.scss
