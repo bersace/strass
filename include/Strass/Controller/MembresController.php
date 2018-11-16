@@ -101,7 +101,7 @@ class MembresController extends Strass_Controller_Action implements Zend_Acl_Res
                 try {
                     $mail->send();
                 }
-                catch (Zend_Mail_Transport_Exception $e) {
+                catch (Zend_Mail_Exception $e) {
                     $this->logger->error(
                         "Échec de l'envoi de mail aux admins", null, $e);
                 }
