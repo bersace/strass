@@ -34,10 +34,6 @@ migrate: fixperms
 	$(STRASSDO) scripts/$@
 	$(ENTRYPOINT) statics
 
-# Purger les sessions sans accès depuis un mois.
-purgesession:
-	/etc/cron.daily/purger-sessions-php5.sh
-
 restore: fixperms
 	rsync --verbose --archive --delete $${STRASS_ROOT}/snapshot/data $${STRASS_ROOT}/snapshot/*.html $${STRASS_ROOT}/snapshot/private $${STRASS_ROOT}/
 

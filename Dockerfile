@@ -14,8 +14,6 @@ RUN make clean all && \
 
 FROM bersace/strass-runtime
 
-RUN rm -f /etc/cron.daily/*
-ADD docker/purger-sessions-php5.sh /etc/cron.daily/purger-sessions-php5.sh
 ADD index.php .
 ADD include ./include
 ADD scripts/ ./scripts
