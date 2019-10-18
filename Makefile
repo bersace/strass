@@ -63,7 +63,7 @@ test-unit:
 	STRASS_ROOT=$(shell readlink -f $(TESTROOT)) \
 	phpunit --bootstrap $(shell readlink -e tests/unit/bootstrap.php) \
 		--log-junit $(CIRCLE_TEST_REPORTS)/junit.xml \
-	        --colors --verbose --debug \
+		--colors --verbose --debug \
 		$(shell readlink -e tests/unit)
 
 test-func: all
