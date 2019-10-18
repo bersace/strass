@@ -9,7 +9,7 @@ export STRASS_ROOT?=/strass/htdocs
 default:
 
 cron:
-	$@ > /proc/1/fd/1 2>/proc/1/fd/2
+	$@ -f -L 15
 
 devperms:
 	chgrp -R $$(stat -c %g index.php) .
