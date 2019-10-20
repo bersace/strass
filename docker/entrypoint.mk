@@ -8,8 +8,8 @@ export STRASS_ROOT?=/strass/htdocs
 
 default:
 
-cron:
-	$@ -f -L 15
+cron: sessionclean
+	set -e; while sleep 1800 ; do $(ENTRYPOINT) $^ ; done
 
 devperms:
 	chgrp -R $$(stat -c %g index.php) .
@@ -36,6 +36,10 @@ migrate: fixperms
 
 restore: fixperms
 	rsync --verbose --archive --delete $${STRASS_ROOT}/snapshot/data $${STRASS_ROOT}/snapshot/*.html $${STRASS_ROOT}/snapshot/private $${STRASS_ROOT}/
+
+sessionclean:
+	@date
+	/usr/lib/php5/$@
 
 setmaint:
 	touch $${STRASS_ROOT}/MAINTENANCE
