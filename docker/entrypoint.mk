@@ -8,8 +8,8 @@ export STRASS_ROOT?=/strass/htdocs
 
 default:
 
-cron:
-	$@ -f -L 15
+cron: sessionclean
+	cron -flL 15
 
 devperms:
 	chgrp -R $$(stat -c %g index.php) .
@@ -34,12 +34,12 @@ migrate: fixperms
 	$(STRASSDO) scripts/$@
 	$(ENTRYPOINT) statics
 
-# Purger les sessions sans accès depuis un mois.
-purgesession:
-	/etc/cron.daily/purger-sessions-php5.sh
-
 restore: fixperms
 	rsync --verbose --archive --delete $${STRASS_ROOT}/snapshot/data $${STRASS_ROOT}/snapshot/*.html $${STRASS_ROOT}/snapshot/private $${STRASS_ROOT}/
+
+sessionclean:
+	@date
+	/usr/lib/php5/$@
 
 setmaint:
 	touch $${STRASS_ROOT}/MAINTENANCE
