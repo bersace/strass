@@ -9,7 +9,7 @@ export STRASS_ROOT?=/strass/htdocs
 default:
 
 cron: sessionclean
-	set -e; while sleep 1800 ; do $(ENTRYPOINT) $^ ; done
+	cron -flL 15
 
 devperms:
 	chgrp -R $$(stat -c %g index.php) .
