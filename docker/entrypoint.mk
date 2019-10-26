@@ -20,7 +20,7 @@ devserver: fixperms statics
 	$(STRASSDO) scripts/serve.sh
 
 fcgi: fixperms statics
-	/usr/sbin/php5-fpm --nodaemonize --force-stderr --fpm-config /etc/php5/fpm/php-fpm.conf
+	/usr/sbin/php-fpm5.6 --nodaemonize --force-stderr --fpm-config /etc/php5/fpm/php-fpm.conf
 
 # S'assurer que le volume est accessible à l'utilisateur strass.
 fixperms:
@@ -39,7 +39,7 @@ restore: fixperms
 
 sessionclean:
 	@date
-	/usr/lib/php5/$@
+	/usr/lib/php/$@
 
 setmaint:
 	touch $${STRASS_ROOT}/MAINTENANCE
