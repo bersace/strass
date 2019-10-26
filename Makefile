@@ -60,7 +60,7 @@ test: test-unit test-func
 test-unit:
 	rm -rf $(TESTROOT)/*
 	make $(TESTDB)
-	STRASS_ROOT=$(shell readlink -f $(TESTROOT)) \
+	-STRASS_ROOT=$(shell readlink -f $(TESTROOT)) \
 	phpunit --bootstrap $(shell readlink -e tests/unit/bootstrap.php) \
 		--log-junit $(CIRCLE_TEST_REPORTS)/junit.xml \
 		--colors --verbose --debug \
