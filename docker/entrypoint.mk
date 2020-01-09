@@ -25,7 +25,7 @@ fcgi: fixperms statics
 # S'assurer que le volume est accessible à l'utilisateur strass.
 fixperms:
 	chown -vR strass $${STRASS_ROOT}
-	chmod 0733 /var/lib/php5/sessions
+	chmod 0733 /var/lib/php/sessions
 	find $${STRASS_ROOT} -type d -exec chmod u+rwx {} ';'
 	find $${STRASS_ROOT} -type f -exec chmod u+rw {} ';'
 	if test -d $${STRASS_ROOT}/private ; then chmod -vR o-rwx $${STRASS_ROOT}/private ; fi
